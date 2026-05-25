@@ -6,12 +6,12 @@
 <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
 <link rel="manifest" href="/site.webmanifest">
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, viewport-fit=cover">
-<!-- Security headers -->
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+<!-- Security: basic CSP -->
+<meta http-equiv="Content-Security-Policy" content="default-src 'self' https:; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src * data: blob:; frame-src https://mhznyfilbpvyaxeofcgn.supabase.co https:; connect-src https:;">
 <meta http-equiv="X-Content-Type-Options" content="nosniff">
 <meta http-equiv="Referrer-Policy" content="strict-origin-when-cross-origin">
 <meta http-equiv="Permissions-Policy" content="camera=(), microphone=(), geolocation=()">
-<meta http-equiv="Content-Security-Policy" content="default-src 'self' https://mhznyfilbpvyaxeofcgn.supabase.co https://fonts.googleapis.com https://fonts.gstatic.com; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; img-src 'self' https://mhznyfilbpvyaxeofcgn.supabase.co data: blob:; frame-src https://mhznyfilbpvyaxeofcgn.supabase.co; connect-src 'self' https://mhznyfilbpvyaxeofcgn.supabase.co https://api.resend.com;">
 <title>The International Legal Inteligencia Research Herald, India</title>
 <!-- Performance: DNS prefetch for Supabase CDN -->
 <link rel="dns-prefetch" href="https://mhznyfilbpvyaxeofcgn.supabase.co">
@@ -19,7 +19,8 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <!-- Only load weights actually used -->
-<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700;900&family=IM+Fell+English:ital@1&family=Playfair+Display:ital,wght@0,600;0,700;1,400&family=EB+Garamond:ital,wght@0,400;0,500;1,400&family=Lato:wght@400;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700;900&family=IM+Fell+English:ital@1&family=Playfair+Display:ital,wght@0,600;0,700;1,400&family=EB+Garamond:ital,wght@0,400;0,500;1,400&family=Lato:wght@400;700&display=swap&text=auto" rel="stylesheet">
+<link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700;900&family=Playfair+Display:wght@700&family=EB+Garamond:wght@400&family=Lato:wght@400;700&display=swap" onload="this.onload=null;this.rel='stylesheet'">
 <style>
 :root {
   --navy: #0a1628; --navy-mid: #132040; --navy-light: #1e3a6e;
@@ -190,7 +191,8 @@ footer { background:var(--navy); color:#8fa4bf; padding:36px 32px 20px; margin-t
 .modal-byline { font-family:'Lato',sans-serif; font-size:12.5px; color:var(--text-muted); margin-bottom:24px; padding-bottom:18px; border-bottom:1px solid var(--border); }
 .modal-content { font-family:'EB Garamond',serif; font-size:18px; line-height:1.8; color:var(--text-secondary); }
 .modal-file-frame { width:100%; height:85vh; border:1px solid var(--border); margin-top:20px; display:block; }
-.modal-img { width:100%; height:auto; max-height:none; object-fit:contain; margin-top:20px; border:1px solid var(--border); display:block; }
+.modal-img { width:100%; height:auto; max-height:none; object-fit:contain; margin-top:20px; border:1px solid var(--border); display:block; cursor:zoom-in; -webkit-tap-highlight-color:rgba(184,150,62,0.2); touch-action:manipulation; user-select:none; }
+.modal-img:hover { border-color:var(--gold); box-shadow:0 2px 16px rgba(10,22,40,0.15); }
  
 /* UPLOAD */
 .upload-overlay { display:none; position:fixed; inset:0; background:rgba(5,12,24,0.85); z-index:1000; padding:24px 16px; overflow-y:auto; align-items:flex-start; justify-content:center; }
@@ -292,11 +294,11 @@ footer { background:var(--navy); color:#8fa4bf; padding:36px 32px 20px; margin-t
 .lbx-close-btn { background:none; border:none; color:#f7f4ef; font-size:30px; cursor:pointer; line-height:1; padding:0 4px; transition:color 0.2s; }
 .lbx-close-btn:hover { color:var(--gold-light); }
 .lbx-hint { position:absolute; bottom:20px; left:50%; transform:translateX(-50%); background:rgba(5,12,24,0.75); color:#a8b8cc; font-family:'Lato',sans-serif; font-size:11px; letter-spacing:0.08em; padding:6px 16px; border-radius:20px; pointer-events:none; white-space:nowrap; transition:opacity 0.5s; }
-#lbx-canvas-wrap { width:100%; height:100vh; display:flex; align-items:center; justify-content:center; overflow:hidden; cursor:grab; touch-action:none; }
+#lbx-canvas-wrap { width:100%; height:100vh; display:flex; align-items:center; justify-content:center; overflow:hidden; cursor:grab; touch-action:none; contain:layout paint; }
 #lbx-canvas-wrap.grabbing { cursor:grabbing; }
 #lbx-canvas-wrap.zoom-in { cursor:zoom-in; }
 #lbx-canvas-wrap.zoom-out { cursor:zoom-out; }
-#lbx-img { max-width:92vw; max-height:88vh; object-fit:contain; transform-origin:center center; transition:transform 0.15s ease; will-change:transform; display:block; border:1px solid rgba(255,255,255,0.06); user-select:none; -webkit-user-drag:none; touch-action:none; }
+#lbx-img { max-width:92vw; max-height:88vh; object-fit:contain; transform-origin:center center; transition:transform 0.15s ease; will-change:transform; display:block; border:1px solid rgba(255,255,255,0.06); user-select:none; -webkit-user-drag:none; pointer-events:none; }
 #lbx-nav-prev, #lbx-nav-next { position:absolute; top:50%; transform:translateY(-50%); background:rgba(5,12,24,0.7); border:1px solid rgba(255,255,255,0.15); color:#f7f4ef; font-size:22px; width:44px; height:64px; cursor:pointer; display:flex; align-items:center; justify-content:center; transition:background 0.2s,border-color 0.2s; z-index:10; }
 #lbx-nav-prev { left:12px; }
 #lbx-nav-next { right:12px; }
@@ -999,12 +1001,137 @@ button:focus-visible, a:focus-visible, input:focus-visible {
 .sidebar-article:hover { background:rgba(10,22,40,0.03); }
 
 /* ── HERO IMAGE HOVER ── */
-.hero-main img { transition:opacity 0.45s ease, transform 0.4s ease; }
-.hero-main:hover img { transform:scale(1.02); }
+.hero-main > img, .hero-main img { transition:opacity 0.45s ease, transform 0.45s ease; max-width:100%; }
+.hero-main { overflow:hidden; }
+.hero-main:hover > img { transform:scale(1.02); }
 
 /* ── MODAL OPEN/CLOSE animation override for category filter ── */
 #hero-section { transition:opacity 0.25s ease; }
 
+
+/* ══ PERFORMANCE & SECURITY ENHANCEMENTS ══ */
+
+/* GPU compositing for animated elements */
+.card-thumb-wrap img,
+.modal-box,
+.modal-overlay,
+#subscribe-pop,
+#image-lightbox,
+.article-card {
+  -webkit-backface-visibility: hidden;
+  backface-visibility: hidden;
+}
+
+/* Passive scroll: already handled in JS, but visual smoothing */
+html {
+  scroll-behavior: smooth;
+  -webkit-overflow-scrolling: touch;
+  overscroll-behavior-y: contain;
+}
+
+/* Improve touch response on all interactive elements */
+button, a, [onclick], .article-card, .sidebar-article {
+  -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
+}
+
+/* Better image rendering on high-DPI screens */
+.card-thumb-wrap img,
+.modal-img,
+.hero-main img,
+.masthead-logo-img {
+  image-rendering: -webkit-optimize-contrast;
+  image-rendering: crisp-edges;
+}
+
+/* Remove double-tap zoom delay on all interactive elements */
+input, button, select, textarea { touch-action: manipulation; }
+
+/* Smooth iframe embed for PDFs */
+.modal-file-frame {
+  -webkit-overflow-scrolling: touch;
+}
+
+/* Mobile: Pinch zoom on modal content */
+.modal-box {
+  touch-action: pan-y pinch-zoom;
+  -webkit-user-select: text;
+  user-select: text;
+}
+
+/* Lighbox pinch: ensure it captures touch */
+#lbx-canvas-wrap {
+  touch-action: none;
+  -webkit-touch-callout: none;
+}
+
+/* Prevent text selection on interactive UI but allow in modal */
+.nav-links, .cat-header, .card-cat, .topbar, #mode-bar {
+  -webkit-user-select: none;
+  user-select: none;
+}
+
+/* Better font rendering */
+body {
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+}
+
+/* Prevent layout shift on article cards */
+.card-thumb-wrap {
+  aspect-ratio: 3/2;
+}
+
+/* Smooth scroll for nav links on mobile */
+@media (max-width:768px) {
+  .articles-row { 
+    grid-template-columns: 1fr;
+    /* Better spacing on mobile */
+    gap: 28px;
+  }
+  .modal-overlay { 
+    padding: 0;
+    align-items: flex-end;
+  }
+  .modal-box {
+    border-radius: 12px 12px 0 0;
+    border-top: 4px solid var(--gold);
+    max-height: 92vh;
+    overflow-y: auto;
+    padding: 24px 16px 32px;
+  }
+  /* Full-screen lightbox on mobile */
+  #image-lightbox .lbx-toolbar { 
+    padding: 10px 12px;
+  }
+  .lbx-btn {
+    padding: 6px 10px;
+    font-size: 10px;
+  }
+}
+
+/* Articles row: 2 columns on tablet */  
+@media (min-width:481px) and (max-width:900px) {
+  .articles-row { grid-template-columns: repeat(2, 1fr); gap:16px; }
+}
+
+/* Offline indicator placeholder */
+#offline-bar {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  background: #a32d2d;
+  color: #fff;
+  font-family: 'Lato', sans-serif;
+  font-size: 12px;
+  text-align: center;
+  padding: 6px;
+  z-index: 9999;
+}
+#offline-bar.show { display: block; }
 </style>
 </head>
 <body>
@@ -1116,7 +1243,16 @@ button:focus-visible, a:focus-visible, input:focus-visible {
     </div>
   </section>
   <div id="spotlight-section" style="display:none;"></div>
-  <div id="categories-wrap"></div>
+  <div id="categories-wrap">
+  <div class="category-section" id="skel-section" style="opacity:0.7;">
+    <div class="cat-header"><div class="skeleton" style="height:22px;width:120px;border-radius:2px;display:inline-block;"></div></div>
+    <div class="articles-row">
+      <div><div class="skeleton" style="width:100%;aspect-ratio:3/2;margin-bottom:10px;"></div><div class="skeleton" style="height:10px;width:50px;margin-bottom:7px;border-radius:2px;"></div><div class="skeleton" style="height:16px;width:90%;margin-bottom:5px;border-radius:2px;"></div><div class="skeleton" style="height:16px;width:70%;border-radius:2px;"></div></div>
+      <div><div class="skeleton" style="width:100%;aspect-ratio:3/2;margin-bottom:10px;"></div><div class="skeleton" style="height:10px;width:50px;margin-bottom:7px;border-radius:2px;"></div><div class="skeleton" style="height:16px;width:90%;margin-bottom:5px;border-radius:2px;"></div><div class="skeleton" style="height:16px;width:70%;border-radius:2px;"></div></div>
+      <div><div class="skeleton" style="width:100%;aspect-ratio:3/2;margin-bottom:10px;"></div><div class="skeleton" style="height:10px;width:50px;margin-bottom:7px;border-radius:2px;"></div><div class="skeleton" style="height:16px;width:90%;margin-bottom:5px;border-radius:2px;"></div><div class="skeleton" style="height:16px;width:70%;border-radius:2px;"></div></div>
+    </div>
+  </div>
+</div>
 </main>
  
 <!-- READING PROGRESS BAR -->
@@ -1442,33 +1578,24 @@ function handleNavScroll() {
 window.addEventListener('scroll', handleNavScroll, { passive: true });
  
 // ── FETCH ARTICLES FROM SUPABASE ──
-// Cache fetched articles to avoid redundant requests
-let _lastFetchTime = 0;
-const _FETCH_CACHE_MS = 30000; // 30s
-
-async function fetchArticles(force = false) {
-  const now = Date.now();
-  if (!force && articles.length > 0 && now - _lastFetchTime < _FETCH_CACHE_MS) {
-    render(); return;
-  }
+async function fetchArticles() {
   try {
-    const res = await fetch(`${SUPABASE_URL}/rest/v1/articles?order=created_at.desc&limit=200`, {
-      headers: { ...headers, 'Cache-Control': 'no-cache' }
-    });
-    if (!res.ok) throw new Error('Network error ' + res.status);
+    const res = await fetch(`${SUPABASE_URL}/rest/v1/articles?order=created_at.desc`, { headers });
     const data = await res.json();
     articles = data || [];
-    _lastFetchTime = Date.now();
     render();
-    fetchLikes();
+    fetchLikes(); // Load shared like counts after render
+    // Handle deep link: open article from URL hash (#article-ID)
     const hash = window.location.hash;
     if (hash && hash.startsWith('#article-')) {
       const id = parseInt(hash.replace('#article-', ''), 10);
-      if (!isNaN(id)) setTimeout(() => openArticle(id), 300);
+      if (!isNaN(id)) {
+        setTimeout(() => openArticle(id), 300);
+      }
     }
   } catch(e) {
     console.error('Error fetching articles:', e);
-    document.getElementById('hero-grid').innerHTML = '<div class="empty-state" style="grid-column:1/-1;">Could not load articles. Please check your connection and refresh.</div>';
+    document.getElementById('hero-grid').innerHTML = '<div class="empty-state" style="grid-column:1/-1;">Could not load articles. Please check your connection.</div>';
   }
 }
  
@@ -1615,7 +1742,7 @@ function renderCategories() {
         obs.unobserve(img);
       }
     });
-  }, { rootMargin: '200px 0px' });
+  }, { rootMargin: '250px' });
   wrap.querySelectorAll('.card-thumb-wrap img').forEach(img => imgObserver.observe(img));
   // Section reveal-on-scroll
   const secObserver = new IntersectionObserver((entries, obs) => {
@@ -1628,6 +1755,9 @@ function renderCategories() {
     secObserver.observe(el);
   });
   renderSpotlight();
+  // Remove initial skeleton sections
+  const skelEl = document.getElementById('skel-section');
+  if (skelEl) skelEl.remove();
 }
 
 // View All: expand the category inline showing ALL articles + scroll to it
@@ -1635,19 +1765,28 @@ function viewAllCat(cat) {
   _catShowAll[cat] = 99999;
   currentCat = cat;
   document.querySelectorAll('.nav-links a').forEach(a => a.classList.toggle('active', a.dataset.cat === cat || (cat === 'all' && a.dataset.cat === 'all')));
+  // Close mobile nav if open
   const navLinks = document.getElementById('nav-links');
-  if (navLinks) navLinks.classList.remove('mob-open');
+  if (navLinks && navLinks.classList.contains('mob-open')) {
+    navLinks.classList.remove('mob-open');
+  }
   render();
-  requestAnimationFrame(() => requestAnimationFrame(() => {
+  // Use rAF then timeout to ensure DOM paint is complete before scrolling
+  requestAnimationFrame(() => {
     setTimeout(() => {
       const sec = document.getElementById('cat-section-' + cat.replace(/\s+/g,'-'));
       if (sec) {
-        const navH = (document.getElementById('main-nav') || {}).offsetHeight || 52;
-        const top = sec.getBoundingClientRect().top + window.scrollY - navH - 16;
+        // Scroll past sticky nav
+        const navH = document.getElementById('main-nav') ? document.getElementById('main-nav').offsetHeight : 50;
+        const top = sec.getBoundingClientRect().top + window.scrollY - navH - 12;
         window.scrollTo({ top: Math.max(0, top), behavior: 'smooth' });
+      } else {
+        // Fallback: scroll to categories wrap
+        const cw = document.getElementById('categories-wrap');
+        if (cw) cw.scrollIntoView({ behavior:'smooth', block:'start' });
       }
     }, 80);
-  }));
+  });
 }
 
 // Show More: load CARDS_LOAD_MORE more in this category
@@ -1691,7 +1830,7 @@ async function openArticle(id, navDir) {
     if (a.file_type === 'application/pdf') {
       inner += `<iframe class="modal-file-frame" src="${a.file_url}" title="${esc(a.title)}"></iframe>`;
     } else if (a.file_type && a.file_type.startsWith('image/')) {
-      inner += `<img class="modal-img" src="${a.file_url}" alt="${esc(a.title)}" style="cursor:zoom-in;-webkit-tap-highlight-color:transparent;" onclick="openLightbox('${a.file_url}',['${a.file_url}'],0)">`;
+      inner += `<img class="modal-img" src="${a.file_url}" alt="${esc(a.title)}" style="cursor:zoom-in;-webkit-tap-highlight-color:transparent;touch-action:manipulation;" id="modal-art-img-${a.id}" onclick="handleModalImgClick(event,'${a.file_url}')" ontouchstart="this._ts=Date.now()" ontouchend="if(Date.now()-this._ts<250){event.preventDefault();event.stopPropagation();openLightbox('${a.file_url}',[],0);}">`;
     }
   }
   document.getElementById('modal-content').innerHTML = inner;
@@ -1765,7 +1904,7 @@ async function deleteCurrentArticle() {
     localStorage.setItem('ilirh-likes', JSON.stringify(myLikes));
 
     closeModal();
-    await fetchArticles(true);
+    await fetchArticles();
     showToast('✓ Article deleted successfully', 3000);
   } catch(e) {
     console.error('Delete error:', e);
@@ -1936,6 +2075,10 @@ async function publishArticle() {
     errEl.textContent = 'Please enter a valid author email.'; return;
   }
  
+  // Security: rate limit publish 
+  if (!rateLimitCheck('publish', 30000)) {
+    errEl.textContent = 'Please wait 30 seconds before publishing again.'; return;
+  }
   const btn = document.getElementById('publish-btn');
   btn.disabled = true; btn.textContent = 'Uploading…';
   document.getElementById('progress-bar').style.display = 'block';
@@ -2003,7 +2146,7 @@ async function publishArticle() {
       }
     }
  
-    await fetchArticles(true);
+    await fetchArticles();
     closeUpload();
     showToast(silent ? '✓ Published silently (no subscriber emails sent)' : '✓ Published & subscribers notified', 3200);
  
@@ -2346,6 +2489,13 @@ trackAndShowVisitors();
  
 // ── INIT ──
 fetchArticles();
+// Preconnect to Supabase storage for faster image loads
+(function() {
+  const link = document.createElement('link');
+  link.rel = 'preconnect';
+  link.href = 'https://mhznyfilbpvyaxeofcgn.supabase.co';
+  document.head.appendChild(link);
+})();
  
 // ── SEARCH POPUP OVERLAY ──
 function toggleSearch() {
@@ -2651,14 +2801,10 @@ function closeLightbox() {
   lbxReset();
 }
 function lbxBgClick(e) { if (e.target === document.getElementById('image-lightbox') || e.target === document.getElementById('lbx-canvas-wrap')) closeLightbox(); }
-function lbxApply() {
-  const img = document.getElementById('lbx-img');
-  if (!img) return;
-  img.style.transform = `scale(${_lbxScale}) translate(${_lbxX/_lbxScale}px,${_lbxY/_lbxScale}px)`;
-}
-function lbxZoomIn()  { _lbxScale = Math.min(6, _lbxScale * 1.4); lbxApply(); }
+function lbxApply() { document.getElementById('lbx-img').style.transform = `scale(${_lbxScale}) translate(${_lbxX/_lbxScale}px,${_lbxY/_lbxScale}px)`; }
+function lbxZoomIn() { _lbxScale = Math.min(5, _lbxScale * 1.4); lbxApply(); }
 function lbxZoomOut() { _lbxScale = Math.max(0.5, _lbxScale / 1.4); if (_lbxScale <= 1) { _lbxX=0; _lbxY=0; } lbxApply(); }
-function lbxReset()   { _lbxScale=1; _lbxX=0; _lbxY=0; lbxApply(); }
+function lbxReset() { _lbxScale=1; _lbxX=0; _lbxY=0; lbxApply(); }
 // Mouse drag
 const cw = document.getElementById('lbx-canvas-wrap');
 if (cw) {
@@ -2668,6 +2814,7 @@ if (cw) {
   // Scroll zoom
   cw.addEventListener('wheel', e => { e.preventDefault(); e.deltaY < 0 ? lbxZoomIn() : lbxZoomOut(); }, { passive:false });
   cw.addEventListener('touchstart', e => {
+    e.stopPropagation(); // prevent swipe-to-close interfering
     if (e.touches.length === 2) {
       e.preventDefault();
       _lbxPinchDist = Math.hypot(
@@ -2690,14 +2837,9 @@ if (cw) {
         e.touches[0].clientY - e.touches[1].clientY
       );
       const ratio = d / _lbxPinchDist;
-      _lbxScale = Math.max(0.5, Math.min(6, _lbxScale * ratio));
+      _lbxScale = Math.max(0.5, Math.min(5, _lbxScale * ratio));
       _lbxPinchDist = d;
-      // Smooth pinch without transition delay
-      const img = document.getElementById('lbx-img');
-      if (img) {
-        img.style.transition = 'none';
-        img.style.transform = `scale(${_lbxScale}) translate(${_lbxX/_lbxScale}px,${_lbxY/_lbxScale}px)`;
-      }
+      lbxApply();
     } else if (e.touches.length === 1 && _lbxDragging) {
       _lbxX += e.touches[0].clientX - _lbxLastX;
       _lbxY += e.touches[0].clientY - _lbxLastY;
@@ -2707,11 +2849,9 @@ if (cw) {
     }
   }, { passive: false });
   cw.addEventListener('touchend', e => {
-    // Restore smooth transition after pinch/drag
-    const img = document.getElementById('lbx-img');
-    if (img) img.style.transition = 'transform 0.15s ease';
     if (e.touches.length === 0) { _lbxDragging = false; _lbxPinchDist = null; }
     else if (e.touches.length === 1) {
+      // Resumed single finger after pinch — reset to pan mode
       _lbxDragging = true;
       _lbxLastX = e.touches[0].clientX;
       _lbxLastY = e.touches[0].clientY;
@@ -2741,6 +2881,13 @@ document.addEventListener('keydown', e => {
   if (e.key==='0') lbxReset();
 });
  
+// ── MODAL IMAGE CLICK ──
+function handleModalImgClick(e, src) {
+  e.preventDefault();
+  e.stopPropagation();
+  openLightbox(src, [], 0);
+}
+
 // Legacy compat — keep old function names pointing to new engine
 function openLightboxFromImg(el) { openLightbox(el.src, [el.src], 0); }
 function toggleZoom(e) { e.stopPropagation(); _lbxScale===1 ? lbxZoomIn() : lbxReset(); }
@@ -2900,7 +3047,24 @@ function printArticle() {
       // Fallback if load fires late
       setTimeout(function() { if (document.readyState === 'complete') window.print(); }, 2000);
     <\/script>
-  </body></html>`);
+  
+// ── OFFLINE DETECTION ──
+window.addEventListener('offline', () => {
+  let bar = document.getElementById('offline-bar');
+  if (!bar) {
+    bar = document.createElement('div');
+    bar.id = 'offline-bar';
+    bar.innerHTML = '⚠ You appear to be offline. Some content may not load.';
+    document.body.prepend(bar);
+  }
+  bar.classList.add('show');
+});
+window.addEventListener('online', () => {
+  const bar = document.getElementById('offline-bar');
+  if (bar) bar.classList.remove('show');
+});
+
+</body></html>`);
   win.document.close();
 }
  
@@ -3084,5 +3248,22 @@ const _catColors = {
   <div class="lbx-hint" id="lbx-hint">Scroll or pinch to zoom &nbsp;·&nbsp; Drag to pan</div>
 </div>
  
+
+// ── OFFLINE DETECTION ──
+window.addEventListener('offline', () => {
+  let bar = document.getElementById('offline-bar');
+  if (!bar) {
+    bar = document.createElement('div');
+    bar.id = 'offline-bar';
+    bar.innerHTML = '⚠ You appear to be offline. Some content may not load.';
+    document.body.prepend(bar);
+  }
+  bar.classList.add('show');
+});
+window.addEventListener('online', () => {
+  const bar = document.getElementById('offline-bar');
+  if (bar) bar.classList.remove('show');
+});
+
 </body>
 </html>
