@@ -6,10 +6,12 @@
 <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
 <link rel="manifest" href="/site.webmanifest">
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-<!-- Security: basic CSP -->
+<meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, viewport-fit=cover">
+<!-- Security headers -->
 <meta http-equiv="X-Content-Type-Options" content="nosniff">
 <meta http-equiv="Referrer-Policy" content="strict-origin-when-cross-origin">
+<meta http-equiv="Permissions-Policy" content="camera=(), microphone=(), geolocation=()">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self' https://mhznyfilbpvyaxeofcgn.supabase.co https://fonts.googleapis.com https://fonts.gstatic.com; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; img-src 'self' https://mhznyfilbpvyaxeofcgn.supabase.co data: blob:; frame-src https://mhznyfilbpvyaxeofcgn.supabase.co; connect-src 'self' https://mhznyfilbpvyaxeofcgn.supabase.co https://api.resend.com;">
 <title>The International Legal Inteligencia Research Herald, India</title>
 <!-- Performance: DNS prefetch for Supabase CDN -->
 <link rel="dns-prefetch" href="https://mhznyfilbpvyaxeofcgn.supabase.co">
@@ -294,7 +296,7 @@ footer { background:var(--navy); color:#8fa4bf; padding:36px 32px 20px; margin-t
 #lbx-canvas-wrap.grabbing { cursor:grabbing; }
 #lbx-canvas-wrap.zoom-in { cursor:zoom-in; }
 #lbx-canvas-wrap.zoom-out { cursor:zoom-out; }
-#lbx-img { max-width:92vw; max-height:88vh; object-fit:contain; transform-origin:center center; transition:transform 0.15s ease; will-change:transform; display:block; border:1px solid rgba(255,255,255,0.06); user-select:none; -webkit-user-drag:none; pointer-events:none; }
+#lbx-img { max-width:92vw; max-height:88vh; object-fit:contain; transform-origin:center center; transition:transform 0.15s ease; will-change:transform; display:block; border:1px solid rgba(255,255,255,0.06); user-select:none; -webkit-user-drag:none; touch-action:none; }
 #lbx-nav-prev, #lbx-nav-next { position:absolute; top:50%; transform:translateY(-50%); background:rgba(5,12,24,0.7); border:1px solid rgba(255,255,255,0.15); color:#f7f4ef; font-size:22px; width:44px; height:64px; cursor:pointer; display:flex; align-items:center; justify-content:center; transition:background 0.2s,border-color 0.2s; z-index:10; }
 #lbx-nav-prev { left:12px; }
 #lbx-nav-next { right:12px; }
@@ -1440,24 +1442,33 @@ function handleNavScroll() {
 window.addEventListener('scroll', handleNavScroll, { passive: true });
  
 // ── FETCH ARTICLES FROM SUPABASE ──
-async function fetchArticles() {
+// Cache fetched articles to avoid redundant requests
+let _lastFetchTime = 0;
+const _FETCH_CACHE_MS = 30000; // 30s
+
+async function fetchArticles(force = false) {
+  const now = Date.now();
+  if (!force && articles.length > 0 && now - _lastFetchTime < _FETCH_CACHE_MS) {
+    render(); return;
+  }
   try {
-    const res = await fetch(`${SUPABASE_URL}/rest/v1/articles?order=created_at.desc`, { headers });
+    const res = await fetch(`${SUPABASE_URL}/rest/v1/articles?order=created_at.desc&limit=200`, {
+      headers: { ...headers, 'Cache-Control': 'no-cache' }
+    });
+    if (!res.ok) throw new Error('Network error ' + res.status);
     const data = await res.json();
     articles = data || [];
+    _lastFetchTime = Date.now();
     render();
-    fetchLikes(); // Load shared like counts after render
-    // Handle deep link: open article from URL hash (#article-ID)
+    fetchLikes();
     const hash = window.location.hash;
     if (hash && hash.startsWith('#article-')) {
       const id = parseInt(hash.replace('#article-', ''), 10);
-      if (!isNaN(id)) {
-        setTimeout(() => openArticle(id), 300);
-      }
+      if (!isNaN(id)) setTimeout(() => openArticle(id), 300);
     }
   } catch(e) {
     console.error('Error fetching articles:', e);
-    document.getElementById('hero-grid').innerHTML = '<div class="empty-state" style="grid-column:1/-1;">Could not load articles. Please check your connection.</div>';
+    document.getElementById('hero-grid').innerHTML = '<div class="empty-state" style="grid-column:1/-1;">Could not load articles. Please check your connection and refresh.</div>';
   }
 }
  
@@ -1604,7 +1615,7 @@ function renderCategories() {
         obs.unobserve(img);
       }
     });
-  }, { rootMargin: '120px' });
+  }, { rootMargin: '200px 0px' });
   wrap.querySelectorAll('.card-thumb-wrap img').forEach(img => imgObserver.observe(img));
   // Section reveal-on-scroll
   const secObserver = new IntersectionObserver((entries, obs) => {
@@ -1624,14 +1635,19 @@ function viewAllCat(cat) {
   _catShowAll[cat] = 99999;
   currentCat = cat;
   document.querySelectorAll('.nav-links a').forEach(a => a.classList.toggle('active', a.dataset.cat === cat || (cat === 'all' && a.dataset.cat === 'all')));
+  const navLinks = document.getElementById('nav-links');
+  if (navLinks) navLinks.classList.remove('mob-open');
   render();
-  // Use rAF then timeout to ensure DOM paint is complete before scrolling
-  requestAnimationFrame(() => {
+  requestAnimationFrame(() => requestAnimationFrame(() => {
     setTimeout(() => {
       const sec = document.getElementById('cat-section-' + cat.replace(/\s+/g,'-'));
-      if (sec) sec.scrollIntoView({ behavior:'smooth', block:'start' });
-    }, 60);
-  });
+      if (sec) {
+        const navH = (document.getElementById('main-nav') || {}).offsetHeight || 52;
+        const top = sec.getBoundingClientRect().top + window.scrollY - navH - 16;
+        window.scrollTo({ top: Math.max(0, top), behavior: 'smooth' });
+      }
+    }, 80);
+  }));
 }
 
 // Show More: load CARDS_LOAD_MORE more in this category
@@ -1675,7 +1691,7 @@ async function openArticle(id, navDir) {
     if (a.file_type === 'application/pdf') {
       inner += `<iframe class="modal-file-frame" src="${a.file_url}" title="${esc(a.title)}"></iframe>`;
     } else if (a.file_type && a.file_type.startsWith('image/')) {
-      inner += `<img class="modal-img" src="${a.file_url}" alt="${esc(a.title)}" style="cursor:zoom-in;-webkit-tap-highlight-color:transparent;" onclick="openLightbox('${a.file_url}',[],0)" ontouchend="this.click();event.preventDefault();">`;
+      inner += `<img class="modal-img" src="${a.file_url}" alt="${esc(a.title)}" style="cursor:zoom-in;-webkit-tap-highlight-color:transparent;" onclick="openLightbox('${a.file_url}',['${a.file_url}'],0)">`;
     }
   }
   document.getElementById('modal-content').innerHTML = inner;
@@ -1749,7 +1765,7 @@ async function deleteCurrentArticle() {
     localStorage.setItem('ilirh-likes', JSON.stringify(myLikes));
 
     closeModal();
-    await fetchArticles();
+    await fetchArticles(true);
     showToast('✓ Article deleted successfully', 3000);
   } catch(e) {
     console.error('Delete error:', e);
@@ -1987,7 +2003,7 @@ async function publishArticle() {
       }
     }
  
-    await fetchArticles();
+    await fetchArticles(true);
     closeUpload();
     showToast(silent ? '✓ Published silently (no subscriber emails sent)' : '✓ Published & subscribers notified', 3200);
  
@@ -2635,10 +2651,14 @@ function closeLightbox() {
   lbxReset();
 }
 function lbxBgClick(e) { if (e.target === document.getElementById('image-lightbox') || e.target === document.getElementById('lbx-canvas-wrap')) closeLightbox(); }
-function lbxApply() { document.getElementById('lbx-img').style.transform = `scale(${_lbxScale}) translate(${_lbxX/_lbxScale}px,${_lbxY/_lbxScale}px)`; }
-function lbxZoomIn() { _lbxScale = Math.min(5, _lbxScale * 1.4); lbxApply(); }
+function lbxApply() {
+  const img = document.getElementById('lbx-img');
+  if (!img) return;
+  img.style.transform = `scale(${_lbxScale}) translate(${_lbxX/_lbxScale}px,${_lbxY/_lbxScale}px)`;
+}
+function lbxZoomIn()  { _lbxScale = Math.min(6, _lbxScale * 1.4); lbxApply(); }
 function lbxZoomOut() { _lbxScale = Math.max(0.5, _lbxScale / 1.4); if (_lbxScale <= 1) { _lbxX=0; _lbxY=0; } lbxApply(); }
-function lbxReset() { _lbxScale=1; _lbxX=0; _lbxY=0; lbxApply(); }
+function lbxReset()   { _lbxScale=1; _lbxX=0; _lbxY=0; lbxApply(); }
 // Mouse drag
 const cw = document.getElementById('lbx-canvas-wrap');
 if (cw) {
@@ -2670,9 +2690,14 @@ if (cw) {
         e.touches[0].clientY - e.touches[1].clientY
       );
       const ratio = d / _lbxPinchDist;
-      _lbxScale = Math.max(0.5, Math.min(5, _lbxScale * ratio));
+      _lbxScale = Math.max(0.5, Math.min(6, _lbxScale * ratio));
       _lbxPinchDist = d;
-      lbxApply();
+      // Smooth pinch without transition delay
+      const img = document.getElementById('lbx-img');
+      if (img) {
+        img.style.transition = 'none';
+        img.style.transform = `scale(${_lbxScale}) translate(${_lbxX/_lbxScale}px,${_lbxY/_lbxScale}px)`;
+      }
     } else if (e.touches.length === 1 && _lbxDragging) {
       _lbxX += e.touches[0].clientX - _lbxLastX;
       _lbxY += e.touches[0].clientY - _lbxLastY;
@@ -2682,9 +2707,11 @@ if (cw) {
     }
   }, { passive: false });
   cw.addEventListener('touchend', e => {
+    // Restore smooth transition after pinch/drag
+    const img = document.getElementById('lbx-img');
+    if (img) img.style.transition = 'transform 0.15s ease';
     if (e.touches.length === 0) { _lbxDragging = false; _lbxPinchDist = null; }
     else if (e.touches.length === 1) {
-      // Resumed single finger after pinch — reset to pan mode
       _lbxDragging = true;
       _lbxLastX = e.touches[0].clientX;
       _lbxLastY = e.touches[0].clientY;
