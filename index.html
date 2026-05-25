@@ -164,7 +164,23 @@ footer { background:var(--navy); color:#8fa4bf; padding:36px 32px 20px; margin-t
 /* MODAL */
 .modal-overlay { display:none; position:fixed; inset:0; background:rgba(5,12,24,0.82); z-index:999; overflow-y:auto; padding:32px 16px; }
 .modal-overlay.open { display:flex; justify-content:center; align-items:flex-start; }
-.modal-box { background:var(--offwhite); max-width:1000px; width:100%; padding:32px 40px 48px; position:relative; margin:0 auto; border-top:4px solid var(--gold); touch-action:pan-y pinch-zoom; }
+.modal-box { background:var(--offwhite); max-width:1000px; width:100%; padding:32px 40px 48px; position:relative; margin:0 auto; border-top:4px solid var(--gold); touch-action:pan-y pinch-zoom;
+  animation:modalSlideIn 0.32s cubic-bezier(.22,1,.36,1) both;
+}
+@keyframes modalSlideIn {
+  from { opacity:0; transform:translateY(28px) scale(0.985); }
+  to   { opacity:1; transform:translateY(0) scale(1); }
+}
+.modal-box.nav-anim-left  { animation:modalSlideFromRight 0.22s cubic-bezier(.22,1,.36,1) both; }
+.modal-box.nav-anim-right { animation:modalSlideFromLeft  0.22s cubic-bezier(.22,1,.36,1) both; }
+@keyframes modalSlideFromRight {
+  from { opacity:0; transform:translateX(48px); }
+  to   { opacity:1; transform:translateX(0); }
+}
+@keyframes modalSlideFromLeft {
+  from { opacity:0; transform:translateX(-48px); }
+  to   { opacity:1; transform:translateX(0); }
+}
 .modal-close { position:absolute; top:16px; right:20px; background:none; border:none; font-size:26px; cursor:pointer; color:var(--text-muted); line-height:1; }
 .modal-close:hover { color:var(--navy); }
 .modal-cat { font-family:'Lato',sans-serif; font-size:10.5px; font-weight:700; letter-spacing:0.2em; text-transform:uppercase; color:var(--gold); margin-bottom:10px; }
@@ -953,6 +969,40 @@ button:focus-visible, a:focus-visible, input:focus-visible {
   .card-thumb-wrap img { opacity: 1 !important; }
   .reveal-on-scroll { opacity: 1 !important; }
 }
+
+/* ── PREMIUM CARD ENHANCEMENTS ── */
+.article-card {
+  cursor:pointer;
+  transition:transform 0.22s cubic-bezier(.22,1,.36,1), box-shadow 0.22s ease;
+  border-radius:1px;
+}
+.article-card:hover {
+  transform:translateY(-3px);
+  box-shadow:0 8px 32px rgba(10,22,40,0.13);
+}
+.article-card:active { transform:translateY(0); }
+.card-thumb-wrap img {
+  opacity:0;
+  transition:opacity 0.4s ease, transform 0.4s ease;
+}
+.card-thumb-wrap img.loaded { opacity:1; }
+.article-card:hover .card-thumb-wrap img.loaded { transform:scale(1.04); }
+
+/* ── SIDEBAR ARTICLE HOVER ── */
+.sidebar-article {
+  transition:background 0.18s ease;
+  border-radius:1px;
+  padding:14px 6px;
+}
+.sidebar-article:hover { background:rgba(10,22,40,0.03); }
+
+/* ── HERO IMAGE HOVER ── */
+.hero-main img { transition:opacity 0.45s ease, transform 0.4s ease; }
+.hero-main:hover img { transform:scale(1.02); }
+
+/* ── MODAL OPEN/CLOSE animation override for category filter ── */
+#hero-section { transition:opacity 0.25s ease; }
+
 </style>
 </head>
 <body>
@@ -961,6 +1011,17 @@ button:focus-visible, a:focus-visible, input:focus-visible {
 <div style="width:100%;background:#0a1628;line-height:0;overflow:hidden;">
   <img src="images/ilirh-website-logo.jpg" alt="ILIR Herald" style="width:100%;height:auto;display:block;">
 </div>
+<style>
+/* ── MASTHEAD LOGO ── */
+.masthead-logo-wrap {
+  display:flex; align-items:center; justify-content:center; gap:18px; margin-bottom:10px; flex-wrap:wrap;
+}
+.masthead-logo-img {
+  width:64px; height:64px; object-fit:contain;
+  filter:drop-shadow(0 2px 8px rgba(184,150,62,0.35));
+}
+@media(max-width:540px){ .masthead-logo-img { width:48px; height:48px; } }
+</style>
  
 <!-- TOP BAR -->
 <div class="topbar">
@@ -973,7 +1034,10 @@ button:focus-visible, a:focus-visible, input:focus-visible {
 <header class="masthead">
   <div class="masthead-inner">
     <hr class="masthead-rule-top">
-    <h1 class="masthead-title">The International Legal <span class="title-nobr">Inteligencia Research <nobr>Herald, India</nobr></span></h1>
+    <div class="masthead-logo-wrap">
+      <img src="android-chrome-192x192.png" alt="ILIRH Crest" class="masthead-logo-img">
+      <h1 class="masthead-title">The International Legal <span class="title-nobr">Inteligencia Research <nobr>Herald, India</nobr></span></h1>
+    </div>
     <p class="masthead-sub">Law &bull; Education &bull; Vedic Science &bull; Political &bull; Gen-Z Desk</p>
     <p class="masthead-founder"> &mdash; Founder &amp; Editor-in-Chief &mdash; 
       <br>
@@ -1230,10 +1294,7 @@ button:focus-visible, a:focus-visible, input:focus-visible {
         <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><text x="2" y="17" font-size="14" fill="currentColor" stroke="none" font-family="serif">A</text><text x="12" y="20" font-size="10" fill="currentColor" stroke="none" font-family="serif">A</text></svg>
         Text Size
       </button>
-      <div class="modal-read-time" id="modal-read-time-display">
-        <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
-        <span id="modal-read-time-val"></span>
-      </div>
+      <!-- read-time removed -->
     </div>
     <div class="modal-swipe-hint">← swipe to navigate articles →</div>
     <div class="modal-content" id="modal-content"></div>
@@ -1428,7 +1489,8 @@ function readTime(text) {
  
 function cardThumbHtml(article) {
   if (article.file_url && article.file_type && article.file_type.startsWith('image/')) {
-    return `<div class="card-thumb-wrap"><img src="${article.file_url}" loading="lazy" decoding="async" alt="${esc(article.title)}"></div>`;
+    // Use data-src for lazy loading via IntersectionObserver
+    return `<div class="card-thumb-wrap"><img data-src="${article.file_url}" loading="lazy" decoding="async" alt="${esc(article.title)}" width="400" height="267"></div>`;
   }
   const icon = article.file_type === 'application/pdf'
     ? `<svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="#0a1628" stroke-width="1.5"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14,2 14,8 20,8"/><line x1="9" y1="13" x2="15" y2="13"/><line x1="9" y1="17" x2="15" y2="17"/></svg>`
@@ -1451,6 +1513,13 @@ function formatDate(iso) {
  
 function renderHero() {
   const heroGrid = document.getElementById('hero-grid');
+  const heroSec = document.getElementById('hero-section');
+  // When filtering by a specific category, hide hero section and show only categories
+  if (currentCat !== 'all') {
+    heroSec.style.display = 'none';
+    return;
+  }
+  heroSec.style.display = '';
   const fa = filteredArticles();
   if (fa.length === 0) {
     heroGrid.style.gridTemplateColumns = '1fr';
@@ -1521,17 +1590,21 @@ function renderCategories() {
     </div>`;
   });
   wrap.innerHTML = html || (currentCat !== 'all' ? `<div class="empty-state">No ${currentCat} articles yet.</div>` : '');
-  // Fade-in images via IntersectionObserver
+  // Fade-in images via IntersectionObserver (data-src → src lazy load)
   const imgObserver = new IntersectionObserver((entries, obs) => {
     entries.forEach(e => {
       if (e.isIntersecting) {
         const img = e.target;
+        if (img.dataset.src) {
+          img.src = img.dataset.src;
+          delete img.dataset.src;
+        }
         if (img.complete) { img.classList.add('loaded'); }
         else { img.onload = () => img.classList.add('loaded'); }
         obs.unobserve(img);
       }
     });
-  }, { rootMargin: '80px' });
+  }, { rootMargin: '120px' });
   wrap.querySelectorAll('.card-thumb-wrap img').forEach(img => imgObserver.observe(img));
   // Section reveal-on-scroll
   const secObserver = new IntersectionObserver((entries, obs) => {
@@ -1552,10 +1625,13 @@ function viewAllCat(cat) {
   currentCat = cat;
   document.querySelectorAll('.nav-links a').forEach(a => a.classList.toggle('active', a.dataset.cat === cat || (cat === 'all' && a.dataset.cat === 'all')));
   render();
-  setTimeout(() => {
-    const sec = document.getElementById('cat-section-' + cat.replace(/\s+/g,'-'));
-    if (sec) sec.scrollIntoView({ behavior:'smooth', block:'start' });
-  }, 80);
+  // Use rAF then timeout to ensure DOM paint is complete before scrolling
+  requestAnimationFrame(() => {
+    setTimeout(() => {
+      const sec = document.getElementById('cat-section-' + cat.replace(/\s+/g,'-'));
+      if (sec) sec.scrollIntoView({ behavior:'smooth', block:'start' });
+    }, 60);
+  });
 }
 
 // Show More: load CARDS_LOAD_MORE more in this category
@@ -1587,7 +1663,7 @@ function filterCat(cat) {
 }
  
 // ── OPEN ARTICLE ──
-async function openArticle(id) {
+async function openArticle(id, navDir) {
   const a = articles.find(x => x.id === id);
   if (!a) return;
   _openArticleId = id;
@@ -1599,7 +1675,7 @@ async function openArticle(id) {
     if (a.file_type === 'application/pdf') {
       inner += `<iframe class="modal-file-frame" src="${a.file_url}" title="${esc(a.title)}"></iframe>`;
     } else if (a.file_type && a.file_type.startsWith('image/')) {
-      inner += `<img class="modal-img" src="${a.file_url}" alt="${esc(a.title)}" style="cursor:zoom-in;" onclick="openLightbox('${a.file_url}',[...document.querySelectorAll('#modal-content .modal-img')].map(i=>i.src),0)">`;
+      inner += `<img class="modal-img" src="${a.file_url}" alt="${esc(a.title)}" style="cursor:zoom-in;-webkit-tap-highlight-color:transparent;" onclick="openLightbox('${a.file_url}',[],0)" ontouchend="this.click();event.preventDefault();">`;
     }
   }
   document.getElementById('modal-content').innerHTML = inner;
@@ -1609,6 +1685,14 @@ async function openArticle(id) {
   // Render like button in modal
   const likeWrap = document.getElementById('modal-like-wrap');
   if (likeWrap) likeWrap.innerHTML = likeHtml(a.id);
+  // Apply nav direction animation class
+  const box = document.querySelector('.modal-box');
+  if (box && navDir) {
+    box.classList.remove('nav-anim-left','nav-anim-right');
+    void box.offsetWidth; // force reflow
+    box.classList.add(navDir === 'left' ? 'nav-anim-left' : 'nav-anim-right');
+    setTimeout(() => box.classList.remove('nav-anim-left','nav-anim-right'), 300);
+  }
   document.getElementById('article-modal').classList.add('open');
   document.body.style.overflow = 'hidden';
 }
@@ -2885,40 +2969,34 @@ function nativeShare(title, url) {
     const idx = getArticleIndex(_openArticleId);
     if (idx === -1) return;
 
-    const dir = dx < 0 ? 1 : -1; // -1 = left swipe = next
     const nextIdx = idx + (dx < 0 ? 1 : -1);
     if (nextIdx < 0 || nextIdx >= articles.length) {
-      // bounce back
       box.style.transform = `translateX(${dx < 0 ? -12 : 12}px)`;
       setTimeout(() => { box.style.transform = ''; }, 200);
       return;
     }
 
-    // Animate out then open next
-    box.style.transition = 'transform 0.18s ease, opacity 0.18s ease';
-    box.style.transform = `translateX(${dx < 0 ? -60 : 60}px)`;
+    // Animate out with class, then open next article with entrance class
+    const goRight = dx < 0; // swipe left = go to next (right direction)
+    box.style.transition = 'transform 0.15s ease, opacity 0.15s ease';
+    box.style.transform = `translateX(${goRight ? -60 : 60}px)`;
     box.style.opacity = '0';
     setTimeout(() => {
       box.style.transition = 'none';
       box.style.transform = '';
       box.style.opacity = '';
-      openArticle(articles[nextIdx].id);
+      openArticle(articles[nextIdx].id, goRight ? 'left' : 'right');
       modal.scrollTop = 0;
-    }, 180);
+    }, 155);
   }, { passive: true });
 })();
  
 const _origOpenArticle = openArticle;
-openArticle = async function(id) {
-  await _origOpenArticle(id);
+openArticle = async function(id, navDir) {
+  await _origOpenArticle(id, navDir);
   const a = articles.find(x => x.id === id);
   if (!a) return;
   _currentArticleTitle = a.title;
-  // Reading time
-  const words = (a.excerpt || '').trim().split(/\s+/).length;
-  const mins = Math.max(1, Math.round(words / 200));
-  const rtEl = document.getElementById('modal-read-time-val');
-  if (rtEl) rtEl.textContent = `${mins} min read`;
   // Share row
   const shareRow = document.getElementById('modal-share-row');
   if (shareRow) {
