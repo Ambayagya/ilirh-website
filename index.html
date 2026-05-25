@@ -7,6 +7,9 @@
 <link rel="manifest" href="/site.webmanifest">
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+<!-- Security: basic CSP -->
+<meta http-equiv="X-Content-Type-Options" content="nosniff">
+<meta http-equiv="Referrer-Policy" content="strict-origin-when-cross-origin">
 <title>The International Legal Inteligencia Research Herald, India</title>
 <!-- Performance: DNS prefetch for Supabase CDN -->
 <link rel="dns-prefetch" href="https://mhznyfilbpvyaxeofcgn.supabase.co">
@@ -443,7 +446,8 @@ body.dark-mode .footer-bottom { border-top-color:rgba(255,255,255,0.06); }
 body.dark-mode .footer-bottom p { color:#405060; }
  
 /* Subscribe pop */
-body.dark-mode #subscribe-pop { background:#0d1624; box-shadow:0 8px 48px rgba(0,0,0,0.7); }
+body.dark-mode #subscribe-pop-overlay { background:rgba(2,6,14,0.85); }
+body.dark-mode #subscribe-pop { background:#0d1624; box-shadow:0 16px 64px rgba(0,0,0,0.7); }
 body.dark-mode .pop-title { color:#c8d8ea; }
 body.dark-mode .pop-body { color:var(--text-secondary); }
 body.dark-mode .pop-close { color:var(--text-muted); }
@@ -639,8 +643,13 @@ body.dark-mode .share-btn:hover { border-color:#8fa8c0; color:#c8d8ea; }
 .like-btn .like-label { font-size:10px; letter-spacing:0.08em; text-transform:uppercase; opacity:0.75; }
  
 /* ── SUBSCRIBE POP ── */
-#subscribe-pop { display:none; position:fixed; bottom:30px; left:50%; transform:translateX(-50%) translateY(20px); z-index:1200; background:var(--offwhite); border-top:3px solid var(--gold); box-shadow:0 8px 48px rgba(0,0,0,0.35); padding:24px 32px 20px; max-width:420px; width:calc(100% - 40px); transition:transform 0.4s cubic-bezier(.22,1,.36,1),opacity 0.4s; opacity:0; }
-#subscribe-pop.visible { display:block; opacity:1; transform:translateX(-50%) translateY(0); }
+/* Subscribe pop — full overlay, centered on all screens */
+#subscribe-pop-overlay { display:none; position:fixed; inset:0; z-index:1200; background:rgba(5,12,24,0.72); align-items:center; justify-content:center; padding:16px; }
+#subscribe-pop-overlay.visible { display:flex; }
+#subscribe-pop { background:var(--offwhite); border-top:4px solid var(--gold); box-shadow:0 16px 64px rgba(0,0,0,0.45); padding:32px 36px 28px; max-width:440px; width:100%; position:relative; opacity:0; transform:translateY(18px) scale(0.97); transition:transform 0.35s cubic-bezier(.22,1,.36,1), opacity 0.35s ease; }
+#subscribe-pop-overlay.visible #subscribe-pop { opacity:1; transform:translateY(0) scale(1); }
+#subscribe-pop .pop-close { position:absolute; top:12px; right:16px; background:none; border:none; font-size:22px; cursor:pointer; color:var(--text-muted); line-height:1; }
+#subscribe-pop .pop-close:hover { color:var(--navy); }
 #subscribe-pop .pop-close { position:absolute; top:10px; right:14px; background:none; border:none; font-size:20px; cursor:pointer; color:var(--text-muted); line-height:1; }
 #subscribe-pop .pop-close:hover { color:var(--navy); }
 .pop-kicker { font-family:'Lato',sans-serif; font-size:10px; font-weight:700; letter-spacing:0.2em; text-transform:uppercase; color:var(--gold); margin-bottom:6px; }
@@ -774,6 +783,8 @@ body.dark-mode .silent-row label { color:var(--text-secondary); }
   .del-art-btn { display:none; margin-top:22px; background:#b91c1c; color:#fff; border:none; font-family:'Lato',sans-serif; font-size:11px; font-weight:700; letter-spacing:0.1em; text-transform:uppercase; padding:9px 18px; cursor:pointer; transition:background 0.2s; }
   .del-art-btn:hover { background:#991b1b; }
   .del-art-btn:disabled { opacity:0.5; cursor:not-allowed; }
+  .cat-show-more-btn { background:var(--navy); color:#c5d2e0; border:1px solid rgba(255,255,255,0.15); font-family:'Lato',sans-serif; font-size:11px; font-weight:700; letter-spacing:0.1em; text-transform:uppercase; padding:10px 24px; cursor:pointer; transition:background 0.2s,color 0.2s; border-radius:1px; }
+  .cat-show-more-btn:hover { background:var(--gold); color:var(--navy); border-color:var(--gold); }
  
   @media (min-width:769px) { .nav-links { display:flex !important; overflow-x:auto; } .hamburger { display:none !important; } /* desktop */ }
  
@@ -933,7 +944,7 @@ button:focus-visible, a:focus-visible, input:focus-visible {
 @media (prefers-reduced-motion: reduce) {
   .article-card, .card-thumb-wrap img, .sidebar-article,
   .reveal-on-scroll, .spotlight-track, .modal-box,
-  .modal-overlay, #subscribe-pop, .ticker-text-inner {
+  .modal-overlay, #subscribe-pop, #subscribe-pop-overlay, .ticker-text-inner {
     animation: none !important;
     transition: none !important;
     transform: none !important;
@@ -1063,6 +1074,7 @@ button:focus-visible, a:focus-visible, input:focus-visible {
 </div>
  
 <!-- SUBSCRIBE POP -->
+<div id="subscribe-pop-overlay" onclick="closePopOnBg(event)">
 <div id="subscribe-pop">
   <button class="pop-close" onclick="closePop()" aria-label="Close">&times;</button>
   <div class="pop-kicker">Stay Informed</div>
@@ -1076,6 +1088,7 @@ button:focus-visible, a:focus-visible, input:focus-visible {
     </div>
   </div>
   <p id="pop-msg" style="font-family:'Lato',sans-serif;font-size:11px;color:var(--text-muted);margin-top:2px;"></p>
+</div>
 </div>
  
 <!-- FOOTER -->
@@ -1246,6 +1259,7 @@ button:focus-visible, a:focus-visible, input:focus-visible {
       <div class="author-ownership">
         <button class="ownership-btn selected" id="own-myself" onclick="setOwnership('myself')">&#9998; Myself</button>
         <button class="ownership-btn" id="own-other" onclick="setOwnership('other')">&#128100; Another Author</button>
+        <button class="ownership-btn" id="own-genz" onclick="setOwnership('genz')">&#127775; GenZ / Student</button>
       </div>
     </div>
     <div class="form-row"><label>Author Name *</label><input type="text" id="up-author" placeholder="e.g. Advocate Dr. Ajay Singh Rathore"></div>
@@ -1258,7 +1272,7 @@ button:focus-visible, a:focus-visible, input:focus-visible {
     <div class="form-row"><label>Category *</label>
       <select id="up-category">
         <option value="">— Select Category —</option>
-        <option>Law</option><option>Education</option><option>Vedic Science</option><option>Gen-Z Desk</option><option>Political</option>
+        <option>Law</option><option>Education</option><option>Vedic Science</option><option>Political</option><option>Gen-Z Desk</option>
       </select>
     </div>
     <div class="form-row"><label>Brief Description / Abstract</label><textarea id="up-excerpt" placeholder="A short summary (2–3 sentences)…"></textarea></div>
@@ -1372,6 +1386,14 @@ async function fetchArticles() {
     articles = data || [];
     render();
     fetchLikes(); // Load shared like counts after render
+    // Handle deep link: open article from URL hash (#article-ID)
+    const hash = window.location.hash;
+    if (hash && hash.startsWith('#article-')) {
+      const id = parseInt(hash.replace('#article-', ''), 10);
+      if (!isNaN(id)) {
+        setTimeout(() => openArticle(id), 300);
+      }
+    }
   } catch(e) {
     console.error('Error fetching articles:', e);
     document.getElementById('hero-grid').innerHTML = '<div class="empty-state" style="grid-column:1/-1;">Could not load articles. Please check your connection.</div>';
@@ -1457,6 +1479,11 @@ function renderHero() {
     </div>`;
 }
  
+// Per-category "show all" state
+const _catShowAll = {};
+const CARDS_PER_CAT = 3;
+const CARDS_LOAD_MORE = 6; // how many to add each "Show More"
+
 function renderCategories() {
   const wrap = document.getElementById('categories-wrap');
   const cats = ['Law','Education','Vedic Science','Political','Gen-Z Desk'];
@@ -1465,23 +1492,32 @@ function renderCategories() {
     if (currentCat !== 'all' && currentCat !== cat) return;
     const filtered = articles.filter(a => a.category === cat);
     if (filtered.length === 0) return;
-    const shown = filtered.slice(0, 3);
-    html += `<div class="category-section">
+    const showLimit = _catShowAll[cat] || CARDS_PER_CAT;
+    const shown = filtered.slice(0, showLimit);
+    const hasMore = filtered.length > showLimit;
+    // Cat header: color dot | cat title | (count) ---- View All button (right)
+    html += `<div class="category-section" id="cat-section-${cat.replace(/\s+/g,'-')}">
       <div class="cat-header">
-        <span class="cat-title">${cat}</span>
-        ${filtered.length > 3 ? `<a class="cat-more" onclick="filterCat('${cat}');return false;">View all ${filtered.length} &rarr;</a>` : ''}
+        <div style="display:flex;align-items:center;gap:8px;">
+          <span class="cat-title">${cat}</span>
+          <span class="cat-count">${filtered.length}</span>
+        </div>
+        ${filtered.length > CARDS_PER_CAT ? `<a class="cat-more" onclick="viewAllCat('${cat.replace(/'/g,"\\'")}');return false;">View All &rarr;</a>` : ''}
       </div>
-      <div class="articles-row">
+      <div class="articles-row" id="articles-row-${cat.replace(/\s+/g,'-')}">
         ${shown.map(a => `
           <div class="article-card" onclick="openArticle(${a.id})">
             ${cardThumbHtml(a)}
             <div class="card-cat">${a.category}</div>
             <div class="card-headline">${esc(a.title)}</div>
-            <div class="card-meta">By ${esc(a.author)} &bull; ${formatDate(a.created_at)}${a.excerpt ? ` &bull; ${readTime(a.excerpt)}` : ''}</div>
+            <div class="card-meta">By ${esc(a.author)} &bull; ${formatDate(a.created_at)}</div>
             ${a.excerpt ? `<div class="card-excerpt">${esc(a.excerpt)}</div>` : ''}
             <div class="article-actions">${likeHtml(a.id)}</div>
           </div>`).join('')}
       </div>
+      ${hasMore ? `<div style="text-align:center;margin-top:20px;">
+        <button class="cat-show-more-btn" onclick="showMoreCat('${cat.replace(/'/g,"\\'")}')">Show More (${filtered.length - showLimit} remaining) ↓</button>
+      </div>` : ''}
     </div>`;
   });
   wrap.innerHTML = html || (currentCat !== 'all' ? `<div class="empty-state">No ${currentCat} articles yet.</div>` : '');
@@ -1508,6 +1544,38 @@ function renderCategories() {
     secObserver.observe(el);
   });
   renderSpotlight();
+}
+
+// View All: expand the category inline showing ALL articles + scroll to it
+function viewAllCat(cat) {
+  _catShowAll[cat] = 99999;
+  currentCat = cat;
+  document.querySelectorAll('.nav-links a').forEach(a => a.classList.toggle('active', a.dataset.cat === cat || (cat === 'all' && a.dataset.cat === 'all')));
+  render();
+  setTimeout(() => {
+    const sec = document.getElementById('cat-section-' + cat.replace(/\s+/g,'-'));
+    if (sec) sec.scrollIntoView({ behavior:'smooth', block:'start' });
+  }, 80);
+}
+
+// Show More: load CARDS_LOAD_MORE more in this category
+function showMoreCat(cat) {
+  const current = _catShowAll[cat] || CARDS_PER_CAT;
+  _catShowAll[cat] = current + CARDS_LOAD_MORE;
+  renderCategories();
+  // Scroll to the newly added cards
+  setTimeout(() => {
+    const sec = document.getElementById('cat-section-' + cat.replace(/\s+/g,'-'));
+    if (sec) {
+      const row = sec.querySelector('.articles-row');
+      if (row) {
+        const cards = row.querySelectorAll('.article-card');
+        if (cards.length > current) {
+          cards[current].scrollIntoView({ behavior:'smooth', block:'nearest' });
+        }
+      }
+    }
+  }, 80);
 }
  
 // ── FILTER ──
@@ -1551,15 +1619,57 @@ async function deleteCurrentArticle() {
   const btn = document.getElementById('del-art-btn');
   btn.disabled = true; btn.textContent = 'Deleting…';
   try {
-    const res = await fetch(`${SUPABASE_URL}/rest/v1/articles?id=eq.${_openArticleId}`, {
+    // Find the article to get its file_url for storage deletion
+    const article = articles.find(a => a.id === _openArticleId);
+    
+    // 1. Delete likes for this article
+    await fetch(`${SUPABASE_URL}/rest/v1/article_likes?article_id=eq.${_openArticleId}`, {
       method: 'DELETE', headers
+    }).catch(e => console.warn('Likes delete failed:', e));
+
+    // 2. Delete certificates for this article
+    await fetch(`${SUPABASE_URL}/rest/v1/certificates?article_id=eq.${_openArticleId}`, {
+      method: 'DELETE', headers
+    }).catch(e => console.warn('Certs delete failed:', e));
+
+    // 3. Delete the article record
+    const res = await fetch(`${SUPABASE_URL}/rest/v1/articles?id=eq.${_openArticleId}`, {
+      method: 'DELETE',
+      headers: { ...headers, 'Prefer': 'return=minimal' }
     });
-    if (!res.ok) throw new Error('Server error ' + res.status);
+    if (!res.ok) {
+      const errText = await res.text().catch(() => res.status);
+      throw new Error('Database delete failed: ' + errText);
+    }
+
+    // 4. Delete storage file if exists
+    if (article && article.file_url) {
+      try {
+        const urlParts = article.file_url.split('/storage/v1/object/public/articles/');
+        if (urlParts.length === 2) {
+          const fileName = urlParts[1];
+          await fetch(`${SUPABASE_URL}/storage/v1/object/articles/${fileName}`, {
+            method: 'DELETE',
+            headers: { 'apikey': SUPABASE_KEY, 'Authorization': 'Bearer ' + SUPABASE_KEY }
+          });
+        }
+      } catch(storageErr) {
+        console.warn('Storage file delete failed (non-critical):', storageErr);
+      }
+    }
+
+    // 5. Clean up local likes cache
+    delete likesCache[String(_openArticleId)];
+    const myLikes = getMyLikes();
+    delete myLikes[String(_openArticleId)];
+    localStorage.setItem('ilirh-likes', JSON.stringify(myLikes));
+
     closeModal();
     await fetchArticles();
-    alert('Article deleted successfully.');
+    showToast('✓ Article deleted successfully', 3000);
   } catch(e) {
-    alert('Could not delete: ' + e.message);
+    console.error('Delete error:', e);
+    showToast('✗ Could not delete: ' + e.message, 4000);
     btn.disabled = false; btn.textContent = '🗑 Delete This Article';
   }
 }
@@ -1600,24 +1710,43 @@ async function doLogin() {
 }
  
 // ── AUTHOR OWNERSHIP ──
-let _authorOwnership = 'myself'; // 'myself' | 'other'
+let _authorOwnership = 'myself'; // 'myself' | 'other' | 'genz'
 function setOwnership(type) {
   _authorOwnership = type;
   document.getElementById('own-myself').classList.toggle('selected', type === 'myself');
   document.getElementById('own-other').classList.toggle('selected', type === 'other');
+  const genzBtn = document.getElementById('own-genz');
+  if (genzBtn) genzBtn.classList.toggle('selected', type === 'genz');
   const emailRow = document.getElementById('author-email-row');
-  emailRow.style.display = type === 'other' ? 'block' : 'none';
-  // Pre-fill author name if "myself"
-  if (type === 'myself') {
+  emailRow.style.display = (type === 'other' || type === 'genz') ? 'block' : 'none';
+  const catSel = document.getElementById('up-category');
+  if (type === 'genz') {
+    // GenZ: author name free, category locked to Gen-Z Desk
+    if (document.getElementById('up-author').readOnly) {
+      document.getElementById('up-author').value = '';
+    }
+    document.getElementById('up-author').readOnly = false;
+    document.getElementById('up-author').style.opacity = '1';
+    catSel.value = 'Gen-Z Desk';
+    catSel.disabled = true;
+    catSel.style.opacity = '0.7';
+    catSel.title = 'GenZ / Student articles are always published under Gen-Z Desk';
+  } else if (type === 'myself') {
     document.getElementById('up-author').value = 'Advocate Dr. Ajay Singh Rathore';
     document.getElementById('up-author').readOnly = true;
     document.getElementById('up-author').style.opacity = '0.6';
+    catSel.disabled = false;
+    catSel.style.opacity = '1';
+    catSel.title = '';
   } else {
     if (document.getElementById('up-author').readOnly) {
       document.getElementById('up-author').value = '';
     }
     document.getElementById('up-author').readOnly = false;
     document.getElementById('up-author').style.opacity = '1';
+    catSel.disabled = false;
+    catSel.style.opacity = '1';
+    catSel.title = '';
   }
 }
  
@@ -1647,6 +1776,12 @@ function closeUpload() {
   _authorOwnership = 'myself';
   document.getElementById('own-myself').classList.add('selected');
   document.getElementById('own-other').classList.remove('selected');
+  const genzBtn2 = document.getElementById('own-genz');
+  if (genzBtn2) genzBtn2.classList.remove('selected');
+  const catSel2 = document.getElementById('up-category');
+  catSel2.disabled = false;
+  catSel2.style.opacity = '1';
+  catSel2.title = '';
   document.getElementById('progress-bar').style.display = 'none';
   document.getElementById('progress-fill').style.width = '0%';
 }
@@ -1684,11 +1819,11 @@ dz.addEventListener('drop', e => {
 });
  
 async function publishArticle() {
-  const title    = document.getElementById('up-title').value.trim();
-  const author   = document.getElementById('up-author').value.trim();
-  const cat      = document.getElementById('up-category').value;
-  const excerpt  = document.getElementById('up-excerpt').value.trim();
-  const authorEmail = (_authorOwnership === 'other') ? document.getElementById('up-author-email').value.trim() : '';
+  const title    = sanitizeInput(document.getElementById('up-title').value, 300);
+  const author   = sanitizeInput(document.getElementById('up-author').value, 150);
+  const catEl = document.getElementById('up-category'); const cat = _authorOwnership === 'genz' ? 'Gen-Z Desk' : catEl.value;
+  const excerpt  = sanitizeInput(document.getElementById('up-excerpt').value, 1000);
+  const authorEmail = (_authorOwnership === 'other' || _authorOwnership === 'genz') ? document.getElementById('up-author-email').value.trim() : '';
   const silent   = document.getElementById('up-silent').checked;
   const errEl    = document.getElementById('up-error');
   errEl.textContent = '';
@@ -1697,7 +1832,7 @@ async function publishArticle() {
   if (!cat)    { errEl.textContent = 'Please select a category.'; return; }
   if (!pendingFile) { errEl.textContent = 'Please upload a PDF or image file.'; return; }
   if (pendingFile.size > 3*1024*1024) { errEl.textContent = 'File exceeds 3 MB limit.'; return; }
-  if (_authorOwnership === 'other' && authorEmail && !authorEmail.includes('@')) {
+  if ((_authorOwnership === 'other' || _authorOwnership === 'genz') && authorEmail && !authorEmail.includes('@')) {
     errEl.textContent = 'Please enter a valid author email.'; return;
   }
  
@@ -1750,7 +1885,7 @@ async function publishArticle() {
       }
  
       // Send publication certificate to external author
-      if (_authorOwnership === 'other' && authorEmail) {
+      if ((_authorOwnership === 'other' || _authorOwnership === 'genz') && authorEmail) {
         fetch(`${SUPABASE_URL}/functions/v1/notify-subscribers`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + SUPABASE_KEY },
@@ -1812,12 +1947,39 @@ async function notifyAdminNewSubscriber(name, email) {
     console.warn('Admin notification failed:', e);
   }
 }
+// ── CLIENT-SIDE RATE LIMITING ──
+const _rateLimits = {};
+function rateLimitCheck(key, limitMs) {
+  const now = Date.now();
+  if (_rateLimits[key] && now - _rateLimits[key] < limitMs) {
+    return false; // too soon
+  }
+  _rateLimits[key] = now;
+  return true;
+}
+
+// ── INPUT SANITIZATION ──
+function sanitizeInput(str, maxLen) {
+  if (!str) return '';
+  return String(str).slice(0, maxLen || 500)
+    .replace(/[<>]/g, '') // prevent HTML injection
+    .trim();
+}
+
+function validateEmail(email) {
+  return /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(email);
+}
+
 function closeJoinOnBg(e) { if (e.target === document.getElementById('join-overlay')) closeJoin(); }
 async function doJoin() {
-  const name  = document.getElementById('join-name').value.trim();
-  const email = document.getElementById('join-email').value.trim();
+  if (!rateLimitCheck('subscribe', 10000)) {
+    showToast('Please wait a moment before trying again.', 3000);
+    return;
+  }
+  const name  = sanitizeInput(document.getElementById('join-name').value, 100);
+  const email = sanitizeInput(document.getElementById('join-email').value, 200).toLowerCase();
   const succEl = document.getElementById('join-success');
-  if (!name || !email || !email.includes('@')) { alert('Please enter a valid name and email.'); return; }
+  if (!name || !validateEmail(email)) { alert('Please enter a valid name and email.'); return; }
   try {
     const res = await fetch(`${SUPABASE_URL}/rest/v1/subscribers`, {
       method: 'POST',
@@ -2153,27 +2315,38 @@ if (localStorage.getItem('ilirh-dark') === '1') {
   document.getElementById('dark-btn').textContent = '☀️ Light';
 }
  
-// ── SUBSCRIBE POP (delayed 22s, once per session) ──
+// ── SUBSCRIBE POP (delayed 9s, once per session) ──
 let popShown = sessionStorage.getItem('ilirh-pop');
 if (!popShown) {
   setTimeout(() => {
-    const pop = document.getElementById('subscribe-pop');
-    pop.style.display = 'block';
-    requestAnimationFrame(() => requestAnimationFrame(() => pop.classList.add('visible')));
+    const overlay = document.getElementById('subscribe-pop-overlay');
+    overlay.style.display = 'flex';
+    requestAnimationFrame(() => requestAnimationFrame(() => {
+      overlay.classList.add('visible');
+      document.body.style.overflow = 'hidden';
+    }));
     sessionStorage.setItem('ilirh-pop', '1');
   }, 9000);
 }
 function closePop() {
-  const pop = document.getElementById('subscribe-pop');
-  pop.classList.remove('visible');
-  setTimeout(() => pop.style.display = 'none', 400);
+  const overlay = document.getElementById('subscribe-pop-overlay');
+  overlay.classList.remove('visible');
+  document.body.style.overflow = '';
+  setTimeout(() => { overlay.style.display = 'none'; }, 380);
+}
+function closePopOnBg(e) {
+  if (e.target === document.getElementById('subscribe-pop-overlay')) closePop();
 }
 async function doPopSubscribe() {
-  const name  = (document.getElementById('pop-name').value || '').trim();
-  const email = document.getElementById('pop-email').value.trim();
+  if (!rateLimitCheck('subscribe', 10000)) {
+    showToast('Please wait a moment before trying again.', 3000);
+    return;
+  }
+  const name  = sanitizeInput((document.getElementById('pop-name').value || ''), 100);
+  const email = sanitizeInput(document.getElementById('pop-email').value, 200).toLowerCase();
   const msg   = document.getElementById('pop-msg');
   if (!name)  { msg.style.color='#a32d2d'; msg.textContent = 'Please enter your name.'; return; }
-  if (!email || !email.includes('@')) { msg.style.color='#a32d2d'; msg.textContent = 'Please enter a valid email.'; return; }
+  if (!validateEmail(email)) { msg.style.color='#a32d2d'; msg.textContent = 'Please enter a valid email.'; return; }
   try {
     const res = await fetch(`${SUPABASE_URL}/rest/v1/subscribers`, {
       method:'POST', headers:{...headers,'Prefer':'return=minimal'}, body:JSON.stringify({name, email})
@@ -2584,7 +2757,13 @@ function printArticle() {
   const byline = document.getElementById('modal-byline').innerHTML;
   const content = document.getElementById('modal-content').innerHTML;
   const cat = document.getElementById('modal-cat').textContent;
-  const win = window.open('', '_blank');
+  // Remove iframes from print content (PDFs don't print well in iframe)
+  const printContent = content.replace(/<iframe[^>]*>.*?<\/iframe>/gi, '<p style="color:#666;font-style:italic;">[PDF attachment — open the article online to view the full document]</p>');
+  const win = window.open('', '_blank', 'width=800,height=900,scrollbars=yes');
+  if (!win) {
+    showToast('✗ Please allow popups to print this article', 4000);
+    return;
+  }
   win.document.write(`<!DOCTYPE html><html><head><meta charset="UTF-8"><title>${title} — ILIRH</title>
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=EB+Garamond:ital,wght@0,400;1,400&family=Lato:wght@400;700&display=swap" rel="stylesheet">
     <style>
@@ -2592,17 +2771,24 @@ function printArticle() {
       h1{font-family:'Playfair Display',serif;font-size:28px;line-height:1.2;margin-bottom:8px;}
       .cat{font-family:'Lato',sans-serif;font-size:10px;font-weight:700;letter-spacing:.18em;text-transform:uppercase;color:#b8963e;margin-bottom:8px;}
       .byline{font-family:'Lato',sans-serif;font-size:12px;color:#666;border-bottom:1px solid #ddd;padding-bottom:14px;margin-bottom:20px;}
-      img{max-width:100%;height:auto;}
+      img{max-width:100%;height:auto;display:block;margin:16px 0;}
       iframe{display:none;}
       .brand{font-family:'Lato',sans-serif;font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:#999;border-top:1px solid #eee;margin-top:32px;padding-top:12px;}
-      @media print{body{margin:0;}}
+      @media print{body{margin:0;font-size:12pt;}.no-print{display:none;}}
     </style></head><body>
     <div class="cat">${cat}</div>
     <h1>${title}</h1>
     <div class="byline">${byline}</div>
-    <div>${content}</div>
-    <div class="brand">The International Legal Inteligencia Research Herald, India · ilirh.in</div>
-    <script>window.onload=function(){window.print();}<\/script>
+    <div>${printContent}</div>
+    <div class="brand">The International Legal Inteligencia Research Herald, India &nbsp;&bull;&nbsp; ilirh.in</div>
+    <script>
+      // Wait for fonts/images to load then print
+      window.addEventListener('load', function() {
+        setTimeout(function() { window.print(); }, 800);
+      });
+      // Fallback if load fires late
+      setTimeout(function() { if (document.readyState === 'complete') window.print(); }, 2000);
+    <\/script>
   </body></html>`);
   win.document.close();
 }
@@ -2650,45 +2836,75 @@ function nativeShare(title, url) {
 // ── TOUCH SWIPE NAVIGATION for Article Modal ──
 (function() {
   let _swipeStartX = 0, _swipeStartY = 0, _swipeStartScrollTop = 0;
-  const SWIPE_THRESHOLD = 60;  // px horizontal
-  const SWIPE_Y_LIMIT   = 80;  // max vertical drift to still count as horizontal swipe
- 
+  let _swipeCurrent = 0;
+  const SWIPE_THRESHOLD = 55;
+  const SWIPE_Y_LIMIT   = 80;
+
   function getArticleIndex(id) {
     return articles.findIndex(x => x.id === id);
   }
- 
+
   const modal = document.getElementById('article-modal');
-  if (!modal) return;
- 
+  const box = modal ? modal.querySelector('.modal-box') : null;
+  if (!modal || !box) return;
+
   modal.addEventListener('touchstart', function(e) {
     if (e.touches.length !== 1) return;
     _swipeStartX = e.touches[0].clientX;
     _swipeStartY = e.touches[0].clientY;
     _swipeStartScrollTop = modal.scrollTop;
+    _swipeCurrent = 0;
+    box.style.transition = 'none';
   }, { passive: true });
- 
+
+  modal.addEventListener('touchmove', function(e) {
+    if (e.touches.length !== 1) return;
+    const dx = e.touches[0].clientX - _swipeStartX;
+    const dy = e.touches[0].clientY - _swipeStartY;
+    if (Math.abs(dy) > SWIPE_Y_LIMIT) return;
+    if (Math.abs(dx) > 20) {
+      _swipeCurrent = dx;
+      // Visual feedback — translate box slightly
+      const clamped = Math.max(-80, Math.min(80, dx * 0.3));
+      box.style.transform = `translateX(${clamped}px)`;
+      box.style.opacity = String(1 - Math.abs(clamped) / 280);
+    }
+  }, { passive: true });
+
   modal.addEventListener('touchend', function(e) {
+    box.style.transition = 'transform 0.25s cubic-bezier(.22,1,.36,1), opacity 0.25s ease';
+    box.style.transform = '';
+    box.style.opacity = '';
     if (e.changedTouches.length !== 1) return;
     const dx = e.changedTouches[0].clientX - _swipeStartX;
     const dy = e.changedTouches[0].clientY - _swipeStartY;
-    // Only act on clear horizontal swipe, not vertical scroll
     if (Math.abs(dx) < SWIPE_THRESHOLD) return;
     if (Math.abs(dy) > SWIPE_Y_LIMIT) return;
-    // Prevent if user scrolled during the gesture
-    if (Math.abs(modal.scrollTop - _swipeStartScrollTop) > 10) return;
- 
+    if (Math.abs(modal.scrollTop - _swipeStartScrollTop) > 12) return;
+
     const idx = getArticleIndex(_openArticleId);
     if (idx === -1) return;
- 
-    if (dx < 0 && idx < articles.length - 1) {
-      // Swipe left → next article
-      openArticle(articles[idx + 1].id);
-      modal.scrollTop = 0;
-    } else if (dx > 0 && idx > 0) {
-      // Swipe right → previous article
-      openArticle(articles[idx - 1].id);
-      modal.scrollTop = 0;
+
+    const dir = dx < 0 ? 1 : -1; // -1 = left swipe = next
+    const nextIdx = idx + (dx < 0 ? 1 : -1);
+    if (nextIdx < 0 || nextIdx >= articles.length) {
+      // bounce back
+      box.style.transform = `translateX(${dx < 0 ? -12 : 12}px)`;
+      setTimeout(() => { box.style.transform = ''; }, 200);
+      return;
     }
+
+    // Animate out then open next
+    box.style.transition = 'transform 0.18s ease, opacity 0.18s ease';
+    box.style.transform = `translateX(${dx < 0 ? -60 : 60}px)`;
+    box.style.opacity = '0';
+    setTimeout(() => {
+      box.style.transition = 'none';
+      box.style.transform = '';
+      box.style.opacity = '';
+      openArticle(articles[nextIdx].id);
+      modal.scrollTop = 0;
+    }, 180);
   }, { passive: true });
 })();
  
@@ -2715,35 +2931,10 @@ openArticle = async function(id) {
   _fontSizes.forEach(c => { if(c) mc.classList.remove(c); });
 };
  
-// ── CATEGORY COLOR DOTS in renderCategories ──
+// ── CATEGORY COLOR DOTS ──
 const _catColors = {
   'Law': '#1e3a6e', 'Education': '#2e6b3e',
   'Vedic Science': '#8a5c00', 'Gen-Z Desk': '#1a6e4a', 'Political': '#a32d2d'
-};
- 
-// ── CATEGORY ARTICLE COUNT BADGES ──
-// Patch renderCategories output to add count badge
-const _origRenderCategories = renderCategories;
-renderCategories = function() {
-  _origRenderCategories();
-  // Add count badges to cat-title elements
-  document.querySelectorAll('.category-section').forEach(sec => {
-    const titleEl = sec.querySelector('.cat-title');
-    if (!titleEl) return;
-    const catName = titleEl.textContent.replace(/\s*\(\d+\)\s*/, '').trim();
-    const count = articles.filter(a => a.category === catName).length;
-    if (count > 0 && !titleEl.querySelector('.cat-count')) {
-      titleEl.innerHTML = `${esc(catName)} <span class="cat-count">${count}</span>`;
-    }
-    // Add color dot to category label
-    const dot = document.createElement('span');
-    dot.className = 'cat-dot';
-    dot.style.background = _catColors[catName] || '#1e3a6e';
-    const header = sec.querySelector('.cat-header');
-    if (header && !header.querySelector('.cat-dot')) {
-      header.prepend(dot);
-    }
-  });
 };
 </script>
  
