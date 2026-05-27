@@ -62,12 +62,9 @@ body { background:var(--offwhite); color:var(--text-primary); font-family:'EB Ga
 /* NAV */
 #main-nav { background:var(--navy); position:sticky; top:0; z-index:100; border-bottom:2px solid var(--gold); }
 .nav-inner { max-width:1100px; margin:0 auto; display:flex; align-items:center; }
-.nav-logo { font-family:'Cinzel',Georgia,serif; font-size:20px; font-weight:700; letter-spacing:0.08em; color:var(--gold-light); padding:10px 20px 10px 16px; border-right:1px solid rgba(255,255,255,0.12); white-space:nowrap; cursor:pointer; display:block; text-decoration:none;
-  opacity:0; transform:translateX(-8px); pointer-events:none;
-  transition:opacity 0.35s ease, transform 0.35s ease, color 0.2s;
-}
+.nav-logo { font-family:'Cinzel',Georgia,serif; font-size:20px; font-weight:700; letter-spacing:0.08em; color:var(--gold-light); padding:10px 20px 10px 16px; border-right:1px solid rgba(255,255,255,0.12); white-space:nowrap; cursor:pointer; display:none; text-decoration:none; transition:color 0.2s; }
 .nav-logo:hover { color:#fff; }
-.nav-logo.visible { opacity:1; transform:translateX(0); pointer-events:auto; }
+.nav-logo.visible { display:block; }
 .nav-links { display:flex; align-items:center; flex:1; overflow-x:auto; scrollbar-width:none; }
 .nav-links::-webkit-scrollbar { display:none; }
 .nav-links a { color:#c5d2e0; text-decoration:none; font-family:'Lato',sans-serif; font-size:11.5px; letter-spacing:0.1em; text-transform:uppercase; padding:13px 16px; white-space:nowrap; border-bottom:2px solid transparent; transition:color 0.2s,border-color 0.2s; }
@@ -1039,14 +1036,6 @@ button:focus-visible, a:focus-visible, input:focus-visible {
 @media(max-width:768px) {
   .modal-nav-btn { font-size:11px; padding:7px 12px; }
 }
-
-/* ── NAV LOGO SMOOTH FADE TRANSITION ── */
-.nav-logo {
-  transition: opacity 0.35s ease, transform 0.35s ease, color 0.2s;
-  opacity: 0; transform: translateX(-8px); display:block !important;
-  pointer-events:none;
-}
-.nav-logo.visible { opacity:1; transform:translateX(0); pointer-events:auto; }
 
 /* ── SPOTLIGHT MOBILE IMPROVEMENTS ── */
 @media(max-width:768px) {
