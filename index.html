@@ -1017,6 +1017,114 @@ button:focus-visible, a:focus-visible, input:focus-visible {
   .reveal-on-scroll { opacity: 1 !important; }
 }
 
+/* ── SUBMIT ARTICLE PUBLIC OVERLAY ── */
+.submit-overlay { display:none; position:fixed; inset:0; background:rgba(5,12,24,0.88); z-index:1050; overflow-y:auto; padding:28px 16px; }
+.submit-overlay.open { display:flex; justify-content:center; align-items:flex-start; }
+.submit-box { background:var(--offwhite); max-width:680px; width:100%; padding:36px 44px 44px; position:relative; margin:0 auto; border-top:4px solid var(--gold); animation:modalSlideIn 0.32s cubic-bezier(.22,1,.36,1) both; }
+.submit-herald-badge { font-family:'Cinzel',Georgia,serif; font-size:10px; font-weight:700; letter-spacing:0.28em; text-transform:uppercase; color:var(--gold); margin-bottom:8px; display:block; }
+.submit-title { font-family:'Playfair Display',serif; font-size:26px; font-weight:700; color:var(--navy); line-height:1.2; margin-bottom:6px; }
+.submit-sub { font-family:'EB Garamond',serif; font-size:15px; color:var(--text-secondary); margin-bottom:24px; line-height:1.65; }
+.submit-rule { border:none; border-top:1px solid var(--border); margin-bottom:22px; }
+.submit-section-title { font-family:'Lato',sans-serif; font-size:10px; font-weight:700; letter-spacing:0.2em; text-transform:uppercase; color:var(--navy-light); margin-bottom:14px; padding-bottom:5px; border-bottom:1px solid var(--border-light); }
+.submit-form-row { margin-bottom:14px; }
+.submit-form-row label { display:block; font-family:'Lato',sans-serif; font-size:11px; font-weight:700; letter-spacing:0.1em; text-transform:uppercase; color:var(--text-secondary); margin-bottom:6px; }
+.submit-form-row input, .submit-form-row select, .submit-form-row textarea { width:100%; padding:9px 12px; border:1px solid var(--border); background:#fff; font-family:'EB Garamond',serif; font-size:16px; color:var(--text-primary); outline:none; transition:border-color 0.2s; }
+.submit-form-row input:focus, .submit-form-row select:focus, .submit-form-row textarea:focus { border-color:var(--navy); }
+.submit-form-row textarea { height:80px; resize:vertical; }
+.submit-form-row input[type=email] { font-family:'Lato',sans-serif; font-size:14px; }
+.submit-2col { display:grid; grid-template-columns:1fr 1fr; gap:14px; }
+@media(max-width:560px){ .submit-2col { grid-template-columns:1fr; } .submit-box { padding:22px 18px 32px; } }
+.submit-drop-zone { border:2px dashed var(--border); padding:24px 16px; text-align:center; cursor:pointer; transition:border-color 0.2s,background 0.2s; font-family:'Lato',sans-serif; font-size:12.5px; color:var(--text-muted); margin-bottom:14px; position:relative; }
+.submit-drop-zone:hover, .submit-drop-zone.dragover { border-color:var(--navy); background:var(--cream); }
+.submit-drop-zone input[type=file] { position:absolute; inset:0; opacity:0; cursor:pointer; }
+.submit-drop-filename { font-weight:700; color:var(--navy); margin-top:7px; font-family:'Lato',sans-serif; font-size:12px; }
+.submit-undertaking { display:flex; align-items:flex-start; gap:12px; padding:14px 16px; background:var(--cream); border:1px solid var(--border); margin-bottom:18px; cursor:pointer; user-select:none; }
+.submit-undertaking input[type=checkbox] { width:16px; height:16px; flex-shrink:0; margin-top:2px; accent-color:var(--navy); cursor:pointer; }
+.submit-undertaking p { font-family:'EB Garamond',serif; font-size:14px; color:var(--text-secondary); line-height:1.6; margin:0; }
+.submit-undertaking strong { color:var(--navy); }
+.submit-btn-primary { background:var(--navy); color:#fff; border:none; font-family:'Lato',sans-serif; font-size:11.5px; font-weight:700; letter-spacing:0.14em; text-transform:uppercase; padding:13px 28px; cursor:pointer; transition:background 0.2s; width:100%; }
+.submit-btn-primary:hover { background:var(--navy-light); }
+.submit-btn-primary:disabled { opacity:0.55; cursor:not-allowed; }
+.submit-btn-cancel { background:none; border:1px solid var(--border); color:var(--text-muted); font-family:'Lato',sans-serif; font-size:11px; font-weight:700; letter-spacing:0.1em; text-transform:uppercase; padding:10px 20px; cursor:pointer; margin-top:10px; width:100%; transition:border-color 0.2s; }
+.submit-btn-cancel:hover { border-color:var(--navy); color:var(--navy); }
+.submit-success-msg { display:none; background:#eaf3de; border:1px solid #c0dd97; color:#27500a; font-family:'EB Garamond',serif; font-size:15px; padding:14px 18px; margin-top:16px; line-height:1.6; }
+.submit-err { color:#a32d2d; font-family:'Lato',sans-serif; font-size:12px; margin-top:8px; min-height:16px; }
+.submit-progress { width:100%; background:var(--cream-dark); height:5px; margin-top:10px; display:none; }
+.submit-progress-fill { height:100%; background:var(--navy); width:0%; transition:width 0.4s; }
+
+/* ── EDITOR TABS (upload panel) ── */
+.editor-tabs { display:flex; border-bottom:2px solid var(--navy); margin-bottom:22px; }
+.editor-tab { flex:1; padding:10px 16px; font-family:'Lato',sans-serif; font-size:11px; font-weight:700; letter-spacing:0.12em; text-transform:uppercase; color:var(--text-muted); border:none; background:none; cursor:pointer; border-bottom:3px solid transparent; margin-bottom:-2px; transition:color 0.2s,border-color 0.2s; text-align:center; }
+.editor-tab.active { color:var(--navy); border-bottom-color:var(--gold); }
+.editor-tab .tab-badge { display:inline-flex; align-items:center; justify-content:center; background:var(--gold); color:var(--navy); font-size:9px; font-weight:700; min-width:18px; height:16px; padding:0 5px; border-radius:9px; margin-left:6px; vertical-align:middle; }
+.editor-panel { display:none; }
+.editor-panel.active { display:block; }
+
+/* ── REVIEW SUBMISSIONS PANEL ── */
+.review-empty { text-align:center; padding:40px 20px; color:var(--text-muted); font-family:'EB Garamond',serif; font-style:italic; font-size:15px; border:1px dashed var(--border); }
+.review-item { border:1px solid var(--border); padding:16px 18px; margin-bottom:14px; cursor:pointer; transition:border-color 0.2s,background 0.2s; position:relative; }
+.review-item:hover { border-color:var(--navy); background:var(--cream); }
+.review-item-cat { font-family:'Lato',sans-serif; font-size:9.5px; font-weight:700; letter-spacing:0.18em; text-transform:uppercase; color:var(--gold); margin-bottom:4px; }
+.review-item-title { font-family:'Playfair Display',serif; font-size:16px; font-weight:700; color:var(--navy); line-height:1.3; margin-bottom:4px; }
+.review-item-meta { font-family:'Lato',sans-serif; font-size:11px; color:var(--text-muted); }
+.review-item-new { position:absolute; top:10px; right:12px; background:var(--navy); color:#c9a84c; font-family:'Lato',sans-serif; font-size:9px; font-weight:700; letter-spacing:0.12em; text-transform:uppercase; padding:3px 8px; border-radius:2px; }
+
+/* ── REVIEW DETAIL MODAL (within editor) ── */
+.review-detail-overlay { display:none; position:fixed; inset:0; background:rgba(5,12,24,0.9); z-index:1100; overflow-y:auto; padding:24px 16px; }
+.review-detail-overlay.open { display:flex; justify-content:center; align-items:flex-start; }
+.review-detail-box { background:var(--offwhite); max-width:780px; width:100%; padding:32px 40px 44px; position:relative; margin:0 auto; border-top:4px solid var(--navy); animation:modalSlideIn 0.28s cubic-bezier(.22,1,.36,1) both; }
+@media(max-width:600px){ .review-detail-box { padding:20px 16px 32px; } }
+.review-detail-kicker { font-family:'Lato',sans-serif; font-size:9.5px; font-weight:700; letter-spacing:0.24em; text-transform:uppercase; color:var(--gold); margin-bottom:10px; }
+.review-detail-title { font-family:'Playfair Display',serif; font-size:22px; font-weight:700; color:var(--navy); margin-bottom:18px; line-height:1.25; }
+.review-detail-grid { display:grid; grid-template-columns:1fr 1fr; gap:14px; margin-bottom:14px; }
+@media(max-width:560px){ .review-detail-grid { grid-template-columns:1fr; } }
+.review-field label { display:block; font-family:'Lato',sans-serif; font-size:10px; font-weight:700; letter-spacing:0.14em; text-transform:uppercase; color:var(--text-muted); margin-bottom:5px; }
+.review-field input, .review-field select, .review-field textarea { width:100%; padding:8px 11px; border:1px solid var(--border); background:#fff; font-family:'EB Garamond',serif; font-size:15px; color:var(--text-primary); outline:none; transition:border-color 0.2s; }
+.review-field input:focus, .review-field select:focus, .review-field textarea:focus { border-color:var(--navy); }
+.review-field textarea { height:70px; resize:vertical; }
+.review-field-full { grid-column:1/-1; }
+.review-file-preview { margin:14px 0; border:1px solid var(--border); background:var(--cream); padding:14px; }
+.review-file-preview p { font-family:'Lato',sans-serif; font-size:11px; font-weight:700; letter-spacing:0.1em; text-transform:uppercase; color:var(--text-muted); margin-bottom:10px; }
+.review-file-preview img { max-width:100%; max-height:200px; object-fit:contain; display:block; border:1px solid var(--border-light); }
+.review-file-preview a { font-family:'Lato',sans-serif; font-size:11.5px; color:var(--navy-light); text-decoration:underline; font-weight:700; }
+.review-replace-drop { border:2px dashed var(--border); padding:18px 14px; text-align:center; cursor:pointer; font-family:'Lato',sans-serif; font-size:12px; color:var(--text-muted); position:relative; margin-top:10px; transition:border-color 0.2s; }
+.review-replace-drop:hover { border-color:var(--navy); }
+.review-replace-drop input { position:absolute; inset:0; opacity:0; cursor:pointer; }
+.review-undertaking-display { padding:10px 14px; background:var(--cream); border:1px solid var(--border-light); font-family:'EB Garamond',serif; font-size:13px; color:var(--text-muted); font-style:italic; margin-bottom:14px; }
+.review-actions { display:flex; gap:10px; margin-top:20px; flex-wrap:wrap; }
+.review-btn-publish { background:var(--navy); color:var(--gold-light); border:1px solid var(--gold); font-family:'Lato',sans-serif; font-size:11px; font-weight:700; letter-spacing:0.14em; text-transform:uppercase; padding:11px 22px; cursor:pointer; transition:background 0.2s; flex:2; }
+.review-btn-publish:hover { background:var(--gold); color:var(--navy); }
+.review-btn-publish:disabled { opacity:0.5; cursor:not-allowed; }
+.review-btn-save { background:var(--cream-dark); color:var(--text-secondary); border:1px solid var(--border); font-family:'Lato',sans-serif; font-size:11px; font-weight:700; letter-spacing:0.1em; text-transform:uppercase; padding:11px 18px; cursor:pointer; transition:all 0.2s; flex:1; }
+.review-btn-save:hover { background:var(--cream); border-color:var(--navy); color:var(--navy); }
+.review-btn-delete { background:#b91c1c; color:#fff; border:none; font-family:'Lato',sans-serif; font-size:11px; font-weight:700; letter-spacing:0.1em; text-transform:uppercase; padding:11px 16px; cursor:pointer; transition:background 0.2s; }
+.review-btn-delete:hover { background:#991b1b; }
+.review-btn-delete:disabled { opacity:0.5; cursor:not-allowed; }
+.review-status-badge { display:inline-block; font-family:'Lato',sans-serif; font-size:9px; font-weight:700; letter-spacing:0.14em; text-transform:uppercase; padding:4px 10px; border-radius:2px; margin-left:10px; vertical-align:middle; }
+.review-status-pending { background:#fef3c7; color:#92400e; }
+.review-status-published { background:#d1fae5; color:#065f46; }
+
+/* Dark mode for new elements */
+body.dark-mode .submit-box { background:#0d1624; border-top-color:var(--gold); }
+body.dark-mode .submit-herald-badge { color:var(--gold); }
+body.dark-mode .submit-title { color:#c8d8ea; }
+body.dark-mode .submit-sub { color:var(--text-secondary); }
+body.dark-mode .submit-form-row label { color:var(--text-secondary); }
+body.dark-mode .submit-form-row input, body.dark-mode .submit-form-row select, body.dark-mode .submit-form-row textarea { background:#0a1520; color:#c8d8ea; border-color:var(--border); }
+body.dark-mode .submit-undertaking { background:var(--cream-dark); border-color:var(--border); }
+body.dark-mode .submit-undertaking p { color:var(--text-secondary); }
+body.dark-mode .submit-drop-zone { border-color:var(--border); color:var(--text-muted); }
+body.dark-mode .review-detail-box { background:#0d1624; }
+body.dark-mode .review-field input, body.dark-mode .review-field select, body.dark-mode .review-field textarea { background:#0a1520; color:#c8d8ea; border-color:var(--border); }
+body.dark-mode .review-item { border-color:var(--border); }
+body.dark-mode .review-item:hover { background:#0d1624; border-color:#8fa8c0; }
+body.dark-mode .review-item-title { color:#c8d8ea; }
+body.dark-mode .review-file-preview { background:var(--cream-dark); border-color:var(--border); }
+body.dark-mode .review-btn-save { background:#0d1624; border-color:var(--border); color:var(--text-secondary); }
+body.dark-mode .review-undertaking-display { background:var(--cream-dark); border-color:var(--border); }
+body.dark-mode .editor-tab { color:var(--text-muted); }
+body.dark-mode .editor-tab.active { color:#c8d8ea; }
+
 /* ── PREMIUM CARD ENHANCEMENTS ── */
 .article-card {
   cursor:pointer;
@@ -1119,7 +1227,7 @@ button:focus-visible, a:focus-visible, input:focus-visible {
     <hr class="masthead-rule-bot">
     <div class="masthead-meta">
       <span id="live-date-2"></span>
-      <span style="font-style:italic;font-family:'IM Fell English',serif;font-size:13px;color:var(--text-muted);">Global Insights, Informed Analysis</span>
+      <button onclick="openSubmitArticle()" style="font-style:italic;font-family:'IM Fell English',serif;font-size:13px;color:var(--navy-light);background:none;border:none;cursor:pointer;padding:0;letter-spacing:0.01em;transition:color 0.2s;text-decoration:underline;text-decoration-style:dotted;text-decoration-color:var(--gold);" onmouseover="this.style.color='var(--gold)'" onmouseout="this.style.color='var(--navy-light)'">✍ Submit Your Article</button>
       <span>Vol. I &bull; Est. 2026</span>
     </div>
   </div>
@@ -1389,7 +1497,17 @@ button:focus-visible, a:focus-visible, input:focus-visible {
 <div class="upload-overlay" id="upload-overlay" onclick="closeUploadOnBg(event)">
   <div class="upload-box">
     <button class="modal-close" onclick="closeUpload()">&times;</button>
-    <h2 class="upload-title">Publish an Article</h2>
+    <h2 class="upload-title" style="margin-bottom:4px;">Editor Panel</h2>
+    <p class="upload-sub" style="margin-bottom:16px;">Manage and publish articles for the Herald.</p>
+
+    <!-- Editor Tabs -->
+    <div class="editor-tabs">
+      <button class="editor-tab active" id="tab-publish" onclick="switchEditorTab('publish')">&#128274; Publish Article</button>
+      <button class="editor-tab" id="tab-review" onclick="switchEditorTab('review')">&#128203; Review Submissions <span class="tab-badge" id="review-tab-badge" style="display:none;">0</span></button>
+    </div>
+
+    <!-- PUBLISH TAB -->
+    <div class="editor-panel active" id="panel-publish">
     <p class="upload-sub">Upload a PDF or image. It will appear on the Herald for all visitors instantly.</p>
     <div class="form-row"><label>Article Title *</label><input type="text" id="up-title" placeholder="Enter the full article title…"></div>
  
@@ -1443,9 +1561,256 @@ button:focus-visible, a:focus-visible, input:focus-visible {
       <h4>Subscribers (<span id="subs-count">0</span>)</h4>
       <div id="subs-list"></div>
     </div>
+    </div><!-- end panel-publish -->
+
+    <!-- REVIEW SUBMISSIONS TAB -->
+    <div class="editor-panel" id="panel-review">
+      <p class="upload-sub">Articles submitted by contributors awaiting your editorial review. Click any submission to view details, edit, and publish.</p>
+      <div id="review-loading" style="text-align:center;padding:28px;color:var(--text-muted);font-family:'Lato',sans-serif;font-size:12px;display:none;">
+        <div class="spinner" style="margin:0 auto 10px;"></div> Loading submissions…
+      </div>
+      <div id="review-list"></div>
+    </div><!-- end panel-review -->
+
   </div>
 </div>
  
+<!-- SUBMIT ARTICLE (PUBLIC) OVERLAY -->
+<div class="submit-overlay" id="submit-overlay" onclick="closeSubmitOnBg(event)">
+  <div class="submit-box" id="submit-box">
+    <button class="modal-close" onclick="closeSubmitArticle()">&times;</button>
+    <span class="submit-herald-badge">ILIRH — The International Legal Inteligencia Research Herald, India</span>
+    <h2 class="submit-title">Submit Your Article</h2>
+    <p class="submit-sub">Submit your original research, analysis, or scholarship for review. Upon acceptance by the Editor-in-Chief, your article will be published and you will receive a Certificate of Publication.</p>
+
+    <!-- Certificate info banner -->
+    <div style="display:flex;gap:14px;align-items:flex-start;background:var(--cream);border:1px solid var(--border);border-left:4px solid var(--gold);padding:16px 18px;margin-bottom:20px;">
+      <div style="font-size:26px;line-height:1;flex-shrink:0;margin-top:2px;">🏅</div>
+      <div>
+        <p style="font-family:'Lato',sans-serif;font-size:10.5px;font-weight:700;letter-spacing:0.18em;text-transform:uppercase;color:var(--gold);margin-bottom:5px;">Certificate of Publication</p>
+        <p style="font-family:'EB Garamond',serif;font-size:14.5px;color:var(--text-secondary);line-height:1.65;margin:0;">Upon editorial review and approval, accepted articles are formally published on the Herald. The author then receives a <strong style="color:var(--navy);">Certificate of Publication</strong> — a signed, numbered PDF document issued by the Editor-in-Chief — delivered directly to their email address as confirmation of their scholarly contribution.</p>
+      </div>
+    </div>
+
+    <hr class="submit-rule">
+
+    <div id="submit-success-state" class="submit-success-msg" style="display:none;">
+      <strong>&#10003; Submission Received!</strong><br>
+      Thank you for your submission. The Editorial team will review your article and you will be notified at your provided email address. Upon publication, you will receive your Certificate of Publication.
+    </div>
+
+    <div id="submit-form-body">
+      <!-- Personal Details -->
+      <div class="submit-section-title">Personal Details</div>
+      <div class="submit-2col">
+        <div class="submit-form-row">
+          <label>Full Name *</label>
+          <input type="text" id="sub-name" placeholder="As it should appear in publication">
+        </div>
+        <div class="submit-form-row">
+          <label>Email Address *</label>
+          <input type="email" id="sub-email" placeholder="For correspondence & certificate">
+        </div>
+      </div>
+      <div class="submit-2col">
+        <div class="submit-form-row">
+          <label>Occupation / Designation *</label>
+          <select id="sub-occupation">
+            <option value="">— Select Occupation —</option>
+            <optgroup label="Legal Professionals">
+              <option>Advocate / Lawyer</option>
+              <option>Senior Advocate</option>
+              <option>Judge / Judicial Officer</option>
+              <option>Legal Researcher</option>
+              <option>Legal Consultant</option>
+              <option>Public Prosecutor</option>
+              <option>Government Law Officer</option>
+            </optgroup>
+            <optgroup label="Academia">
+              <option>Professor of Law</option>
+              <option>Associate Professor</option>
+              <option>Assistant Professor</option>
+              <option>Professor of Practice</option>
+              <option>Research Scholar (PhD)</option>
+              <option>Post-Doctoral Fellow</option>
+              <option>Academic Dean / HoD</option>
+            </optgroup>
+            <optgroup label="Students">
+              <option>Law Student (LLB / LLM)</option>
+              <option>BA LLB Student</option>
+              <option>LLM Student</option>
+              <option>Law Intern</option>
+              <option>Undergraduate Student</option>
+              <option>Postgraduate Student</option>
+            </optgroup>
+            <optgroup label="Policy &amp; Research">
+              <option>Policy Analyst</option>
+              <option>Political Analyst</option>
+              <option>Researcher</option>
+              <option>Journalist / Legal Correspondent</option>
+              <option>Author / Writer</option>
+            </optgroup>
+            <optgroup label="Other">
+              <option>Civil Servant / IAS / IPS</option>
+              <option>Academician (Non-Law)</option>
+              <option>Vedic Scholar</option>
+              <option>Independent Researcher</option>
+              <option>Other</option>
+            </optgroup>
+          </select>
+        </div>
+        <div class="submit-form-row">
+          <label>Institution / Affiliation</label>
+          <input type="text" id="sub-institution" placeholder="University, Court, Organisation…">
+        </div>
+      </div>
+      <div class="submit-form-row">
+        <label>Phone / WhatsApp <span style="font-weight:400;text-transform:none;letter-spacing:0;font-family:'EB Garamond',serif;font-size:12px;color:var(--text-muted);">(optional)</span></label>
+        <input type="tel" id="sub-phone" placeholder="+91 XXXXX XXXXX">
+      </div>
+
+      <hr class="submit-rule">
+      <!-- Article Details -->
+      <div class="submit-section-title">Article Details</div>
+      <div class="submit-form-row">
+        <label>Article Title *</label>
+        <input type="text" id="sub-title" placeholder="Full title of your article">
+      </div>
+      <div class="submit-2col">
+        <div class="submit-form-row">
+          <label>Category *</label>
+          <select id="sub-category">
+            <option value="">— Select Category —</option>
+            <option>Law</option>
+            <option>Education</option>
+            <option>Vedic Science</option>
+            <option>Political</option>
+            <option>Gen-Z Desk</option>
+          </select>
+        </div>
+        <div class="submit-form-row">
+          <label>Co-author(s) <span style="font-weight:400;text-transform:none;letter-spacing:0;font-family:'EB Garamond',serif;font-size:12px;color:var(--text-muted);">(if any)</span></label>
+          <input type="text" id="sub-coauthors" placeholder="Names of co-authors, if applicable">
+        </div>
+      </div>
+      <div class="submit-form-row">
+        <label>Abstract / Brief Description *</label>
+        <textarea id="sub-abstract" placeholder="A brief summary of your article (3–5 sentences)…" style="height:90px;"></textarea>
+      </div>
+
+      <hr class="submit-rule">
+      <!-- File Upload -->
+      <div class="submit-section-title">Upload Your Article</div>
+      <div class="submit-drop-zone" id="sub-drop-zone">
+        <input type="file" id="sub-file" accept=".pdf,image/*" onchange="handleSubFileSelect(this)">
+        <div style="font-size:28px;margin-bottom:8px;opacity:0.4;">📄</div>
+        <div style="font-weight:700;margin-bottom:4px;color:var(--text-secondary);">Drag &amp; drop your article, or click to browse</div>
+        <div style="font-size:11px;color:var(--text-muted);">Accepted formats: PDF, JPG, PNG &nbsp;&bull;&nbsp; Max size: 3 MB</div>
+        <div class="submit-drop-filename" id="sub-drop-filename"></div>
+      </div>
+
+      <!-- Undertaking Checkbox -->
+      <div class="submit-undertaking" onclick="toggleSubUndertaking()">
+        <input type="checkbox" id="sub-undertaking" onclick="event.stopPropagation()">
+        <p><strong>Declaration of Originality:</strong> I hereby solemnly declare that the article submitted is my own original work, has not been published elsewhere, does not infringe any intellectual property right, and that I am the sole/joint author with full authority to submit this work to the International Legal Inteligencia Research Herald, India. I understand that any misrepresentation may result in immediate rejection or retraction.</p>
+      </div>
+
+      <div class="submit-progress" id="sub-progress"><div class="submit-progress-fill" id="sub-progress-fill"></div></div>
+      <p class="submit-err" id="sub-error"></p>
+      <button class="submit-btn-primary" id="sub-submit-btn" onclick="doSubmitArticle()">Submit Article for Review &rarr;</button>
+      <button class="submit-btn-cancel" onclick="closeSubmitArticle()">Cancel</button>
+    </div>
+  </div>
+</div>
+
+<!-- REVIEW DETAIL MODAL (editor only) -->
+<div class="review-detail-overlay" id="review-detail-overlay" onclick="closeReviewDetailOnBg(event)">
+  <div class="review-detail-box">
+    <button class="modal-close" onclick="closeReviewDetail()">&times;</button>
+    <div class="review-detail-kicker">Submitted Article — Editorial Review</div>
+    <h2 class="review-detail-title" id="rd-title-display">Article Review</h2>
+    <hr style="border:none;border-top:1px solid var(--border);margin-bottom:20px;">
+
+    <div class="review-detail-grid">
+      <div class="review-field">
+        <label>Author Name</label>
+        <input type="text" id="rd-author-name">
+      </div>
+      <div class="review-field">
+        <label>Author Email</label>
+        <input type="email" id="rd-author-email">
+      </div>
+      <div class="review-field">
+        <label>Occupation</label>
+        <input type="text" id="rd-occupation">
+      </div>
+      <div class="review-field">
+        <label>Institution / Affiliation</label>
+        <input type="text" id="rd-institution">
+      </div>
+      <div class="review-field">
+        <label>Phone</label>
+        <input type="text" id="rd-phone">
+      </div>
+      <div class="review-field">
+        <label>Co-authors</label>
+        <input type="text" id="rd-coauthors">
+      </div>
+      <div class="review-field review-field-full">
+        <label>Article Title</label>
+        <input type="text" id="rd-article-title">
+      </div>
+      <div class="review-field">
+        <label>Category</label>
+        <select id="rd-category">
+          <option>Law</option><option>Education</option><option>Vedic Science</option><option>Political</option><option>Gen-Z Desk</option>
+        </select>
+      </div>
+      <div class="review-field">
+        <label>Submitted On</label>
+        <input type="text" id="rd-submitted-at" readonly style="opacity:0.65;cursor:default;">
+      </div>
+      <div class="review-field review-field-full">
+        <label>Abstract / Description</label>
+        <textarea id="rd-abstract"></textarea>
+      </div>
+    </div>
+
+    <div class="review-file-preview" id="rd-file-preview">
+      <p>Submitted File</p>
+      <div id="rd-file-content"></div>
+    </div>
+
+    <div class="review-replace-drop" id="rd-replace-drop">
+      <input type="file" id="rd-new-file" accept=".pdf,image/*" onchange="handleRdFileSelect(this)">
+      <span style="font-size:13px;">&#128257; Replace file — drag &amp; drop or click to browse</span>
+      <div style="font-family:'Lato',sans-serif;font-size:10px;margin-top:4px;color:var(--text-muted);" id="rd-new-filename"></div>
+    </div>
+
+    <div class="review-undertaking-display">
+      <span style="color:var(--navy);font-weight:700;">&#10003; Undertaking Signed</span> — Author has declared this is their original work and is fully authorised to submit it for publication.
+    </div>
+
+    <!-- Silent Publish option -->
+    <div class="silent-row" onclick="document.getElementById('rd-silent').click()" style="margin-bottom:6px;">
+      <input type="checkbox" id="rd-silent" onclick="event.stopPropagation()">
+      <div>
+        <label for="rd-silent">Publish Silently</label>
+        <div class="silent-note">No subscriber email notifications will be sent when this article goes live. Author will still receive their Certificate of Publication.</div>
+      </div>
+    </div>
+
+    <div id="rd-error" style="color:#a32d2d;font-family:'Lato',sans-serif;font-size:12px;margin-top:4px;min-height:16px;"></div>
+
+    <div class="review-actions">
+      <button class="review-btn-publish" id="rd-publish-btn" onclick="publishFromReview()">&#9654; Publish to Herald &amp; Issue Certificate</button>
+      <button class="review-btn-save" id="rd-save-btn" onclick="saveReviewEdits()">&#128190; Save Edits</button>
+      <button class="review-btn-delete" id="rd-delete-btn" onclick="deleteSubmission()">&#128465; Delete</button>
+    </div>
+    <p style="font-family:'Lato',sans-serif;font-size:10px;color:var(--text-muted);margin-top:12px;">Publishing will immediately make the article live on the Herald and send the author a Certificate of Publication email.</p>
+  </div>
+</div>
+
 <!-- LOGIN -->
 <div class="login-overlay" id="login-overlay" onclick="closeLoginOnBg(event)">
   <div class="login-box">
@@ -3182,6 +3547,461 @@ openArticle = async function(id, navDir) {
 const _catColors = {
   'Law': '#1e3a6e', 'Education': '#2e6b3e',
   'Vedic Science': '#8a5c00', 'Gen-Z Desk': '#1a6e4a', 'Political': '#a32d2d'
+};
+
+// ═══════════════════════════════════════════════════════
+// ── SUBMIT ARTICLE (PUBLIC) ──
+// ═══════════════════════════════════════════════════════
+let _subPendingFile = null;
+
+function openSubmitArticle() {
+  document.getElementById('submit-overlay').classList.add('open');
+  document.body.style.overflow = 'hidden';
+  document.getElementById('submit-success-state').style.display = 'none';
+  document.getElementById('submit-form-body').style.display = 'block';
+}
+function closeSubmitArticle() {
+  document.getElementById('submit-overlay').classList.remove('open');
+  document.body.style.overflow = '';
+  resetSubmitForm();
+}
+function closeSubmitOnBg(e) {
+  if (e.target === document.getElementById('submit-overlay')) closeSubmitArticle();
+}
+function resetSubmitForm() {
+  ['sub-name','sub-email','sub-phone','sub-institution','sub-title','sub-abstract','sub-coauthors'].forEach(id => {
+    const el = document.getElementById(id); if(el) el.value = '';
+  });
+  ['sub-occupation','sub-category'].forEach(id => {
+    const el = document.getElementById(id); if(el) el.value = '';
+  });
+  const ck = document.getElementById('sub-undertaking'); if(ck) ck.checked = false;
+  const fn = document.getElementById('sub-drop-filename'); if(fn) fn.textContent = '';
+  const fi = document.getElementById('sub-file'); if(fi) fi.value = '';
+  const err = document.getElementById('sub-error'); if(err) err.textContent = '';
+  const prog = document.getElementById('sub-progress'); if(prog) prog.style.display = 'none';
+  const pf = document.getElementById('sub-progress-fill'); if(pf) pf.style.width = '0%';
+  const btn = document.getElementById('sub-submit-btn'); if(btn) { btn.disabled = false; btn.textContent = 'Submit Article for Review →'; }
+  _subPendingFile = null;
+}
+function toggleSubUndertaking() {
+  const ck = document.getElementById('sub-undertaking');
+  ck.checked = !ck.checked;
+}
+function handleSubFileSelect(input) {
+  const file = input.files[0];
+  const fn = document.getElementById('sub-drop-filename');
+  const err = document.getElementById('sub-error');
+  if (!file) return;
+  const MAX = 3 * 1024 * 1024; // 3 MB
+  if (file.size > MAX) {
+    fn.textContent = '✗ File too large — max 3 MB';
+    err.textContent = 'File size ' + (file.size/1024/1024).toFixed(1) + ' MB exceeds the 3 MB limit.';
+    input.value = ''; _subPendingFile = null; return;
+  }
+  _subPendingFile = file;
+  err.textContent = '';
+  fn.textContent = '✓ ' + file.name + ' (' + (file.size/1024/1024).toFixed(2) + ' MB)';
+}
+// Drag-and-drop for submit form
+(function(){
+  const dz = document.getElementById('sub-drop-zone');
+  if (!dz) return;
+  dz.addEventListener('dragover', e => { e.preventDefault(); dz.classList.add('dragover'); });
+  dz.addEventListener('dragleave', () => dz.classList.remove('dragover'));
+  dz.addEventListener('drop', e => {
+    e.preventDefault(); dz.classList.remove('dragover');
+    const file = e.dataTransfer.files[0]; if(!file) return;
+    if (file.size > 3*1024*1024) {
+      document.getElementById('sub-drop-filename').textContent = '✗ Too large (max 3 MB)'; return;
+    }
+    _subPendingFile = file;
+    document.getElementById('sub-drop-filename').textContent = '✓ ' + file.name + ' (' + (file.size/1024/1024).toFixed(2) + ' MB)';
+  });
+})();
+
+async function doSubmitArticle() {
+  const name       = sanitizeInput(document.getElementById('sub-name').value, 150);
+  const email      = sanitizeInput(document.getElementById('sub-email').value, 200).toLowerCase();
+  const occupation = document.getElementById('sub-occupation').value;
+  const institution= sanitizeInput(document.getElementById('sub-institution').value, 200);
+  const phone      = sanitizeInput(document.getElementById('sub-phone').value, 30);
+  const title      = sanitizeInput(document.getElementById('sub-title').value, 400);
+  const category   = document.getElementById('sub-category').value;
+  const abstract   = sanitizeInput(document.getElementById('sub-abstract').value, 1500);
+  const coauthors  = sanitizeInput(document.getElementById('sub-coauthors').value, 200);
+  const undertaking = document.getElementById('sub-undertaking').checked;
+  const errEl = document.getElementById('sub-error');
+  errEl.textContent = '';
+
+  if (!name)       { errEl.textContent = 'Please enter your full name.'; return; }
+  if (!validateEmail(email)) { errEl.textContent = 'Please enter a valid email address.'; return; }
+  if (!occupation) { errEl.textContent = 'Please select your occupation.'; return; }
+  if (!title)      { errEl.textContent = 'Please enter the article title.'; return; }
+  if (!category)   { errEl.textContent = 'Please select a category.'; return; }
+  if (!abstract)   { errEl.textContent = 'Please enter an abstract or brief description.'; return; }
+  if (!_subPendingFile) { errEl.textContent = 'Please upload your article (PDF or image).'; return; }
+  if (!undertaking) { errEl.textContent = 'Please confirm the declaration of originality.'; return; }
+
+  const btn = document.getElementById('sub-submit-btn');
+  btn.disabled = true; btn.textContent = 'Uploading…';
+  const prog = document.getElementById('sub-progress'); prog.style.display = 'block';
+  const pf = document.getElementById('sub-progress-fill'); pf.style.width = '25%';
+
+  try {
+    // Upload file to submissions bucket
+    const fileName = `submissions/${Date.now()}_${_subPendingFile.name.replace(/[^a-zA-Z0-9._-]/g,'_')}`;
+    const uploadRes = await fetch(`${SUPABASE_URL}/storage/v1/object/articles/${fileName}`, {
+      method: 'POST',
+      headers: { 'apikey': SUPABASE_KEY, 'Authorization': 'Bearer ' + SUPABASE_KEY,
+        'Content-Type': _subPendingFile.type, 'x-upsert': 'true' },
+      body: _subPendingFile
+    });
+    pf.style.width = '65%';
+    if (!uploadRes.ok) throw new Error('File upload failed. Please try again.');
+    const file_url = `${SUPABASE_URL}/storage/v1/object/public/articles/${fileName}`;
+
+    // Insert into article_submissions table
+    const insertRes = await fetch(`${SUPABASE_URL}/rest/v1/article_submissions`, {
+      method: 'POST',
+      headers: { ...headers, 'Prefer': 'return=representation' },
+      body: JSON.stringify({
+        author_name: name, author_email: email, occupation, institution, phone,
+        article_title: title, category, abstract, coauthors,
+        file_url, file_type: _subPendingFile.type, status: 'pending',
+        undertaking_agreed: true
+      })
+    });
+    pf.style.width = '85%';
+    if (!insertRes.ok) throw new Error('Submission failed. Please try again.');
+    const inserted = await insertRes.json();
+    const newSub = Array.isArray(inserted) ? inserted[0] : inserted;
+    pf.style.width = '100%';
+
+    // Notify admin via edge function
+    fetch(`${SUPABASE_URL}/functions/v1/notify-subscribers`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + SUPABASE_KEY },
+      body: JSON.stringify({
+        type: 'new_submission',
+        submission: { author_name: name, author_email: email, occupation, institution, title, category, abstract, id: newSub?.id || '' }
+      })
+    }).catch(e => console.warn('Admin submission notify failed:', e));
+
+    // Show success
+    document.getElementById('submit-form-body').style.display = 'none';
+    document.getElementById('submit-success-state').style.display = 'block';
+    _subPendingFile = null;
+
+  } catch(e) {
+    errEl.textContent = e.message || 'Submission failed. Please try again.';
+    prog.style.display = 'none';
+    btn.disabled = false; btn.textContent = 'Submit Article for Review →';
+  }
+}
+
+// ═══════════════════════════════════════════════════════
+// ── EDITOR TABS ──
+// ═══════════════════════════════════════════════════════
+let _currentEditorTab = 'publish';
+
+function switchEditorTab(tab) {
+  _currentEditorTab = tab;
+  document.getElementById('tab-publish').classList.toggle('active', tab === 'publish');
+  document.getElementById('tab-review').classList.toggle('active', tab === 'review');
+  document.getElementById('panel-publish').classList.toggle('active', tab === 'publish');
+  document.getElementById('panel-review').classList.toggle('active', tab === 'review');
+  if (tab === 'review') loadSubmissions();
+}
+
+// ═══════════════════════════════════════════════════════
+// ── REVIEW SUBMISSIONS (EDITOR) ──
+// ═══════════════════════════════════════════════════════
+let _submissions = [];
+let _activeSubmission = null;
+let _rdNewFile = null;
+
+async function loadSubmissions() {
+  const listEl = document.getElementById('review-list');
+  const loadEl = document.getElementById('review-loading');
+  loadEl.style.display = 'block';
+  listEl.innerHTML = '';
+  try {
+    const res = await fetch(`${SUPABASE_URL}/rest/v1/article_submissions?order=submitted_at.desc&limit=100`, { headers });
+    const data = await res.json();
+    _submissions = Array.isArray(data) ? data : [];
+    loadEl.style.display = 'none';
+
+    // Update badge
+    const pending = _submissions.filter(s => s.status === 'pending').length;
+    const badge = document.getElementById('review-tab-badge');
+    if (badge) { badge.textContent = pending; badge.style.display = pending > 0 ? 'inline-flex' : 'none'; }
+
+    if (_submissions.length === 0) {
+      listEl.innerHTML = '<div class="review-empty">No article submissions yet. When contributors submit articles via the "Submit Your Article" button, they will appear here.</div>';
+      return;
+    }
+    listEl.innerHTML = _submissions.map(s => `
+      <div class="review-item" onclick="openReviewDetail(${s.id})">
+        ${s.status === 'pending' ? '<span class="review-item-new">&#9679; New</span>' : '<span class="review-item-new" style="background:var(--gold);color:var(--navy);">Published</span>'}
+        <div class="review-item-cat">${esc(s.category || '')} &nbsp;·&nbsp; ${esc(s.occupation || '')}</div>
+        <div class="review-item-title">${esc(s.article_title || '')}</div>
+        <div class="review-item-meta">
+          By <strong>${esc(s.author_name || '')}</strong> &nbsp;&bull;&nbsp; ${esc(s.author_email || '')}
+          &nbsp;&bull;&nbsp; Submitted: ${formatDate(s.submitted_at || s.created_at || new Date())}
+        </div>
+      </div>`).join('');
+  } catch(e) {
+    loadEl.style.display = 'none';
+    listEl.innerHTML = '<div class="review-empty">Could not load submissions. Please check your connection.</div>';
+    console.error('Load submissions error:', e);
+  }
+}
+
+function openReviewDetail(id) {
+  const s = _submissions.find(x => x.id === id);
+  if (!s) return;
+  _activeSubmission = s;
+  _rdNewFile = null;
+
+  // Populate fields
+  document.getElementById('rd-title-display').textContent = s.article_title || 'Untitled';
+  document.getElementById('rd-author-name').value  = s.author_name || '';
+  document.getElementById('rd-author-email').value = s.author_email || '';
+  document.getElementById('rd-occupation').value   = s.occupation || '';
+  document.getElementById('rd-institution').value  = s.institution || '';
+  document.getElementById('rd-phone').value        = s.phone || '';
+  document.getElementById('rd-coauthors').value    = s.coauthors || '';
+  document.getElementById('rd-article-title').value= s.article_title || '';
+  document.getElementById('rd-category').value     = s.category || 'Law';
+  document.getElementById('rd-abstract').value     = s.abstract || '';
+  document.getElementById('rd-submitted-at').value = s.submitted_at ? formatDate(s.submitted_at) : '—';
+  document.getElementById('rd-new-filename').textContent = '';
+  document.getElementById('rd-error').textContent = '';
+
+  // File preview
+  const fc = document.getElementById('rd-file-content');
+  if (s.file_url) {
+    if (s.file_type && s.file_type.startsWith('image/')) {
+      fc.innerHTML = `<img src="${esc(s.file_url)}" alt="Submitted file" style="max-width:100%;max-height:240px;object-fit:contain;display:block;border:1px solid var(--border-light);">
+        <a href="${esc(s.file_url)}" target="_blank" rel="noopener" style="display:inline-block;margin-top:8px;font-family:'Lato',sans-serif;font-size:11px;color:var(--navy-light);font-weight:700;">&#8599; Open Full Image</a>`;
+    } else {
+      fc.innerHTML = `<div style="display:flex;align-items:center;gap:12px;padding:10px 0;">
+        <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="var(--navy)" stroke-width="1.5"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14,2 14,8 20,8"/></svg>
+        <a href="${esc(s.file_url)}" target="_blank" rel="noopener" style="font-family:'Lato',sans-serif;font-size:12px;font-weight:700;color:var(--navy-light);text-decoration:underline;">&#8599; View / Download PDF</a>
+      </div>`;
+    }
+  } else {
+    fc.innerHTML = '<em style="font-family:Garamond,serif;color:var(--text-muted);font-size:14px;">No file attached</em>';
+  }
+
+  // Button state
+  const pubBtn = document.getElementById('rd-publish-btn');
+  if (s.status === 'published') {
+    pubBtn.textContent = '✓ Already Published';
+    pubBtn.disabled = true;
+  } else {
+    pubBtn.textContent = '▶ Publish to Herald & Issue Certificate';
+    pubBtn.disabled = false;
+  }
+
+  document.getElementById('review-detail-overlay').classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+
+function closeReviewDetail() {
+  document.getElementById('review-detail-overlay').classList.remove('open');
+  document.body.style.overflow = 'hidden'; // keep editor overlay scroll locked
+  const rdSilent = document.getElementById('rd-silent'); if (rdSilent) rdSilent.checked = false;
+  _activeSubmission = null; _rdNewFile = null;
+}
+function closeReviewDetailOnBg(e) {
+  if (e.target === document.getElementById('review-detail-overlay')) closeReviewDetail();
+}
+
+function handleRdFileSelect(input) {
+  const file = input.files[0];
+  const fn = document.getElementById('rd-new-filename');
+  if (!file) return;
+  if (file.size > 3*1024*1024) { fn.textContent = '✗ Too large (max 3 MB)'; _rdNewFile = null; return; }
+  _rdNewFile = file;
+  fn.textContent = '✓ ' + file.name + ' (' + (file.size/1024/1024).toFixed(2) + ' MB) — will replace on save/publish';
+}
+
+async function saveReviewEdits() {
+  if (!_activeSubmission) return;
+  const btn = document.getElementById('rd-save-btn');
+  const errEl = document.getElementById('rd-error');
+  btn.disabled = true; btn.textContent = 'Saving…'; errEl.textContent = '';
+  try {
+    let file_url = _activeSubmission.file_url;
+    let file_type = _activeSubmission.file_type;
+    // If a new file is selected, upload it first
+    if (_rdNewFile) {
+      const fileName = `submissions/${Date.now()}_${_rdNewFile.name.replace(/[^a-zA-Z0-9._-]/g,'_')}`;
+      const upRes = await fetch(`${SUPABASE_URL}/storage/v1/object/articles/${fileName}`, {
+        method: 'POST', headers: { 'apikey': SUPABASE_KEY, 'Authorization': 'Bearer ' + SUPABASE_KEY,
+          'Content-Type': _rdNewFile.type, 'x-upsert': 'true' }, body: _rdNewFile
+      });
+      if (!upRes.ok) throw new Error('File upload failed');
+      file_url = `${SUPABASE_URL}/storage/v1/object/public/articles/${fileName}`;
+      file_type = _rdNewFile.type;
+    }
+    const updates = {
+      author_name:   sanitizeInput(document.getElementById('rd-author-name').value, 150),
+      author_email:  sanitizeInput(document.getElementById('rd-author-email').value, 200),
+      occupation:    sanitizeInput(document.getElementById('rd-occupation').value, 150),
+      institution:   sanitizeInput(document.getElementById('rd-institution').value, 200),
+      phone:         sanitizeInput(document.getElementById('rd-phone').value, 30),
+      coauthors:     sanitizeInput(document.getElementById('rd-coauthors').value, 200),
+      article_title: sanitizeInput(document.getElementById('rd-article-title').value, 400),
+      category:      document.getElementById('rd-category').value,
+      abstract:      sanitizeInput(document.getElementById('rd-abstract').value, 1500),
+      file_url, file_type
+    };
+    const res = await fetch(`${SUPABASE_URL}/rest/v1/article_submissions?id=eq.${_activeSubmission.id}`, {
+      method: 'PATCH',
+      headers: { ...headers, 'Prefer': 'return=minimal' },
+      body: JSON.stringify(updates)
+    });
+    if (!res.ok) throw new Error('Save failed');
+    // Update local copy
+    Object.assign(_activeSubmission, updates);
+    if (_rdNewFile) { _rdNewFile = null; document.getElementById('rd-new-filename').textContent = ''; }
+    showToast('✓ Edits saved successfully', 2800);
+    loadSubmissions(); // refresh list
+  } catch(e) {
+    errEl.textContent = e.message;
+    console.error('Save edits error:', e);
+  } finally {
+    btn.disabled = false; btn.textContent = '💾 Save Edits';
+  }
+}
+
+async function publishFromReview() {
+  if (!_activeSubmission) return;
+  const pub = document.getElementById('rd-publish-btn');
+  const errEl = document.getElementById('rd-error');
+  const silent = document.getElementById('rd-silent') ? document.getElementById('rd-silent').checked : false;
+  pub.disabled = true; pub.textContent = 'Publishing…'; errEl.textContent = '';
+
+  // First save any edits
+  const authorName   = sanitizeInput(document.getElementById('rd-author-name').value, 150);
+  const authorEmail  = sanitizeInput(document.getElementById('rd-author-email').value, 200);
+  const articleTitle = sanitizeInput(document.getElementById('rd-article-title').value, 400);
+  const cat          = document.getElementById('rd-category').value;
+  const excerpt      = sanitizeInput(document.getElementById('rd-abstract').value, 1500);
+
+  if (!authorName || !articleTitle || !cat) {
+    errEl.textContent = 'Author name, article title, and category are required before publishing.';
+    pub.disabled = false; pub.textContent = '▶ Publish to Herald & Issue Certificate'; return;
+  }
+
+  try {
+    let file_url = _activeSubmission.file_url;
+    let file_type = _activeSubmission.file_type;
+    // Upload new file if replaced
+    if (_rdNewFile) {
+      const fileName = `submissions/${Date.now()}_${_rdNewFile.name.replace(/[^a-zA-Z0-9._-]/g,'_')}`;
+      const upRes = await fetch(`${SUPABASE_URL}/storage/v1/object/articles/${fileName}`, {
+        method: 'POST', headers: { 'apikey': SUPABASE_KEY, 'Authorization': 'Bearer ' + SUPABASE_KEY,
+          'Content-Type': _rdNewFile.type, 'x-upsert': 'true' }, body: _rdNewFile
+      });
+      if (!upRes.ok) throw new Error('File upload failed');
+      file_url = `${SUPABASE_URL}/storage/v1/object/public/articles/${fileName}`;
+      file_type = _rdNewFile.type;
+    }
+
+    // 1. Insert into articles table (goes live)
+    const insertRes = await fetch(`${SUPABASE_URL}/rest/v1/articles`, {
+      method: 'POST',
+      headers: { ...headers, 'Prefer': 'return=representation' },
+      body: JSON.stringify({ title: articleTitle, author: authorName, category: cat, excerpt, file_url, file_type })
+    });
+    if (!insertRes.ok) throw new Error('Article publish failed');
+    const inserted = await insertRes.json();
+    const newArticle = Array.isArray(inserted) ? inserted[0] : inserted;
+
+    // 2. Mark submission as published
+    await fetch(`${SUPABASE_URL}/rest/v1/article_submissions?id=eq.${_activeSubmission.id}`, {
+      method: 'PATCH', headers: { ...headers, 'Prefer': 'return=minimal' },
+      body: JSON.stringify({ status: 'published', article_id: newArticle.id })
+    });
+
+    // 3. Notify subscribers (new article) — unless silent publish
+    if (!silent) {
+      fetch(`${SUPABASE_URL}/functions/v1/notify-subscribers`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + SUPABASE_KEY },
+        body: JSON.stringify({ type: 'new_article', article: newArticle })
+      }).catch(e => console.warn('Subscriber notify failed:', e));
+    }
+
+    // 4. Send certificate to author
+    if (authorEmail) {
+      fetch(`${SUPABASE_URL}/functions/v1/notify-subscribers`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + SUPABASE_KEY },
+        body: JSON.stringify({
+          type: 'author_certificate',
+          author_name: authorName, author_email: authorEmail,
+          article_title: articleTitle, article_category: cat,
+          article_excerpt: excerpt, article_id: newArticle.id,
+          published_at: newArticle.created_at
+        })
+      }).catch(e => console.warn('Certificate email failed:', e));
+    }
+
+    pub.textContent = '✓ Published!'; pub.disabled = true;
+    showToast(silent ? '✓ Published silently — certificate sent to author' : '✓ Article published & certificate sent to author', 3500);
+    closeReviewDetail();
+    await fetchArticles(true);
+    loadSubmissions();
+
+  } catch(e) {
+    errEl.textContent = e.message;
+    pub.disabled = false; pub.textContent = '▶ Publish to Herald & Issue Certificate';
+    console.error('Publish from review error:', e);
+  }
+}
+
+async function deleteSubmission() {
+  if (!_activeSubmission) return;
+  if (!confirm('Delete this submission permanently? This cannot be undone.')) return;
+  const btn = document.getElementById('rd-delete-btn');
+  btn.disabled = true; btn.textContent = 'Deleting…';
+  try {
+    const res = await fetch(`${SUPABASE_URL}/rest/v1/article_submissions?id=eq.${_activeSubmission.id}`, {
+      method: 'DELETE', headers: { ...headers, 'Prefer': 'return=minimal' }
+    });
+    if (!res.ok) throw new Error('Delete failed');
+    showToast('✓ Submission deleted', 2500);
+    closeReviewDetail();
+    loadSubmissions();
+  } catch(e) {
+    document.getElementById('rd-error').textContent = e.message;
+    btn.disabled = false; btn.textContent = '🗑 Delete';
+  }
+}
+
+// Load submission count when editor opens (to show badge)
+const _origOpenUpload = openUpload;
+openUpload = function() {
+  _origOpenUpload();
+  // Load submission badge count in background
+  fetch(`${SUPABASE_URL}/rest/v1/article_submissions?status=eq.pending&select=id`, { headers })
+    .then(r => r.json()).then(data => {
+      const pending = Array.isArray(data) ? data.length : 0;
+      const badge = document.getElementById('review-tab-badge');
+      if (badge) { badge.textContent = pending; badge.style.display = pending > 0 ? 'inline-flex' : 'none'; }
+    }).catch(() => {});
+};
+
+// Reset tab to publish when editor closes
+const _origCloseUpload = closeUpload;
+closeUpload = function() {
+  _origCloseUpload();
+  switchEditorTab('publish');
 };
 </script>
  
