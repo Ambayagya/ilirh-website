@@ -2777,71 +2777,81 @@ if (cw) {
   window.addEventListener('mouseup', () => { _lbxDragging=false; cw.classList.remove('grabbing'); });
   // Scroll zoom
   cw.addEventListener('wheel', e => { e.preventDefault(); e.deltaY < 0 ? lbxZoomIn() : lbxZoomOut(); }, { passive:false });
+  // ── TOUCH: pinch-zoom + pan fully JS-controlled, blocks browser page zoom ──
+  let _lastTap = 0;
+
   cw.addEventListener('touchstart', e => {
+    e.preventDefault(); // prevent iOS/Android from intercepting pinch as page zoom
     if (e.touches.length === 2) {
-      e.preventDefault();
+      _lbxDragging = false;
       _lbxPinchDist = Math.hypot(
         e.touches[0].clientX - e.touches[1].clientX,
         e.touches[0].clientY - e.touches[1].clientY
       );
-      _lbxPinchMidX = (e.touches[0].clientX + e.touches[1].clientX) / 2;
-      _lbxPinchMidY = (e.touches[0].clientY + e.touches[1].clientY) / 2;
     } else if (e.touches.length === 1) {
-      _lbxDragging = true;
-      _lbxLastX = e.touches[0].clientX;
-      _lbxLastY = e.touches[0].clientY;
-    }
-  }, { passive: false });
-  cw.addEventListener('touchmove', e => {
-    e.preventDefault();
-    if (e.touches.length === 2 && _lbxPinchDist) {
-      const d = Math.hypot(
-        e.touches[0].clientX - e.touches[1].clientX,
-        e.touches[0].clientY - e.touches[1].clientY
-      );
-      const ratio = d / _lbxPinchDist;
-      _lbxScale = Math.max(0.5, Math.min(6, _lbxScale * ratio));
-      _lbxPinchDist = d;
-      // Smooth pinch without transition delay
-      const img = document.getElementById('lbx-img');
-      if (img) {
-        img.style.transition = 'none';
-        img.style.transform = `scale(${_lbxScale}) translate(${_lbxX/_lbxScale}px,${_lbxY/_lbxScale}px)`;
-      }
-      const resetBtn = document.getElementById('lbx-reset-btn');
-      if (resetBtn) resetBtn.classList.toggle('zoomed', _lbxScale !== 1);
-    } else if (e.touches.length === 1 && _lbxDragging) {
-      _lbxX += e.touches[0].clientX - _lbxLastX;
-      _lbxY += e.touches[0].clientY - _lbxLastY;
-      _lbxLastX = e.touches[0].clientX;
-      _lbxLastY = e.touches[0].clientY;
-      lbxApply();
-    }
-  }, { passive: false });
-  cw.addEventListener('touchend', e => {
-    // Restore smooth transition after pinch/drag
-    const img = document.getElementById('lbx-img');
-    if (img) img.style.transition = 'transform 0.15s ease';
-    if (e.touches.length === 0) { _lbxDragging = false; _lbxPinchDist = null; }
-    else if (e.touches.length === 1) {
       _lbxDragging = true;
       _lbxLastX = e.touches[0].clientX;
       _lbxLastY = e.touches[0].clientY;
       _lbxPinchDist = null;
     }
-  }, { passive: true });
-  // Double-tap to zoom in/reset on mobile
-  let _lastTap = 0;
-  cw.addEventListener('touchend', e => {
-    if (e.changedTouches.length !== 1) return;
-    const now = Date.now();
-    if (now - _lastTap < 320) {
-      e.preventDefault();
-      _lbxScale === 1 ? lbxZoomIn() : lbxReset();
+  }, { passive: false });
+
+  cw.addEventListener('touchmove', e => {
+    e.preventDefault(); // block page scroll/zoom at all times inside lightbox
+    const img = document.getElementById('lbx-img');
+    if (e.touches.length === 2 && _lbxPinchDist !== null) {
+      const d = Math.hypot(
+        e.touches[0].clientX - e.touches[1].clientX,
+        e.touches[0].clientY - e.touches[1].clientY
+      );
+      _lbxScale = Math.max(0.5, Math.min(8, _lbxScale * (d / _lbxPinchDist)));
+      _lbxPinchDist = d;
+      if (img) {
+        img.style.transition = 'none';
+        img.style.transform = `scale(${_lbxScale}) translate(${_lbxX/_lbxScale}px,${_lbxY/_lbxScale}px)`;
+      }
+      const rb = document.getElementById('lbx-reset-btn');
+      if (rb) rb.classList.toggle('zoomed', _lbxScale !== 1);
+    } else if (e.touches.length === 1 && _lbxDragging) {
+      _lbxX += e.touches[0].clientX - _lbxLastX;
+      _lbxY += e.touches[0].clientY - _lbxLastY;
+      _lbxLastX = e.touches[0].clientX;
+      _lbxLastY = e.touches[0].clientY;
+      if (img) {
+        img.style.transition = 'none';
+        img.style.transform = `scale(${_lbxScale}) translate(${_lbxX/_lbxScale}px,${_lbxY/_lbxScale}px)`;
+      }
     }
-    _lastTap = now;
+  }, { passive: false });
+
+  cw.addEventListener('touchend', e => {
+    e.preventDefault();
+    const img = document.getElementById('lbx-img');
+    if (img) img.style.transition = 'transform 0.15s ease';
+    if (e.touches.length === 0) {
+      // double-tap detection
+      const now = Date.now();
+      if (e.changedTouches.length === 1 && now - _lastTap < 300) {
+        _lbxScale === 1 ? lbxZoomIn() : lbxReset();
+      }
+      _lastTap = now;
+      _lbxDragging = false;
+      _lbxPinchDist = null;
+    } else if (e.touches.length === 1) {
+      _lbxDragging = true;
+      _lbxLastX = e.touches[0].clientX;
+      _lbxLastY = e.touches[0].clientY;
+      _lbxPinchDist = null;
+    }
   }, { passive: false });
 }
+// Block document-level touch zoom when lightbox is open (iOS Safari extra guard)
+document.addEventListener('touchmove', e => {
+  if (document.getElementById('image-lightbox').classList.contains('open')) {
+    e.preventDefault();
+  }
+}, { passive: false });
+
 // Keyboard
 document.addEventListener('keydown', e => {
   if (!document.getElementById('image-lightbox').classList.contains('open')) return;
