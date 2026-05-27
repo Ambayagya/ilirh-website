@@ -3046,12 +3046,9 @@ function printArticle() {
   const cat = document.getElementById('modal-cat').textContent;
   // Remove iframes from print content (PDFs don't print well in iframe)
   const printContent = content.replace(/<iframe[^>]*>.*?<\/iframe>/gi, '<p style="color:#666;font-style:italic;">[PDF attachment — open the article online to view the full document]</p>');
-  const win = window.open('', '_blank', 'width=800,height=900,scrollbars=yes');
-  if (!win) {
-    showToast('✗ Please allow popups to print this article', 4000);
-    return;
-  }
-  win.document.write(`<!DOCTYPE html><html><head><meta charset="UTF-8"><title>${title} — ILIRH</title>
+
+  // Build the full HTML for the print document
+  const htmlContent = `<!DOCTYPE html><html><head><meta charset="UTF-8"><title>${title} — ILIRH</title>
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=EB+Garamond:ital,wght@0,400;1,400&family=Lato:wght@400;700&display=swap" rel="stylesheet">
     <style>
       body{font-family:'EB Garamond',Georgia,serif;font-size:16px;line-height:1.8;max-width:680px;margin:40px auto;padding:0 24px;color:#111;}
@@ -3068,16 +3065,41 @@ function printArticle() {
     <div class="byline">${byline}</div>
     <div>${printContent}</div>
     <div class="brand">The International Legal Inteligencia Research Herald, India &nbsp;&bull;&nbsp; ilirh.in</div>
-    <script>
-      // Wait for fonts/images to load then print
-      window.addEventListener('load', function() {
-        setTimeout(function() { window.print(); }, 800);
-      });
-      // Fallback if load fires late
-      setTimeout(function() { if (document.readyState === 'complete') window.print(); }, 2000);
-    <\/script>
-  </body></html>`);
-  win.document.close();
+  </body></html>`;
+
+  // ── No-popup approach: inject a hidden iframe into the current page ──
+  // Remove any previous print iframe
+  const old = document.getElementById('_print_iframe');
+  if (old) old.remove();
+
+  const iframe = document.createElement('iframe');
+  iframe.id = '_print_iframe';
+  iframe.style.cssText = 'position:fixed;top:-9999px;left:-9999px;width:1px;height:1px;border:none;visibility:hidden;';
+  document.body.appendChild(iframe);
+
+  iframe.onload = function() {
+    // Small delay to allow fonts/images inside iframe to settle
+    setTimeout(function() {
+      try {
+        iframe.contentWindow.focus();
+        iframe.contentWindow.print();
+      } catch(e) {
+        // Last-resort fallback: try window.open (user can allow popup at this point)
+        const win = window.open('', '_blank', 'width=800,height=900,scrollbars=yes');
+        if (win) {
+          win.document.write(htmlContent);
+          win.document.close();
+        } else {
+          showToast('✗ Print failed. Please allow popups for this site.', 5000);
+        }
+      }
+    }, 800);
+  };
+
+  // Write content into the iframe — no popup needed
+  iframe.contentDocument.open();
+  iframe.contentDocument.write(htmlContent);
+  iframe.contentDocument.close();
 }
  
 // ── FONT SIZE CYCLE in modal ──
