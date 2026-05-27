@@ -284,23 +284,21 @@ footer { background:var(--navy); color:#8fa4bf; padding:36px 32px 20px; margin-t
 /* ── DEEP ZOOM LIGHTBOX UPGRADE ── */
 #image-lightbox { display:none; position:fixed; inset:0; z-index:2000; background:rgba(5,12,24,0.97); overflow:hidden; }
 #image-lightbox.open { display:flex; align-items:center; justify-content:center; }
-.lbx-toolbar { position:fixed; top:0; left:0; right:0; display:flex; align-items:center; justify-content:space-between; padding:14px 20px; background:linear-gradient(rgba(5,12,24,0.95),rgba(5,12,24,0.6)); z-index:2010; }
+.lbx-toolbar { position:fixed; top:0; left:0; right:0; display:flex; align-items:center; justify-content:space-between; padding:14px 20px; background:rgba(5,12,24,0.92); z-index:2010; }
 .lbx-btns { display:flex; gap:8px; }
 .lbx-btn { background:rgba(255,255,255,0.12); border:1px solid rgba(255,255,255,0.18); color:#f7f4ef; font-family:'Lato',sans-serif; font-size:11px; letter-spacing:0.1em; text-transform:uppercase; padding:7px 14px; cursor:pointer; transition:background 0.2s; border-radius:2px; }
 .lbx-btn:hover { background:rgba(212,175,106,0.3); border-color:var(--gold); color:var(--gold-light); }
 .lbx-btn.active { background:rgba(184,150,62,0.35); border-color:var(--gold); color:var(--gold-light); }
-.lbx-btn.zoomed { background:rgba(184,150,62,0.45); border-color:var(--gold-light); color:var(--gold-light); box-shadow:0 0 0 2px rgba(184,150,62,0.3); animation:lbx-reset-pulse 1.8s ease-in-out infinite; }
-@keyframes lbx-reset-pulse { 0%,100%{box-shadow:0 0 0 2px rgba(184,150,62,0.3);} 50%{box-shadow:0 0 0 5px rgba(184,150,62,0.0);} }
 .lbx-close-btn { background:none; border:none; color:#f7f4ef; font-size:30px; cursor:pointer; line-height:1; padding:0 4px; transition:color 0.2s; }
 .lbx-close-btn:hover { color:var(--gold-light); }
-.lbx-hint { position:fixed; bottom:20px; left:50%; transform:translateX(-50%); background:rgba(5,12,24,0.75); color:#a8b8cc; font-family:'Lato',sans-serif; font-size:11px; letter-spacing:0.08em; padding:6px 16px; border-radius:20px; pointer-events:none; white-space:nowrap; transition:opacity 0.5s; z-index:2010; }
+.lbx-hint { position:fixed; bottom:20px; left:50%; transform:translateX(-50%); background:rgba(5,12,24,0.75); color:#a8b8cc; font-family:'Lato',sans-serif; font-size:11px; letter-spacing:0.08em; padding:6px 16px; border-radius:20px; pointer-events:none; white-space:nowrap; transition:opacity 0.5s; }
 #lbx-canvas-wrap { width:100%; height:100vh; display:flex; align-items:center; justify-content:center; overflow:hidden; cursor:grab; touch-action:none; }
 #lbx-canvas-wrap.grabbing { cursor:grabbing; }
 #lbx-canvas-wrap.zoom-in { cursor:zoom-in; }
 #lbx-canvas-wrap.zoom-out { cursor:zoom-out; }
 #lbx-img { max-width:92vw; max-height:88vh; object-fit:contain; transform-origin:center center; transition:transform 0.15s ease; will-change:transform; display:block; border:1px solid rgba(255,255,255,0.06); user-select:none; -webkit-user-drag:none; touch-action:none; }
-#lbx-nav-prev, #lbx-nav-next { position:fixed; top:50%; transform:translateY(-50%); background:rgba(5,12,24,0.7); border:1px solid rgba(255,255,255,0.15); color:#f7f4ef; font-size:22px; width:44px; height:64px; cursor:pointer; display:flex; align-items:center; justify-content:center; transition:background 0.2s,border-color 0.2s; z-index:2010; }
-#lbx-nav-prev { left:12px; transform:translateY(-50%); }
+#lbx-nav-prev, #lbx-nav-next { position:fixed; top:50%; transform:translateY(-50%); background:rgba(5,12,24,0.7); border:1px solid rgba(255,255,255,0.15); color:#f7f4ef; font-size:22px; width:44px; height:64px; cursor:pointer; display:flex; align-items:center; justify-content:center; transition:background 0.2s,border-color 0.2s; z-index:10; }
+#lbx-nav-prev { left:12px; }
 #lbx-nav-next { right:12px; }
 #lbx-nav-prev:hover, #lbx-nav-next:hover { background:rgba(184,150,62,0.25); border-color:var(--gold); }
 #lbx-nav-prev.hidden, #lbx-nav-next.hidden { display:none; }
@@ -2727,9 +2725,9 @@ function nextSpot() { goSpot(Math.min(window._spotMax||0, window._spotIdx + 1));
 // ── DEEP ZOOM LIGHTBOX ──
 let _lbxScale = 1, _lbxX = 0, _lbxY = 0;
 let _lbxDragging = false, _lbxLastX = 0, _lbxLastY = 0;
-let _lbxPinchDist = null, _lbxPinchMidX = 0, _lbxPinchMidY = 0;
+let _lbxPinchDist = null;
 let _lbxImages = [], _lbxCurIdx = 0;
- 
+
 function openLightbox(imgSrc, allImages, idx) {
   _lbxImages = allImages || [imgSrc];
   _lbxCurIdx = idx || 0;
@@ -2758,30 +2756,35 @@ function closeLightbox() {
   document.body.style.overflow = '';
   lbxReset();
 }
-function lbxBgClick(e) { if (e.target === document.getElementById('image-lightbox') || e.target === document.getElementById('lbx-canvas-wrap')) closeLightbox(); }
+function lbxBgClick(e) {
+  if (e.target === document.getElementById('image-lightbox') || e.target === document.getElementById('lbx-canvas-wrap')) closeLightbox();
+}
 function lbxApply() {
   const img = document.getElementById('lbx-img');
   if (!img) return;
   img.style.transform = `scale(${_lbxScale}) translate(${_lbxX/_lbxScale}px,${_lbxY/_lbxScale}px)`;
-  const resetBtn = document.getElementById('lbx-reset-btn');
-  if (resetBtn) resetBtn.classList.toggle('zoomed', _lbxScale !== 1);
+  // Highlight reset button when zoomed
+  const rb = document.getElementById('lbx-reset-btn');
+  if (rb) rb.style.borderColor = (_lbxScale !== 1) ? 'var(--gold)' : '';
 }
 function lbxZoomIn()  { _lbxScale = Math.min(6, _lbxScale * 1.4); lbxApply(); }
-function lbxZoomOut() { _lbxScale = Math.max(0.5, _lbxScale / 1.4); if (_lbxScale <= 1) { _lbxX=0; _lbxY=0; } lbxApply(); }
-function lbxReset()   { _lbxScale=1; _lbxX=0; _lbxY=0; lbxApply(); const resetBtn = document.getElementById('lbx-reset-btn'); if (resetBtn) resetBtn.classList.remove('zoomed'); }
-// Mouse drag
+function lbxZoomOut() { _lbxScale = Math.max(1, _lbxScale / 1.4); if (_lbxScale <= 1) { _lbxX=0; _lbxY=0; } lbxApply(); }
+function lbxReset()   { _lbxScale=1; _lbxX=0; _lbxY=0; lbxApply(); }
+
 const cw = document.getElementById('lbx-canvas-wrap');
 if (cw) {
-  cw.addEventListener('mousedown', e => { _lbxDragging=true; _lbxLastX=e.clientX; _lbxLastY=e.clientY; cw.classList.add('grabbing'); });
+  // ── Mouse drag ──
+  cw.addEventListener('mousedown', e => { _lbxDragging=true; _lbxLastX=e.clientX; _lbxLastY=e.clientY; cw.classList.add('grabbing'); e.preventDefault(); });
   window.addEventListener('mousemove', e => { if (!_lbxDragging) return; _lbxX+=e.clientX-_lbxLastX; _lbxY+=e.clientY-_lbxLastY; _lbxLastX=e.clientX; _lbxLastY=e.clientY; lbxApply(); });
   window.addEventListener('mouseup', () => { _lbxDragging=false; cw.classList.remove('grabbing'); });
-  // Scroll zoom
+  // ── Scroll wheel zoom ──
   cw.addEventListener('wheel', e => { e.preventDefault(); e.deltaY < 0 ? lbxZoomIn() : lbxZoomOut(); }, { passive:false });
-  // ── TOUCH: pinch-zoom + pan fully JS-controlled, blocks browser page zoom ──
+
+  // ── Touch: pinch to zoom + single-finger pan ──
   let _lastTap = 0;
 
   cw.addEventListener('touchstart', e => {
-    e.preventDefault(); // prevent iOS/Android from intercepting pinch as page zoom
+    e.preventDefault(); // stops browser from doing its own page zoom
     if (e.touches.length === 2) {
       _lbxDragging = false;
       _lbxPinchDist = Math.hypot(
@@ -2792,26 +2795,25 @@ if (cw) {
       _lbxDragging = true;
       _lbxLastX = e.touches[0].clientX;
       _lbxLastY = e.touches[0].clientY;
-      _lbxPinchDist = null;
     }
   }, { passive: false });
 
   cw.addEventListener('touchmove', e => {
-    e.preventDefault(); // block page scroll/zoom at all times inside lightbox
+    e.preventDefault(); // stops page scroll while inside lightbox
     const img = document.getElementById('lbx-img');
     if (e.touches.length === 2 && _lbxPinchDist !== null) {
       const d = Math.hypot(
         e.touches[0].clientX - e.touches[1].clientX,
         e.touches[0].clientY - e.touches[1].clientY
       );
-      _lbxScale = Math.max(0.5, Math.min(8, _lbxScale * (d / _lbxPinchDist)));
+      _lbxScale = Math.max(1, Math.min(8, _lbxScale * (d / _lbxPinchDist)));
       _lbxPinchDist = d;
       if (img) {
         img.style.transition = 'none';
         img.style.transform = `scale(${_lbxScale}) translate(${_lbxX/_lbxScale}px,${_lbxY/_lbxScale}px)`;
       }
       const rb = document.getElementById('lbx-reset-btn');
-      if (rb) rb.classList.toggle('zoomed', _lbxScale !== 1);
+      if (rb) rb.style.borderColor = (_lbxScale > 1) ? 'var(--gold)' : '';
     } else if (e.touches.length === 1 && _lbxDragging) {
       _lbxX += e.touches[0].clientX - _lbxLastX;
       _lbxY += e.touches[0].clientY - _lbxLastY;
@@ -2829,10 +2831,10 @@ if (cw) {
     const img = document.getElementById('lbx-img');
     if (img) img.style.transition = 'transform 0.15s ease';
     if (e.touches.length === 0) {
-      // double-tap detection
+      // Double-tap: zoom in or reset
       const now = Date.now();
       if (e.changedTouches.length === 1 && now - _lastTap < 300) {
-        _lbxScale === 1 ? lbxZoomIn() : lbxReset();
+        _lbxScale > 1 ? lbxReset() : lbxZoomIn();
       }
       _lastTap = now;
       _lbxDragging = false;
@@ -2845,26 +2847,8 @@ if (cw) {
     }
   }, { passive: false });
 }
-// ── BLOCK ALL BROWSER-NATIVE ZOOM when lightbox is open ──
-// This fires BEFORE the element-level handlers, catching the pinch at the earliest possible point
-function _lbxIsOpen() { return document.getElementById('image-lightbox').classList.contains('open'); }
 
-// Block touchstart at document level (iOS Safari: prevents native pinch from ever starting)
-document.addEventListener('touchstart', e => {
-  if (_lbxIsOpen()) e.preventDefault();
-}, { passive: false });
-
-// Block touchmove at document level
-document.addEventListener('touchmove', e => {
-  if (_lbxIsOpen()) e.preventDefault();
-}, { passive: false });
-
-// Block GestureEvent — Safari-specific API that fires for pinch/rotate before touch events
-document.addEventListener('gesturestart',  e => { if (_lbxIsOpen()) e.preventDefault(); }, { passive: false });
-document.addEventListener('gesturechange', e => { if (_lbxIsOpen()) e.preventDefault(); }, { passive: false });
-document.addEventListener('gestureend',    e => { if (_lbxIsOpen()) e.preventDefault(); }, { passive: false });
-
-// Keyboard
+// ── Keyboard shortcuts ──
 document.addEventListener('keydown', e => {
   if (!document.getElementById('image-lightbox').classList.contains('open')) return;
   if (e.key==='Escape') closeLightbox();
