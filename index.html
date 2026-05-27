@@ -62,9 +62,12 @@ body { background:var(--offwhite); color:var(--text-primary); font-family:'EB Ga
 /* NAV */
 #main-nav { background:var(--navy); position:sticky; top:0; z-index:100; border-bottom:2px solid var(--gold); }
 .nav-inner { max-width:1100px; margin:0 auto; display:flex; align-items:center; }
-.nav-logo { font-family:'Cinzel',Georgia,serif; font-size:20px; font-weight:700; letter-spacing:0.08em; color:var(--gold-light); padding:10px 20px 10px 16px; border-right:1px solid rgba(255,255,255,0.12); white-space:nowrap; cursor:pointer; transition:color 0.2s; display:none; text-decoration:none; }
+.nav-logo { font-family:'Cinzel',Georgia,serif; font-size:20px; font-weight:700; letter-spacing:0.08em; color:var(--gold-light); padding:10px 20px 10px 16px; border-right:1px solid rgba(255,255,255,0.12); white-space:nowrap; cursor:pointer; display:block; text-decoration:none;
+  opacity:0; transform:translateX(-8px); pointer-events:none;
+  transition:opacity 0.35s ease, transform 0.35s ease, color 0.2s;
+}
 .nav-logo:hover { color:#fff; }
-.nav-logo.visible { display:block; }
+.nav-logo.visible { opacity:1; transform:translateX(0); pointer-events:auto; }
 .nav-links { display:flex; align-items:center; flex:1; overflow-x:auto; scrollbar-width:none; }
 .nav-links::-webkit-scrollbar { display:none; }
 .nav-links a { color:#c5d2e0; text-decoration:none; font-family:'Lato',sans-serif; font-size:11.5px; letter-spacing:0.1em; text-transform:uppercase; padding:13px 16px; white-space:nowrap; border-bottom:2px solid transparent; transition:color 0.2s,border-color 0.2s; }
@@ -685,18 +688,26 @@ body.dark-mode .share-btn:hover { border-color:#8fa8c0; color:#c8d8ea; }
 .spotlight-kicker { font-family:'Lato',sans-serif; font-size:10px; font-weight:700; letter-spacing:0.2em; text-transform:uppercase; color:var(--gold); }
 .spotlight-title { font-family:'Playfair Display',serif; font-size:20px; font-weight:700; color:var(--navy); }
 .spotlight-nav { display:flex; gap:6px; }
-.spot-nav-btn { background:var(--navy); border:none; color:#c5d2e0; width:28px; height:28px; cursor:pointer; font-size:14px; transition:background 0.2s; }
+.spot-nav-btn { background:var(--navy); border:none; color:#c5d2e0; width:32px; height:32px; cursor:pointer; font-size:18px; line-height:1; transition:background 0.2s; border-radius:2px; }
 .spot-nav-btn:hover { background:var(--gold); color:var(--navy); }
 .spotlight-track-wrap { overflow:hidden; }
 .spotlight-track { display:flex; gap:0; transition:transform 0.45s cubic-bezier(.22,1,.36,1); }
-.spotlight-slide { min-width:100%; display:grid; grid-template-columns:auto 1fr; gap:24px; padding:4px 0; }
+.spotlight-slide { min-width:100%; display:flex; flex-direction:row; gap:22px; padding:12px 4px; align-items:flex-start; }
+.spotlight-slide-img { width:160px; height:160px; overflow:hidden; border:2px solid var(--gold); flex-shrink:0; cursor:pointer; }
+.spotlight-slide-img img { width:100%; height:100%; object-fit:cover; }
+.spotlight-slide-body { flex:1; min-width:0; }
 .spotlight-badge { background:var(--gold); color:var(--navy); font-family:'Lato',sans-serif; font-size:9px; font-weight:700; letter-spacing:0.18em; text-transform:uppercase; padding:4px 10px; display:inline-block; margin-bottom:8px; }
-.spotlight-paper-title { font-family:'Playfair Display',serif; font-size:clamp(18px,2.5vw,26px); font-weight:700; color:var(--navy); line-height:1.2; margin-bottom:8px; cursor:pointer; }
+.spotlight-paper-title { font-family:'Playfair Display',serif; font-size:clamp(16px,2.5vw,24px); font-weight:700; color:var(--navy); line-height:1.25; margin-bottom:8px; cursor:pointer; }
 .spotlight-paper-title:hover { text-decoration:underline; text-decoration-color:var(--gold); }
 .spotlight-dots { display:flex; gap:6px; margin-top:14px; }
-.spot-dot { width:8px; height:8px; background:var(--border); border:none; cursor:pointer; transition:background 0.2s; padding:0; }
-.spot-dot.active { background:var(--gold); width:20px; }
-@media(max-width:600px){.spotlight-slide{grid-template-columns:1fr;}.spotlight-img{display:none;}}
+.spot-dot { width:8px; height:8px; background:var(--border); border:none; cursor:pointer; transition:background 0.2s, width 0.2s; padding:0; border-radius:1px; }
+.spot-dot.active { background:var(--gold); width:22px; }
+@media(max-width:600px) {
+  .spotlight-slide { flex-direction:column; gap:14px; padding:10px 2px; }
+  .spotlight-slide-img { width:100%; height:200px; }
+  .spotlight-slide-img img { width:100%; height:100%; object-fit:cover; }
+  .spotlight-paper-title { font-size:clamp(15px,4vw,20px); }
+}
  
 /* ── HOVER FOOTNOTE ── */
 .fn-ref { color:var(--navy-light); text-decoration:none; font-size:0.75em; vertical-align:super; cursor:pointer; position:relative; }
@@ -740,9 +751,9 @@ body.dark-mode .share-btn:hover { border-color:#8fa8c0; color:#c8d8ea; }
   .hero-main { padding-right:0; border-right:none; border-bottom:1px solid var(--border); padding-bottom:20px; margin-bottom:20px; }
   .hero-sidebar { padding-left:0; }
   .articles-row { grid-template-columns:1fr; }
-  .modal-box { padding:28px 20px 32px; }
-  .upload-box { padding:24px 20px; }
-  .about-box { padding:28px 20px 32px; }
+  .modal-box { padding:22px 16px 28px; }
+  .upload-box { padding:20px 16px; }
+  .about-box { padding:22px 16px 28px; }
   .footer-top { grid-template-columns:1fr; gap:20px; }
   .topbar { display:none; }
   .hamburger { display:block !important; }
@@ -761,7 +772,14 @@ body.dark-mode .share-btn:hover { border-color:#8fa8c0; color:#c8d8ea; }
   }
   .nav-links.mob-open { display:flex; }
   .nav-links a { padding:13px 20px; border-bottom:1px solid rgba(255,255,255,0.07); border-bottom-color:rgba(255,255,255,0.07); white-space:normal; }
-}
+  /* Join/login boxes full width on mobile */
+  .join-box { width:calc(100vw - 32px); padding:28px 20px 24px; }
+  .login-box { width:calc(100vw - 48px); max-width:360px; padding:28px 24px 24px; }
+  /* Article cards row: 2 column on tablet */
+  }
+  @media (min-width:480px) and (max-width:768px) {
+  .articles-row { grid-template-columns:1fr 1fr; }
+  }
  
   /* ── POLICY MODAL ── */
   .policy-overlay { display:none; position:fixed; inset:0; background:rgba(5,12,24,0.85); z-index:1002; overflow-y:auto; padding:32px 16px; }
@@ -1005,6 +1023,62 @@ button:focus-visible, a:focus-visible, input:focus-visible {
 /* ── MODAL OPEN/CLOSE animation override for category filter ── */
 #hero-section { transition:opacity 0.25s ease; }
 
+/* ── MODAL NAV PREV/NEXT ARROWS ── */
+.modal-nav-row {
+  display:flex; justify-content:space-between; align-items:center;
+  padding:10px 0 2px; gap:8px;
+}
+.modal-nav-btn {
+  background:var(--navy); color:var(--gold-light); border:1px solid var(--gold);
+  font-family:'Lato',sans-serif; font-size:12px; font-weight:700; letter-spacing:0.1em;
+  text-transform:uppercase; padding:8px 18px; cursor:pointer;
+  transition:background 0.18s, color 0.18s; flex:1; max-width:160px;
+}
+.modal-nav-btn:hover { background:var(--gold); color:var(--navy); }
+.modal-nav-btn.hidden { visibility:hidden; pointer-events:none; }
+@media(max-width:768px) {
+  .modal-nav-btn { font-size:11px; padding:7px 12px; }
+}
+
+/* ── NAV LOGO SMOOTH FADE TRANSITION ── */
+.nav-logo {
+  transition: opacity 0.35s ease, transform 0.35s ease, color 0.2s;
+  opacity: 0; transform: translateX(-8px); display:block !important;
+  pointer-events:none;
+}
+.nav-logo.visible { opacity:1; transform:translateX(0); pointer-events:auto; }
+
+/* ── SPOTLIGHT MOBILE IMPROVEMENTS ── */
+@media(max-width:768px) {
+  .spotlight-slide {
+    flex-direction:column !important;
+    align-items:flex-start !important;
+    gap:14px !important;
+    padding:18px 16px !important;
+  }
+  .spotlight-slide > div:first-child {
+    width:100% !important; height:200px !important; align-self:stretch;
+  }
+  .spotlight-slide > div:first-child img {
+    width:100% !important; height:100% !important; object-fit:cover;
+  }
+  .spotlight-paper-title {
+    font-size:clamp(16px,4vw,20px) !important;
+    line-height:1.3 !important;
+  }
+}
+
+/* ── CARD THUMB CLICK CURSOR (images & PDFs) ── */
+.card-thumb-wrap { cursor:pointer; }
+.card-thumb-placeholder { cursor:pointer; }
+
+/* ── HERO IMAGE CURSOR ── */
+.hero-main img { cursor:pointer; }
+
+/* ── PREVENT SCROLL WHILE PINCH ZOOM IN LIGHTBOX ── */
+#image-lightbox { touch-action:none; }
+#lbx-canvas-wrap { touch-action:none; }
+
 </style>
 </head>
 <body>
@@ -1060,11 +1134,11 @@ button:focus-visible, a:focus-visible, input:focus-visible {
     <button class="hamburger" id="ham-btn" onclick="toggleNav()" aria-label="Open menu">&#9776;</button>
     <div class="nav-links" id="nav-links">
       <a href="#" onclick="filterCat('all');return false;" class="active" data-cat="all">Home</a>
-      <a href="#" onclick="filterCat('Law');return false;" data-cat="Law">Law</a>
-      <a href="#" onclick="filterCat('Education');return false;" data-cat="Education">Education</a>
-      <a href="#" onclick="filterCat('Vedic Science');return false;" data-cat="Vedic Science">Vedic Science</a>
-      <a href="#" onclick="filterCat('Political');return false;" data-cat="Political">Political</a>
-      <a href="#" onclick="filterCat('Gen-Z Desk');return false;" data-cat="Gen-Z Desk">Gen-Z Desk</a>
+      <a href="#" onclick="filterCatAndScroll('Law');return false;" data-cat="Law">Law</a>
+      <a href="#" onclick="filterCatAndScroll('Education');return false;" data-cat="Education">Education</a>
+      <a href="#" onclick="filterCatAndScroll('Vedic Science');return false;" data-cat="Vedic Science">Vedic Science</a>
+      <a href="#" onclick="filterCatAndScroll('Political');return false;" data-cat="Political">Political</a>
+      <a href="#" onclick="filterCatAndScroll('Gen-Z Desk');return false;" data-cat="Gen-Z Desk">Gen-Z Desk</a>
       <a href="#" onclick="openAbout();return false;" data-cat="about">About</a>
       <a href="#" onclick="openPolicy('support');return false;" data-cat="support">Support</a>
     </div>
@@ -1167,11 +1241,11 @@ button:focus-visible, a:focus-visible, input:focus-visible {
       </div>
       <div class="footer-col">
         <h4>Categories</h4>
-        <a href="#" onclick="filterCat('Law');return false;">Law</a>
-        <a href="#" onclick="filterCat('Education');return false;">Education</a>
-        <a href="#" onclick="filterCat('Vedic Science');return false;">Vedic Science</a>
-        <a href="#" onclick="filterCat('Political');return false;">Political</a>
-        <a href="#" onclick="filterCat('Gen-Z Desk');return false;">Gen-Z Desk</a>
+        <a href="#" onclick="filterCatAndScroll('Law');return false;">Law</a>
+        <a href="#" onclick="filterCatAndScroll('Education');return false;">Education</a>
+        <a href="#" onclick="filterCatAndScroll('Vedic Science');return false;">Vedic Science</a>
+        <a href="#" onclick="filterCatAndScroll('Political');return false;">Political</a>
+        <a href="#" onclick="filterCatAndScroll('Gen-Z Desk');return false;">Gen-Z Desk</a>
       </div>
       <div class="footer-col">
         <h4>About</h4>
@@ -1298,7 +1372,12 @@ button:focus-visible, a:focus-visible, input:focus-visible {
       </button>
       <!-- read-time removed -->
     </div>
-    <div class="modal-swipe-hint">← swipe to navigate articles →</div>
+    <div class="modal-swipe-hint" style="display:none;"></div>
+    <!-- Article nav arrows -->
+    <div class="modal-nav-row" id="modal-nav-row">
+      <button class="modal-nav-btn" id="modal-nav-prev" onclick="navigateArticle(-1)" title="Previous article">&#8249; Prev</button>
+      <button class="modal-nav-btn" id="modal-nav-next" onclick="navigateArticle(1)" title="Next article">Next &#8250;</button>
+    </div>
     <div class="modal-content" id="modal-content"></div>
     <div style="display:flex;align-items:center;justify-content:space-between;padding-top:16px;margin-top:4px;border-top:1px solid var(--border-light);flex-wrap:wrap;gap:10px;">
       <div id="modal-like-wrap"></div>
@@ -1500,8 +1579,8 @@ function readTime(text) {
  
 function cardThumbHtml(article) {
   if (article.file_url && article.file_type && article.file_type.startsWith('image/')) {
-    // Use data-src for lazy loading via IntersectionObserver
-    return `<div class="card-thumb-wrap"><img data-src="${article.file_url}" loading="lazy" decoding="async" alt="${esc(article.title)}" width="400" height="267"></div>`;
+    // Image: clicking thumb opens lightbox directly
+    return `<div class="card-thumb-wrap" onclick="event.stopPropagation();openLightbox('${article.file_url}',['${article.file_url}'],0)" title="Click to enlarge"><img data-src="${article.file_url}" loading="lazy" decoding="async" alt="${esc(article.title)}" width="400" height="267"></div>`;
   }
   const icon = article.file_type === 'application/pdf'
     ? `<svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="#0a1628" stroke-width="1.5"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14,2 14,8 20,8"/><line x1="9" y1="13" x2="15" y2="13"/><line x1="9" y1="17" x2="15" y2="17"/></svg>`
@@ -1511,7 +1590,7 @@ function cardThumbHtml(article) {
  
 function heroThumbHtml(article) {
   if (article.file_url && article.file_type && article.file_type.startsWith('image/')) {
-    return `<img src="${article.file_url}" alt="${esc(article.title)}" loading="lazy" decoding="async" style="width:100%;aspect-ratio:4/3;object-fit:cover;border:1px solid var(--border-light);margin-bottom:14px;display:block;opacity:0;transition:opacity 0.45s ease;" onload="this.style.opacity=1">`;
+    return `<img src="${article.file_url}" alt="${esc(article.title)}" loading="lazy" decoding="async" style="width:100%;aspect-ratio:4/3;object-fit:cover;border:1px solid var(--border-light);margin-bottom:14px;display:block;opacity:0;transition:opacity 0.45s ease;cursor:zoom-in;" onload="this.style.opacity=1" onclick="openLightbox('${article.file_url}',['${article.file_url}'],0)" title="Click to enlarge">`;
   }
   return `<div style="width:100%;aspect-ratio:4/3;background:var(--cream-dark);display:flex;align-items:center;justify-content:center;margin-bottom:14px;border:1px solid var(--border);opacity:0.4;">
     <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="#0a1628" stroke-width="1.2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14,2 14,8 20,8"/></svg>
@@ -1677,6 +1756,23 @@ function filterCat(cat) {
   render();
   window.scrollTo({ top: document.getElementById('main-nav').offsetTop - 2, behavior:'smooth' });
 }
+
+// Category nav: filter + scroll to top of that category section
+function filterCatAndScroll(cat) {
+  currentCat = cat;
+  document.querySelectorAll('.nav-links a').forEach(a => a.classList.toggle('active', a.dataset.cat === cat));
+  const navLinks = document.getElementById('nav-links');
+  if (navLinks) navLinks.classList.remove('mob-open');
+  render();
+  requestAnimationFrame(() => requestAnimationFrame(() => {
+    setTimeout(() => {
+      const navH = (document.getElementById('main-nav') || {}).offsetHeight || 52;
+      // Scroll to just below the nav
+      const target = document.getElementById('main-nav').offsetTop + navH + 4;
+      window.scrollTo({ top: target, behavior: 'smooth' });
+    }, 80);
+  }));
+}
  
 // ── OPEN ARTICLE ──
 async function openArticle(id, navDir) {
@@ -1709,8 +1805,40 @@ async function openArticle(id, navDir) {
     box.classList.add(navDir === 'left' ? 'nav-anim-left' : 'nav-anim-right');
     setTimeout(() => box.classList.remove('nav-anim-left','nav-anim-right'), 300);
   }
+  // Update prev/next nav buttons
+  updateModalNavBtns(id);
   document.getElementById('article-modal').classList.add('open');
   document.body.style.overflow = 'hidden';
+}
+
+function updateModalNavBtns(id) {
+  const idx = articles.findIndex(x => x.id === id);
+  const prevBtn = document.getElementById('modal-nav-prev');
+  const nextBtn = document.getElementById('modal-nav-next');
+  if (prevBtn) prevBtn.classList.toggle('hidden', idx <= 0);
+  if (nextBtn) nextBtn.classList.toggle('hidden', idx < 0 || idx >= articles.length - 1);
+}
+
+function navigateArticle(dir) {
+  const idx = articles.findIndex(x => x.id === _openArticleId);
+  if (idx === -1) return;
+  const nextIdx = idx + dir;
+  if (nextIdx < 0 || nextIdx >= articles.length) return;
+  const box = document.querySelector('.modal-box');
+  if (box) {
+    box.style.transition = 'transform 0.15s ease, opacity 0.15s ease';
+    box.style.transform = `translateX(${dir > 0 ? -50 : 50}px)`;
+    box.style.opacity = '0';
+    setTimeout(() => {
+      box.style.transition = 'none';
+      box.style.transform = '';
+      box.style.opacity = '';
+      openArticle(articles[nextIdx].id, dir > 0 ? 'left' : 'right');
+      document.getElementById('article-modal').scrollTop = 0;
+    }, 150);
+  } else {
+    openArticle(articles[nextIdx].id, dir > 0 ? 'left' : 'right');
+  }
 }
  
 async function deleteCurrentArticle() {
@@ -2310,34 +2438,27 @@ document.addEventListener('click', function(e) {
 });
  
 // ── VISITOR COUNTER ──
+// Counts total unique visitors by session. Only increments once per browser session.
 async function trackAndShowVisitors() {
   try {
-    // Use a single-row counter table via Supabase RPC upsert pattern
-    // First, try to get current count
-    const getRes = await fetch(`${SUPABASE_URL}/rest/v1/site_stats?id=eq.1&select=visitor_count`, {
-      headers
-    });
+    const alreadyCounted = sessionStorage.getItem('ilirh-visited');
+    // Always show current count first
+    const getRes = await fetch(`${SUPABASE_URL}/rest/v1/site_stats?id=eq.1&select=visitor_count`, { headers });
     const getData = await getRes.json();
- 
-    let currentCount = 0;
-    if (Array.isArray(getData) && getData.length > 0) {
-      currentCount = getData[0].visitor_count || 0;
+    let currentCount = (Array.isArray(getData) && getData.length > 0) ? (getData[0].visitor_count || 0) : 0;
+    if (!alreadyCounted) {
+      // New session: increment count
+      const newCount = currentCount + 1;
+      await fetch(`${SUPABASE_URL}/rest/v1/site_stats?id=eq.1`, {
+        method: 'PATCH',
+        headers: { ...headers, 'Prefer': 'return=minimal' },
+        body: JSON.stringify({ visitor_count: newCount })
+      });
+      sessionStorage.setItem('ilirh-visited', '1');
+      currentCount = newCount;
     }
- 
-    // Increment by 1
-    const newCount = currentCount + 1;
- 
-    // PATCH (update) the existing row
-    await fetch(`${SUPABASE_URL}/rest/v1/site_stats?id=eq.1`, {
-      method: 'PATCH',
-      headers: { ...headers, 'Prefer': 'return=minimal' },
-      body: JSON.stringify({ visitor_count: newCount })
-    });
- 
-    // Display formatted count
-    document.getElementById('visitor-count-num').textContent = newCount.toLocaleString('en-IN');
+    document.getElementById('visitor-count-num').textContent = currentCount.toLocaleString('en-IN');
   } catch(e) {
-    // Fallback: just hide gracefully if table doesn't exist yet
     document.getElementById('visitor-count-display').style.display = 'none';
     console.warn('Visitor counter not available:', e.message);
   }
@@ -2572,40 +2693,38 @@ function renderSpotlight() {
   const wrap = document.getElementById('spotlight-section');
   if (!articles.length) return;
   wrap.style.display = '';
-  let spotIdx = 0;
-  const renderSlide = () => {
-    const a = articles[spotIdx];
+  const renderSlide = (a) => {
     const imgHtml = (a.file_url && a.file_type && a.file_type.startsWith('image/'))
-      ? `<div style="width:160px;height:160px;overflow:hidden;border:2px solid var(--gold);flex-shrink:0;"><img src="${a.file_url}" loading="lazy" decoding="async" style="width:100%;height:100%;object-fit:cover;" alt="${esc(a.title)}"></div>`
-      : `<div style="width:160px;height:160px;background:var(--cream-dark);border:2px solid var(--border);display:flex;align-items:center;justify-content:center;opacity:0.4;flex-shrink:0;"><svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#0a1628" stroke-width="1.2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14,2 14,8 20,8"/></svg></div>`;
+      ? `<div class="spotlight-slide-img" onclick="openLightbox('${a.file_url}',['${a.file_url}'],0)" title="Click to enlarge"><img src="${a.file_url}" loading="lazy" decoding="async" alt="${esc(a.title)}"></div>`
+      : `<div class="spotlight-slide-img" style="background:var(--cream-dark);display:flex;align-items:center;justify-content:center;opacity:0.4;border-color:var(--border);"><svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#0a1628" stroke-width="1.2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14,2 14,8 20,8"/></svg></div>`;
     return `<div class="spotlight-slide">
       ${imgHtml}
-      <div>
-        <div class="spotlight-badge">&#9733; Paper of the Month</div>
+      <div class="spotlight-slide-body">
+        <div class="spotlight-badge">&#9733; Editor's Selection</div>
         <div class="spotlight-paper-title" onclick="openArticle(${a.id})">${esc(a.title)}</div>
         <div style="font-family:'Lato',sans-serif;font-size:11px;color:var(--text-muted);margin-bottom:8px;letter-spacing:0.04em;">By ${esc(a.author)} &bull; ${formatDate(a.created_at)} &bull; <span style="color:var(--gold);">${esc(a.category)}</span></div>
-        ${a.excerpt ? `<p style="font-family:'EB Garamond',serif;font-size:15px;color:var(--text-secondary);line-height:1.6;margin:0;">${esc(a.excerpt)}</p>` : ''}
+        ${a.excerpt ? `<p style="font-family:'EB Garamond',serif;font-size:15px;color:var(--text-secondary);line-height:1.6;margin:0 0 10px;">${esc(a.excerpt)}</p>` : ''}
         ${likeHtml(a.id)}
       </div>
     </div>`;
   };
-  const dots = articles.slice(0, Math.min(articles.length, 6)).map((_,i) =>
-    `<button class="spot-dot${i===0?' active':''}" onclick="goSpot(${i})"></button>`).join('');
+  const maxSlides = Math.min(articles.length, 6);
+  const dots = articles.slice(0, maxSlides).map((_,i) =>
+    `<button class="spot-dot${i===0?' active':''}" onclick="goSpot(${i})" aria-label="Slide ${i+1}"></button>`).join('');
   wrap.innerHTML = `
     <div class="spotlight-header">
       <div><div class="spotlight-kicker">Editor-in-Chief's Selection</div><div class="spotlight-title">Editor's Spotlight</div></div>
       <div class="spotlight-nav">
-        <button class="spot-nav-btn" onclick="prevSpot()">&#8249;</button>
-        <button class="spot-nav-btn" onclick="nextSpot()">&#8250;</button>
+        <button class="spot-nav-btn" onclick="prevSpot()" aria-label="Previous">&#8249;</button>
+        <button class="spot-nav-btn" onclick="nextSpot()" aria-label="Next">&#8250;</button>
       </div>
     </div>
     <div class="spotlight-track-wrap">
-      <div class="spotlight-track" id="spot-track">${articles.slice(0,6).map((_,i)=>{ spotIdx=i; return renderSlide(); }).join('')}</div>
+      <div class="spotlight-track" id="spot-track">${articles.slice(0,maxSlides).map(a => renderSlide(a)).join('')}</div>
     </div>
     <div class="spotlight-dots" id="spot-dots">${dots}</div>`;
-  spotIdx = 0;
   window._spotIdx = 0;
-  window._spotMax = Math.min(articles.length, 6) - 1;
+  window._spotMax = maxSlides - 1;
   goSpot(0);
 }
 function goSpot(i) {
@@ -2944,79 +3063,8 @@ function nativeShare(title, url) {
   }
 }
  
-// ── TOUCH SWIPE NAVIGATION for Article Modal ──
-(function() {
-  let _swipeStartX = 0, _swipeStartY = 0, _swipeStartScrollTop = 0;
-  let _swipeCurrent = 0;
-  const SWIPE_THRESHOLD = 55;
-  const SWIPE_Y_LIMIT   = 80;
-
-  function getArticleIndex(id) {
-    return articles.findIndex(x => x.id === id);
-  }
-
-  const modal = document.getElementById('article-modal');
-  const box = modal ? modal.querySelector('.modal-box') : null;
-  if (!modal || !box) return;
-
-  modal.addEventListener('touchstart', function(e) {
-    if (e.touches.length !== 1) return;
-    _swipeStartX = e.touches[0].clientX;
-    _swipeStartY = e.touches[0].clientY;
-    _swipeStartScrollTop = modal.scrollTop;
-    _swipeCurrent = 0;
-    box.style.transition = 'none';
-  }, { passive: true });
-
-  modal.addEventListener('touchmove', function(e) {
-    if (e.touches.length !== 1) return;
-    const dx = e.touches[0].clientX - _swipeStartX;
-    const dy = e.touches[0].clientY - _swipeStartY;
-    if (Math.abs(dy) > SWIPE_Y_LIMIT) return;
-    if (Math.abs(dx) > 20) {
-      _swipeCurrent = dx;
-      // Visual feedback — translate box slightly
-      const clamped = Math.max(-80, Math.min(80, dx * 0.3));
-      box.style.transform = `translateX(${clamped}px)`;
-      box.style.opacity = String(1 - Math.abs(clamped) / 280);
-    }
-  }, { passive: true });
-
-  modal.addEventListener('touchend', function(e) {
-    box.style.transition = 'transform 0.25s cubic-bezier(.22,1,.36,1), opacity 0.25s ease';
-    box.style.transform = '';
-    box.style.opacity = '';
-    if (e.changedTouches.length !== 1) return;
-    const dx = e.changedTouches[0].clientX - _swipeStartX;
-    const dy = e.changedTouches[0].clientY - _swipeStartY;
-    if (Math.abs(dx) < SWIPE_THRESHOLD) return;
-    if (Math.abs(dy) > SWIPE_Y_LIMIT) return;
-    if (Math.abs(modal.scrollTop - _swipeStartScrollTop) > 12) return;
-
-    const idx = getArticleIndex(_openArticleId);
-    if (idx === -1) return;
-
-    const nextIdx = idx + (dx < 0 ? 1 : -1);
-    if (nextIdx < 0 || nextIdx >= articles.length) {
-      box.style.transform = `translateX(${dx < 0 ? -12 : 12}px)`;
-      setTimeout(() => { box.style.transform = ''; }, 200);
-      return;
-    }
-
-    // Animate out with class, then open next article with entrance class
-    const goRight = dx < 0; // swipe left = go to next (right direction)
-    box.style.transition = 'transform 0.15s ease, opacity 0.15s ease';
-    box.style.transform = `translateX(${goRight ? -60 : 60}px)`;
-    box.style.opacity = '0';
-    setTimeout(() => {
-      box.style.transition = 'none';
-      box.style.transform = '';
-      box.style.opacity = '';
-      openArticle(articles[nextIdx].id, goRight ? 'left' : 'right');
-      modal.scrollTop = 0;
-    }, 155);
-  }, { passive: true });
-})();
+// ── ARTICLE NAV: no swipe-to-navigate; use < > buttons instead ──
+// (Touch swipe removed — use modal nav buttons for prev/next article)
  
 const _origOpenArticle = openArticle;
 openArticle = async function(id, navDir) {
