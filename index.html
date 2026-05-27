@@ -1754,9 +1754,16 @@ function filterCatAndScroll(cat) {
   requestAnimationFrame(() => requestAnimationFrame(() => {
     setTimeout(() => {
       const navH = (document.getElementById('main-nav') || {}).offsetHeight || 52;
-      // Scroll to just below the nav
-      const target = document.getElementById('main-nav').offsetTop + navH + 4;
-      window.scrollTo({ top: target, behavior: 'smooth' });
+      // Scroll to the category section title, not just below the nav
+      const sec = document.getElementById('cat-section-' + cat.replace(/\s+/g, '-'));
+      if (sec) {
+        const top = sec.getBoundingClientRect().top + window.scrollY - navH - 16;
+        window.scrollTo({ top: Math.max(0, top), behavior: 'smooth' });
+      } else {
+        // Fallback: scroll to just below the nav
+        const target = document.getElementById('main-nav').offsetTop + navH + 4;
+        window.scrollTo({ top: target, behavior: 'smooth' });
+      }
     }, 80);
   }));
 }
