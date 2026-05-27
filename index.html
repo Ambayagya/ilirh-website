@@ -1644,26 +1644,31 @@ const CARDS_LOAD_MORE = 6; // how many to add each "Show More"
 function renderCategories() {
   const wrap = document.getElementById('categories-wrap');
   const cats = ['Law','Education','Vedic Science','Political','Gen-Z Desk'];
+  // In single-category view (viewAllCat), skip scroll-reveal so cards are instantly visible
+  const isSingleCat = currentCat !== 'all';
   let html = '';
   cats.forEach(cat => {
-    if (currentCat !== 'all' && currentCat !== cat) return;
+    if (isSingleCat && currentCat !== cat) return;
     const filtered = articles.filter(a => a.category === cat);
     if (filtered.length === 0) return;
     const showLimit = _catShowAll[cat] || CARDS_PER_CAT;
     const shown = filtered.slice(0, showLimit);
     const hasMore = filtered.length > showLimit;
-    // Cat header: color dot | cat title | (count) ---- View All button (right)
-    html += `<div class="category-section" id="cat-section-${cat.replace(/\s+/g,'-')}">
+    html += `<div class="category-section${isSingleCat ? ' visible' : ''}" id="cat-section-${cat.replace(/\s+/g,'-')}">
       <div class="cat-header">
         <div style="display:flex;align-items:center;gap:8px;">
           <span class="cat-title">${cat}</span>
           <span class="cat-count">${filtered.length}</span>
         </div>
-        ${filtered.length > CARDS_PER_CAT ? `<a class="cat-more" onclick="viewAllCat('${cat.replace(/'/g,"\\'")}');return false;">View All &rarr;</a>` : ''}
+        ${filtered.length > CARDS_PER_CAT
+          ? (isSingleCat
+              ? `<a class="cat-more" onclick="filterCat('all');return false;">&larr; Back to All</a>`
+              : `<a class="cat-more" onclick="viewAllCat('${cat.replace(/'/g,"\\'")}');return false;">View All &rarr;</a>`)
+          : ''}
       </div>
       <div class="articles-row" id="articles-row-${cat.replace(/\s+/g,'-')}">
         ${shown.map(a => `
-          <div class="article-card" onclick="openArticle(${a.id})">
+          <div class="article-card${isSingleCat ? ' visible' : ''}" onclick="openArticle(${a.id})">
             ${cardThumbHtml(a)}
             <div class="card-cat">${a.category}</div>
             <div class="card-headline">${esc(a.title)}</div>
@@ -1673,58 +1678,65 @@ function renderCategories() {
           </div>`).join('')}
       </div>
       ${hasMore ? `<div style="text-align:center;margin-top:20px;">
-        <button class="cat-show-more-btn" onclick="showMoreCat('${cat.replace(/'/g,"\\'")}')">Show More (${filtered.length - showLimit} remaining) ↓</button>
+        <button class="cat-show-more-btn" onclick="showMoreCat('${cat.replace(/'/g,"\\'")}')">Show More (${filtered.length - showLimit} remaining) &darr;</button>
       </div>` : ''}
     </div>`;
   });
-  wrap.innerHTML = html || (currentCat !== 'all' ? `<div class="empty-state">No ${currentCat} articles yet.</div>` : '');
-  // Fade-in images via IntersectionObserver (data-src → src lazy load)
+
+  if (!html) {
+    wrap.innerHTML = isSingleCat
+      ? `<div class="empty-state">No ${currentCat} articles yet.</div>`
+      : `<div class="empty-state">No articles published yet.</div>`;
+    renderSpotlight();
+    return;
+  }
+
+  wrap.innerHTML = html;
+
+  // Lazy-load images via IntersectionObserver (data-src -> src)
   const imgObserver = new IntersectionObserver((entries, obs) => {
     entries.forEach(e => {
       if (e.isIntersecting) {
         const img = e.target;
-        if (img.dataset.src) {
-          img.src = img.dataset.src;
-          delete img.dataset.src;
-        }
+        if (img.dataset.src) { img.src = img.dataset.src; delete img.dataset.src; }
         if (img.complete) { img.classList.add('loaded'); }
         else { img.onload = () => img.classList.add('loaded'); }
         obs.unobserve(img);
       }
     });
   }, { rootMargin: '200px 0px' });
-  wrap.querySelectorAll('.card-thumb-wrap img').forEach(img => imgObserver.observe(img));
-  // Section reveal-on-scroll
-  const secObserver = new IntersectionObserver((entries, obs) => {
-    entries.forEach(e => {
-      if (e.isIntersecting) { e.target.classList.add('visible'); obs.unobserve(e.target); }
+  wrap.querySelectorAll('.card-thumb-wrap img[data-src]').forEach(img => imgObserver.observe(img));
+
+  // Scroll-reveal only in "all categories" view — avoids blank-on-viewAll bug
+  if (!isSingleCat) {
+    const secObserver = new IntersectionObserver((entries, obs) => {
+      entries.forEach(e => {
+        if (e.isIntersecting) { e.target.classList.add('visible'); obs.unobserve(e.target); }
+      });
+    }, { threshold: 0.04, rootMargin: '0px 0px -20px 0px' });
+    wrap.querySelectorAll('.category-section, .article-card').forEach(el => {
+      el.classList.add('reveal-on-scroll');
+      secObserver.observe(el);
     });
-  }, { threshold: 0.06 });
-  wrap.querySelectorAll('.category-section, .article-card').forEach(el => {
-    el.classList.add('reveal-on-scroll');
-    secObserver.observe(el);
-  });
+  }
+
   renderSpotlight();
 }
 
-// View All: expand the category inline showing ALL articles + scroll to it
+// View All: show only this category with all articles, scroll to top
 function viewAllCat(cat) {
   _catShowAll[cat] = 99999;
   currentCat = cat;
-  document.querySelectorAll('.nav-links a').forEach(a => a.classList.toggle('active', a.dataset.cat === cat || (cat === 'all' && a.dataset.cat === 'all')));
+  document.querySelectorAll('.nav-links a').forEach(a => a.classList.toggle('active', a.dataset.cat === cat));
   const navLinks = document.getElementById('nav-links');
   if (navLinks) navLinks.classList.remove('mob-open');
   render();
-  requestAnimationFrame(() => requestAnimationFrame(() => {
-    setTimeout(() => {
-      const sec = document.getElementById('cat-section-' + cat.replace(/\s+/g,'-'));
-      if (sec) {
-        const navH = (document.getElementById('main-nav') || {}).offsetHeight || 52;
-        const top = sec.getBoundingClientRect().top + window.scrollY - navH - 16;
-        window.scrollTo({ top: Math.max(0, top), behavior: 'smooth' });
-      }
-    }, 80);
-  }));
+  // Scroll to just below nav after render -- content is immediately visible (no reveal delay)
+  requestAnimationFrame(() => {
+    const navEl = document.getElementById('main-nav');
+    const navH = navEl ? navEl.offsetHeight : 52;
+    window.scrollTo({ top: Math.max(0, navEl ? navEl.offsetTop + navH + 4 : 0), behavior: 'smooth' });
+  });
 }
 
 // Show More: load CARDS_LOAD_MORE more in this category
@@ -1749,10 +1761,13 @@ function showMoreCat(cat) {
  
 // ── FILTER ──
 function filterCat(cat) {
+  // When returning to all, reset any viewAllCat expanded state
+  if (cat === 'all') { Object.keys(_catShowAll).forEach(k => delete _catShowAll[k]); }
   currentCat = cat;
   document.querySelectorAll('.nav-links a').forEach(a => a.classList.toggle('active', a.dataset.cat === cat));
   render();
-  window.scrollTo({ top: document.getElementById('main-nav').offsetTop - 2, behavior:'smooth' });
+  const navEl = document.getElementById('main-nav');
+  if (navEl) window.scrollTo({ top: Math.max(0, navEl.offsetTop - 2), behavior: 'smooth' });
 }
 
 // Category nav: filter + scroll to top of that category section
