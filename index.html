@@ -4971,12 +4971,17 @@ function rteInsertLink() {
   if (url) { document.execCommand('createLink', false, url); }
 }
 function rteInsertImageTrigger() {
+  const ed = document.getElementById('sub-editor');
+  if (ed && ed.querySelectorAll('.rte-inline-img-wrap').length >= 2) {
+    showToast('✗ Maximum 2 images allowed per article', 2800);
+    return;
+  }
   document.getElementById('rte-img-file').value = '';
   document.getElementById('rte-img-file').click();
 }
 function rteInsertImageFromFile(input) {
   const file = input.files[0]; if (!file) return;
-  if (file.size > 5 * 1024 * 1024) { alert('Image too large — max 5 MB'); return; }
+  if (file.size > 1 * 1024 * 1024) { showToast('✗ Image too large — max 1 MB per image', 2800); return; }
   const reader = new FileReader();
   reader.onload = e => {
     const ed = document.getElementById('sub-editor');
