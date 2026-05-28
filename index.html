@@ -308,14 +308,18 @@ footer { background:var(--navy); color:#8fa4bf; padding:36px 32px 20px; margin-t
  
 /* ── INLINE ARTICLE IMAGE (text-wrap) ── */
 .rte-inline-img-wrap {
-  float: left;
-  margin: 4px 18px 10px 0;
-  max-width: 44%;
+  display: block;
+  margin: 8px 0 14px;
+  width: min(380px, 92%);
+  max-width: 92%;
   position: relative;
-  line-height: 0;
+  line-height: 1;
   border: 1px solid var(--border);
   background: var(--cream);
 }
+.rte-inline-img-wrap[data-rte-align="left"] { margin-right: auto; }
+.rte-inline-img-wrap[data-rte-align="center"] { margin-left: auto; margin-right: auto; }
+.rte-inline-img-wrap[data-rte-align="right"] { margin-left: auto; }
 .rte-inline-img-wrap img {
   width: 100%;
   height: auto;
@@ -324,7 +328,7 @@ footer { background:var(--navy); color:#8fa4bf; padding:36px 32px 20px; margin-t
 }
 .rte-inline-img-wrap .rte-img-remove {
   position: absolute;
-  top: 3px; right: 3px;
+  top: 4px; right: 4px;
   background: rgba(10,22,40,0.7);
   color: #fff; border: none;
   font-size: 13px; line-height: 1;
@@ -332,6 +336,39 @@ footer { background:var(--navy); color:#8fa4bf; padding:36px 32px 20px; margin-t
   border-radius: 2px; display: none;
 }
 .rte-inline-img-wrap:hover .rte-img-remove { display: block; }
+.rte-inline-img-wrap .rte-img-controls {
+  position: absolute;
+  top: 4px;
+  left: 4px;
+  right: 4px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  z-index: 3;
+  opacity: 0;
+  transition: opacity 0.15s;
+}
+.rte-inline-img-wrap:hover .rte-img-controls { opacity: 1; }
+.rte-inline-img-wrap .rte-img-ctrl-btn {
+  border: 1px solid rgba(255,255,255,0.22);
+  background: rgba(10,22,40,0.78);
+  color: #fff;
+  font-family: 'Lato', sans-serif;
+  font-size: 10px;
+  letter-spacing: 0.03em;
+  padding: 2px 6px;
+  cursor: pointer;
+}
+.rte-inline-img-wrap .rte-img-resize {
+  position: absolute;
+  width: 14px;
+  height: 14px;
+  right: 0;
+  bottom: 0;
+  cursor: nwse-resize;
+  background: linear-gradient(135deg, transparent 46%, var(--gold) 46%, var(--gold) 54%, transparent 54%);
+  z-index: 2;
+}
 .rte-inline-img-wrap .rte-img-caption {
   font-family: 'EB Garamond', serif;
   font-size: 12px;
@@ -350,10 +387,13 @@ footer { background:var(--navy); color:#8fa4bf; padding:36px 32px 20px; margin-t
   color: var(--text-muted);
   opacity: 0.5;
 }
-/* Clear float after editor content */
-#sub-editor::after { content: ''; display: table; clear: both; }
 body.dark-mode .rte-inline-img-wrap { border-color: var(--border); background: var(--cream-dark); }
 body.dark-mode .rte-inline-img-wrap .rte-img-caption { border-top-color: var(--border); }
+.publish-mode-chooser { display:flex; gap:10px; margin-bottom:12px; flex-wrap:wrap; }
+.publish-mode-item { display:flex; align-items:center; gap:8px; border:1px solid var(--border); background:var(--cream); padding:8px 10px; cursor:pointer; font-family:'Lato',sans-serif; font-size:11px; letter-spacing:0.08em; text-transform:uppercase; font-weight:700; color:var(--text-secondary); }
+.publish-mode-item input[type=checkbox] { accent-color: var(--navy); width:15px; height:15px; }
+.publish-write-wrap { display:none; margin-top:10px; }
+.publish-write-wrap.open { display:block; }
 body.reading-mode .masthead, body.reading-mode .topbar, body.reading-mode .ticker-bar,
 body.reading-mode footer, body.reading-mode .hero-sidebar,
 body.reading-mode #categories-wrap, body.reading-mode .cat-header .cat-more { display:none !important; }
@@ -1140,7 +1180,9 @@ button:focus-visible, a:focus-visible, input:focus-visible {
 .rich-editor-toolbar {
   display: flex; flex-wrap: wrap; gap: 3px; padding: 8px 10px;
   background: var(--cream-dark); border: 1px solid var(--border); border-bottom: none;
+  align-items: center;
 }
+.rte-break { flex-basis: 100%; height: 0; }
 .rte-btn {
   background: #fff; border: 1px solid var(--border); color: var(--text-primary);
   font-family: 'Lato', sans-serif; font-size: 11.5px; font-weight: 700;
@@ -1763,6 +1805,17 @@ body.dark-mode .editor-tab.active { color:#c8d8ea; }
         <button class="ownership-btn" id="own-genz" onclick="setOwnership('genz')">&#127775; GenZ / Student</button>
       </div>
     </div>
+    <div class="form-row" id="publish-mode-row" style="display:none;">
+      <label>For Myself, choose publishing method *</label>
+      <div class="publish-mode-chooser">
+        <label class="publish-mode-item" for="publish-mode-write">
+          <input type="checkbox" id="publish-mode-write" onchange="setPublishMode('write')"> Write Your Article
+        </label>
+        <label class="publish-mode-item" for="publish-mode-upload">
+          <input type="checkbox" id="publish-mode-upload" onchange="setPublishMode('upload')"> Upload File
+        </label>
+      </div>
+    </div>
     <div class="form-row"><label>Author Name *</label><input type="text" id="up-author" placeholder="e.g. Advocate Dr. Ajay Singh Rathore"></div>
     <div class="form-row" id="author-email-row" style="display:none;">
       <label>Author's Email <span style="color:var(--gold);font-size:10px;letter-spacing:0.05em;">(for publication acknowledgement)</span></label>
@@ -1777,6 +1830,36 @@ body.dark-mode .editor-tab.active { color:#c8d8ea; }
       </select>
     </div>
     <div class="form-row"><label>Brief Description / Abstract</label><textarea id="up-excerpt" placeholder="A short summary (2–3 sentences)…"></textarea></div>
+    <div class="publish-write-wrap" id="publish-write-wrap">
+      <div style="font-family:'Lato',sans-serif;font-size:10px;font-weight:700;letter-spacing:0.14em;text-transform:uppercase;color:var(--text-muted);margin-bottom:6px;">Write Article Body</div>
+      <div class="rich-editor-toolbar">
+        <button type="button" class="rte-btn" onclick="upRteExec('bold')" title="Bold"><b>B</b></button>
+        <button type="button" class="rte-btn" onclick="upRteExec('italic')" title="Italic"><i>I</i></button>
+        <button type="button" class="rte-btn" onclick="upRteExec('underline')" title="Underline"><u>U</u></button>
+        <button type="button" class="rte-btn rte-btn-sm" onclick="upRteExec('insertHorizontalRule')" title="Divider">HR</button>
+        <span class="rte-sep"></span>
+        <button type="button" class="rte-btn rte-btn-sm" onclick="upRteExec('formatBlock','H2')" title="Heading 2">H2</button>
+        <button type="button" class="rte-btn rte-btn-sm" onclick="upRteExec('formatBlock','H3')" title="Heading 3">H3</button>
+        <button type="button" class="rte-btn rte-btn-sm" onclick="upRteExec('formatBlock','P')" title="Paragraph">P</button>
+        <button type="button" class="rte-btn rte-btn-sm" onclick="upRteExec('justifyLeft')" title="Align Left">Left</button>
+        <button type="button" class="rte-btn rte-btn-sm" onclick="upRteExec('justifyCenter')" title="Centre">Center</button>
+        <button type="button" class="rte-btn rte-btn-sm" onclick="upRteExec('justifyRight')" title="Align Right">Right</button>
+        <span class="rte-break"></span>
+        <button type="button" class="rte-btn" onclick="upRteExec('insertUnorderedList')" title="Bullet list">&#8226; List</button>
+        <button type="button" class="rte-btn" onclick="upRteExec('insertOrderedList')" title="Numbered list">1. List</button>
+        <button type="button" class="rte-btn" onclick="upRteExec('formatBlock','BLOCKQUOTE')" title="Blockquote">&ldquo;&rdquo;</button>
+        <button type="button" class="rte-btn" onclick="upRteInsertLink()" title="Insert link">&#128279; Link</button>
+        <button type="button" class="rte-btn" onclick="upRteInsertImageTrigger()" title="Insert image">&#128444; Image</button>
+        <input type="file" id="up-rte-img-file" accept="image/*" style="display:none;" onchange="upRteInsertImageFromFile(this)">
+        <button type="button" class="rte-btn rte-btn-sm" onclick="upRteExec('removeFormat')" title="Clear format">&#10005; Clear</button>
+      </div>
+      <div id="up-editor" class="rich-editor-area" contenteditable="true" spellcheck="true" data-placeholder="Write your full article here..."></div>
+      <div class="rte-word-counter"><span id="up-word-count">0</span> words</div>
+      <div style="margin-top:8px;">
+        <button id="up-generate-image-btn" type="button" class="btn-primary" onclick="regeneratePublishGeneratedImage()" style="padding:9px 14px;font-size:10px;">Generate / Regenerate Article Image</button>
+        <span id="up-generate-status" style="font-family:'Lato',sans-serif;font-size:11px;color:var(--text-muted);margin-left:8px;"></span>
+      </div>
+    </div>
     <div class="form-row"><label>Upload File (PDF or Image) *</label>
       <div class="drop-zone" id="drop-zone">
         <input type="file" id="up-file" accept=".pdf,image/*" onchange="handleFileSelect(this)">
@@ -2016,6 +2099,11 @@ body.dark-mode .editor-tab.active { color:#c8d8ea; }
           <button type="button" class="rte-btn" onclick="rteExec('insertUnorderedList')" title="Bullet list">&#8226; List</button>
           <button type="button" class="rte-btn" onclick="rteExec('insertOrderedList')" title="Numbered list">1. List</button>
           <button type="button" class="rte-btn" onclick="rteExec('formatBlock','BLOCKQUOTE')" title="Blockquote">&ldquo;&rdquo;</button>
+          <button type="button" class="rte-btn rte-btn-sm" onclick="rteExec('insertHorizontalRule')" title="Divider">HR</button>
+          <button type="button" class="rte-btn rte-btn-sm" onclick="rteExec('justifyRight')" title="Align Right">Right</button>
+          <button type="button" class="rte-btn rte-btn-sm" onclick="rteExec('subscript')" title="Subscript">X<sub>2</sub></button>
+          <button type="button" class="rte-btn rte-btn-sm" onclick="rteExec('superscript')" title="Superscript">X<sup>2</sup></button>
+          <span class="rte-break"></span>
           <span class="rte-sep"></span>
           <button type="button" class="rte-btn" onclick="rteInsertLink()" title="Insert link">&#128279; Link</button>
           <button type="button" class="rte-btn" onclick="rteInsertImageTrigger()" title="Insert image with text wrap">&#128444; Image</button>
@@ -2773,6 +2861,8 @@ async function doLogin() {
  
 // ── AUTHOR OWNERSHIP ──
 let _authorOwnership = 'myself'; // 'myself' | 'other' | 'genz'
+let _publishMode = 'upload'; // 'upload' | 'write'
+let _generatedImageDataUrl = null;
 function setOwnership(type) {
   _authorOwnership = type;
   document.getElementById('own-myself').classList.toggle('selected', type === 'myself');
@@ -2782,6 +2872,7 @@ function setOwnership(type) {
   const emailRow = document.getElementById('author-email-row');
   emailRow.style.display = (type === 'other' || type === 'genz') ? 'block' : 'none';
   const catSel = document.getElementById('up-category');
+  const modeRow = document.getElementById('publish-mode-row');
   if (type === 'genz') {
     // GenZ: author name free, category locked to Gen-Z Desk
     if (document.getElementById('up-author').readOnly) {
@@ -2793,6 +2884,8 @@ function setOwnership(type) {
     catSel.disabled = true;
     catSel.style.opacity = '0.7';
     catSel.title = 'GenZ / Student articles are always published under Gen-Z Desk';
+    if (modeRow) modeRow.style.display = 'none';
+    setPublishMode('upload');
   } else if (type === 'myself') {
     document.getElementById('up-author').value = 'Advocate Dr. Ajay Singh Rathore';
     document.getElementById('up-author').readOnly = true;
@@ -2800,6 +2893,8 @@ function setOwnership(type) {
     catSel.disabled = false;
     catSel.style.opacity = '1';
     catSel.title = '';
+    if (modeRow) modeRow.style.display = 'block';
+    setPublishMode(_publishMode || 'upload');
   } else {
     if (document.getElementById('up-author').readOnly) {
       document.getElementById('up-author').value = '';
@@ -2809,7 +2904,20 @@ function setOwnership(type) {
     catSel.disabled = false;
     catSel.style.opacity = '1';
     catSel.title = '';
+    if (modeRow) modeRow.style.display = 'none';
+    setPublishMode('upload');
   }
+}
+function setPublishMode(mode) {
+  _publishMode = mode === 'write' ? 'write' : 'upload';
+  const writeCk = document.getElementById('publish-mode-write');
+  const uploadCk = document.getElementById('publish-mode-upload');
+  if (writeCk) writeCk.checked = _publishMode === 'write';
+  if (uploadCk) uploadCk.checked = _publishMode !== 'write';
+  const writeWrap = document.getElementById('publish-write-wrap');
+  const fileRow = document.getElementById('drop-zone')?.closest('.form-row');
+  if (writeWrap) writeWrap.classList.toggle('open', _publishMode === 'write');
+  if (fileRow) fileRow.style.display = _publishMode === 'write' ? 'none' : 'block';
 }
  
 // ── UPLOAD ──
@@ -2832,6 +2940,8 @@ function closeUpload() {
   _editArticleExistingFileUrl = null;
   _editArticleExistingFileType = null;
   _editArticleExistingImageUrl = null;
+  _publishMode = 'upload';
+  _generatedImageDataUrl = null;
   const pbtn = document.getElementById('publish-btn');
   if (pbtn) pbtn.textContent = 'Publish to Herald';
   document.getElementById('drop-filename').textContent = '';
@@ -2856,6 +2966,10 @@ function closeUpload() {
   catSel2.title = '';
   document.getElementById('progress-bar').style.display = 'none';
   document.getElementById('progress-fill').style.width = '0%';
+  const upEditor = document.getElementById('up-editor'); if (upEditor) upEditor.innerHTML = '';
+  const upW = document.getElementById('up-word-count'); if (upW) upW.textContent = '0';
+  const upS = document.getElementById('up-generate-status'); if (upS) upS.textContent = '';
+  setPublishMode('upload');
 }
 function closeUploadOnBg(e) { if (e.target === document.getElementById('upload-overlay')) closeUpload(); }
 function handleFileSelect(input) {
@@ -2902,7 +3016,7 @@ async function publishArticle() {
   if (!title)  { errEl.textContent = 'Please enter an article title.'; return; }
   if (!author) { errEl.textContent = 'Please enter an author name.'; return; }
   if (!cat)    { errEl.textContent = 'Please select a category.'; return; }
-  if (!_editArticleId && !pendingFile) { errEl.textContent = 'Please upload a PDF or image file.'; return; }
+  if (_publishMode === 'upload' && !_editArticleId && !pendingFile) { errEl.textContent = 'Please upload a PDF or image file.'; return; }
   if (pendingFile && pendingFile.size > 3*1024*1024) { errEl.textContent = 'File exceeds 3 MB limit.'; return; }
   if ((_authorOwnership === 'other' || _authorOwnership === 'genz') && authorEmail && !authorEmail.includes('@')) {
     errEl.textContent = 'Please enter a valid author email.'; return;
@@ -2918,7 +3032,7 @@ async function publishArticle() {
     let file_url = _editArticleExistingFileUrl || null;
     let file_type = _editArticleExistingFileType || null;
     let article_image_url = _editArticleExistingImageUrl || null;
-    if (pendingFile) {
+    if (_publishMode === 'upload' && pendingFile) {
       const fileName = `${Date.now()}_${pendingFile.name.replace(/[^a-zA-Z0-9._-]/g,'_')}`;
       const uploadRes = await fetch(`${SUPABASE_URL}/storage/v1/object/articles/${fileName}`, {
         method: 'PUT',
@@ -2941,7 +3055,7 @@ async function publishArticle() {
 
     // 2. If PDF, try to generate thumbnail and use as article image
     let thumb_url = null;
-    if (pendingFile && pendingFile.type === 'application/pdf') {
+    if (_publishMode === 'upload' && pendingFile && pendingFile.type === 'application/pdf') {
       try {
         btn.textContent = 'Generating thumbnail…';
         await loadPdfJs();
@@ -2954,10 +3068,33 @@ async function publishArticle() {
     }
     document.getElementById('progress-fill').style.width = '75%';
     if (thumb_url) article_image_url = thumb_url;
+    if (_publishMode === 'write') {
+      const upEd = document.getElementById('up-editor');
+      const upHtml = upEd ? upEd.innerHTML : '';
+      const upTxt = upEd ? (upEd.textContent || '').trim() : '';
+      if (!upTxt || upTxt.split(/\s+/).filter(Boolean).length < 50) {
+        throw new Error('Please write at least 50 words in article body.');
+      }
+      if (!_generatedImageDataUrl) {
+        btn.textContent = 'Generating article image…';
+        _generatedImageDataUrl = await generateArticleImage({
+          title, author, place: '', htmlBody: upHtml, authorPhotoUrl: null, category: cat, occupation: ''
+        });
+      }
+      btn.textContent = 'Uploading generated image…';
+      const genUrl = await uploadArticleImageToSupabase(_generatedImageDataUrl);
+      if (!genUrl) throw new Error('Generated image upload failed.');
+      file_url = genUrl;
+      file_type = 'image/jpeg';
+      article_image_url = genUrl;
+    }
  
     // 3. Insert or update article record
     const articlePayload = { title, author, category: cat, excerpt, file_url, file_type };
     if (article_image_url) articlePayload.article_image_url = article_image_url;
+    if (_publishMode === 'write') {
+      articlePayload.article_body = (document.getElementById('up-editor')?.innerHTML || '');
+    }
 
     const insertRes = await fetch(
       _editArticleId
@@ -4318,6 +4455,7 @@ async function doSubmitArticle() {
         if (!fallbackRes.ok) throw new Error('Submission failed. Please try again.');
         const insertedFb = await fallbackRes.json();
         const newSubFb = Array.isArray(insertedFb) ? insertedFb[0] : insertedFb;
+        await ensureSubmitterSubscribed(name, email);
         notifyAdminNewSubmission(name, email, occupation, institution, title, category, abstract, newSubFb?.id);
         pfC.style.width = '100%';
         btn.textContent = 'Saved ✓';
@@ -4327,6 +4465,7 @@ async function doSubmitArticle() {
     }
     const inserted = await insertRes.json();
     const newSub = Array.isArray(inserted) ? inserted[0] : inserted;
+    await ensureSubmitterSubscribed(name, email);
     pfC.style.width = '100%';
     btn.textContent = 'Saved ✓';
     notifyAdminNewSubmission(name, email, occupation, institution, title, category, abstract, newSub?.id);
@@ -4348,6 +4487,24 @@ function notifyAdminNewSubmission(name, email, occupation, institution, title, c
       submission: { author_name: name, author_email: email, occupation, institution, title, category, abstract, id: id || '' }
     })
   }).catch(e => console.warn('Admin submission notify failed:', e));
+}
+async function ensureSubmitterSubscribed(name, email) {
+  if (!name || !validateEmail(email)) return;
+  try {
+    const res = await fetch(`${SUPABASE_URL}/rest/v1/subscribers`, {
+      method: 'POST',
+      headers: { ...headers, 'Prefer': 'return=minimal' },
+      body: JSON.stringify({ name, email })
+    });
+    if (res.status !== 409 && res.ok) {
+      notifyAdminNewSubscriber(name, email);
+      fetch(`${SUPABASE_URL}/functions/v1/notify-subscribers`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + SUPABASE_KEY },
+        body: JSON.stringify({ type: 'welcome', name, email })
+      }).catch(() => {});
+    }
+  } catch (_) {}
 }
 
 function showSuccessState() {
@@ -4850,6 +5007,17 @@ function editorEditArticle(id) {
   const au = document.getElementById('up-author'); if (au) au.value = a.author || '';
   const c = document.getElementById('up-category'); if (c) c.value = a.category || '';
   const ex = document.getElementById('up-excerpt'); if (ex) ex.value = a.excerpt || '';
+  const upEditor = document.getElementById('up-editor');
+  if (upEditor) upEditor.innerHTML = a.article_body || '';
+  const upCount = document.getElementById('up-word-count');
+  if (upCount) upCount.textContent = String(countWords(a.article_body || ''));
+  _generatedImageDataUrl = null;
+  if (a.article_body) {
+    setOwnership('myself');
+    setPublishMode('write');
+  } else {
+    setPublishMode('upload');
+  }
   pendingFile = null;
   const df = document.getElementById('drop-filename');
   if (df) df.textContent = a.file_url ? 'Current file attached (drop to replace)' : 'Drop a file to attach';
@@ -4991,7 +5159,8 @@ function rteInsertImageFromFile(input) {
     // Build the wrapped image element
     const wrap = document.createElement('span');
     wrap.className = 'rte-inline-img-wrap';
-    wrap.contentEditable = 'false'; // treat as atomic block in editor
+    wrap.contentEditable = 'false';
+    wrap.dataset.rteAlign = 'left';
 
     const img = document.createElement('img');
     img.src = e.target.result;
@@ -5003,6 +5172,9 @@ function rteInsertImageFromFile(input) {
     caption.contentEditable = 'true';
     caption.setAttribute('data-rte-caption', '1');
 
+    const controls = document.createElement('div');
+    controls.className = 'rte-img-controls';
+    controls.innerHTML = '<button type="button" class="rte-img-ctrl-btn" data-act="left">Left</button><button type="button" class="rte-img-ctrl-btn" data-act="center">Center</button><button type="button" class="rte-img-ctrl-btn" data-act="right">Right</button><button type="button" class="rte-img-ctrl-btn" data-act="smaller">-</button><button type="button" class="rte-img-ctrl-btn" data-act="larger">+</button><button type="button" class="rte-img-ctrl-btn" data-act="up">Up</button><button type="button" class="rte-img-ctrl-btn" data-act="down">Down</button>';
     const removeBtn = document.createElement('button');
     removeBtn.className = 'rte-img-remove';
     removeBtn.type = 'button';
@@ -5014,9 +5186,43 @@ function rteInsertImageFromFile(input) {
       schedulePreviewRefresh();
     };
 
+    const resizeHandle = document.createElement('span');
+    resizeHandle.className = 'rte-img-resize';
+
+    controls.addEventListener('click', (ev) => {
+      ev.preventDefault(); ev.stopPropagation();
+      const act = ev.target && ev.target.dataset ? ev.target.dataset.act : '';
+      if (!act) return;
+      const curW = Math.max(140, Math.min(900, parseInt(wrap.style.width || '360', 10) || 360));
+      if (act === 'left' || act === 'center' || act === 'right') wrap.dataset.rteAlign = act;
+      if (act === 'smaller') wrap.style.width = Math.max(140, curW - 40) + 'px';
+      if (act === 'larger') wrap.style.width = Math.min(900, curW + 40) + 'px';
+      if (act === 'up' && wrap.previousSibling) wrap.parentNode.insertBefore(wrap, wrap.previousSibling);
+      if (act === 'down' && wrap.nextSibling) wrap.parentNode.insertBefore(wrap.nextSibling, wrap);
+      schedulePreviewRefresh();
+    });
+    resizeHandle.addEventListener('mousedown', (ev) => {
+      ev.preventDefault(); ev.stopPropagation();
+      const startX = ev.clientX;
+      const startW = wrap.getBoundingClientRect().width;
+      const onMove = (mv) => {
+        const next = Math.max(140, Math.min(900, startW + (mv.clientX - startX)));
+        wrap.style.width = `${next}px`;
+        schedulePreviewRefresh();
+      };
+      const onUp = () => {
+        window.removeEventListener('mousemove', onMove);
+        window.removeEventListener('mouseup', onUp);
+      };
+      window.addEventListener('mousemove', onMove);
+      window.addEventListener('mouseup', onUp);
+    });
+
+    wrap.appendChild(controls);
     wrap.appendChild(removeBtn);
     wrap.appendChild(img);
     wrap.appendChild(caption);
+    wrap.appendChild(resizeHandle);
 
     // Insert at cursor position inside editor
     const sel = window.getSelection();
@@ -5035,6 +5241,57 @@ function rteInsertImageFromFile(input) {
     schedulePreviewRefresh();
   };
   reader.readAsDataURL(file);
+}
+function upRteExec(cmd, val) {
+  const ed = document.getElementById('up-editor');
+  if (!ed) return;
+  ed.focus();
+  document.execCommand(cmd, false, val || null);
+  const txt = (ed.textContent || '').trim();
+  const wc = txt ? txt.split(/\s+/).filter(Boolean).length : 0;
+  const el = document.getElementById('up-word-count');
+  if (el) el.textContent = String(wc);
+}
+function upRteInsertLink() {
+  const url = prompt('Enter URL:');
+  if (url) document.execCommand('createLink', false, url);
+}
+function upRteInsertImageTrigger() {
+  const input = document.getElementById('up-rte-img-file');
+  if (!input) return;
+  input.value = '';
+  input.click();
+}
+function upRteInsertImageFromFile(input) {
+  const file = input.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = () => {
+    const upEd = document.getElementById('up-editor');
+    if (!upEd) return;
+    const old = document.getElementById('sub-editor');
+    const oldHtml = old ? old.innerHTML : '';
+    if (old) old.innerHTML = '';
+    rteInsertImageFromFile(input);
+    const inserted = old ? old.querySelector('.rte-inline-img-wrap:last-of-type') : null;
+    if (inserted) upEd.appendChild(inserted);
+    if (old) old.innerHTML = oldHtml;
+  };
+  reader.readAsDataURL(file);
+}
+async function regeneratePublishGeneratedImage() {
+  const status = document.getElementById('up-generate-status');
+  const title = sanitizeInput(document.getElementById('up-title').value, 300);
+  const author = sanitizeInput(document.getElementById('up-author').value, 150);
+  const category = document.getElementById('up-category').value;
+  const htmlBody = document.getElementById('up-editor')?.innerHTML || '';
+  if (!title || !author || !category || !htmlBody.trim()) {
+    if (status) status.textContent = 'Fill title, author, category and article body first.';
+    return;
+  }
+  if (status) status.textContent = 'Generating...';
+  _generatedImageDataUrl = await generateArticleImage({ title, author, place: '', htmlBody, authorPhotoUrl: null, category, occupation: '' });
+  if (status) status.textContent = _generatedImageDataUrl ? 'Generated. It will be used on publish.' : 'Generation failed.';
 }
 function countWords(html) {
   const tmp = document.createElement('div');
@@ -5682,40 +5939,29 @@ async function generateArticleImage(articleData) {
         }
         if (tag === 'br') { y += 28; return; }
 
-        // ── Inline image with text wrap (like MS Word) ──
+        // ── Inline image block (alignment + size) ──
         if (tag === 'img' || (tag === 'span' && node.classList && node.classList.contains('rte-inline-img-wrap'))) {
-          // Find the actual img element
           const imgEl = tag === 'img' ? node : node.querySelector('img');
           const captionEl = tag === 'span' ? node.querySelector('[data-rte-caption]') : null;
           if (!imgEl || !imgEl.src) return;
-
-          const IMG_MAX_W = Math.round(CONTENT_W * 0.42); // ~42% of column width
-          const IMG_FLOAT_X = LEFT;
-          const TEXT_X = LEFT + IMG_MAX_W + 36; // text starts to the right
-          const TEXT_W = CONTENT_W - IMG_MAX_W - 36;
-
-          // We need to load the image async then draw remaining nodes
-          // Mark remaining siblings for deferred rendering
           node._rteImgProcessed = true;
 
           const imgObj = new Image();
           imgObj.onload = () => {
             const aspect = imgObj.naturalWidth / imgObj.naturalHeight;
-            const imgW = IMG_MAX_W;
+            const preferredW = tag === 'span' && node.style && node.style.width ? parseInt(node.style.width, 10) : Math.round(CONTENT_W * 0.42);
+            const imgW = Math.max(220, Math.min(Math.round(CONTENT_W * 0.9), preferredW || Math.round(CONTENT_W * 0.42)));
             const imgH = Math.round(imgW / aspect);
-
-            const imgTopY = y;
-
-            // Draw image
+            const align = tag === 'span' && node.dataset ? (node.dataset.rteAlign || 'left') : 'left';
+            let imgX = LEFT;
+            if (align === 'center') imgX = LEFT + (CONTENT_W - imgW) / 2;
+            if (align === 'right') imgX = LEFT + (CONTENT_W - imgW);
+            const imgTopY = y + 8;
             ctx.save();
-            try { ctx.drawImage(imgObj, IMG_FLOAT_X, imgTopY, imgW, imgH); } catch(e) {}
+            try { ctx.drawImage(imgObj, imgX, imgTopY, imgW, imgH); } catch(e) {}
             ctx.restore();
-
-            // Thin border around image
             ctx.strokeStyle = BORDER; ctx.lineWidth = 2;
-            ctx.strokeRect(IMG_FLOAT_X, imgTopY, imgW, imgH);
-
-            // Caption below image
+            ctx.strokeRect(imgX, imgTopY, imgW, imgH);
             let captionBottomY = imgTopY + imgH;
             const captionText = captionEl ? (captionEl.textContent || '').trim() : (imgEl.alt || '').trim();
             if (captionText) {
@@ -5724,59 +5970,11 @@ async function generateArticleImage(articleData) {
               const capLines = wrapTextGetLines(ctx, captionText, imgW, 28);
               capLines.forEach(line => {
                 captionBottomY += 36;
-                ctx.fillText(line, IMG_FLOAT_X, captionBottomY);
+                ctx.fillText(line, imgX, captionBottomY);
               });
               captionBottomY += 8;
             }
-
-            // Now render the remaining sibling nodes with text flowing to the right
-            // while the image occupies the left column
-            const parent = node.parentNode;
-            const siblings = parent ? Array.from(parent.childNodes) : [];
-            const myIdx = siblings.indexOf(node);
-            const after = siblings.slice(myIdx + 1);
-
-            // Render siblings to the RIGHT of the image
-            let floatY = imgTopY + 46; // start at first text baseline beside image
-            const floatEndY = captionBottomY + 16; // where float clears
-
-            after.forEach(sib => {
-              if (floatY > MAX_Y) return;
-              sib._rteImgProcessed = true; // mark so parent loop skips them
-              if (sib.nodeType === Node.TEXT_NODE) {
-                const text = sib.textContent.replace(/\s+/g, ' ');
-                if (!text.trim()) return;
-                ctx.font = '38px Georgia, serif';
-                ctx.fillStyle = BODY_C;
-                // While beside image, use narrow width; after, use full width
-                const lines = wrapTextGetLines(ctx, text, TEXT_W, 38);
-                lines.forEach(line => {
-                  if (floatY > MAX_Y) return;
-                  if (floatY < floatEndY) {
-                    ctx.fillText(line, TEXT_X, floatY);
-                  } else {
-                    ctx.fillText(line, LEFT, floatY);
-                  }
-                  floatY += 58;
-                });
-              } else if (sib.nodeType === Node.ELEMENT_NODE) {
-                const st = sib.tagName.toLowerCase();
-                if (st === 'p' || st === 'div') {
-                  const txt = sib.textContent.replace(/\s+/g, ' ').trim();
-                  if (!txt) { floatY += 18; return; }
-                  ctx.font = '38px Georgia, serif';
-                  ctx.fillStyle = BODY_C;
-                  const lines = wrapTextGetLines(ctx, txt, floatY < floatEndY ? TEXT_W : CONTENT_W, 38);
-                  lines.forEach(line => {
-                    if (floatY > MAX_Y) return;
-                    ctx.fillText(line, floatY < floatEndY ? TEXT_X : LEFT, floatY);
-                    floatY += 58;
-                  });
-                  floatY += 18;
-                }
-              }
-            });
-            y = Math.max(floatY, captionBottomY + 24);
+            y = captionBottomY + 28;
           };
           imgObj.onerror = () => {
             // If image fails, just leave a gap
