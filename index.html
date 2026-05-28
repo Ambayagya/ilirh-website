@@ -57,7 +57,9 @@ body { background:var(--offwhite); color:var(--text-primary); font-family:'EB Ga
 .masthead-founder { font-family:'Lato',sans-serif; font-size:12.5px; color:var(--navy); margin-top:7px; letter-spacing:0.06em; font-style:normal; font-weight:400; text-transform:uppercase; }
 .masthead-founder span { color:var(--navy); font-style:normal; font-weight:700; letter-spacing:0.08em; }
 .masthead-rule-bot { border:none; border-top:1px solid var(--navy); margin-top:10px; }
-.masthead-meta { display:flex; justify-content:space-between; align-items:center; margin-top:8px; font-family:'Lato',sans-serif; font-size:11px; color:var(--text-muted); letter-spacing:0.04em; }
+.masthead-meta { display:flex; justify-content:space-between; align-items:center; margin-top:8px; font-family:'Lato',sans-serif; font-size:11px; color:var(--text-muted); letter-spacing:0.04em; flex-wrap:nowrap; gap:6px; }
+.masthead-meta > span { white-space:nowrap; overflow:hidden; text-overflow:ellipsis; min-width:0; flex-shrink:1; }
+.masthead-meta > button { flex-shrink:0; }
  
 /* NAV */
 #main-nav { background:var(--navy); position:sticky; top:0; z-index:100; border-bottom:2px solid var(--gold); }
@@ -138,7 +140,7 @@ body { background:var(--offwhite); color:var(--text-primary); font-family:'EB Ga
 .article-card { cursor:pointer; }
 .article-card:hover .card-headline { text-decoration:underline; text-decoration-color:var(--gold); }
 .card-thumb-wrap { position:relative; width:100%; aspect-ratio:3/2; background:var(--cream-dark); margin-bottom:10px; border:1px solid var(--border-light); overflow:hidden; }
-.card-thumb-wrap img { width:100%; height:100%; object-fit:cover; display:block; opacity:0; }
+.card-thumb-wrap img { width:100%; height:100%; object-fit:cover; object-position:top center; display:block; opacity:0; }
 .card-thumb-placeholder { width:100%; height:100%; display:flex; align-items:center; justify-content:center; opacity:0.25; }
 .card-cat { font-family:'Lato',sans-serif; font-size:10px; font-weight:700; letter-spacing:0.15em; text-transform:uppercase; color:var(--gold); margin-bottom:6px; }
 .card-headline { font-family:'Playfair Display',serif; font-size:17px; font-weight:600; line-height:1.3; color:var(--navy); margin-bottom:6px; }
@@ -1265,15 +1267,15 @@ body.dark-mode .editor-tab.active { color:#c8d8ea; }
 
 /* ══ MASTHEAD SUBMIT CTA ══ */
 .masthead-submit-cta {
-  display:inline-flex; align-items:center; gap:6px;
-  font-family:'Lato',sans-serif; font-size:11.5px; font-weight:700;
-  letter-spacing:0.13em; text-transform:uppercase;
+  display:inline-flex; align-items:center; gap:5px;
+  font-family:'Lato',sans-serif; font-size:11px; font-weight:700;
+  letter-spacing:0.1em; text-transform:uppercase;
   color:var(--navy); background:var(--gold);
-  border:none; padding:7px 18px 7px 14px; cursor:pointer;
-  position:relative; overflow:hidden;
+  border:none; padding:7px 16px 7px 12px; cursor:pointer;
+  position:relative; overflow:hidden; white-space:nowrap;
   transition: background 0.22s ease, color 0.22s ease, box-shadow 0.22s ease, transform 0.18s ease;
   box-shadow: 0 2px 10px rgba(184,150,62,0.28);
-  clip-path: polygon(0 0, calc(100% - 10px) 0, 100% 50%, calc(100% - 10px) 100%, 0 100%);
+  clip-path: polygon(0 0, calc(100% - 9px) 0, 100% 50%, calc(100% - 9px) 100%, 0 100%);
 }
 .masthead-submit-cta::before {
   content:''; position:absolute; inset:0;
@@ -1288,6 +1290,11 @@ body.dark-mode .editor-tab.active { color:#c8d8ea; }
   transform:translateY(-1px);
 }
 .masthead-submit-cta:active { transform:translateY(0); }
+/* Hide emoji on very small screens to prevent wrapping */
+@media (max-width:480px) {
+  .masthead-submit-cta .cta-icon { display:none; }
+  .masthead-submit-cta { font-size:10px; padding:6px 14px 6px 10px; letter-spacing:0.07em; }
+}
 
 /* ══ ARTICLE PREVIEW PANEL ══ */
 #sub-preview-section {
@@ -1412,7 +1419,7 @@ body.dark-mode .editor-tab.active { color:#c8d8ea; }
     <hr class="masthead-rule-bot">
     <div class="masthead-meta">
       <span id="live-date-2"></span>
-      <button onclick="openSubmitArticle()" class="masthead-submit-cta">✍ Submit Your Article</button>
+      <button onclick="openSubmitArticle()" class="masthead-submit-cta"><span class="cta-icon">✍</span>&nbsp;Submit Your Article</button>
       <span>Vol. I &bull; Est. 2026</span>
     </div>
   </div>
@@ -2236,7 +2243,7 @@ function cardThumbHtml(article) {
     (article.file_url && article.file_type && article.file_type.startsWith('image/') ? article.file_url : null);
 
   if (imgSrc) {
-    return `<div class="card-thumb-wrap" onclick="event.stopPropagation();openLightbox('${imgSrc}',['${imgSrc}'],0)" title="Click to enlarge"><img data-src="${imgSrc}" loading="lazy" decoding="async" alt="${esc(article.title)}" width="400" height="267"></div>`;
+    return `<div class="card-thumb-wrap" onclick="event.stopPropagation();openLightbox('${imgSrc}',['${imgSrc}'],0)" title="Click to enlarge"><img data-src="${imgSrc}" loading="lazy" decoding="async" alt="${esc(article.title)}" width="400" height="267" style="object-position:top center;"></div>`;
   }
   const icon = article.file_type === 'application/pdf'
     ? `<svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="#0a1628" stroke-width="1.5"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14,2 14,8 20,8"/><line x1="9" y1="13" x2="15" y2="13"/><line x1="9" y1="17" x2="15" y2="17"/></svg>`
@@ -4179,7 +4186,7 @@ async function doSubmitArticle() {
     }
 
     pfC.style.width = '55%';
-    btn.textContent = 'Saving submission details…';
+    btn.textContent = 'Saved — finalising…';
 
     // 2. Also store author photo URL if uploaded
     let author_photo_url = null;
@@ -4981,9 +4988,9 @@ async function generateArticleImage(articleData) {
 
     // ── Header bar ──
     ctx.fillStyle = NAVY;
-    ctx.fillRect(0, 0, W, 130);
+    ctx.fillRect(0, 0, W, 180);
     ctx.fillStyle = GOLD;
-    ctx.fillRect(0, 130, W, 10);
+    ctx.fillRect(0, 180, W, 10);
 
     // ── Load logo then draw everything ──
     const logoImg = new Image();
@@ -5015,30 +5022,30 @@ async function generateArticleImage(articleData) {
       // ── Publication title centred to mirror site header ──
       ctx.textAlign = 'center';
       ctx.fillStyle = GOLD;
-      ctx.font = 'bold 34px Georgia, serif';
+      ctx.font = 'bold 52px Georgia, serif';
       const fullName = 'The International Legal Inteligencia Research Herald, India';
-      const nameLines = wrapTextGetLines(ctx, fullName, W - 220, 34);
+      const nameLines = wrapTextGetLines(ctx, fullName, W - 260, 52);
       // draw up to 2 lines, centred, in gold
-      const baseY = nameLines.length > 1 ? 62 : 76;
-      nameLines.slice(0, 2).forEach((line, i) => ctx.fillText(line, W / 2, baseY + i * 40));
+      const baseY = nameLines.length > 1 ? 80 : 110;
+      nameLines.slice(0, 2).forEach((line, i) => ctx.fillText(line, W / 2, baseY + i * 62));
       ctx.textAlign = 'left';
 
       // ── Thin divider below header ──
       ctx.strokeStyle = BORDER;
       ctx.lineWidth = 2;
-      ctx.beginPath(); ctx.moveTo(56, 158); ctx.lineTo(W - 56, 158); ctx.stroke();
+      ctx.beginPath(); ctx.moveTo(56, 208); ctx.lineTo(W - 56, 208); ctx.stroke();
 
       // ── Category badge ──
       ctx.textAlign = 'left';
       const catText = (articleData.category || 'RESEARCH').toUpperCase();
       ctx.fillStyle = NAVY;
-      ctx.fillRect(56, 172, W - 112, 72);
+      ctx.fillRect(56, 222, W - 112, 72);
       ctx.fillStyle = GOLD;
       ctx.font = 'bold 26px Georgia, serif';
       ctx.letterSpacing = '6px';
       const catMaxWidth = W - 160;
       const catLines = wrapTextGetLines(ctx, catText, catMaxWidth, 26);
-      const catBaseY = 216;
+      const catBaseY = 266;
       catLines.slice(0, 2).forEach((line, i) => {
         ctx.fillText(line, 80, catBaseY + i * 32);
       });
@@ -5046,7 +5053,7 @@ async function generateArticleImage(articleData) {
 
       // ── Article title ──
       // Increase vertical spacing so title never collides with category band
-      const TITLE_X = 56, TITLE_Y_START = 340;
+      const TITLE_X = 56, TITLE_Y_START = 390;
       ctx.fillStyle = NAVY;
       ctx.font = 'bold 72px "Playfair Display", Georgia, serif';
       let titleLines = wrapTextGetLines(ctx, articleData.title || 'Untitled', W - 112, 72);
