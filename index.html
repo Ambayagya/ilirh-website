@@ -2148,8 +2148,10 @@ function setDate() {
   const d = new Date();
   const opts = { weekday:'long', year:'numeric', month:'long', day:'numeric' };
   const s = d.toLocaleDateString('en-IN', opts);
-  document.getElementById('live-date').textContent = s;
-  document.getElementById('live-date-2').textContent = s;
+  const d1 = document.getElementById('live-date');
+  const d2 = document.getElementById('live-date-2');
+  if (d1) d1.textContent = s;
+  if (d2) d2.textContent = s;
 }
 setDate();
  
@@ -3243,7 +3245,11 @@ async function trackAndShowVisitors() {
 trackAndShowVisitors();
  
 // ── INIT ──
-fetchArticles();
+try {
+  fetchArticles();
+} catch (e) {
+  console.error('INIT failed:', e);
+}
  
 // ── SEARCH POPUP OVERLAY ──
 function toggleSearch() {
@@ -5032,9 +5038,9 @@ async function generateArticleImage(articleData) {
       ctx.letterSpacing = '6px';
       const catMaxWidth = W - 160;
       const catLines = wrapTextGetLines(ctx, catText, catMaxWidth, 26);
-      const baseY = 216;
+      const catBaseY = 216;
       catLines.slice(0, 2).forEach((line, i) => {
-        ctx.fillText(line, 80, baseY + i * 32);
+        ctx.fillText(line, 80, catBaseY + i * 32);
       });
       ctx.letterSpacing = '';
 
