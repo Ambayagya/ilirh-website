@@ -1951,6 +1951,24 @@ body.dark-mode .editor-tab.active { color:#c8d8ea; }
       </div>
 
       <hr class="submit-rule">
+      <!-- Cover Image Upload -->
+      <div class="submit-section-title">Article Cover Image <span style="font-weight:400;text-transform:none;letter-spacing:0;font-family:'EB Garamond',serif;font-size:12px;color:var(--text-muted);">(optional — displayed as a full-width banner on your article image)</span></div>
+      <div style="margin-bottom:18px;">
+        <div id="sub-cover-preview-wrap" style="display:none;margin-bottom:10px;position:relative;width:100%;height:160px;overflow:hidden;border:1px solid var(--border);border-radius:2px;background:var(--cream-dark);">
+          <img id="sub-cover-preview-img" src="" alt="Cover preview" style="width:100%;height:100%;object-fit:cover;display:block;">
+          <button onclick="removeCoverPhoto(event)" title="Remove cover image" style="position:absolute;top:6px;right:8px;background:rgba(10,22,40,0.72);border:none;color:#fff;font-size:17px;line-height:1;padding:3px 8px;cursor:pointer;border-radius:2px;">&times;</button>
+          <div style="position:absolute;bottom:0;left:0;right:0;background:linear-gradient(transparent,rgba(10,22,40,0.55));padding:8px 12px 6px;font-family:'Lato',sans-serif;font-size:10px;color:#e8d9b0;letter-spacing:0.08em;text-transform:uppercase;">Cover Image Preview</div>
+        </div>
+        <div class="submit-drop-zone" id="sub-cover-zone" onclick="document.getElementById('sub-cover-file').click()" style="padding:18px 14px;text-align:center;">
+          <input type="file" id="sub-cover-file" accept="image/*" style="display:none;" onchange="handleSubCoverPhotoSelect(this)">
+          <div style="font-size:28px;margin-bottom:6px;opacity:0.45;">🖼</div>
+          <div style="font-size:11px;font-weight:700;color:var(--text-secondary);margin-bottom:3px;">Click to upload a cover image for your article</div>
+          <div style="font-size:10px;color:var(--text-muted);">JPG, PNG &nbsp;&bull;&nbsp; Max 5 MB &nbsp;&bull;&nbsp; Landscape (wide) images work best</div>
+          <div class="submit-drop-filename" id="sub-cover-filename"></div>
+        </div>
+      </div>
+
+      <hr class="submit-rule">
       <!-- Rich Article Editor -->
       <div class="submit-section-title">Write Your Article *</div>
       <div id="sub-editor-wrap">
@@ -4187,6 +4205,23 @@ function handleSubFileSelect(input) {
   });
 })();
 
+// Drag-and-drop for cover image zone
+(function(){
+  const dz = document.getElementById('sub-cover-zone');
+  if (!dz) return;
+  dz.addEventListener('dragover', e => { e.preventDefault(); dz.classList.add('dragover'); });
+  dz.addEventListener('dragleave', () => dz.classList.remove('dragover'));
+  dz.addEventListener('drop', e => {
+    e.preventDefault(); dz.classList.remove('dragover');
+    const file = e.dataTransfer.files[0]; if (!file || !file.type.startsWith('image/')) return;
+    if (file.size > 5*1024*1024) {
+      document.getElementById('sub-cover-filename').textContent = '✗ Too large (max 5 MB)'; return;
+    }
+    const fakeInput = { files: [file] };
+    handleSubCoverPhotoSelect(fakeInput);
+  });
+})();
+
 async function doSubmitArticle() {
   const name       = sanitizeInput(document.getElementById('sub-name').value, 150);
   const email      = sanitizeInput(document.getElementById('sub-email').value, 200).toLowerCase();
@@ -4216,7 +4251,7 @@ async function doSubmitArticle() {
     let articleImageUrl = null;
     const imageDataUrl = _previewDataUrl || await generateArticleImage({
       title, author: name, place, htmlBody: articleHtml,
-      authorPhotoUrl: _subAuthorPhotoData, category, occupation
+      authorPhotoUrl: _subAuthorPhotoData, coverPhotoUrl: _subCoverPhotoData, category, occupation
     });
     pfC.style.width = '30%';
     btn.textContent = 'Uploading article image…';
@@ -4304,7 +4339,13 @@ function showSuccessState() {
   document.getElementById('submit-form-body').style.display = 'none';
   document.getElementById('submit-success-state').style.display = 'block';
   _subAuthorPhotoData = null;
-  if (typeof clearSubmitDraft === 'function') clearSubmitDraft();
+  _subCoverPhotoData = null;
+  // Reset cover image UI
+  const cw = document.getElementById('sub-cover-preview-wrap'); if (cw) cw.style.display = 'none';
+  const ci = document.getElementById('sub-cover-preview-img'); if (ci) ci.src = '';
+  const cz = document.getElementById('sub-cover-zone'); if (cz) cz.style.display = '';
+  const cf = document.getElementById('sub-cover-filename'); if (cf) cf.textContent = '';
+  const cfi = document.getElementById('sub-cover-file'); if (cfi) cfi.value = '';
   if (typeof showToast === 'function') {
     showToast('✓ Submission received. We will email you after editorial review.', 3600);
   }
@@ -4952,7 +4993,44 @@ function updateWordCount() {
 // ── AUTHOR PHOTO UPLOAD ──
 // ═══════════════════════════════════════════════════════
 let _subAuthorPhotoData = null; // base64 data URL
-function handleSubPhotoSelect(input) {
+let _subCoverPhotoData = null;  // base64 data URL for article cover image
+
+function handleSubCoverPhotoSelect(input) {
+  const file = input.files[0]; if (!file) return;
+  if (file.size > 5 * 1024 * 1024) {
+    document.getElementById('sub-cover-filename').textContent = '✗ Too large — max 5 MB';
+    return;
+  }
+  const reader = new FileReader();
+  reader.onload = e => {
+    _subCoverPhotoData = e.target.result;
+    const wrapEl = document.getElementById('sub-cover-preview-wrap');
+    const imgEl  = document.getElementById('sub-cover-preview-img');
+    if (wrapEl) wrapEl.style.display = 'block';
+    if (imgEl)  imgEl.src = _subCoverPhotoData;
+    const fn = document.getElementById('sub-cover-filename');
+    if (fn) fn.textContent = '✓ ' + file.name;
+    const zoneEl = document.getElementById('sub-cover-zone');
+    if (zoneEl) zoneEl.style.display = 'none';
+    schedulePreviewRefresh();
+  };
+  reader.readAsDataURL(file);
+}
+function removeCoverPhoto(e) {
+  if (e) e.stopPropagation();
+  _subCoverPhotoData = null;
+  const wrapEl = document.getElementById('sub-cover-preview-wrap');
+  if (wrapEl) wrapEl.style.display = 'none';
+  const imgEl  = document.getElementById('sub-cover-preview-img');
+  if (imgEl)   imgEl.src = '';
+  const zoneEl = document.getElementById('sub-cover-zone');
+  if (zoneEl) zoneEl.style.display = '';
+  const fn = document.getElementById('sub-cover-filename');
+  if (fn) fn.textContent = '';
+  const fi = document.getElementById('sub-cover-file');
+  if (fi) fi.value = '';
+  schedulePreviewRefresh();
+}
   const file = input.files[0]; if (!file) return;
   if (file.size > 2 * 1024 * 1024) {
     document.getElementById('sub-photo-filename').textContent = '✗ Too large — max 2 MB';
@@ -5142,7 +5220,7 @@ async function _doGeneratePreview() {
   try {
     const dataUrl = await generateArticleImage({
       title, author: name, place, htmlBody: articleHtml,
-      authorPhotoUrl: _subAuthorPhotoData, category, occupation: occ
+      authorPhotoUrl: _subAuthorPhotoData, coverPhotoUrl: _subCoverPhotoData, category, occupation: occ
     });
     _previewDataUrl = dataUrl;
     prevImg.src = dataUrl;
@@ -5340,28 +5418,99 @@ async function generateArticleImage(articleData) {
       ctx.fillStyle = GOLD;
       ctx.fillRect(56, titleBottomY, W - 112, 5);
 
-      // ── Author block ──
-      const AUTHOR_Y = titleBottomY + 44;
-      const PHOTO_SIZE = 172;
+      // ── Cover Photo (if provided) ──
+      const COVER_Y_START = titleBottomY + 28;
+      const COVER_H = 780; // tall cinematic banner
 
-      // Draw photo or placeholder, then author text, then body
-      if (articleData.authorPhotoUrl) {
-        const photoImg = new Image();
-        photoImg.crossOrigin = 'anonymous';
-        photoImg.onload = () => {
-          _drawAuthorPhoto(photoImg, AUTHOR_Y, PHOTO_SIZE);
-          _drawAuthorText(AUTHOR_Y, PHOTO_SIZE, () => _drawBody(AUTHOR_Y + PHOTO_SIZE + 60));
-        };
-        photoImg.onerror = () => {
+      function _afterCover(authorStartY) {
+        // ── Author block ──
+        const AUTHOR_Y = authorStartY;
+        const PHOTO_SIZE = 172;
+
+        // Draw photo or placeholder, then author text, then body
+        if (articleData.authorPhotoUrl) {
+          const photoImg = new Image();
+          photoImg.crossOrigin = 'anonymous';
+          photoImg.onload = () => {
+            _drawAuthorPhoto(photoImg, AUTHOR_Y, PHOTO_SIZE);
+            _drawAuthorText(AUTHOR_Y, PHOTO_SIZE, () => _drawBody(AUTHOR_Y + PHOTO_SIZE + 60));
+          };
+          photoImg.onerror = () => {
+            _drawAuthorPlaceholder(AUTHOR_Y, PHOTO_SIZE);
+            _drawAuthorText(AUTHOR_Y, PHOTO_SIZE, () => _drawBody(AUTHOR_Y + PHOTO_SIZE + 60));
+          };
+          photoImg.src = articleData.authorPhotoUrl;
+        } else {
           _drawAuthorPlaceholder(AUTHOR_Y, PHOTO_SIZE);
           _drawAuthorText(AUTHOR_Y, PHOTO_SIZE, () => _drawBody(AUTHOR_Y + PHOTO_SIZE + 60));
-        };
-        photoImg.src = articleData.authorPhotoUrl;
-      } else {
-        _drawAuthorPlaceholder(AUTHOR_Y, PHOTO_SIZE);
-        _drawAuthorText(AUTHOR_Y, PHOTO_SIZE, () => _drawBody(AUTHOR_Y + PHOTO_SIZE + 60));
+        }
       }
-    }
+
+      if (articleData.coverPhotoUrl) {
+        const coverImg = new Image();
+        coverImg.crossOrigin = 'anonymous';
+        coverImg.onload = () => {
+          // Draw cover image: full width, cinematic crop centered
+          const COVER_X = 56;
+          const COVER_W = W - 112;
+          const srcAR = coverImg.naturalWidth / coverImg.naturalHeight;
+          const dstAR = COVER_W / COVER_H;
+          let sx = 0, sy = 0, sw = coverImg.naturalWidth, sh = coverImg.naturalHeight;
+          if (srcAR > dstAR) {
+            // image wider than destination — crop sides
+            sw = Math.round(sh * dstAR);
+            sx = Math.round((coverImg.naturalWidth - sw) / 2);
+          } else {
+            // image taller — crop top/bottom (keep top portion for portraits)
+            sh = Math.round(sw / dstAR);
+            sy = Math.round((coverImg.naturalHeight - sh) * 0.25); // bias toward top
+          }
+          // Subtle rounded clip (save/restore)
+          ctx.save();
+          const r = 8;
+          ctx.beginPath();
+          ctx.moveTo(COVER_X + r, COVER_Y_START);
+          ctx.lineTo(COVER_X + COVER_W - r, COVER_Y_START);
+          ctx.quadraticCurveTo(COVER_X + COVER_W, COVER_Y_START, COVER_X + COVER_W, COVER_Y_START + r);
+          ctx.lineTo(COVER_X + COVER_W, COVER_Y_START + COVER_H - r);
+          ctx.quadraticCurveTo(COVER_X + COVER_W, COVER_Y_START + COVER_H, COVER_X + COVER_W - r, COVER_Y_START + COVER_H);
+          ctx.lineTo(COVER_X + r, COVER_Y_START + COVER_H);
+          ctx.quadraticCurveTo(COVER_X, COVER_Y_START + COVER_H, COVER_X, COVER_Y_START + COVER_H - r);
+          ctx.lineTo(COVER_X, COVER_Y_START + r);
+          ctx.quadraticCurveTo(COVER_X, COVER_Y_START, COVER_X + r, COVER_Y_START);
+          ctx.closePath();
+          ctx.clip();
+          try { ctx.drawImage(coverImg, sx, sy, sw, sh, COVER_X, COVER_Y_START, COVER_W, COVER_H); } catch(e) {}
+          ctx.restore();
+          // Subtle bottom-edge gradient vignette
+          const vGrad = ctx.createLinearGradient(0, COVER_Y_START + COVER_H - 160, 0, COVER_Y_START + COVER_H);
+          vGrad.addColorStop(0, 'rgba(247,244,239,0)');
+          vGrad.addColorStop(1, 'rgba(247,244,239,0.32)');
+          ctx.fillStyle = vGrad;
+          ctx.fillRect(COVER_X, COVER_Y_START + COVER_H - 160, COVER_W, 160);
+          // Gold bottom rule on cover
+          ctx.fillStyle = GOLD;
+          ctx.fillRect(COVER_X, COVER_Y_START + COVER_H + 2, COVER_W, 4);
+
+          _afterCover(COVER_Y_START + COVER_H + 56);
+        };
+        coverImg.onerror = () => {
+          // Draw tasteful placeholder if image fails
+          ctx.fillStyle = CREAM;
+          ctx.fillRect(56, COVER_Y_START, W - 112, COVER_H);
+          ctx.fillStyle = BORDER;
+          ctx.font = 'italic 34px Georgia, serif';
+          ctx.textAlign = 'center';
+          ctx.fillText('Cover image unavailable', W / 2, COVER_Y_START + COVER_H / 2);
+          ctx.textAlign = 'left';
+          _afterCover(COVER_Y_START + COVER_H + 56);
+        };
+        coverImg.src = articleData.coverPhotoUrl;
+      } else {
+        _afterCover(titleBottomY + 44);
+      }
+
+    } // end _drawPage
 
     function _drawAuthorPhoto(img, y, size) {
       ctx.save();
