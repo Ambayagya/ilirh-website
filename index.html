@@ -308,18 +308,14 @@ footer { background:var(--navy); color:#8fa4bf; padding:36px 32px 20px; margin-t
  
 /* ── INLINE ARTICLE IMAGE (text-wrap) ── */
 .rte-inline-img-wrap {
-  display: block;
-  margin: 8px 0 14px;
-  width: min(380px, 92%);
-  max-width: 92%;
+  float: left;
+  margin: 4px 18px 10px 0;
+  max-width: 44%;
   position: relative;
-  line-height: 1;
+  line-height: 0;
   border: 1px solid var(--border);
   background: var(--cream);
 }
-.rte-inline-img-wrap[data-rte-align="left"] { margin-right: auto; }
-.rte-inline-img-wrap[data-rte-align="center"] { margin-left: auto; margin-right: auto; }
-.rte-inline-img-wrap[data-rte-align="right"] { margin-left: auto; }
 .rte-inline-img-wrap img {
   width: 100%;
   height: auto;
@@ -328,7 +324,7 @@ footer { background:var(--navy); color:#8fa4bf; padding:36px 32px 20px; margin-t
 }
 .rte-inline-img-wrap .rte-img-remove {
   position: absolute;
-  top: 4px; right: 4px;
+  top: 3px; right: 3px;
   background: rgba(10,22,40,0.7);
   color: #fff; border: none;
   font-size: 13px; line-height: 1;
@@ -336,39 +332,6 @@ footer { background:var(--navy); color:#8fa4bf; padding:36px 32px 20px; margin-t
   border-radius: 2px; display: none;
 }
 .rte-inline-img-wrap:hover .rte-img-remove { display: block; }
-.rte-inline-img-wrap .rte-img-controls {
-  position: absolute;
-  top: 4px;
-  left: 4px;
-  right: 4px;
-  display: flex;
-  flex-wrap: wrap;
-  gap: 4px;
-  z-index: 3;
-  opacity: 0;
-  transition: opacity 0.15s;
-}
-.rte-inline-img-wrap:hover .rte-img-controls { opacity: 1; }
-.rte-inline-img-wrap .rte-img-ctrl-btn {
-  border: 1px solid rgba(255,255,255,0.22);
-  background: rgba(10,22,40,0.78);
-  color: #fff;
-  font-family: 'Lato', sans-serif;
-  font-size: 10px;
-  letter-spacing: 0.03em;
-  padding: 2px 6px;
-  cursor: pointer;
-}
-.rte-inline-img-wrap .rte-img-resize {
-  position: absolute;
-  width: 14px;
-  height: 14px;
-  right: 0;
-  bottom: 0;
-  cursor: nwse-resize;
-  background: linear-gradient(135deg, transparent 46%, var(--gold) 46%, var(--gold) 54%, transparent 54%);
-  z-index: 2;
-}
 .rte-inline-img-wrap .rte-img-caption {
   font-family: 'EB Garamond', serif;
   font-size: 12px;
@@ -387,13 +350,10 @@ footer { background:var(--navy); color:#8fa4bf; padding:36px 32px 20px; margin-t
   color: var(--text-muted);
   opacity: 0.5;
 }
+/* Clear float after editor content */
+#sub-editor::after { content: ''; display: table; clear: both; }
 body.dark-mode .rte-inline-img-wrap { border-color: var(--border); background: var(--cream-dark); }
 body.dark-mode .rte-inline-img-wrap .rte-img-caption { border-top-color: var(--border); }
-.publish-mode-chooser { display:flex; gap:10px; margin-bottom:12px; flex-wrap:wrap; }
-.publish-mode-item { display:flex; align-items:center; gap:8px; border:1px solid var(--border); background:var(--cream); padding:8px 10px; cursor:pointer; font-family:'Lato',sans-serif; font-size:11px; letter-spacing:0.08em; text-transform:uppercase; font-weight:700; color:var(--text-secondary); }
-.publish-mode-item input[type=checkbox] { accent-color: var(--navy); width:15px; height:15px; }
-.publish-write-wrap { display:none; margin-top:10px; }
-.publish-write-wrap.open { display:block; }
 body.reading-mode .masthead, body.reading-mode .topbar, body.reading-mode .ticker-bar,
 body.reading-mode footer, body.reading-mode .hero-sidebar,
 body.reading-mode #categories-wrap, body.reading-mode .cat-header .cat-more { display:none !important; }
@@ -1180,9 +1140,7 @@ button:focus-visible, a:focus-visible, input:focus-visible {
 .rich-editor-toolbar {
   display: flex; flex-wrap: wrap; gap: 3px; padding: 8px 10px;
   background: var(--cream-dark); border: 1px solid var(--border); border-bottom: none;
-  align-items: center;
 }
-.rte-break { flex-basis: 100%; height: 0; }
 .rte-btn {
   background: #fff; border: 1px solid var(--border); color: var(--text-primary);
   font-family: 'Lato', sans-serif; font-size: 11.5px; font-weight: 700;
@@ -1805,17 +1763,6 @@ body.dark-mode .editor-tab.active { color:#c8d8ea; }
         <button class="ownership-btn" id="own-genz" onclick="setOwnership('genz')">&#127775; GenZ / Student</button>
       </div>
     </div>
-    <div class="form-row" id="publish-mode-row" style="display:none;">
-      <label>For Myself, choose publishing method *</label>
-      <div class="publish-mode-chooser">
-        <label class="publish-mode-item" for="publish-mode-write">
-          <input type="checkbox" id="publish-mode-write" onchange="setPublishMode('write')"> Write Your Article
-        </label>
-        <label class="publish-mode-item" for="publish-mode-upload">
-          <input type="checkbox" id="publish-mode-upload" onchange="setPublishMode('upload')"> Upload File
-        </label>
-      </div>
-    </div>
     <div class="form-row"><label>Author Name *</label><input type="text" id="up-author" placeholder="e.g. Advocate Dr. Ajay Singh Rathore"></div>
     <div class="form-row" id="author-email-row" style="display:none;">
       <label>Author's Email <span style="color:var(--gold);font-size:10px;letter-spacing:0.05em;">(for publication acknowledgement)</span></label>
@@ -1830,36 +1777,6 @@ body.dark-mode .editor-tab.active { color:#c8d8ea; }
       </select>
     </div>
     <div class="form-row"><label>Brief Description / Abstract</label><textarea id="up-excerpt" placeholder="A short summary (2–3 sentences)…"></textarea></div>
-    <div class="publish-write-wrap" id="publish-write-wrap">
-      <div style="font-family:'Lato',sans-serif;font-size:10px;font-weight:700;letter-spacing:0.14em;text-transform:uppercase;color:var(--text-muted);margin-bottom:6px;">Write Article Body</div>
-      <div class="rich-editor-toolbar">
-        <button type="button" class="rte-btn" onclick="upRteExec('bold')" title="Bold"><b>B</b></button>
-        <button type="button" class="rte-btn" onclick="upRteExec('italic')" title="Italic"><i>I</i></button>
-        <button type="button" class="rte-btn" onclick="upRteExec('underline')" title="Underline"><u>U</u></button>
-        <button type="button" class="rte-btn rte-btn-sm" onclick="upRteExec('insertHorizontalRule')" title="Divider">HR</button>
-        <span class="rte-sep"></span>
-        <button type="button" class="rte-btn rte-btn-sm" onclick="upRteExec('formatBlock','H2')" title="Heading 2">H2</button>
-        <button type="button" class="rte-btn rte-btn-sm" onclick="upRteExec('formatBlock','H3')" title="Heading 3">H3</button>
-        <button type="button" class="rte-btn rte-btn-sm" onclick="upRteExec('formatBlock','P')" title="Paragraph">P</button>
-        <button type="button" class="rte-btn rte-btn-sm" onclick="upRteExec('justifyLeft')" title="Align Left">Left</button>
-        <button type="button" class="rte-btn rte-btn-sm" onclick="upRteExec('justifyCenter')" title="Centre">Center</button>
-        <button type="button" class="rte-btn rte-btn-sm" onclick="upRteExec('justifyRight')" title="Align Right">Right</button>
-        <span class="rte-break"></span>
-        <button type="button" class="rte-btn" onclick="upRteExec('insertUnorderedList')" title="Bullet list">&#8226; List</button>
-        <button type="button" class="rte-btn" onclick="upRteExec('insertOrderedList')" title="Numbered list">1. List</button>
-        <button type="button" class="rte-btn" onclick="upRteExec('formatBlock','BLOCKQUOTE')" title="Blockquote">&ldquo;&rdquo;</button>
-        <button type="button" class="rte-btn" onclick="upRteInsertLink()" title="Insert link">&#128279; Link</button>
-        <button type="button" class="rte-btn" onclick="upRteInsertImageTrigger()" title="Insert image">&#128444; Image</button>
-        <input type="file" id="up-rte-img-file" accept="image/*" style="display:none;" onchange="upRteInsertImageFromFile(this)">
-        <button type="button" class="rte-btn rte-btn-sm" onclick="upRteExec('removeFormat')" title="Clear format">&#10005; Clear</button>
-      </div>
-      <div id="up-editor" class="rich-editor-area" contenteditable="true" spellcheck="true" data-placeholder="Write your full article here..."></div>
-      <div class="rte-word-counter"><span id="up-word-count">0</span> words</div>
-      <div style="margin-top:8px;">
-        <button id="up-generate-image-btn" type="button" class="btn-primary" onclick="regeneratePublishGeneratedImage()" style="padding:9px 14px;font-size:10px;">Generate / Regenerate Article Image</button>
-        <span id="up-generate-status" style="font-family:'Lato',sans-serif;font-size:11px;color:var(--text-muted);margin-left:8px;"></span>
-      </div>
-    </div>
     <div class="form-row"><label>Upload File (PDF or Image) *</label>
       <div class="drop-zone" id="drop-zone">
         <input type="file" id="up-file" accept=".pdf,image/*" onchange="handleFileSelect(this)">
@@ -1935,45 +1852,137 @@ body.dark-mode .editor-tab.active { color:#c8d8ea; }
     </div>
 
     <div id="submit-form-body">
-      <div class="submit-section-title">Journal Submission</div>
+      <!-- Personal Details -->
+      <div class="submit-section-title">Personal Details</div>
+      <div class="submit-2col">
+        <div class="submit-form-row">
+          <label>Full Name *</label>
+          <input type="text" id="sub-name" placeholder="As it should appear in publication">
+        </div>
+        <div class="submit-form-row">
+          <label>Email Address *</label>
+          <input type="email" id="sub-email" placeholder="For correspondence & certificate">
+        </div>
+      </div>
+      <div class="submit-2col">
+        <div class="submit-form-row">
+          <label>Occupation / Designation *</label>
+          <select id="sub-occupation">
+            <option value="">— Select Occupation —</option>
+            <optgroup label="Legal Professionals">
+              <option>Advocate / Lawyer</option>
+              <option>Senior Advocate</option>
+              <option>Judge / Judicial Officer</option>
+              <option>Legal Researcher</option>
+              <option>Legal Consultant</option>
+              <option>Public Prosecutor</option>
+              <option>Government Law Officer</option>
+            </optgroup>
+            <optgroup label="Academia">
+              <option>Professor of Law</option>
+              <option>Associate Professor</option>
+              <option>Assistant Professor</option>
+              <option>Professor of Practice</option>
+              <option>Research Scholar (PhD)</option>
+              <option>Post-Doctoral Fellow</option>
+              <option>Academic Dean / HoD</option>
+            </optgroup>
+            <optgroup label="Students">
+              <option>Law Student (LLB / LLM)</option>
+              <option>BA LLB Student</option>
+              <option>LLM Student</option>
+              <option>Law Intern</option>
+              <option>Undergraduate Student</option>
+              <option>Postgraduate Student</option>
+            </optgroup>
+            <optgroup label="Policy &amp; Research">
+              <option>Policy Analyst</option>
+              <option>Political Analyst</option>
+              <option>Researcher</option>
+              <option>Journalist / Legal Correspondent</option>
+              <option>Author / Writer</option>
+            </optgroup>
+            <optgroup label="Other">
+              <option>Civil Servant / IAS / IPS</option>
+              <option>Academician (Non-Law)</option>
+              <option>Vedic Scholar</option>
+              <option>Independent Researcher</option>
+              <option>Other</option>
+            </optgroup>
+          </select>
+        </div>
+        <div class="submit-form-row">
+          <label>Institution / Affiliation</label>
+          <input type="text" id="sub-institution" placeholder="University, Court, Organisation…">
+        </div>
+      </div>
+      <div class="submit-form-row">
+        <label>Phone / WhatsApp <span style="font-weight:400;text-transform:none;letter-spacing:0;font-family:'EB Garamond',serif;font-size:12px;color:var(--text-muted);">(optional)</span></label>
+        <input type="tel" id="sub-phone" placeholder="+91 XXXXX XXXXX">
+      </div>
+
+      <hr class="submit-rule">
+      <!-- Article Details -->
+      <div class="submit-section-title">Article Details</div>
       <div class="submit-form-row">
         <label>Article Title *</label>
         <input type="text" id="sub-title" placeholder="Full title of your article">
       </div>
       <div class="submit-2col">
         <div class="submit-form-row">
-          <label>Author Name *</label>
-          <input type="text" id="sub-name" placeholder="As it should appear in publication">
+          <label>Category *</label>
+          <select id="sub-category">
+            <option value="">— Select Category —</option>
+            <option>Law</option>
+            <option>Education</option>
+            <option>Vedic Science</option>
+            <option>Political</option>
+            <option>Gen-Z Desk</option>
+          </select>
         </div>
         <div class="submit-form-row">
-          <label>Occupation / Designation *</label>
-          <select id="sub-occupation">
-            <option value="">— Select Occupation —</option>
-            <option>Advocate / Lawyer</option>
-            <option>Senior Advocate</option>
-            <option>Judge / Judicial Officer</option>
-            <option>Legal Researcher</option>
-            <option>Professor of Law</option>
-            <option>Research Scholar (PhD)</option>
-            <option>Law Student (LLB / LLM)</option>
-            <option>Policy Analyst</option>
-            <option>Other</option>
+          <label>Co-author(s) <span style="font-weight:400;text-transform:none;letter-spacing:0;font-family:'EB Garamond',serif;font-size:12px;color:var(--text-muted);">(if any)</span></label>
+          <input type="text" id="sub-coauthors" placeholder="Names of co-authors, if applicable">
+        </div>
+      </div>
+      <div class="submit-form-row">
+        <label>Abstract / Brief Description *</label>
+        <textarea id="sub-abstract" placeholder="A brief summary of your article (3–5 sentences)…" style="height:90px;"></textarea>
+      </div>
+
+      <hr class="submit-rule">
+      <!-- Location -->
+      <div class="submit-section-title">Your Location</div>
+      <div class="submit-2col">
+        <div class="submit-form-row">
+          <label>Country *</label>
+          <select id="sub-country" onchange="populateStates()">
+            <option value="">— Select Country —</option>
+          </select>
+        </div>
+        <div class="submit-form-row">
+          <label>State / Province</label>
+          <select id="sub-state" onchange="populateCities()">
+            <option value="">— Select State —</option>
           </select>
         </div>
       </div>
-      <input type="hidden" id="sub-email" value="">
-      <input type="hidden" id="sub-institution" value="">
-      <input type="hidden" id="sub-phone" value="">
-      <input type="hidden" id="sub-category" value="Law">
-      <input type="hidden" id="sub-coauthors" value="">
-      <textarea id="sub-abstract" style="display:none;"></textarea>
-      <input type="hidden" id="sub-country" value="">
-      <input type="hidden" id="sub-state" value="">
-      <input type="hidden" id="sub-city" value="">
-      <input type="hidden" id="sub-place" value="">
+      <div class="submit-2col">
+        <div class="submit-form-row">
+          <label>City</label>
+          <select id="sub-city" onchange="updatePlaceString()">
+            <option value="">— Select City —</option>
+          </select>
+        </div>
+        <div class="submit-form-row">
+          <label>Location (auto-generated)</label>
+          <input type="text" id="sub-place" placeholder="City, State, Country" readonly style="background:var(--cream);color:var(--text-muted);font-size:14px;">
+        </div>
+      </div>
 
       <hr class="submit-rule">
-      <div class="submit-section-title">Author Photo</div>
+      <!-- Author Photo -->
+      <div class="submit-section-title">Author Photo <span style="font-weight:400;text-transform:none;letter-spacing:0;font-family:'EB Garamond',serif;font-size:12px;color:var(--text-muted);">(optional — appears on article image)</span></div>
       <div style="display:flex;align-items:flex-start;gap:18px;margin-bottom:14px;">
         <div id="sub-photo-preview" style="width:80px;height:80px;border:2px solid var(--border);background:var(--cream);border-radius:50%;overflow:hidden;flex-shrink:0;display:flex;align-items:center;justify-content:center;">
           <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="var(--border)" stroke-width="1.5"><circle cx="12" cy="8" r="4"/><path d="M6 20v-2a6 6 0 0 1 12 0v2"/></svg>
@@ -1989,27 +1998,55 @@ body.dark-mode .editor-tab.active { color:#c8d8ea; }
       </div>
 
       <hr class="submit-rule">
-      <div class="submit-section-title">Upload Article (.docx)</div>
-      <div class="submit-drop-zone" id="sub-drop-zone">
-        <input type="file" id="sub-file" accept=".docx,application/vnd.openxmlformats-officedocument.wordprocessingml.document" onchange="handleSubFileSelect(this)">
-        <div style="font-size:13px;font-weight:700;color:var(--text-secondary);margin-bottom:4px;">Upload your Microsoft Word file</div>
-        <div style="font-size:11px;color:var(--text-muted);">DOCX only · 1 page only · Max 5 MB</div>
-        <div class="submit-drop-filename" id="sub-drop-filename"></div>
+      <!-- Rich Article Editor -->
+      <div class="submit-section-title">Write Your Article *</div>
+      <div id="sub-editor-wrap">
+        <div class="rich-editor-toolbar" id="sub-toolbar">
+          <button type="button" class="rte-btn" onclick="rteExec('bold')" title="Bold"><b>B</b></button>
+          <button type="button" class="rte-btn" onclick="rteExec('italic')" title="Italic"><i>I</i></button>
+          <button type="button" class="rte-btn" onclick="rteExec('underline')" title="Underline"><u>U</u></button>
+          <span class="rte-sep"></span>
+          <button type="button" class="rte-btn rte-btn-sm" onclick="rteExec('formatBlock','H2')" title="Heading 2">H2</button>
+          <button type="button" class="rte-btn rte-btn-sm" onclick="rteExec('formatBlock','H3')" title="Heading 3">H3</button>
+          <span class="rte-sep"></span>
+          <button type="button" class="rte-btn rte-btn-sm" title="Align Left" onclick="rteExec('justifyLeft')"><svg width="14" height="14" viewBox="0 0 14 14" fill="currentColor"><rect x="0" y="1" width="14" height="1.8" rx="0.6"/><rect x="0" y="4.6" width="10" height="1.8" rx="0.6"/><rect x="0" y="8.2" width="14" height="1.8" rx="0.6"/><rect x="0" y="11.8" width="8" height="1.8" rx="0.6"/></svg></button>
+          <button type="button" class="rte-btn rte-btn-sm" title="Centre" onclick="rteExec('justifyCenter')"><svg width="14" height="14" viewBox="0 0 14 14" fill="currentColor"><rect x="0" y="1" width="14" height="1.8" rx="0.6"/><rect x="2" y="4.6" width="10" height="1.8" rx="0.6"/><rect x="0" y="8.2" width="14" height="1.8" rx="0.6"/><rect x="3" y="11.8" width="8" height="1.8" rx="0.6"/></svg></button>
+          <button type="button" class="rte-btn rte-btn-sm" title="Justify" onclick="rteExec('justifyFull')"><svg width="14" height="14" viewBox="0 0 14 14" fill="currentColor"><rect x="0" y="1" width="14" height="1.8" rx="0.6"/><rect x="0" y="4.6" width="14" height="1.8" rx="0.6"/><rect x="0" y="8.2" width="14" height="1.8" rx="0.6"/><rect x="0" y="11.8" width="14" height="1.8" rx="0.6"/></svg></button>
+          <span class="rte-sep"></span>
+          <button type="button" class="rte-btn" onclick="rteExec('insertUnorderedList')" title="Bullet list">&#8226; List</button>
+          <button type="button" class="rte-btn" onclick="rteExec('insertOrderedList')" title="Numbered list">1. List</button>
+          <button type="button" class="rte-btn" onclick="rteExec('formatBlock','BLOCKQUOTE')" title="Blockquote">&ldquo;&rdquo;</button>
+          <span class="rte-sep"></span>
+          <button type="button" class="rte-btn" onclick="rteInsertLink()" title="Insert link">&#128279; Link</button>
+          <button type="button" class="rte-btn" onclick="rteInsertImageTrigger()" title="Insert image with text wrap">&#128444; Image</button>
+          <input type="file" id="rte-img-file" accept="image/*" style="display:none;" onchange="rteInsertImageFromFile(this)">
+          <button type="button" class="rte-btn rte-btn-sm" onclick="rteExec('removeFormat')" title="Clear format">&#10005; Clear</button>
+        </div>
+        <div id="sub-editor" class="rich-editor-area" contenteditable="true" spellcheck="true" data-placeholder="Write your full article here… (minimum 100 words, maximum 900 words)"></div>
+        <div class="rte-word-counter">
+          <span id="sub-word-count">0</span> / 900 words
+          <span id="sub-word-warn" style="display:none;color:#a32d2d;margin-left:8px;">⚠ Limit reached</span>
+        </div>
       </div>
-      <div id="sub-editor" style="display:none;"></div>
-      <input type="hidden" id="sub-undertaking" value="1">
+
+      <!-- Undertaking Checkbox -->
+      <div class="submit-undertaking" onclick="toggleSubUndertaking()">
+        <input type="checkbox" id="sub-undertaking" onclick="event.stopPropagation()">
+        <p><strong>Declaration of Originality:</strong> I hereby solemnly declare that the article submitted is my own original work, has not been published elsewhere, does not infringe any intellectual property right, and that I am the sole/joint author with full authority to submit this work to the International Legal Inteligencia Research Herald, India. I understand that any misrepresentation may result in immediate rejection or retraction.</p>
+      </div>
 
       <div class="submit-progress" id="sub-progress"><div class="submit-progress-fill" id="sub-progress-fill"></div></div>
       <p class="submit-err" id="sub-error"></p>
 
-      <button class="submit-btn-primary ilirh-submit-btn" id="sub-show-preview-btn" onclick="doSubmitArticle()">
-        <span style="font-size:14px;">✍</span> Submit for Editorial Review
+      <button class="submit-btn-primary ilirh-submit-btn" id="sub-show-preview-btn" onclick="showArticlePreview()">
+        <span style="font-size:14px;">👁</span> Preview Article Before Submission
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" style="margin-left:6px;vertical-align:middle;"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
       </button>
       <button class="submit-btn-cancel" onclick="closeSubmitArticle()">Cancel</button>
     </div>
 
     <!-- PREVIEW SECTION (shown after form is filled) -->
-    <div id="sub-preview-section" style="display:none;">
+    <div id="sub-preview-section">
       <div class="preview-section-title">
         Preview Your Article Before Submission
         <span class="preview-badge">Live Preview</span>
@@ -2112,14 +2149,11 @@ body.dark-mode .editor-tab.active { color:#c8d8ea; }
         <button type="button" class="rte-btn" onclick="rdRteExec('insertUnorderedList')" title="Bullet list">&#8226; List</button>
         <button type="button" class="rte-btn" onclick="rdRteExec('insertOrderedList')" title="Numbered list">1. List</button>
         <button type="button" class="rte-btn" onclick="rdRteExec('formatBlock','BLOCKQUOTE')" title="Blockquote">&ldquo;&rdquo;</button>
-        <button type="button" class="rte-btn" onclick="rdRteInsertLink()" title="Insert link">&#128279; Link</button>
-        <button type="button" class="rte-btn" onclick="rdRteInsertImageTrigger()" title="Insert image">&#128444; Image</button>
-        <input type="file" id="rd-rte-img-file" accept="image/*" style="display:none;" onchange="rdRteInsertImageFromFile(this)">
         <span class="rte-sep"></span>
         <button type="button" class="rte-btn rte-btn-sm" onclick="rdRteExec('removeFormat')" title="Clear format">&#10005; Clear</button>
       </div>
       <div id="rd-article-body" class="rich-editor-area" contenteditable="true" spellcheck="true"
-        style="min-height:220px;max-height:none;overflow:visible;border-top:none;"></div>
+        style="min-height:220px;max-height:420px;overflow-y:auto;border-top:none;"></div>
     </div>
 
     <div style="margin-bottom:14px;">
@@ -2132,7 +2166,7 @@ body.dark-mode .editor-tab.active { color:#c8d8ea; }
     </div>
 
     <div class="review-replace-drop" id="rd-replace-drop">
-      <input type="file" id="rd-new-file" accept=".docx,.pdf,image/*" onchange="handleRdFileSelect(this)">
+      <input type="file" id="rd-new-file" accept=".pdf,image/*" onchange="handleRdFileSelect(this)">
       <span style="font-size:13px;">&#128257; Replace file — drag &amp; drop or click to browse</span>
       <div style="font-family:'Lato',sans-serif;font-size:10px;margin-top:4px;color:var(--text-muted);" id="rd-new-filename"></div>
     </div>
@@ -2739,8 +2773,6 @@ async function doLogin() {
  
 // ── AUTHOR OWNERSHIP ──
 let _authorOwnership = 'myself'; // 'myself' | 'other' | 'genz'
-let _publishMode = 'upload'; // 'upload' | 'write'
-let _generatedImageDataUrl = null;
 function setOwnership(type) {
   _authorOwnership = type;
   document.getElementById('own-myself').classList.toggle('selected', type === 'myself');
@@ -2750,7 +2782,6 @@ function setOwnership(type) {
   const emailRow = document.getElementById('author-email-row');
   emailRow.style.display = (type === 'other' || type === 'genz') ? 'block' : 'none';
   const catSel = document.getElementById('up-category');
-  const modeRow = document.getElementById('publish-mode-row');
   if (type === 'genz') {
     // GenZ: author name free, category locked to Gen-Z Desk
     if (document.getElementById('up-author').readOnly) {
@@ -2762,8 +2793,6 @@ function setOwnership(type) {
     catSel.disabled = true;
     catSel.style.opacity = '0.7';
     catSel.title = 'GenZ / Student articles are always published under Gen-Z Desk';
-    if (modeRow) modeRow.style.display = 'none';
-    setPublishMode('upload');
   } else if (type === 'myself') {
     document.getElementById('up-author').value = 'Advocate Dr. Ajay Singh Rathore';
     document.getElementById('up-author').readOnly = true;
@@ -2771,8 +2800,6 @@ function setOwnership(type) {
     catSel.disabled = false;
     catSel.style.opacity = '1';
     catSel.title = '';
-    if (modeRow) modeRow.style.display = 'block';
-    setPublishMode(_publishMode || 'upload');
   } else {
     if (document.getElementById('up-author').readOnly) {
       document.getElementById('up-author').value = '';
@@ -2782,20 +2809,7 @@ function setOwnership(type) {
     catSel.disabled = false;
     catSel.style.opacity = '1';
     catSel.title = '';
-    if (modeRow) modeRow.style.display = 'none';
-    setPublishMode('upload');
   }
-}
-function setPublishMode(mode) {
-  _publishMode = mode === 'write' ? 'write' : 'upload';
-  const writeCk = document.getElementById('publish-mode-write');
-  const uploadCk = document.getElementById('publish-mode-upload');
-  if (writeCk) writeCk.checked = _publishMode === 'write';
-  if (uploadCk) uploadCk.checked = _publishMode !== 'write';
-  const writeWrap = document.getElementById('publish-write-wrap');
-  const fileRow = document.getElementById('drop-zone')?.closest('.form-row');
-  if (writeWrap) writeWrap.classList.toggle('open', _publishMode === 'write');
-  if (fileRow) fileRow.style.display = _publishMode === 'write' ? 'none' : 'block';
 }
  
 // ── UPLOAD ──
@@ -2818,8 +2832,6 @@ function closeUpload() {
   _editArticleExistingFileUrl = null;
   _editArticleExistingFileType = null;
   _editArticleExistingImageUrl = null;
-  _publishMode = 'upload';
-  _generatedImageDataUrl = null;
   const pbtn = document.getElementById('publish-btn');
   if (pbtn) pbtn.textContent = 'Publish to Herald';
   document.getElementById('drop-filename').textContent = '';
@@ -2844,10 +2856,6 @@ function closeUpload() {
   catSel2.title = '';
   document.getElementById('progress-bar').style.display = 'none';
   document.getElementById('progress-fill').style.width = '0%';
-  const upEditor = document.getElementById('up-editor'); if (upEditor) upEditor.innerHTML = '';
-  const upW = document.getElementById('up-word-count'); if (upW) upW.textContent = '0';
-  const upS = document.getElementById('up-generate-status'); if (upS) upS.textContent = '';
-  setPublishMode('upload');
 }
 function closeUploadOnBg(e) { if (e.target === document.getElementById('upload-overlay')) closeUpload(); }
 function handleFileSelect(input) {
@@ -2894,7 +2902,7 @@ async function publishArticle() {
   if (!title)  { errEl.textContent = 'Please enter an article title.'; return; }
   if (!author) { errEl.textContent = 'Please enter an author name.'; return; }
   if (!cat)    { errEl.textContent = 'Please select a category.'; return; }
-  if (_publishMode === 'upload' && !_editArticleId && !pendingFile) { errEl.textContent = 'Please upload a PDF or image file.'; return; }
+  if (!_editArticleId && !pendingFile) { errEl.textContent = 'Please upload a PDF or image file.'; return; }
   if (pendingFile && pendingFile.size > 3*1024*1024) { errEl.textContent = 'File exceeds 3 MB limit.'; return; }
   if ((_authorOwnership === 'other' || _authorOwnership === 'genz') && authorEmail && !authorEmail.includes('@')) {
     errEl.textContent = 'Please enter a valid author email.'; return;
@@ -2910,7 +2918,7 @@ async function publishArticle() {
     let file_url = _editArticleExistingFileUrl || null;
     let file_type = _editArticleExistingFileType || null;
     let article_image_url = _editArticleExistingImageUrl || null;
-    if (_publishMode === 'upload' && pendingFile) {
+    if (pendingFile) {
       const fileName = `${Date.now()}_${pendingFile.name.replace(/[^a-zA-Z0-9._-]/g,'_')}`;
       const uploadRes = await fetch(`${SUPABASE_URL}/storage/v1/object/articles/${fileName}`, {
         method: 'PUT',
@@ -2933,7 +2941,7 @@ async function publishArticle() {
 
     // 2. If PDF, try to generate thumbnail and use as article image
     let thumb_url = null;
-    if (_publishMode === 'upload' && pendingFile && pendingFile.type === 'application/pdf') {
+    if (pendingFile && pendingFile.type === 'application/pdf') {
       try {
         btn.textContent = 'Generating thumbnail…';
         await loadPdfJs();
@@ -2946,33 +2954,10 @@ async function publishArticle() {
     }
     document.getElementById('progress-fill').style.width = '75%';
     if (thumb_url) article_image_url = thumb_url;
-    if (_publishMode === 'write') {
-      const upEd = document.getElementById('up-editor');
-      const upHtml = upEd ? upEd.innerHTML : '';
-      const upTxt = upEd ? (upEd.textContent || '').trim() : '';
-      if (!upTxt || upTxt.split(/\s+/).filter(Boolean).length < 50) {
-        throw new Error('Please write at least 50 words in article body.');
-      }
-      if (!_generatedImageDataUrl) {
-        btn.textContent = 'Generating article image…';
-        _generatedImageDataUrl = await generateArticleImage({
-          title, author, place: '', htmlBody: upHtml, authorPhotoUrl: null, category: cat, occupation: ''
-        });
-      }
-      btn.textContent = 'Uploading generated image…';
-      const genUrl = await uploadArticleImageToSupabase(_generatedImageDataUrl);
-      if (!genUrl) throw new Error('Generated image upload failed.');
-      file_url = genUrl;
-      file_type = 'image/jpeg';
-      article_image_url = genUrl;
-    }
  
     // 3. Insert or update article record
     const articlePayload = { title, author, category: cat, excerpt, file_url, file_type };
     if (article_image_url) articlePayload.article_image_url = article_image_url;
-    if (_publishMode === 'write') {
-      articlePayload.article_body = (document.getElementById('up-editor')?.innerHTML || '');
-    }
 
     const insertRes = await fetch(
       _editArticleId
@@ -4087,7 +4072,7 @@ function resetSubmitForm() {
   const placeEl = document.getElementById('sub-place'); if(placeEl) placeEl.value = '';
   const stateSel = document.getElementById('sub-state'); if(stateSel) stateSel.innerHTML = '<option value="">— Select State —</option>';
   const citySel = document.getElementById('sub-city'); if(citySel) citySel.innerHTML = '<option value="">— Select City —</option>';
-  const ck = document.getElementById('sub-undertaking'); if(ck && ck.type === 'checkbox') ck.checked = false;
+  const ck = document.getElementById('sub-undertaking'); if(ck) ck.checked = false;
   const fn = document.getElementById('sub-drop-filename'); if(fn) fn.textContent = '';
   const photoFn = document.getElementById('sub-photo-filename'); if(photoFn) photoFn.textContent = '';
   const photoPreview = document.getElementById('sub-photo-preview');
@@ -4116,7 +4101,7 @@ function resetSubmitForm() {
   if(formBody) formBody.style.display = 'block';
 
   const btn = document.getElementById('sub-show-preview-btn');
-  if(btn) { btn.disabled = false; btn.innerHTML = '<span style="font-size:14px;">✍</span> Submit for Editorial Review'; }
+  if(btn) { btn.disabled = false; btn.innerHTML = '<span style="font-size:14px;">👁</span> Preview Article Before Submission <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" style="margin-left:6px;vertical-align:middle;"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>'; }
   const confBtn = document.getElementById('sub-submit-btn');
   if(confBtn) { confBtn.disabled = false; confBtn.innerHTML = '<span style="font-size:14px;">✍</span> Confirm &amp; Submit Article <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>'; }
   _subPendingFile = null;
@@ -4224,15 +4209,10 @@ function handleSubFileSelect(input) {
   const fn = document.getElementById('sub-drop-filename');
   const err = document.getElementById('sub-error');
   if (!file) return;
-  const MAX = 5 * 1024 * 1024; // 5 MB
-  if (!/\.docx$/i.test(file.name)) {
-    fn.textContent = '✗ Only .docx is allowed';
-    err.textContent = 'Please upload a Microsoft Word (.docx) document.';
-    input.value = ''; _subPendingFile = null; return;
-  }
+  const MAX = 3 * 1024 * 1024; // 3 MB
   if (file.size > MAX) {
-    fn.textContent = '✗ File too large — max 5 MB';
-    err.textContent = 'File size ' + (file.size/1024/1024).toFixed(1) + ' MB exceeds the 5 MB limit.';
+    fn.textContent = '✗ File too large — max 3 MB';
+    err.textContent = 'File size ' + (file.size/1024/1024).toFixed(1) + ' MB exceeds the 3 MB limit.';
     input.value = ''; _subPendingFile = null; return;
   }
   _subPendingFile = file;
@@ -4248,149 +4228,64 @@ function handleSubFileSelect(input) {
   dz.addEventListener('drop', e => {
     e.preventDefault(); dz.classList.remove('dragover');
     const file = e.dataTransfer.files[0]; if(!file) return;
-    if (!/\.docx$/i.test(file.name)) {
-      document.getElementById('sub-drop-filename').textContent = '✗ Only .docx is allowed'; return;
-    }
-    if (file.size > 5*1024*1024) {
-      document.getElementById('sub-drop-filename').textContent = '✗ Too large (max 5 MB)'; return;
+    if (file.size > 3*1024*1024) {
+      document.getElementById('sub-drop-filename').textContent = '✗ Too large (max 3 MB)'; return;
     }
     _subPendingFile = file;
     document.getElementById('sub-drop-filename').textContent = '✓ ' + file.name + ' (' + (file.size/1024/1024).toFixed(2) + ' MB)';
   });
 })();
 
-let _jsZipLoader = null;
-function loadJSZip() {
-  if (window.JSZip) return Promise.resolve(window.JSZip);
-  if (_jsZipLoader) return _jsZipLoader;
-  _jsZipLoader = new Promise((resolve, reject) => {
-    const s = document.createElement('script');
-    s.src = 'https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js';
-    s.onload = () => resolve(window.JSZip);
-    s.onerror = reject;
-    document.head.appendChild(s);
-  });
-  return _jsZipLoader;
-}
-async function getDocxPageCount(file) {
-  await loadJSZip();
-  const ab = await file.arrayBuffer();
-  const zip = await window.JSZip.loadAsync(ab);
-  const appXmlFile = zip.file('docProps/app.xml');
-  if (!appXmlFile) return null;
-  const appXml = await appXmlFile.async('string');
-  const m = appXml.match(/<Pages>(\d+)<\/Pages>/i);
-  if (!m) return null;
-  const p = parseInt(m[1], 10);
-  return Number.isFinite(p) ? p : null;
-}
-
-let _mammothLoader = null;
-function loadMammothJs() {
-  if (window.mammoth) return Promise.resolve(window.mammoth);
-  if (_mammothLoader) return _mammothLoader;
-  _mammothLoader = new Promise((resolve, reject) => {
-    const s = document.createElement('script');
-    s.src = 'https://unpkg.com/mammoth/mammoth.browser.min.js';
-    s.onload = () => resolve(window.mammoth);
-    s.onerror = reject;
-    document.head.appendChild(s);
-  });
-  return _mammothLoader;
-}
-async function convertDocxFileToHtml(file) {
-  await loadMammothJs();
-  const arr = await file.arrayBuffer();
-  const out = await window.mammoth.convertToHtml({ arrayBuffer: arr });
-  return await uploadEmbeddedImagesInHtml(out.value || '');
-}
-async function uploadEmbeddedImagesInHtml(html) {
-  let out = html || '';
-  const matches = [...out.matchAll(/src="(data:image\/[^"]+)"/g)];
-  for (const m of matches) {
-    const dataUrl = m[1];
-    const hosted = await uploadArticleImageToSupabase(dataUrl);
-    if (hosted) out = out.replace(dataUrl, hosted);
-  }
-  return out;
-}
-
 
 async function doSubmitArticle() {
   const name       = sanitizeInput(document.getElementById('sub-name').value, 150);
+  const email      = sanitizeInput(document.getElementById('sub-email').value, 200).toLowerCase();
   const occupation = document.getElementById('sub-occupation').value;
+  const institution= sanitizeInput(document.getElementById('sub-institution').value, 200);
+  const phone      = sanitizeInput(document.getElementById('sub-phone').value, 30);
   const title      = sanitizeInput(document.getElementById('sub-title').value, 400);
-  const docxFile   = _subPendingFile;
-  const category   = 'Law';
-  const email      = '';
-  const institution= '';
-  const phone      = '';
-  const abstract   = '';
-  const coauthors  = '';
-  const place      = '';
-  const errEl = document.getElementById('sub-error') || document.getElementById('sub-error-confirm');
+  const category   = document.getElementById('sub-category').value;
+  const abstract   = sanitizeInput(document.getElementById('sub-abstract').value, 1500);
+  const coauthors  = sanitizeInput(document.getElementById('sub-coauthors').value, 200);
+  const place      = document.getElementById('sub-place') ? document.getElementById('sub-place').value : '';
+  const editorEl   = document.getElementById('sub-editor');
+  const articleHtml = editorEl ? editorEl.innerHTML : '';
+  const articleText = editorEl ? (editorEl.textContent || editorEl.innerText || '').trim() : '';
+  const wordCount  = articleText ? articleText.split(/\s+/).filter(w=>w).length : 0;
+  const undertaking = document.getElementById('sub-undertaking').checked;
+  const errEl = document.getElementById('sub-error-confirm');
   errEl.textContent = '';
 
-  if (!title) { errEl.textContent = 'Please enter article title.'; return; }
-  if (!name) { errEl.textContent = 'Please enter author name.'; return; }
-  if (!occupation) { errEl.textContent = 'Please select occupation.'; return; }
-  if (!docxFile) { errEl.textContent = 'Please upload a .docx file.'; return; }
-  if (!/\.docx$/i.test(docxFile.name)) { errEl.textContent = 'Only .docx files are allowed.'; return; }
-  if (docxFile.size > 5 * 1024 * 1024) { errEl.textContent = 'File exceeds 5 MB limit.'; return; }
-
-  const btn = document.getElementById('sub-show-preview-btn');
-  btn.disabled = true; btn.textContent = 'Reading Word document…';
+  const btn = document.getElementById('sub-submit-btn');
+  btn.disabled = true; btn.textContent = 'Uploading article image…';
   const progC = document.getElementById('sub-progress-confirm'); progC.style.display = 'block';
   const pfC = document.getElementById('sub-progress-fill-confirm'); pfC.style.width = '10%';
 
   try {
-    const pages = await getDocxPageCount(docxFile);
-    if (pages !== null && pages !== 1) {
-      throw new Error('Only 1-page .docx files are accepted.');
-    }
-    // 1. Parse .docx to rich HTML
-    const articleHtml = await convertDocxFileToHtml(docxFile);
-    if (!articleHtml || !articleHtml.replace(/<[^>]+>/g, '').trim()) {
-      throw new Error('Word file content appears empty.');
-    }
-    pfC.style.width = '28%';
-    btn.textContent = 'Uploading Word file…';
-
-    // 2. Upload original .docx
-    const fileName = `submissions/${Date.now()}_${docxFile.name.replace(/[^a-zA-Z0-9._-]/g,'_')}`;
-    const upRes = await fetch(`${SUPABASE_URL}/storage/v1/object/articles/${fileName}`, {
-      method: 'POST',
-      headers: {
-        'apikey': SUPABASE_KEY,
-        'Authorization': 'Bearer ' + SUPABASE_KEY,
-        'Content-Type': 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
-        'x-upsert': 'true'
-      },
-      body: docxFile
-    });
-    if (!upRes.ok) throw new Error('Word file upload failed');
-    const docxUrl = `${SUPABASE_URL}/storage/v1/object/public/articles/${fileName}`;
-    pfC.style.width = '48%';
-
-    // 3. Generate cover image from parsed body (keeps ILIRH layout)
-    btn.textContent = 'Generating article image…';
-    const imageDataUrl = await generateArticleImage({
+    // 1. Upload the cached preview image or regenerate
+    let articleImageUrl = null;
+    const imageDataUrl = _previewDataUrl || await generateArticleImage({
       title, author: name, place, htmlBody: articleHtml,
       authorPhotoUrl: _subAuthorPhotoData, category, occupation
     });
-    let articleImageUrl = await uploadArticleImageToSupabase(imageDataUrl);
-    if (!articleImageUrl) articleImageUrl = null;
-    pfC.style.width = '68%';
+    pfC.style.width = '30%';
+    btn.textContent = 'Uploading article image…';
+    articleImageUrl = await uploadArticleImageToSupabase(imageDataUrl);
+    if (!articleImageUrl) {
+      throw new Error('Image upload failed. Please try again. If it keeps failing, open DevTools → Console and share the error text.');
+    }
 
-    // 4. Also store author photo URL if uploaded
+    pfC.style.width = '55%';
+    btn.textContent = 'Submitting…';
+
+    // 2. Also store author photo URL if uploaded
     let author_photo_url = null;
     if (_subAuthorPhotoData) {
       author_photo_url = await uploadArticleImageToSupabase(_subAuthorPhotoData);
     }
-    pfC.style.width = '78%';
+    pfC.style.width = '70%';
 
-    // 5. Insert into article_submissions table as pending
-    btn.textContent = 'Submitting for review…';
+    // 3. Insert into article_submissions table
     const insertRes = await fetch(`${SUPABASE_URL}/rest/v1/article_submissions`, {
       method: 'POST',
       headers: { ...headers, 'Prefer': 'return=representation' },
@@ -4400,27 +4295,47 @@ async function doSubmitArticle() {
         article_body: articleHtml,
         coauthors, place,
         author_photo_url,
-        file_url: docxUrl,
-        file_type: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
-        article_image_url: articleImageUrl,
+        file_url: articleImageUrl || null,
+        file_type: articleImageUrl ? 'image/jpeg' : null,
         status: 'pending', undertaking_agreed: true
       })
     });
-    pfC.style.width = '92%';
+    pfC.style.width = '88%';
     if (!insertRes.ok) {
+      const errBody = await insertRes.text();
+      if (errBody.includes('article_body') || errBody.includes('place') || errBody.includes('author_photo_url')) {
+        const fallbackRes = await fetch(`${SUPABASE_URL}/rest/v1/article_submissions`, {
+          method: 'POST',
+          headers: { ...headers, 'Prefer': 'return=representation' },
+          body: JSON.stringify({
+            author_name: name, author_email: email, occupation, institution, phone,
+            article_title: title, category, abstract: abstract + '\n\n[ARTICLE BODY]\n' + articleText.slice(0, 1500),
+            coauthors, file_url: articleImageUrl || null,
+            file_type: articleImageUrl ? 'image/jpeg' : null,
+            status: 'pending', undertaking_agreed: true
+          })
+        });
+        if (!fallbackRes.ok) throw new Error('Submission failed. Please try again.');
+        const insertedFb = await fallbackRes.json();
+        const newSubFb = Array.isArray(insertedFb) ? insertedFb[0] : insertedFb;
+        notifyAdminNewSubmission(name, email, occupation, institution, title, category, abstract, newSubFb?.id);
+        pfC.style.width = '100%';
+        btn.textContent = 'Saved ✓';
+        setTimeout(() => showSuccessState(), 600); return;
+      }
       throw new Error('Submission failed. Please try again.');
     }
     const inserted = await insertRes.json();
     const newSub = Array.isArray(inserted) ? inserted[0] : inserted;
     pfC.style.width = '100%';
-    btn.textContent = 'Submitted ✓';
+    btn.textContent = 'Saved ✓';
     notifyAdminNewSubmission(name, email, occupation, institution, title, category, abstract, newSub?.id);
     setTimeout(() => showSuccessState(), 600);
 
   } catch(e) {
     errEl.textContent = e.message || 'Submission failed. Please try again.';
     progC.style.display = 'none';
-    btn.disabled = false; btn.innerHTML = '<span style="font-size:14px;">✍</span> Submit for Editorial Review';
+    btn.disabled = false; btn.innerHTML = '<span style="font-size:14px;">✍</span> Confirm &amp; Submit Article <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>';
   }
 }
 
@@ -4433,24 +4348,6 @@ function notifyAdminNewSubmission(name, email, occupation, institution, title, c
       submission: { author_name: name, author_email: email, occupation, institution, title, category, abstract, id: id || '' }
     })
   }).catch(e => console.warn('Admin submission notify failed:', e));
-}
-async function ensureSubmitterSubscribed(name, email) {
-  if (!name || !validateEmail(email)) return;
-  try {
-    const res = await fetch(`${SUPABASE_URL}/rest/v1/subscribers`, {
-      method: 'POST',
-      headers: { ...headers, 'Prefer': 'return=minimal' },
-      body: JSON.stringify({ name, email })
-    });
-    if (res.status !== 409 && res.ok) {
-      notifyAdminNewSubscriber(name, email);
-      fetch(`${SUPABASE_URL}/functions/v1/notify-subscribers`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + SUPABASE_KEY },
-        body: JSON.stringify({ type: 'welcome', name, email })
-      }).catch(() => {});
-    }
-  } catch (_) {}
 }
 
 function showSuccessState() {
@@ -4589,7 +4486,7 @@ function openReviewDetail(id) {
     } else {
       fc.innerHTML = `<div style="display:flex;align-items:center;gap:12px;padding:10px 0;">
         <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="var(--navy)" stroke-width="1.5"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14,2 14,8 20,8"/></svg>
-        <a href="${esc(s.file_url)}" target="_blank" rel="noopener" style="font-family:'Lato',sans-serif;font-size:12px;font-weight:700;color:var(--navy-light);text-decoration:underline;">&#8599; View / Download Original File</a>
+        <a href="${esc(s.file_url)}" target="_blank" rel="noopener" style="font-family:'Lato',sans-serif;font-size:12px;font-weight:700;color:var(--navy-light);text-decoration:underline;">&#8599; View / Download PDF</a>
       </div>`;
     }
   } else {
@@ -4628,7 +4525,7 @@ function handleRdFileSelect(input) {
   const file = input.files[0];
   const fn = document.getElementById('rd-new-filename');
   if (!file) return;
-  if (file.size > 10*1024*1024) { fn.textContent = '✗ Too large (max 10 MB)'; _rdNewFile = null; return; }
+  if (file.size > 3*1024*1024) { fn.textContent = '✗ Too large (max 3 MB)'; _rdNewFile = null; return; }
   _rdNewFile = file;
   fn.textContent = '✓ ' + file.name + ' (' + (file.size/1024/1024).toFixed(2) + ' MB) — will replace on save/publish';
 }
@@ -4717,46 +4614,6 @@ function rdRteExec(cmd, val) {
   }
   document.execCommand(cmd, false, val || null);
 }
-function rdRteInsertLink() {
-  const url = prompt('Enter URL:');
-  if (url) document.execCommand('createLink', false, url);
-}
-function rdRteInsertImageTrigger() {
-  const i = document.getElementById('rd-rte-img-file');
-  if (!i) return;
-  i.value = '';
-  i.click();
-}
-function rdRteInsertImageFromFile(input) {
-  const file = input.files && input.files[0];
-  if (!file) return;
-  const reader = new FileReader();
-  reader.onload = e => {
-    const ed = document.getElementById('rd-article-body');
-    if (!ed) return;
-    const wrap = document.createElement('span');
-    wrap.className = 'rte-inline-img-wrap';
-    wrap.contentEditable = 'false';
-    wrap.dataset.rteAlign = 'left';
-    const img = document.createElement('img');
-    img.src = e.target.result;
-    img.alt = file.name.replace(/\.[^.]+$/, '');
-    const cap = document.createElement('div');
-    cap.className = 'rte-img-caption';
-    cap.contentEditable = 'true';
-    cap.setAttribute('data-rte-caption', '1');
-    const rm = document.createElement('button');
-    rm.className = 'rte-img-remove';
-    rm.type = 'button';
-    rm.textContent = '✕';
-    rm.onclick = ev => { ev.preventDefault(); ev.stopPropagation(); wrap.remove(); };
-    wrap.appendChild(rm);
-    wrap.appendChild(img);
-    wrap.appendChild(cap);
-    ed.appendChild(wrap);
-  };
-  reader.readAsDataURL(file);
-}
 
 async function rdRegenerateImage() {
   if (!_activeSubmission) return;
@@ -4840,7 +4697,6 @@ async function publishFromReview() {
   const articleTitle = sanitizeInput(document.getElementById('rd-article-title').value, 400);
   const cat          = document.getElementById('rd-category').value;
   const excerpt      = sanitizeInput(document.getElementById('rd-abstract').value, 1500);
-  const articleBodyNow = document.getElementById('rd-article-body') ? document.getElementById('rd-article-body').innerHTML : (_activeSubmission.article_body || '');
 
   if (!authorName || !articleTitle || !cat) {
     errEl.textContent = 'Author name, article title, and category are required before publishing.';
@@ -4864,19 +4720,13 @@ async function publishFromReview() {
 
     // 1. Insert into articles table (goes live)
     const articlePayload = { title: articleTitle, author: authorName, category: cat, excerpt, file_url, file_type };
-    if (articleBodyNow) {
-      articlePayload.article_body = articleBodyNow;
-      try {
-        const generated = await generateArticleImage({
-          title: articleTitle, author: authorName, place: _activeSubmission.place || '',
-          htmlBody: articleBodyNow, authorPhotoUrl: _activeSubmission.author_photo_url || null,
-          category: cat, occupation: document.getElementById('rd-occupation').value || _activeSubmission.occupation || ''
-        });
-        const generatedUrl = await uploadArticleImageToSupabase(generated);
-        if (generatedUrl) articlePayload.article_image_url = generatedUrl;
-      } catch (_) {}
-    } else if (_activeSubmission.file_url && (_activeSubmission.file_type || '').startsWith('image/')) {
+    // Use article_image_url from submission if available
+    if (_activeSubmission.file_url && (_activeSubmission.file_type || '').startsWith('image/')) {
       articlePayload.article_image_url = _activeSubmission.file_url;
+    }
+    // If submission has article_body, include it
+    if (_activeSubmission.article_body) {
+      articlePayload.article_body = _activeSubmission.article_body;
     }
     const insertRes = await fetch(`${SUPABASE_URL}/rest/v1/articles`, {
       method: 'POST',
@@ -5000,17 +4850,6 @@ function editorEditArticle(id) {
   const au = document.getElementById('up-author'); if (au) au.value = a.author || '';
   const c = document.getElementById('up-category'); if (c) c.value = a.category || '';
   const ex = document.getElementById('up-excerpt'); if (ex) ex.value = a.excerpt || '';
-  const upEditor = document.getElementById('up-editor');
-  if (upEditor) upEditor.innerHTML = a.article_body || '';
-  const upCount = document.getElementById('up-word-count');
-  if (upCount) upCount.textContent = String(countWords(a.article_body || ''));
-  _generatedImageDataUrl = null;
-  if (a.article_body) {
-    setOwnership('myself');
-    setPublishMode('write');
-  } else {
-    setPublishMode('upload');
-  }
   pendingFile = null;
   const df = document.getElementById('drop-filename');
   if (df) df.textContent = a.file_url ? 'Current file attached (drop to replace)' : 'Drop a file to attach';
@@ -5152,8 +4991,7 @@ function rteInsertImageFromFile(input) {
     // Build the wrapped image element
     const wrap = document.createElement('span');
     wrap.className = 'rte-inline-img-wrap';
-    wrap.contentEditable = 'false';
-    wrap.dataset.rteAlign = 'left';
+    wrap.contentEditable = 'false'; // treat as atomic block in editor
 
     const img = document.createElement('img');
     img.src = e.target.result;
@@ -5165,9 +5003,6 @@ function rteInsertImageFromFile(input) {
     caption.contentEditable = 'true';
     caption.setAttribute('data-rte-caption', '1');
 
-    const controls = document.createElement('div');
-    controls.className = 'rte-img-controls';
-    controls.innerHTML = '<button type="button" class="rte-img-ctrl-btn" data-act="left">Left</button><button type="button" class="rte-img-ctrl-btn" data-act="center">Center</button><button type="button" class="rte-img-ctrl-btn" data-act="right">Right</button><button type="button" class="rte-img-ctrl-btn" data-act="smaller">-</button><button type="button" class="rte-img-ctrl-btn" data-act="larger">+</button><button type="button" class="rte-img-ctrl-btn" data-act="up">Up</button><button type="button" class="rte-img-ctrl-btn" data-act="down">Down</button>';
     const removeBtn = document.createElement('button');
     removeBtn.className = 'rte-img-remove';
     removeBtn.type = 'button';
@@ -5179,43 +5014,9 @@ function rteInsertImageFromFile(input) {
       schedulePreviewRefresh();
     };
 
-    const resizeHandle = document.createElement('span');
-    resizeHandle.className = 'rte-img-resize';
-
-    controls.addEventListener('click', (ev) => {
-      ev.preventDefault(); ev.stopPropagation();
-      const act = ev.target && ev.target.dataset ? ev.target.dataset.act : '';
-      if (!act) return;
-      const curW = Math.max(140, Math.min(900, parseInt(wrap.style.width || '360', 10) || 360));
-      if (act === 'left' || act === 'center' || act === 'right') wrap.dataset.rteAlign = act;
-      if (act === 'smaller') wrap.style.width = Math.max(140, curW - 40) + 'px';
-      if (act === 'larger') wrap.style.width = Math.min(900, curW + 40) + 'px';
-      if (act === 'up' && wrap.previousSibling) wrap.parentNode.insertBefore(wrap, wrap.previousSibling);
-      if (act === 'down' && wrap.nextSibling) wrap.parentNode.insertBefore(wrap.nextSibling, wrap);
-      schedulePreviewRefresh();
-    });
-    resizeHandle.addEventListener('mousedown', (ev) => {
-      ev.preventDefault(); ev.stopPropagation();
-      const startX = ev.clientX;
-      const startW = wrap.getBoundingClientRect().width;
-      const onMove = (mv) => {
-        const next = Math.max(140, Math.min(900, startW + (mv.clientX - startX)));
-        wrap.style.width = `${next}px`;
-        schedulePreviewRefresh();
-      };
-      const onUp = () => {
-        window.removeEventListener('mousemove', onMove);
-        window.removeEventListener('mouseup', onUp);
-      };
-      window.addEventListener('mousemove', onMove);
-      window.addEventListener('mouseup', onUp);
-    });
-
-    wrap.appendChild(controls);
     wrap.appendChild(removeBtn);
     wrap.appendChild(img);
     wrap.appendChild(caption);
-    wrap.appendChild(resizeHandle);
 
     // Insert at cursor position inside editor
     const sel = window.getSelection();
@@ -5234,57 +5035,6 @@ function rteInsertImageFromFile(input) {
     schedulePreviewRefresh();
   };
   reader.readAsDataURL(file);
-}
-function upRteExec(cmd, val) {
-  const ed = document.getElementById('up-editor');
-  if (!ed) return;
-  ed.focus();
-  document.execCommand(cmd, false, val || null);
-  const txt = (ed.textContent || '').trim();
-  const wc = txt ? txt.split(/\s+/).filter(Boolean).length : 0;
-  const el = document.getElementById('up-word-count');
-  if (el) el.textContent = String(wc);
-}
-function upRteInsertLink() {
-  const url = prompt('Enter URL:');
-  if (url) document.execCommand('createLink', false, url);
-}
-function upRteInsertImageTrigger() {
-  const input = document.getElementById('up-rte-img-file');
-  if (!input) return;
-  input.value = '';
-  input.click();
-}
-function upRteInsertImageFromFile(input) {
-  const file = input.files[0];
-  if (!file) return;
-  const reader = new FileReader();
-  reader.onload = () => {
-    const upEd = document.getElementById('up-editor');
-    if (!upEd) return;
-    const old = document.getElementById('sub-editor');
-    const oldHtml = old ? old.innerHTML : '';
-    if (old) old.innerHTML = '';
-    rteInsertImageFromFile(input);
-    const inserted = old ? old.querySelector('.rte-inline-img-wrap:last-of-type') : null;
-    if (inserted) upEd.appendChild(inserted);
-    if (old) old.innerHTML = oldHtml;
-  };
-  reader.readAsDataURL(file);
-}
-async function regeneratePublishGeneratedImage() {
-  const status = document.getElementById('up-generate-status');
-  const title = sanitizeInput(document.getElementById('up-title').value, 300);
-  const author = sanitizeInput(document.getElementById('up-author').value, 150);
-  const category = document.getElementById('up-category').value;
-  const htmlBody = document.getElementById('up-editor')?.innerHTML || '';
-  if (!title || !author || !category || !htmlBody.trim()) {
-    if (status) status.textContent = 'Fill title, author, category and article body first.';
-    return;
-  }
-  if (status) status.textContent = 'Generating...';
-  _generatedImageDataUrl = await generateArticleImage({ title, author, place: '', htmlBody, authorPhotoUrl: null, category, occupation: '' });
-  if (status) status.textContent = _generatedImageDataUrl ? 'Generated. It will be used on publish.' : 'Generation failed.';
 }
 function countWords(html) {
   const tmp = document.createElement('div');
@@ -5932,29 +5682,40 @@ async function generateArticleImage(articleData) {
         }
         if (tag === 'br') { y += 28; return; }
 
-        // ── Inline image block (alignment + size) ──
+        // ── Inline image with text wrap (like MS Word) ──
         if (tag === 'img' || (tag === 'span' && node.classList && node.classList.contains('rte-inline-img-wrap'))) {
+          // Find the actual img element
           const imgEl = tag === 'img' ? node : node.querySelector('img');
           const captionEl = tag === 'span' ? node.querySelector('[data-rte-caption]') : null;
           if (!imgEl || !imgEl.src) return;
+
+          const IMG_MAX_W = Math.round(CONTENT_W * 0.42); // ~42% of column width
+          const IMG_FLOAT_X = LEFT;
+          const TEXT_X = LEFT + IMG_MAX_W + 36; // text starts to the right
+          const TEXT_W = CONTENT_W - IMG_MAX_W - 36;
+
+          // We need to load the image async then draw remaining nodes
+          // Mark remaining siblings for deferred rendering
           node._rteImgProcessed = true;
 
           const imgObj = new Image();
           imgObj.onload = () => {
             const aspect = imgObj.naturalWidth / imgObj.naturalHeight;
-            const preferredW = tag === 'span' && node.style && node.style.width ? parseInt(node.style.width, 10) : Math.round(CONTENT_W * 0.42);
-            const imgW = Math.max(220, Math.min(Math.round(CONTENT_W * 0.9), preferredW || Math.round(CONTENT_W * 0.42)));
+            const imgW = IMG_MAX_W;
             const imgH = Math.round(imgW / aspect);
-            const align = tag === 'span' && node.dataset ? (node.dataset.rteAlign || 'left') : 'left';
-            let imgX = LEFT;
-            if (align === 'center') imgX = LEFT + (CONTENT_W - imgW) / 2;
-            if (align === 'right') imgX = LEFT + (CONTENT_W - imgW);
-            const imgTopY = y + 8;
+
+            const imgTopY = y;
+
+            // Draw image
             ctx.save();
-            try { ctx.drawImage(imgObj, imgX, imgTopY, imgW, imgH); } catch(e) {}
+            try { ctx.drawImage(imgObj, IMG_FLOAT_X, imgTopY, imgW, imgH); } catch(e) {}
             ctx.restore();
+
+            // Thin border around image
             ctx.strokeStyle = BORDER; ctx.lineWidth = 2;
-            ctx.strokeRect(imgX, imgTopY, imgW, imgH);
+            ctx.strokeRect(IMG_FLOAT_X, imgTopY, imgW, imgH);
+
+            // Caption below image
             let captionBottomY = imgTopY + imgH;
             const captionText = captionEl ? (captionEl.textContent || '').trim() : (imgEl.alt || '').trim();
             if (captionText) {
@@ -5963,11 +5724,59 @@ async function generateArticleImage(articleData) {
               const capLines = wrapTextGetLines(ctx, captionText, imgW, 28);
               capLines.forEach(line => {
                 captionBottomY += 36;
-                ctx.fillText(line, imgX, captionBottomY);
+                ctx.fillText(line, IMG_FLOAT_X, captionBottomY);
               });
               captionBottomY += 8;
             }
-            y = captionBottomY + 28;
+
+            // Now render the remaining sibling nodes with text flowing to the right
+            // while the image occupies the left column
+            const parent = node.parentNode;
+            const siblings = parent ? Array.from(parent.childNodes) : [];
+            const myIdx = siblings.indexOf(node);
+            const after = siblings.slice(myIdx + 1);
+
+            // Render siblings to the RIGHT of the image
+            let floatY = imgTopY + 46; // start at first text baseline beside image
+            const floatEndY = captionBottomY + 16; // where float clears
+
+            after.forEach(sib => {
+              if (floatY > MAX_Y) return;
+              sib._rteImgProcessed = true; // mark so parent loop skips them
+              if (sib.nodeType === Node.TEXT_NODE) {
+                const text = sib.textContent.replace(/\s+/g, ' ');
+                if (!text.trim()) return;
+                ctx.font = '38px Georgia, serif';
+                ctx.fillStyle = BODY_C;
+                // While beside image, use narrow width; after, use full width
+                const lines = wrapTextGetLines(ctx, text, TEXT_W, 38);
+                lines.forEach(line => {
+                  if (floatY > MAX_Y) return;
+                  if (floatY < floatEndY) {
+                    ctx.fillText(line, TEXT_X, floatY);
+                  } else {
+                    ctx.fillText(line, LEFT, floatY);
+                  }
+                  floatY += 58;
+                });
+              } else if (sib.nodeType === Node.ELEMENT_NODE) {
+                const st = sib.tagName.toLowerCase();
+                if (st === 'p' || st === 'div') {
+                  const txt = sib.textContent.replace(/\s+/g, ' ').trim();
+                  if (!txt) { floatY += 18; return; }
+                  ctx.font = '38px Georgia, serif';
+                  ctx.fillStyle = BODY_C;
+                  const lines = wrapTextGetLines(ctx, txt, floatY < floatEndY ? TEXT_W : CONTENT_W, 38);
+                  lines.forEach(line => {
+                    if (floatY > MAX_Y) return;
+                    ctx.fillText(line, floatY < floatEndY ? TEXT_X : LEFT, floatY);
+                    floatY += 58;
+                  });
+                  floatY += 18;
+                }
+              }
+            });
+            y = Math.max(floatY, captionBottomY + 24);
           };
           imgObj.onerror = () => {
             // If image fails, just leave a gap
