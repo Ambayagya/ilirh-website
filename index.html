@@ -5510,8 +5510,6 @@ async function generateArticleImage(articleData) {
         _afterCover(titleBottomY + 44);
       }
 
-    } // end _drawPage
-
     function _drawAuthorPhoto(img, y, size) {
       ctx.save();
       ctx.beginPath();
@@ -5749,7 +5747,10 @@ async function generateArticleImage(articleData) {
 
       ctx.textAlign = 'left';
       resolve(canvas.toDataURL('image/jpeg', 0.93));
-    }
+    } // end _drawBody
+
+  } // end _drawPage
+
   });
 }
 
