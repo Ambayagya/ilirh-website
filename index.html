@@ -1216,22 +1216,6 @@ body.dark-mode .rte-word-counter { background: #0d1624; border-color: var(--bord
 }
 .article-docx-body p { margin: 0 0 0.55em; }
 .article-docx-body img { max-width: 100%; height: auto; }
-.submit-docx-tips {
-  background: #fff; border: 1px solid var(--border-light); border-left: 4px solid var(--gold);
-  padding: 12px 14px 12px 16px; margin-bottom: 14px;
-}
-.submit-docx-tips-title {
-  font-family: 'Lato', sans-serif; font-size: 10px; font-weight: 700;
-  letter-spacing: 0.14em; text-transform: uppercase; color: var(--navy-light);
-  margin-bottom: 8px;
-}
-.submit-docx-tips ul {
-  margin: 0; padding-left: 18px; font-family: 'EB Garamond', serif;
-  font-size: 14px; color: var(--text-secondary); line-height: 1.55;
-}
-.submit-docx-tips li { margin-bottom: 4px; }
-.submit-docx-tips li:last-child { margin-bottom: 0; }
-body.dark-mode .submit-docx-tips { background: #0a1520; border-color: var(--border); }
 #sub-editor { display: none !important; }
 #sub-toolbar { display: none !important; }
 .rte-word-counter { display: none !important; }
@@ -2079,35 +2063,18 @@ body.dark-mode .editor-tab.active { color:#c8d8ea; }
       </div>
 
       <hr class="submit-rule">
-      <!-- Word document article body -->
-      <div class="submit-section-title">Upload Your Article (Word) *</div>
-      <p class="submit-docx-hint">
-        Prepare your article in <strong>Microsoft Word</strong> (formatting, spacing, images, highlights, alignment).
-        Upload the <strong>.docx</strong> file here — your article text will flow in the <strong>same place as before</strong> (below the author photo and name, above the footer), fitted like a professional Herald editorial image.
-        <br>Limits: <strong>1 page maximum</strong> &nbsp;&bull;&nbsp; <strong>4 MB maximum</strong> &nbsp;&bull;&nbsp; .docx only
-      </p>
-      <div class="submit-docx-tips" role="note" aria-label="Word document tips">
-        <div class="submit-docx-tips-title">Recommended Word settings</div>
-        <ul>
-          <li><strong>One page only</strong> — your full article must fit on a single page in Word; content beyond that will be rejected.</li>
-          <li><strong>Margins</strong> — use normal margins (about 2.5&nbsp;cm / 1&nbsp;inch on all sides) so text fits the article area cleanly below your author details.</li>
-          <li><strong>Fonts</strong> — prefer common fonts (e.g. Times New Roman, Georgia, Arial, Calibri). Rare or custom fonts may not match exactly on the Herald.</li>
-          <li><strong>Images</strong> — insert pictures with <em>Insert → Pictures</em> (embedded in the file). Avoid oversized images; keep the total file under 4&nbsp;MB.</li>
-          <li><strong>Formatting</strong> — do all spacing, bold, highlight, lists, and alignment in Word; that is what appears in the published article image.</li>
-          <li><strong>File type</strong> — save and upload as <strong>.docx</strong> (Word Document), not .doc or PDF.</li>
-          <li><strong>Before you submit</strong> — use <strong>Preview Article Before Submission</strong> below and check the full layout matches what you see in Word.</li>
-        </ul>
-      </div>
+      <div class="submit-section-title">Write Your Article *</div>
+      <p class="submit-docx-hint">Write and format your full article in Microsoft Word, then upload the finished <strong>.docx</strong> file here — <strong>one page only</strong>, max 4&nbsp;MB. It will appear on the Herald template below your name and above the footer.</p>
       <div class="submit-docx-zone" id="sub-docx-zone" onclick="document.getElementById('sub-docx-file').click()">
         <input type="file" id="sub-docx-file" accept=".docx,application/vnd.openxmlformats-officedocument.wordprocessingml.document" style="display:none;" onchange="handleSubDocxSelect(this)">
         <div style="font-size:28px;margin-bottom:6px;opacity:0.45;">&#128196;</div>
-        <div style="font-size:11px;font-weight:700;color:var(--text-secondary);margin-bottom:3px;">Click or drag your Word document here</div>
-        <div style="font-size:10px;color:var(--text-muted);">.docx &nbsp;&bull;&nbsp; Max 4 MB &nbsp;&bull;&nbsp; Max 1 page</div>
+        <div style="font-size:11px;font-weight:700;color:var(--text-secondary);margin-bottom:3px;">Upload your Word article (.docx)</div>
+        <div style="font-size:10px;color:var(--text-muted);">One page &nbsp;&bull;&nbsp; .docx &nbsp;&bull;&nbsp; Max 4 MB</div>
         <div class="submit-docx-filename" id="sub-docx-filename"></div>
       </div>
       <div class="submit-docx-status" id="sub-docx-status"></div>
       <div class="submit-docx-preview-wrap" id="sub-docx-preview-wrap" style="display:none;">
-        <div style="font-family:'Lato',sans-serif;font-size:10px;font-weight:700;letter-spacing:0.14em;text-transform:uppercase;color:var(--text-muted);margin-bottom:6px;">Word document preview (article body)</div>
+        <div style="font-family:'Lato',sans-serif;font-size:10px;font-weight:700;letter-spacing:0.14em;text-transform:uppercase;color:var(--text-muted);margin-bottom:6px;">Preview</div>
         <div class="submit-docx-preview-host" id="sub-docx-preview-host"></div>
       </div>
       <!-- Hidden: stores HTML for admin minor edits + legacy hooks -->
@@ -2140,7 +2107,7 @@ body.dark-mode .editor-tab.active { color:#c8d8ea; }
         Preview Your Article Before Submission
         <span class="preview-badge">Live Preview</span>
       </div>
-      <p class="preview-sub">This is exactly how your article will appear on the Herald — header, title, author details, and your Word content flowing in the main article area. Review carefully before submitting. Re-upload your .docx above to change the article text.</p>
+      <p class="preview-sub">This is how your article will look when published. Check that all text is visible above the footer, then confirm submission.</p>
       <div id="article-preview-canvas-wrap" onclick="openPreviewLightbox()" title="Click to enlarge">
         <div id="preview-generating">
           <div class="spinner"></div>
@@ -5069,7 +5036,7 @@ function getAuthorBlockEndY(authorY, photoSize) {
 }
 
 function getTemplateBodyMaxHeight(bodyStartY) {
-  return TEMPLATE_FOOTER_TOP - bodyStartY - 20;
+  return TEMPLATE_FOOTER_TOP - bodyStartY - 32;
 }
 
 function stripNonContentNodes(root) {
@@ -5188,15 +5155,22 @@ async function renderDocxToContainer(arrayBuffer, container) {
   return container.querySelector('.docx-wrapper') || container;
 }
 
-function measureDocxBodyHeight(html, width) {
+function measureArticleBodyContent(html, width) {
   const host = document.getElementById('sub-docx-measure-host') || document.getElementById('article-body-capture-host');
   if (!host) return 0;
   host.style.width = width + 'px';
-  host.innerHTML = html.includes('article-docx-body') ? html : `<div class="article-docx-body">${html}</div>`;
-  const inner = host.querySelector('.article-docx-body');
-  const h = inner ? inner.scrollHeight : host.scrollHeight;
+  const norm = normalizeDocxHtmlForTemplate(html);
+  host.innerHTML = norm.includes('article-docx-body') ? norm : `<div class="article-docx-body">${norm}</div>`;
+  const inner = host.querySelector('.article-docx-body') || host;
+  const h = inner.scrollHeight;
   host.innerHTML = '';
   return h;
+}
+
+function getArticleBodyFitScale(html, width, maxHeight) {
+  const h = measureArticleBodyContent(html, width);
+  if (!h || !maxHeight) return 1;
+  return Math.min(1, maxHeight / h);
 }
 
 async function parseWordDocumentFile(file, opts) {
@@ -5209,15 +5183,6 @@ async function parseWordDocumentFile(file, opts) {
   const renderHost = document.createElement('div');
   const wrapper = await renderDocxToContainer(buf, renderHost);
   const html = normalizeDocxHtmlForTemplate(extractDocxContentFromWrapper(wrapper));
-  const estBodyStart = getAuthorBlockEndY(900, 172);
-  const maxH = getTemplateBodyMaxHeight(estBodyStart);
-  const contentH = measureDocxBodyHeight(html, ARTICLE_BODY_CAPTURE_W);
-  if (contentH > maxH) {
-    throw new Error(
-      'Your document is longer than fits between the author section and footer (' +
-      'please keep it to about one page in Word and re-upload).'
-    );
-  }
   if (opts.previewHost) {
     opts.previewHost.innerHTML = '';
     const liveStyle = renderHost.querySelector('style');
@@ -5263,13 +5228,15 @@ async function captureArticleBodyHtml(html, width, maxHeight) {
   inner.style.maxWidth = width + 'px';
 
   await waitForImagesIn(inner);
-  const naturalH = inner.scrollHeight;
-  if (naturalH > maxHeight) {
-    const scale = maxHeight / naturalH;
+  const naturalH = Math.max(inner.scrollHeight, 1);
+  const naturalW = Math.max(inner.scrollWidth, width);
+  const scale = Math.min(1, maxHeight / naturalH, width / naturalW);
+  if (scale < 1) {
     inner.style.transform = `scale(${scale})`;
     inner.style.transformOrigin = 'top left';
     inner.style.width = (width / scale) + 'px';
-    host.style.height = maxHeight + 'px';
+    host.style.height = Math.ceil(naturalH * scale) + 'px';
+    host.style.width = width + 'px';
   }
 
   const shot = await html2canvas(host, {
@@ -5292,6 +5259,9 @@ async function drawArticleBodyOnTemplate(ctx, bodyStartY, htmlBody, layout) {
   const html = normalizeDocxHtmlForTemplate(htmlBody);
   if (!html.replace(/<[^>]+>/g, '').trim()) return;
 
+  const bodyEndY = bodyStartY + bodyMaxH;
+  const fitScale = getArticleBodyFitScale(html, CONTENT_W, bodyMaxH);
+
   ctx.strokeStyle = BORDER;
   ctx.lineWidth = 1.5;
   ctx.beginPath();
@@ -5300,20 +5270,36 @@ async function drawArticleBodyOnTemplate(ctx, bodyStartY, htmlBody, layout) {
   ctx.stroke();
 
   if (!htmlNeedsRasterCapture(html)) {
-    layout._drawBodyLegacyCanvas(bodyStartY, LEFT, CONTENT_W, TEMPLATE_FOOTER_TOP - 12, html);
+    if (fitScale < 0.995) {
+      ctx.save();
+      ctx.translate(LEFT, bodyStartY);
+      ctx.scale(fitScale, fitScale);
+      layout._drawBodyLegacyCanvas(10, 0, CONTENT_W, bodyMaxH / fitScale, html);
+      ctx.restore();
+    } else {
+      layout._drawBodyLegacyCanvas(bodyStartY, LEFT, CONTENT_W, bodyEndY, html);
+    }
     return;
   }
   if (typeof html2canvas !== 'undefined') {
     try {
       const shot = await captureArticleBodyHtml(html, CONTENT_W, bodyMaxH);
-      const scale = Math.min(CONTENT_W / shot.width, bodyMaxH / shot.height);
-      ctx.drawImage(shot, LEFT, bodyStartY, shot.width * scale, shot.height * scale);
+      const drawScale = Math.min(CONTENT_W / shot.width, bodyMaxH / shot.height, 1);
+      ctx.drawImage(shot, LEFT, bodyStartY, shot.width * drawScale, shot.height * drawScale);
       return;
     } catch (e) {
       console.warn('Raster body fallback to canvas text:', e);
     }
   }
-  layout._drawBodyLegacyCanvas(bodyStartY, LEFT, CONTENT_W, TEMPLATE_FOOTER_TOP - 12, html);
+  if (fitScale < 0.995) {
+    ctx.save();
+    ctx.translate(LEFT, bodyStartY);
+    ctx.scale(fitScale, fitScale);
+    layout._drawBodyLegacyCanvas(10, 0, CONTENT_W, bodyMaxH / fitScale, html);
+    ctx.restore();
+  } else {
+    layout._drawBodyLegacyCanvas(bodyStartY, LEFT, CONTENT_W, bodyEndY, html);
+  }
 }
 
 function setSubDocxStatus(msg, isErr) {
@@ -5346,7 +5332,7 @@ async function handleSubDocxSelect(input) {
     if (fnEl) fnEl.textContent = '✓ ' + file.name + ' (' + (file.size / 1024 / 1024).toFixed(2) + ' MB)';
     if (zone) zone.classList.add('has-file');
     if (previewWrap) previewWrap.style.display = 'block';
-    setSubDocxStatus('✓ Document loaded — your layout will appear in the article area on the template.', false);
+    setSubDocxStatus('✓ Article loaded. Preview before you submit.', false);
     scheduleSaveSubmitDraft();
     schedulePreviewRefresh();
   } catch (e) {
