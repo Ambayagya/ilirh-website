@@ -4635,8 +4635,9 @@ async function rdRegenerateImage() {
     btn.disabled = false;
   }
 }
+
+async function publishFromReview() {
   if (!_activeSubmission) return;
-  const pub = document.getElementById('rd-publish-btn');
   const errEl = document.getElementById('rd-error');
   const silent = document.getElementById('rd-silent') ? document.getElementById('rd-silent').checked : false;
   pub.disabled = true; pub.textContent = 'Publishing…'; errEl.textContent = '';
