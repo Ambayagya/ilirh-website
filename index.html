@@ -5031,6 +5031,7 @@ function removeCoverPhoto(e) {
   if (fi) fi.value = '';
   schedulePreviewRefresh();
 }
+function handleSubPhotoSelect(input) {
   const file = input.files[0]; if (!file) return;
   if (file.size > 2 * 1024 * 1024) {
     document.getElementById('sub-photo-filename').textContent = '✗ Too large — max 2 MB';
