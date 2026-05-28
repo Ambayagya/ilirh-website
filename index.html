@@ -306,7 +306,54 @@ footer { background:var(--navy); color:#8fa4bf; padding:36px 32px 20px; margin-t
 #lbx-nav-prev.hidden, #lbx-nav-next.hidden { display:none; }
 #lbx-counter { color:#8fa4bf; font-family:'Lato',sans-serif; font-size:12px; letter-spacing:0.1em; }
  
-/* ── READING MODE & DARK MODE ── */
+/* ── INLINE ARTICLE IMAGE (text-wrap) ── */
+.rte-inline-img-wrap {
+  float: left;
+  margin: 4px 18px 10px 0;
+  max-width: 44%;
+  position: relative;
+  line-height: 0;
+  border: 1px solid var(--border);
+  background: var(--cream);
+}
+.rte-inline-img-wrap img {
+  width: 100%;
+  height: auto;
+  display: block;
+  cursor: default;
+}
+.rte-inline-img-wrap .rte-img-remove {
+  position: absolute;
+  top: 3px; right: 3px;
+  background: rgba(10,22,40,0.7);
+  color: #fff; border: none;
+  font-size: 13px; line-height: 1;
+  padding: 2px 6px; cursor: pointer;
+  border-radius: 2px; display: none;
+}
+.rte-inline-img-wrap:hover .rte-img-remove { display: block; }
+.rte-inline-img-wrap .rte-img-caption {
+  font-family: 'EB Garamond', serif;
+  font-size: 12px;
+  color: var(--text-muted);
+  font-style: italic;
+  padding: 4px 6px 5px;
+  line-height: 1.3;
+  outline: none;
+  min-height: 1em;
+  background: transparent;
+  border-top: 1px solid var(--border-light);
+  white-space: normal;
+}
+.rte-inline-img-wrap .rte-img-caption:empty:before {
+  content: 'Add caption…';
+  color: var(--text-muted);
+  opacity: 0.5;
+}
+/* Clear float after editor content */
+#sub-editor::after { content: ''; display: table; clear: both; }
+body.dark-mode .rte-inline-img-wrap { border-color: var(--border); background: var(--cream-dark); }
+body.dark-mode .rte-inline-img-wrap .rte-img-caption { border-top-color: var(--border); }
 body.reading-mode .masthead, body.reading-mode .topbar, body.reading-mode .ticker-bar,
 body.reading-mode footer, body.reading-mode .hero-sidebar,
 body.reading-mode #categories-wrap, body.reading-mode .cat-header .cat-more { display:none !important; }
@@ -1951,24 +1998,6 @@ body.dark-mode .editor-tab.active { color:#c8d8ea; }
       </div>
 
       <hr class="submit-rule">
-      <!-- Cover Image Upload -->
-      <div class="submit-section-title">Article Cover Image <span style="font-weight:400;text-transform:none;letter-spacing:0;font-family:'EB Garamond',serif;font-size:12px;color:var(--text-muted);">(optional — displayed as a full-width banner on your article image)</span></div>
-      <div style="margin-bottom:18px;">
-        <div id="sub-cover-preview-wrap" style="display:none;margin-bottom:10px;position:relative;width:100%;height:160px;overflow:hidden;border:1px solid var(--border);border-radius:2px;background:var(--cream-dark);">
-          <img id="sub-cover-preview-img" src="" alt="Cover preview" style="width:100%;height:100%;object-fit:cover;display:block;">
-          <button onclick="removeCoverPhoto(event)" title="Remove cover image" style="position:absolute;top:6px;right:8px;background:rgba(10,22,40,0.72);border:none;color:#fff;font-size:17px;line-height:1;padding:3px 8px;cursor:pointer;border-radius:2px;">&times;</button>
-          <div style="position:absolute;bottom:0;left:0;right:0;background:linear-gradient(transparent,rgba(10,22,40,0.55));padding:8px 12px 6px;font-family:'Lato',sans-serif;font-size:10px;color:#e8d9b0;letter-spacing:0.08em;text-transform:uppercase;">Cover Image Preview</div>
-        </div>
-        <div class="submit-drop-zone" id="sub-cover-zone" onclick="document.getElementById('sub-cover-file').click()" style="padding:18px 14px;text-align:center;">
-          <input type="file" id="sub-cover-file" accept="image/*" style="display:none;" onchange="handleSubCoverPhotoSelect(this)">
-          <div style="font-size:28px;margin-bottom:6px;opacity:0.45;">🖼</div>
-          <div style="font-size:11px;font-weight:700;color:var(--text-secondary);margin-bottom:3px;">Click to upload a cover image for your article</div>
-          <div style="font-size:10px;color:var(--text-muted);">JPG, PNG &nbsp;&bull;&nbsp; Max 5 MB &nbsp;&bull;&nbsp; Landscape (wide) images work best</div>
-          <div class="submit-drop-filename" id="sub-cover-filename"></div>
-        </div>
-      </div>
-
-      <hr class="submit-rule">
       <!-- Rich Article Editor -->
       <div class="submit-section-title">Write Your Article *</div>
       <div id="sub-editor-wrap">
@@ -1989,6 +2018,8 @@ body.dark-mode .editor-tab.active { color:#c8d8ea; }
           <button type="button" class="rte-btn" onclick="rteExec('formatBlock','BLOCKQUOTE')" title="Blockquote">&ldquo;&rdquo;</button>
           <span class="rte-sep"></span>
           <button type="button" class="rte-btn" onclick="rteInsertLink()" title="Insert link">&#128279; Link</button>
+          <button type="button" class="rte-btn" onclick="rteInsertImageTrigger()" title="Insert image with text wrap">&#128444; Image</button>
+          <input type="file" id="rte-img-file" accept="image/*" style="display:none;" onchange="rteInsertImageFromFile(this)">
           <button type="button" class="rte-btn rte-btn-sm" onclick="rteExec('removeFormat')" title="Clear format">&#10005; Clear</button>
         </div>
         <div id="sub-editor" class="rich-editor-area" contenteditable="true" spellcheck="true" data-placeholder="Write your full article here… (minimum 100 words, maximum 900 words)"></div>
@@ -4205,22 +4236,6 @@ function handleSubFileSelect(input) {
   });
 })();
 
-// Drag-and-drop for cover image zone
-(function(){
-  const dz = document.getElementById('sub-cover-zone');
-  if (!dz) return;
-  dz.addEventListener('dragover', e => { e.preventDefault(); dz.classList.add('dragover'); });
-  dz.addEventListener('dragleave', () => dz.classList.remove('dragover'));
-  dz.addEventListener('drop', e => {
-    e.preventDefault(); dz.classList.remove('dragover');
-    const file = e.dataTransfer.files[0]; if (!file || !file.type.startsWith('image/')) return;
-    if (file.size > 5*1024*1024) {
-      document.getElementById('sub-cover-filename').textContent = '✗ Too large (max 5 MB)'; return;
-    }
-    const fakeInput = { files: [file] };
-    handleSubCoverPhotoSelect(fakeInput);
-  });
-})();
 
 async function doSubmitArticle() {
   const name       = sanitizeInput(document.getElementById('sub-name').value, 150);
@@ -4251,7 +4266,7 @@ async function doSubmitArticle() {
     let articleImageUrl = null;
     const imageDataUrl = _previewDataUrl || await generateArticleImage({
       title, author: name, place, htmlBody: articleHtml,
-      authorPhotoUrl: _subAuthorPhotoData, coverPhotoUrl: _subCoverPhotoData, category, occupation
+      authorPhotoUrl: _subAuthorPhotoData, category, occupation
     });
     pfC.style.width = '30%';
     btn.textContent = 'Uploading article image…';
@@ -4339,13 +4354,6 @@ function showSuccessState() {
   document.getElementById('submit-form-body').style.display = 'none';
   document.getElementById('submit-success-state').style.display = 'block';
   _subAuthorPhotoData = null;
-  _subCoverPhotoData = null;
-  // Reset cover image UI
-  const cw = document.getElementById('sub-cover-preview-wrap'); if (cw) cw.style.display = 'none';
-  const ci = document.getElementById('sub-cover-preview-img'); if (ci) ci.src = '';
-  const cz = document.getElementById('sub-cover-zone'); if (cz) cz.style.display = '';
-  const cf = document.getElementById('sub-cover-filename'); if (cf) cf.textContent = '';
-  const cfi = document.getElementById('sub-cover-file'); if (cfi) cfi.value = '';
   if (typeof showToast === 'function') {
     showToast('✓ Submission received. We will email you after editorial review.', 3600);
   }
@@ -4962,6 +4970,67 @@ function rteInsertLink() {
   const url = prompt('Enter URL:');
   if (url) { document.execCommand('createLink', false, url); }
 }
+function rteInsertImageTrigger() {
+  document.getElementById('rte-img-file').value = '';
+  document.getElementById('rte-img-file').click();
+}
+function rteInsertImageFromFile(input) {
+  const file = input.files[0]; if (!file) return;
+  if (file.size > 5 * 1024 * 1024) { alert('Image too large — max 5 MB'); return; }
+  const reader = new FileReader();
+  reader.onload = e => {
+    const ed = document.getElementById('sub-editor');
+    if (!ed) return;
+    ed.focus();
+
+    // Build the wrapped image element
+    const wrap = document.createElement('span');
+    wrap.className = 'rte-inline-img-wrap';
+    wrap.contentEditable = 'false'; // treat as atomic block in editor
+
+    const img = document.createElement('img');
+    img.src = e.target.result;
+    img.alt = file.name.replace(/\.[^.]+$/, '');
+    img.style.cssText = 'max-width:100%;height:auto;display:block;';
+
+    const caption = document.createElement('div');
+    caption.className = 'rte-img-caption';
+    caption.contentEditable = 'true';
+    caption.setAttribute('data-rte-caption', '1');
+
+    const removeBtn = document.createElement('button');
+    removeBtn.className = 'rte-img-remove';
+    removeBtn.type = 'button';
+    removeBtn.title = 'Remove image';
+    removeBtn.textContent = '✕';
+    removeBtn.onclick = function(ev) {
+      ev.preventDefault(); ev.stopPropagation();
+      wrap.parentNode && wrap.parentNode.removeChild(wrap);
+      schedulePreviewRefresh();
+    };
+
+    wrap.appendChild(removeBtn);
+    wrap.appendChild(img);
+    wrap.appendChild(caption);
+
+    // Insert at cursor position inside editor
+    const sel = window.getSelection();
+    if (sel && sel.rangeCount > 0 && ed.contains(sel.getRangeAt(0).commonAncestorContainer)) {
+      const range = sel.getRangeAt(0);
+      range.deleteContents();
+      range.insertNode(wrap);
+      // Move cursor after the inserted wrap
+      range.setStartAfter(wrap);
+      range.collapse(true);
+      sel.removeAllRanges();
+      sel.addRange(range);
+    } else {
+      ed.appendChild(wrap);
+    }
+    schedulePreviewRefresh();
+  };
+  reader.readAsDataURL(file);
+}
 function countWords(html) {
   const tmp = document.createElement('div');
   tmp.innerHTML = html;
@@ -4993,44 +5062,6 @@ function updateWordCount() {
 // ── AUTHOR PHOTO UPLOAD ──
 // ═══════════════════════════════════════════════════════
 let _subAuthorPhotoData = null; // base64 data URL
-let _subCoverPhotoData = null;  // base64 data URL for article cover image
-
-function handleSubCoverPhotoSelect(input) {
-  const file = input.files[0]; if (!file) return;
-  if (file.size > 5 * 1024 * 1024) {
-    document.getElementById('sub-cover-filename').textContent = '✗ Too large — max 5 MB';
-    return;
-  }
-  const reader = new FileReader();
-  reader.onload = e => {
-    _subCoverPhotoData = e.target.result;
-    const wrapEl = document.getElementById('sub-cover-preview-wrap');
-    const imgEl  = document.getElementById('sub-cover-preview-img');
-    if (wrapEl) wrapEl.style.display = 'block';
-    if (imgEl)  imgEl.src = _subCoverPhotoData;
-    const fn = document.getElementById('sub-cover-filename');
-    if (fn) fn.textContent = '✓ ' + file.name;
-    const zoneEl = document.getElementById('sub-cover-zone');
-    if (zoneEl) zoneEl.style.display = 'none';
-    schedulePreviewRefresh();
-  };
-  reader.readAsDataURL(file);
-}
-function removeCoverPhoto(e) {
-  if (e) e.stopPropagation();
-  _subCoverPhotoData = null;
-  const wrapEl = document.getElementById('sub-cover-preview-wrap');
-  if (wrapEl) wrapEl.style.display = 'none';
-  const imgEl  = document.getElementById('sub-cover-preview-img');
-  if (imgEl)   imgEl.src = '';
-  const zoneEl = document.getElementById('sub-cover-zone');
-  if (zoneEl) zoneEl.style.display = '';
-  const fn = document.getElementById('sub-cover-filename');
-  if (fn) fn.textContent = '';
-  const fi = document.getElementById('sub-cover-file');
-  if (fi) fi.value = '';
-  schedulePreviewRefresh();
-}
 function handleSubPhotoSelect(input) {
   const file = input.files[0]; if (!file) return;
   if (file.size > 2 * 1024 * 1024) {
@@ -5221,7 +5252,7 @@ async function _doGeneratePreview() {
   try {
     const dataUrl = await generateArticleImage({
       title, author: name, place, htmlBody: articleHtml,
-      authorPhotoUrl: _subAuthorPhotoData, coverPhotoUrl: _subCoverPhotoData, category, occupation: occ
+      authorPhotoUrl: _subAuthorPhotoData, category, occupation: occ
     });
     _previewDataUrl = dataUrl;
     prevImg.src = dataUrl;
@@ -5419,96 +5450,24 @@ async function generateArticleImage(articleData) {
       ctx.fillStyle = GOLD;
       ctx.fillRect(56, titleBottomY, W - 112, 5);
 
-      // ── Cover Photo (if provided) ──
-      const COVER_Y_START = titleBottomY + 28;
-      const COVER_H = 780; // tall cinematic banner
-
-      function _afterCover(authorStartY) {
-        // ── Author block ──
-        const AUTHOR_Y = authorStartY;
-        const PHOTO_SIZE = 172;
-
-        // Draw photo or placeholder, then author text, then body
-        if (articleData.authorPhotoUrl) {
-          const photoImg = new Image();
-          photoImg.crossOrigin = 'anonymous';
-          photoImg.onload = () => {
-            _drawAuthorPhoto(photoImg, AUTHOR_Y, PHOTO_SIZE);
-            _drawAuthorText(AUTHOR_Y, PHOTO_SIZE, () => _drawBody(AUTHOR_Y + PHOTO_SIZE + 60));
-          };
-          photoImg.onerror = () => {
-            _drawAuthorPlaceholder(AUTHOR_Y, PHOTO_SIZE);
-            _drawAuthorText(AUTHOR_Y, PHOTO_SIZE, () => _drawBody(AUTHOR_Y + PHOTO_SIZE + 60));
-          };
-          photoImg.src = articleData.authorPhotoUrl;
-        } else {
+      // ── Author block ──
+      const AUTHOR_Y = titleBottomY + 44;
+      const PHOTO_SIZE = 172;
+      if (articleData.authorPhotoUrl) {
+        const photoImg = new Image();
+        photoImg.crossOrigin = 'anonymous';
+        photoImg.onload = () => {
+          _drawAuthorPhoto(photoImg, AUTHOR_Y, PHOTO_SIZE);
+          _drawAuthorText(AUTHOR_Y, PHOTO_SIZE, () => _drawBody(AUTHOR_Y + PHOTO_SIZE + 60));
+        };
+        photoImg.onerror = () => {
           _drawAuthorPlaceholder(AUTHOR_Y, PHOTO_SIZE);
           _drawAuthorText(AUTHOR_Y, PHOTO_SIZE, () => _drawBody(AUTHOR_Y + PHOTO_SIZE + 60));
-        }
-      }
-
-      if (articleData.coverPhotoUrl) {
-        const coverImg = new Image();
-        coverImg.crossOrigin = 'anonymous';
-        coverImg.onload = () => {
-          // Draw cover image: full width, cinematic crop centered
-          const COVER_X = 56;
-          const COVER_W = W - 112;
-          const srcAR = coverImg.naturalWidth / coverImg.naturalHeight;
-          const dstAR = COVER_W / COVER_H;
-          let sx = 0, sy = 0, sw = coverImg.naturalWidth, sh = coverImg.naturalHeight;
-          if (srcAR > dstAR) {
-            // image wider than destination — crop sides
-            sw = Math.round(sh * dstAR);
-            sx = Math.round((coverImg.naturalWidth - sw) / 2);
-          } else {
-            // image taller — crop top/bottom (keep top portion for portraits)
-            sh = Math.round(sw / dstAR);
-            sy = Math.round((coverImg.naturalHeight - sh) * 0.25); // bias toward top
-          }
-          // Subtle rounded clip (save/restore)
-          ctx.save();
-          const r = 8;
-          ctx.beginPath();
-          ctx.moveTo(COVER_X + r, COVER_Y_START);
-          ctx.lineTo(COVER_X + COVER_W - r, COVER_Y_START);
-          ctx.quadraticCurveTo(COVER_X + COVER_W, COVER_Y_START, COVER_X + COVER_W, COVER_Y_START + r);
-          ctx.lineTo(COVER_X + COVER_W, COVER_Y_START + COVER_H - r);
-          ctx.quadraticCurveTo(COVER_X + COVER_W, COVER_Y_START + COVER_H, COVER_X + COVER_W - r, COVER_Y_START + COVER_H);
-          ctx.lineTo(COVER_X + r, COVER_Y_START + COVER_H);
-          ctx.quadraticCurveTo(COVER_X, COVER_Y_START + COVER_H, COVER_X, COVER_Y_START + COVER_H - r);
-          ctx.lineTo(COVER_X, COVER_Y_START + r);
-          ctx.quadraticCurveTo(COVER_X, COVER_Y_START, COVER_X + r, COVER_Y_START);
-          ctx.closePath();
-          ctx.clip();
-          try { ctx.drawImage(coverImg, sx, sy, sw, sh, COVER_X, COVER_Y_START, COVER_W, COVER_H); } catch(e) {}
-          ctx.restore();
-          // Subtle bottom-edge gradient vignette
-          const vGrad = ctx.createLinearGradient(0, COVER_Y_START + COVER_H - 160, 0, COVER_Y_START + COVER_H);
-          vGrad.addColorStop(0, 'rgba(247,244,239,0)');
-          vGrad.addColorStop(1, 'rgba(247,244,239,0.32)');
-          ctx.fillStyle = vGrad;
-          ctx.fillRect(COVER_X, COVER_Y_START + COVER_H - 160, COVER_W, 160);
-          // Gold bottom rule on cover
-          ctx.fillStyle = GOLD;
-          ctx.fillRect(COVER_X, COVER_Y_START + COVER_H + 2, COVER_W, 4);
-
-          _afterCover(COVER_Y_START + COVER_H + 56);
         };
-        coverImg.onerror = () => {
-          // Draw tasteful placeholder if image fails
-          ctx.fillStyle = CREAM;
-          ctx.fillRect(56, COVER_Y_START, W - 112, COVER_H);
-          ctx.fillStyle = BORDER;
-          ctx.font = 'italic 34px Georgia, serif';
-          ctx.textAlign = 'center';
-          ctx.fillText('Cover image unavailable', W / 2, COVER_Y_START + COVER_H / 2);
-          ctx.textAlign = 'left';
-          _afterCover(COVER_Y_START + COVER_H + 56);
-        };
-        coverImg.src = articleData.coverPhotoUrl;
+        photoImg.src = articleData.authorPhotoUrl;
       } else {
-        _afterCover(titleBottomY + 44);
+        _drawAuthorPlaceholder(AUTHOR_Y, PHOTO_SIZE);
+        _drawAuthorText(AUTHOR_Y, PHOTO_SIZE, () => _drawBody(AUTHOR_Y + PHOTO_SIZE + 60));
       }
 
     function _drawAuthorPhoto(img, y, size) {
@@ -5717,6 +5676,113 @@ async function generateArticleImage(articleData) {
           return;
         }
         if (tag === 'br') { y += 28; return; }
+
+        // ── Inline image with text wrap (like MS Word) ──
+        if (tag === 'img' || (tag === 'span' && node.classList && node.classList.contains('rte-inline-img-wrap'))) {
+          // Find the actual img element
+          const imgEl = tag === 'img' ? node : node.querySelector('img');
+          const captionEl = tag === 'span' ? node.querySelector('[data-rte-caption]') : null;
+          if (!imgEl || !imgEl.src) return;
+
+          const IMG_MAX_W = Math.round(CONTENT_W * 0.42); // ~42% of column width
+          const IMG_FLOAT_X = LEFT;
+          const TEXT_X = LEFT + IMG_MAX_W + 36; // text starts to the right
+          const TEXT_W = CONTENT_W - IMG_MAX_W - 36;
+
+          // We need to load the image async then draw remaining nodes
+          // Mark remaining siblings for deferred rendering
+          node._rteImgProcessed = true;
+
+          const imgObj = new Image();
+          imgObj.onload = () => {
+            const aspect = imgObj.naturalWidth / imgObj.naturalHeight;
+            const imgW = IMG_MAX_W;
+            const imgH = Math.round(imgW / aspect);
+
+            const imgTopY = y;
+
+            // Draw image
+            ctx.save();
+            try { ctx.drawImage(imgObj, IMG_FLOAT_X, imgTopY, imgW, imgH); } catch(e) {}
+            ctx.restore();
+
+            // Thin border around image
+            ctx.strokeStyle = BORDER; ctx.lineWidth = 2;
+            ctx.strokeRect(IMG_FLOAT_X, imgTopY, imgW, imgH);
+
+            // Caption below image
+            let captionBottomY = imgTopY + imgH;
+            const captionText = captionEl ? (captionEl.textContent || '').trim() : (imgEl.alt || '').trim();
+            if (captionText) {
+              ctx.fillStyle = MUTED;
+              ctx.font = 'italic 28px Georgia, serif';
+              const capLines = wrapTextGetLines(ctx, captionText, imgW, 28);
+              capLines.forEach(line => {
+                captionBottomY += 36;
+                ctx.fillText(line, IMG_FLOAT_X, captionBottomY);
+              });
+              captionBottomY += 8;
+            }
+
+            // Now render the remaining sibling nodes with text flowing to the right
+            // while the image occupies the left column
+            const parent = node.parentNode;
+            const siblings = parent ? Array.from(parent.childNodes) : [];
+            const myIdx = siblings.indexOf(node);
+            const after = siblings.slice(myIdx + 1);
+
+            // Render siblings to the RIGHT of the image
+            let floatY = imgTopY + 46; // start at first text baseline beside image
+            const floatEndY = captionBottomY + 16; // where float clears
+
+            after.forEach(sib => {
+              if (floatY > MAX_Y) return;
+              sib._rteImgProcessed = true; // mark so parent loop skips them
+              if (sib.nodeType === Node.TEXT_NODE) {
+                const text = sib.textContent.replace(/\s+/g, ' ');
+                if (!text.trim()) return;
+                ctx.font = '38px Georgia, serif';
+                ctx.fillStyle = BODY_C;
+                // While beside image, use narrow width; after, use full width
+                const lines = wrapTextGetLines(ctx, text, TEXT_W, 38);
+                lines.forEach(line => {
+                  if (floatY > MAX_Y) return;
+                  if (floatY < floatEndY) {
+                    ctx.fillText(line, TEXT_X, floatY);
+                  } else {
+                    ctx.fillText(line, LEFT, floatY);
+                  }
+                  floatY += 58;
+                });
+              } else if (sib.nodeType === Node.ELEMENT_NODE) {
+                const st = sib.tagName.toLowerCase();
+                if (st === 'p' || st === 'div') {
+                  const txt = sib.textContent.replace(/\s+/g, ' ').trim();
+                  if (!txt) { floatY += 18; return; }
+                  ctx.font = '38px Georgia, serif';
+                  ctx.fillStyle = BODY_C;
+                  const lines = wrapTextGetLines(ctx, txt, floatY < floatEndY ? TEXT_W : CONTENT_W, 38);
+                  lines.forEach(line => {
+                    if (floatY > MAX_Y) return;
+                    ctx.fillText(line, floatY < floatEndY ? TEXT_X : LEFT, floatY);
+                    floatY += 58;
+                  });
+                  floatY += 18;
+                }
+              }
+            });
+            y = Math.max(floatY, captionBottomY + 24);
+          };
+          imgObj.onerror = () => {
+            // If image fails, just leave a gap
+            y += 20;
+          };
+          imgObj.src = imgEl.src;
+          return;
+        }
+
+        // Skip nodes already processed as part of image float
+        if (node._rteImgProcessed) return;
 
         // Default: recurse
         Array.from(node.childNodes).forEach(c => renderNode(c, opts));
