@@ -11,7 +11,7 @@
 <meta http-equiv="X-Content-Type-Options" content="nosniff">
 <meta http-equiv="Referrer-Policy" content="strict-origin-when-cross-origin">
 <meta http-equiv="Permissions-Policy" content="camera=(), microphone=(), geolocation=()">
-<meta http-equiv="Content-Security-Policy" content="default-src 'self' https://mhznyfilbpvyaxeofcgn.supabase.co https://fonts.googleapis.com https://fonts.gstatic.com; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; img-src 'self' https://mhznyfilbpvyaxeofcgn.supabase.co data: blob:; frame-src https://mhznyfilbpvyaxeofcgn.supabase.co; connect-src 'self' https://mhznyfilbpvyaxeofcgn.supabase.co https://api.resend.com;">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self' https://mhznyfilbpvyaxeofcgn.supabase.co https://fonts.googleapis.com https://fonts.gstatic.com; script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; img-src 'self' https://mhznyfilbpvyaxeofcgn.supabase.co data: blob:; frame-src https://mhznyfilbpvyaxeofcgn.supabase.co; connect-src 'self' https://mhznyfilbpvyaxeofcgn.supabase.co https://api.resend.com https://cdn.jsdelivr.net;">
 <title>The International Legal Inteligencia Research Herald, India</title>
 <!-- Performance: DNS prefetch for Supabase CDN -->
 <link rel="dns-prefetch" href="https://mhznyfilbpvyaxeofcgn.supabase.co">
@@ -1175,6 +1175,69 @@ body.dark-mode .rich-editor-area { background: #0a1520; color: #c8d8ea; border-c
 body.dark-mode .rich-editor-toolbar { background: #0d1624; border-color: var(--border); }
 body.dark-mode .rte-btn { background: #0a1520; color: #c8d8ea; border-color: var(--border); }
 body.dark-mode .rte-word-counter { background: #0d1624; border-color: var(--border); }
+/* ── WORD DOCUMENT UPLOAD (article body) ── */
+.submit-docx-hint {
+  font-family: 'EB Garamond', serif; font-size: 14px; color: var(--text-secondary);
+  line-height: 1.55; margin-bottom: 12px;
+}
+.submit-docx-hint strong { color: var(--navy); font-weight: 600; }
+.submit-docx-zone {
+  border: 2px dashed var(--border); background: var(--cream); padding: 28px 16px;
+  text-align: center; cursor: pointer; transition: border-color 0.2s, background 0.2s;
+  margin-bottom: 8px;
+}
+.submit-docx-zone:hover, .submit-docx-zone.dragover { border-color: var(--navy); background: #fff; }
+.submit-docx-zone.has-file { border-color: var(--navy); border-style: solid; background: #fff; }
+.submit-docx-filename { font-family: 'Lato', sans-serif; font-size: 11px; color: var(--navy-light); font-weight: 700; margin-top: 8px; min-height: 16px; }
+.submit-docx-status { font-family: 'Lato', sans-serif; font-size: 12px; color: var(--text-muted); min-height: 18px; margin-bottom: 10px; }
+.submit-docx-status.err { color: #a32d2d; }
+.submit-docx-status.ok { color: #27500a; }
+.submit-docx-preview-wrap { margin-bottom: 14px; }
+.submit-docx-preview-host {
+  border: 1px solid var(--border); background: #e8e4dc; padding: 12px 14px;
+  max-height: 280px; overflow: auto;
+}
+.submit-docx-preview-host .docx-wrapper { background: transparent !important; box-shadow: none !important; padding: 0 !important; }
+.submit-docx-tips {
+  background: #fff; border: 1px solid var(--border-light); border-left: 4px solid var(--gold);
+  padding: 12px 14px 12px 16px; margin-bottom: 14px;
+}
+.submit-docx-tips-title {
+  font-family: 'Lato', sans-serif; font-size: 10px; font-weight: 700;
+  letter-spacing: 0.14em; text-transform: uppercase; color: var(--navy-light);
+  margin-bottom: 8px;
+}
+.submit-docx-tips ul {
+  margin: 0; padding-left: 18px; font-family: 'EB Garamond', serif;
+  font-size: 14px; color: var(--text-secondary); line-height: 1.55;
+}
+.submit-docx-tips li { margin-bottom: 4px; }
+.submit-docx-tips li:last-child { margin-bottom: 0; }
+body.dark-mode .submit-docx-tips { background: #0a1520; border-color: var(--border); }
+#sub-editor { display: none !important; }
+#sub-toolbar { display: none !important; }
+.rte-word-counter { display: none !important; }
+.article-body-capture-host {
+  position: fixed; left: -12000px; top: 0; z-index: -1; pointer-events: none;
+  background: #e8e4dc; overflow: hidden;
+}
+.article-body-capture-host .article-docx-body { box-sizing: border-box; }
+.rd-docx-actions { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; margin: 12px 0 16px; }
+.rd-docx-btn {
+  background: var(--navy); color: #fff; border: none; font-family: 'Lato', sans-serif;
+  font-size: 10px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase;
+  padding: 9px 16px; cursor: pointer; transition: background 0.2s;
+}
+.rd-docx-btn:hover { background: var(--navy-light); }
+.rd-docx-btn.secondary { background: #fff; color: var(--navy); border: 1px solid var(--border); }
+.rd-docx-reupload {
+  flex: 1; min-width: 200px; border: 1px dashed var(--border); padding: 10px 14px;
+  cursor: pointer; font-family: 'Lato', sans-serif; font-size: 11px; color: var(--text-secondary);
+  transition: border-color 0.2s;
+}
+.rd-docx-reupload:hover { border-color: var(--navy); }
+.rd-full-preview-wrap { margin: 16px 0; border: 1px solid var(--border); background: var(--cream); padding: 10px; }
+.rd-full-preview-wrap img { width: 100%; height: auto; display: block; cursor: zoom-in; }
 .submit-btn-cancel { background:none; border:1px solid var(--border); color:var(--text-muted); font-family:'Lato',sans-serif; font-size:11px; font-weight:700; letter-spacing:0.1em; text-transform:uppercase; padding:10px 20px; cursor:pointer; margin-top:10px; width:100%; transition:border-color 0.2s; }
 .submit-btn-cancel:hover { border-color:var(--navy); color:var(--navy); }
 .submit-success-msg { display:none; background:#eaf3de; border:1px solid #c0dd97; color:#27500a; font-family:'EB Garamond',serif; font-size:15px; padding:14px 18px; margin-top:16px; line-height:1.6; }
@@ -1998,36 +2061,44 @@ body.dark-mode .editor-tab.active { color:#c8d8ea; }
       </div>
 
       <hr class="submit-rule">
-      <!-- Rich Article Editor -->
-      <div class="submit-section-title">Write Your Article *</div>
-      <div id="sub-editor-wrap">
-        <div class="rich-editor-toolbar" id="sub-toolbar">
-          <button type="button" class="rte-btn" onclick="rteExec('bold')" title="Bold"><b>B</b></button>
-          <button type="button" class="rte-btn" onclick="rteExec('italic')" title="Italic"><i>I</i></button>
-          <button type="button" class="rte-btn" onclick="rteExec('underline')" title="Underline"><u>U</u></button>
-          <span class="rte-sep"></span>
-          <button type="button" class="rte-btn rte-btn-sm" onclick="rteExec('formatBlock','H2')" title="Heading 2">H2</button>
-          <button type="button" class="rte-btn rte-btn-sm" onclick="rteExec('formatBlock','H3')" title="Heading 3">H3</button>
-          <span class="rte-sep"></span>
-          <button type="button" class="rte-btn rte-btn-sm" title="Align Left" onclick="rteExec('justifyLeft')"><svg width="14" height="14" viewBox="0 0 14 14" fill="currentColor"><rect x="0" y="1" width="14" height="1.8" rx="0.6"/><rect x="0" y="4.6" width="10" height="1.8" rx="0.6"/><rect x="0" y="8.2" width="14" height="1.8" rx="0.6"/><rect x="0" y="11.8" width="8" height="1.8" rx="0.6"/></svg></button>
-          <button type="button" class="rte-btn rte-btn-sm" title="Centre" onclick="rteExec('justifyCenter')"><svg width="14" height="14" viewBox="0 0 14 14" fill="currentColor"><rect x="0" y="1" width="14" height="1.8" rx="0.6"/><rect x="2" y="4.6" width="10" height="1.8" rx="0.6"/><rect x="0" y="8.2" width="14" height="1.8" rx="0.6"/><rect x="3" y="11.8" width="8" height="1.8" rx="0.6"/></svg></button>
-          <button type="button" class="rte-btn rte-btn-sm" title="Justify" onclick="rteExec('justifyFull')"><svg width="14" height="14" viewBox="0 0 14 14" fill="currentColor"><rect x="0" y="1" width="14" height="1.8" rx="0.6"/><rect x="0" y="4.6" width="14" height="1.8" rx="0.6"/><rect x="0" y="8.2" width="14" height="1.8" rx="0.6"/><rect x="0" y="11.8" width="14" height="1.8" rx="0.6"/></svg></button>
-          <span class="rte-sep"></span>
-          <button type="button" class="rte-btn" onclick="rteExec('insertUnorderedList')" title="Bullet list">&#8226; List</button>
-          <button type="button" class="rte-btn" onclick="rteExec('insertOrderedList')" title="Numbered list">1. List</button>
-          <button type="button" class="rte-btn" onclick="rteExec('formatBlock','BLOCKQUOTE')" title="Blockquote">&ldquo;&rdquo;</button>
-          <span class="rte-sep"></span>
-          <button type="button" class="rte-btn" onclick="rteInsertLink()" title="Insert link">&#128279; Link</button>
-          <button type="button" class="rte-btn" onclick="rteInsertImageTrigger()" title="Insert image with text wrap">&#128444; Image</button>
-          <input type="file" id="rte-img-file" accept="image/*" style="display:none;" onchange="rteInsertImageFromFile(this)">
-          <button type="button" class="rte-btn rte-btn-sm" onclick="rteExec('removeFormat')" title="Clear format">&#10005; Clear</button>
-        </div>
-        <div id="sub-editor" class="rich-editor-area" contenteditable="true" spellcheck="true" data-placeholder="Write your full article here… (minimum 100 words, maximum 900 words)"></div>
-        <div class="rte-word-counter">
-          <span id="sub-word-count">0</span> / 900 words
-          <span id="sub-word-warn" style="display:none;color:#a32d2d;margin-left:8px;">⚠ Limit reached</span>
-        </div>
+      <!-- Word document article body -->
+      <div class="submit-section-title">Upload Your Article (Word) *</div>
+      <p class="submit-docx-hint">
+        Prepare your article in <strong>Microsoft Word</strong> (formatting, spacing, images, highlights, alignment).
+        Upload the <strong>.docx</strong> file here — it will appear <strong>unchanged</strong> in the grey article body area on the Herald template.
+        <br>Limits: <strong>1 page maximum</strong> &nbsp;&bull;&nbsp; <strong>4 MB maximum</strong> &nbsp;&bull;&nbsp; .docx only
+      </p>
+      <div class="submit-docx-tips" role="note" aria-label="Word document tips">
+        <div class="submit-docx-tips-title">Recommended Word settings</div>
+        <ul>
+          <li><strong>One page only</strong> — your full article must fit on a single page in Word; content beyond that will be rejected.</li>
+          <li><strong>Margins</strong> — use normal margins (about 2.5&nbsp;cm / 1&nbsp;inch on all sides) so text fits the grey article area cleanly.</li>
+          <li><strong>Fonts</strong> — prefer common fonts (e.g. Times New Roman, Georgia, Arial, Calibri). Rare or custom fonts may not match exactly on the Herald.</li>
+          <li><strong>Images</strong> — insert pictures with <em>Insert → Pictures</em> (embedded in the file). Avoid oversized images; keep the total file under 4&nbsp;MB.</li>
+          <li><strong>Formatting</strong> — do all spacing, bold, highlight, lists, and alignment in Word; that is what appears in the grey body zone.</li>
+          <li><strong>File type</strong> — save and upload as <strong>.docx</strong> (Word Document), not .doc or PDF.</li>
+          <li><strong>Before you submit</strong> — use <strong>Preview Article Before Submission</strong> below and check that the grey area matches what you see in Word.</li>
+        </ul>
       </div>
+      <div class="submit-docx-zone" id="sub-docx-zone" onclick="document.getElementById('sub-docx-file').click()">
+        <input type="file" id="sub-docx-file" accept=".docx,application/vnd.openxmlformats-officedocument.wordprocessingml.document" style="display:none;" onchange="handleSubDocxSelect(this)">
+        <div style="font-size:28px;margin-bottom:6px;opacity:0.45;">&#128196;</div>
+        <div style="font-size:11px;font-weight:700;color:var(--text-secondary);margin-bottom:3px;">Click or drag your Word document here</div>
+        <div style="font-size:10px;color:var(--text-muted);">.docx &nbsp;&bull;&nbsp; Max 4 MB &nbsp;&bull;&nbsp; Max 1 page</div>
+        <div class="submit-docx-filename" id="sub-docx-filename"></div>
+      </div>
+      <div class="submit-docx-status" id="sub-docx-status"></div>
+      <div class="submit-docx-preview-wrap" id="sub-docx-preview-wrap" style="display:none;">
+        <div style="font-family:'Lato',sans-serif;font-size:10px;font-weight:700;letter-spacing:0.14em;text-transform:uppercase;color:var(--text-muted);margin-bottom:6px;">Word document preview (grey article area)</div>
+        <div class="submit-docx-preview-host" id="sub-docx-preview-host"></div>
+      </div>
+      <!-- Hidden: stores HTML for admin minor edits + legacy hooks -->
+      <div id="sub-editor-wrap" style="display:none;">
+        <div class="rich-editor-toolbar" id="sub-toolbar"></div>
+        <div id="sub-editor" class="rich-editor-area" contenteditable="false"></div>
+        <div class="rte-word-counter"><span id="sub-word-count">0</span></div>
+      </div>
+      <div id="sub-docx-measure-host" class="article-body-capture-host" aria-hidden="true"></div>
 
       <!-- Undertaking Checkbox -->
       <div class="submit-undertaking" onclick="toggleSubUndertaking()">
@@ -2051,7 +2122,7 @@ body.dark-mode .editor-tab.active { color:#c8d8ea; }
         Preview Your Article Before Submission
         <span class="preview-badge">Live Preview</span>
       </div>
-      <p class="preview-sub">This is exactly how your article will appear on the Herald. Review carefully before submitting. Any edits you make above will automatically update this preview.</p>
+      <p class="preview-sub">This is exactly how your article will appear on the Herald — including your Word formatting in the grey article body area. Review carefully before submitting. Re-upload your .docx above to change the article body.</p>
       <div id="article-preview-canvas-wrap" onclick="openPreviewLightbox()" title="Click to enlarge">
         <div id="preview-generating">
           <div class="spinner"></div>
@@ -2127,13 +2198,27 @@ body.dark-mode .editor-tab.active { color:#c8d8ea; }
     </div>
 
     <div class="review-file-preview" id="rd-file-preview">
-      <p>Submitted File / Article Image</p>
+      <p>Article Template Preview (full image)</p>
       <div id="rd-file-content"></div>
     </div>
 
-    <!-- Rich article body editor -->
+    <div class="rd-full-preview-wrap" id="rd-full-preview-wrap" style="display:none;">
+      <p style="font-family:'Lato',sans-serif;font-size:10px;font-weight:700;letter-spacing:0.14em;text-transform:uppercase;color:var(--text-muted);margin-bottom:8px;">Full template preview</p>
+      <img id="rd-full-preview-img" src="" alt="Full article template preview" onclick="rdOpenFullPreviewLightbox()">
+    </div>
+
+    <div class="rd-docx-actions">
+      <button type="button" class="rd-docx-btn" id="rd-download-docx-btn" onclick="rdDownloadWordDoc()">&#128196; Download Word file</button>
+      <div class="rd-docx-reupload" id="rd-docx-reupload-zone" onclick="document.getElementById('rd-docx-file').click()">
+        <input type="file" id="rd-docx-file" accept=".docx,application/vnd.openxmlformats-officedocument.wordprocessingml.document" style="display:none;" onchange="handleRdDocxSelect(this)">
+        <span>&#128257; Re-upload edited Word (.docx) for major changes</span>
+        <div id="rd-docx-filename" style="font-size:10px;margin-top:4px;color:var(--text-muted);"></div>
+      </div>
+    </div>
+
+    <!-- Rich article body editor (minor text edits) -->
     <div style="margin:16px 0 4px;">
-      <div style="font-family:'Lato',sans-serif;font-size:10px;font-weight:700;letter-spacing:0.14em;text-transform:uppercase;color:var(--text-muted);margin-bottom:6px;">Article Body <span style="font-weight:400;text-transform:none;letter-spacing:0;font-family:'EB Garamond',serif;font-size:12px;color:var(--text-muted);">(edit below, then regenerate image)</span></div>
+      <div style="font-family:'Lato',sans-serif;font-size:10px;font-weight:700;letter-spacing:0.14em;text-transform:uppercase;color:var(--text-muted);margin-bottom:6px;">Article Body — minor edits <span style="font-weight:400;text-transform:none;letter-spacing:0;font-family:'EB Garamond',serif;font-size:12px;color:var(--text-muted);">(text, spacing, highlight, justify — then regenerate image)</span></div>
       <div class="rich-editor-toolbar" id="rd-toolbar" style="border-bottom:1px solid var(--border-light);">
         <button type="button" class="rte-btn" onclick="rdRteExec('bold')" title="Bold"><b>B</b></button>
         <button type="button" class="rte-btn" onclick="rdRteExec('italic')" title="Italic"><i>I</i></button>
@@ -2165,7 +2250,7 @@ body.dark-mode .editor-tab.active { color:#c8d8ea; }
       <span id="rd-regen-status" style="font-family:'Lato',sans-serif;font-size:11px;color:var(--text-muted);margin-left:12px;"></span>
     </div>
 
-    <div class="review-replace-drop" id="rd-replace-drop">
+    <div class="review-replace-drop" id="rd-replace-drop" style="display:none;">
       <input type="file" id="rd-new-file" accept=".pdf,image/*" onchange="handleRdFileSelect(this)">
       <span style="font-size:13px;">&#128257; Replace file — drag &amp; drop or click to browse</span>
       <div style="font-family:'Lato',sans-serif;font-size:10px;margin-top:4px;color:var(--text-muted);" id="rd-new-filename"></div>
@@ -4081,6 +4166,13 @@ function resetSubmitForm() {
   const fi = document.getElementById('sub-file'); if(fi) fi.value = '';
   const photoFi = document.getElementById('sub-photo-file'); if(photoFi) photoFi.value = '';
   const editor = document.getElementById('sub-editor'); if(editor) { editor.innerHTML = ''; }
+  _subWordDocFile = null; _subArticleBodyHtml = '';
+  const docxFi = document.getElementById('sub-docx-file'); if(docxFi) docxFi.value = '';
+  const docxFn = document.getElementById('sub-docx-filename'); if(docxFn) docxFn.textContent = '';
+  const docxZone = document.getElementById('sub-docx-zone'); if(docxZone) docxZone.classList.remove('has-file');
+  const docxPrev = document.getElementById('sub-docx-preview-wrap'); if(docxPrev) docxPrev.style.display = 'none';
+  const docxPrevHost = document.getElementById('sub-docx-preview-host'); if(docxPrevHost) docxPrevHost.innerHTML = '';
+  setSubDocxStatus('', false);
   const wc = document.getElementById('sub-word-count'); if(wc) wc.textContent = '0';
   const ww = document.getElementById('sub-word-warn'); if(ww) ww.style.display = 'none';
   const err = document.getElementById('sub-error'); if(err) err.textContent = '';
@@ -4143,7 +4235,8 @@ function saveSubmitDraft() {
         city: (document.getElementById('sub-city')?.value || ''),
         place: (document.getElementById('sub-place')?.value || ''),
         undertaking: !!document.getElementById('sub-undertaking')?.checked,
-        articleHtml: editor ? editor.innerHTML : '',
+        articleHtml: getArticleHtmlBody(),
+        hasDocx: !!_subWordDocFile,
       },
       previewOpen: document.getElementById('sub-preview-section')?.style?.display !== 'none'
     };
@@ -4173,8 +4266,9 @@ function restoreSubmitDraft() {
   setVal('sub-city', f.city);
   setVal('sub-place', f.place);
   const ck = document.getElementById('sub-undertaking'); if (ck) ck.checked = !!f.undertaking;
-  const editor = document.getElementById('sub-editor'); if (editor && typeof f.articleHtml === 'string') editor.innerHTML = f.articleHtml;
+  if (typeof f.articleHtml === 'string' && f.articleHtml) syncHiddenArticleEditor(f.articleHtml);
   if (typeof updateWordCount === 'function') updateWordCount();
+  if (f.hasDocx) setSubDocxStatus('Draft restored — re-upload your .docx if the file was not saved', false);
   if (d.previewOpen) setTimeout(() => { try { showArticlePreview(); } catch {} }, 150);
   if (typeof showToast === 'function') showToast('✓ Draft restored', 1800);
 }
@@ -4248,10 +4342,7 @@ async function doSubmitArticle() {
   const abstract   = sanitizeInput(document.getElementById('sub-abstract').value, 1500);
   const coauthors  = sanitizeInput(document.getElementById('sub-coauthors').value, 200);
   const place      = document.getElementById('sub-place') ? document.getElementById('sub-place').value : '';
-  const editorEl   = document.getElementById('sub-editor');
-  const articleHtml = editorEl ? editorEl.innerHTML : '';
-  const articleText = editorEl ? (editorEl.textContent || editorEl.innerText || '').trim() : '';
-  const wordCount  = articleText ? articleText.split(/\s+/).filter(w=>w).length : 0;
+  const articleHtml = getArticleHtmlBody();
   const undertaking = document.getElementById('sub-undertaking').checked;
   const errEl = document.getElementById('sub-error-confirm');
   errEl.textContent = '';
@@ -4275,6 +4366,18 @@ async function doSubmitArticle() {
       throw new Error('Image upload failed. Please try again. If it keeps failing, open DevTools → Console and share the error text.');
     }
 
+    pfC.style.width = '50%';
+    btn.textContent = 'Uploading Word document…';
+
+    let article_docx_url = null;
+    if (_subWordDocFile) {
+      try {
+        article_docx_url = await uploadBinaryToArticlesBucket(_subWordDocFile, 'submissions/docx');
+      } catch (e) {
+        console.warn('DOCX upload failed:', e);
+      }
+    }
+
     pfC.style.width = '55%';
     btn.textContent = 'Submitting…';
 
@@ -4295,6 +4398,7 @@ async function doSubmitArticle() {
         article_body: articleHtml,
         coauthors, place,
         author_photo_url,
+        article_docx_url: article_docx_url || null,
         file_url: articleImageUrl || null,
         file_type: articleImageUrl ? 'image/jpeg' : null,
         status: 'pending', undertaking_agreed: true
@@ -4303,6 +4407,30 @@ async function doSubmitArticle() {
     pfC.style.width = '88%';
     if (!insertRes.ok) {
       const errBody = await insertRes.text();
+      if (errBody.includes('article_docx_url')) {
+        const retryRes = await fetch(`${SUPABASE_URL}/rest/v1/article_submissions`, {
+          method: 'POST',
+          headers: { ...headers, 'Prefer': 'return=representation' },
+          body: JSON.stringify({
+            author_name: name, author_email: email, occupation, institution, phone,
+            article_title: title, category, abstract,
+            article_body: articleHtml,
+            coauthors, place,
+            author_photo_url,
+            file_url: articleImageUrl || null,
+            file_type: articleImageUrl ? 'image/jpeg' : null,
+            status: 'pending', undertaking_agreed: true
+          })
+        });
+        if (!retryRes.ok) throw new Error('Submission failed. Please try again.');
+        const insertedRetry = await retryRes.json();
+        const newSubRetry = Array.isArray(insertedRetry) ? insertedRetry[0] : insertedRetry;
+        notifyAdminNewSubmission(name, email, occupation, institution, title, category, abstract, newSubRetry?.id);
+        pfC.style.width = '100%';
+        btn.textContent = 'Saved ✓';
+        setTimeout(() => showSuccessState(), 600);
+        return;
+      }
       if (errBody.includes('article_body') || errBody.includes('place') || errBody.includes('author_photo_url')) {
         const fallbackRes = await fetch(`${SUPABASE_URL}/rest/v1/article_submissions`, {
           method: 'POST',
@@ -4477,21 +4605,27 @@ function openReviewDetail(id) {
     rdEditor.innerHTML = s.article_body || '<p></p>';
   }
 
-  // File preview (image thumbnail / link only)
+  // File preview (full template image)
   const fc = document.getElementById('rd-file-content');
-  if (s.file_url) {
-    if (s.file_type && s.file_type.startsWith('image/')) {
-      fc.innerHTML = `<img src="${esc(s.file_url)}" alt="Article image" style="max-width:100%;max-height:200px;object-fit:contain;display:block;border:1px solid var(--border-light);">
-        <a href="${esc(s.file_url)}" target="_blank" rel="noopener" style="display:inline-block;margin-top:8px;font-family:'Lato',sans-serif;font-size:11px;color:var(--navy-light);font-weight:700;">&#8599; Open Full Image</a>`;
-    } else {
-      fc.innerHTML = `<div style="display:flex;align-items:center;gap:12px;padding:10px 0;">
-        <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="var(--navy)" stroke-width="1.5"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14,2 14,8 20,8"/></svg>
-        <a href="${esc(s.file_url)}" target="_blank" rel="noopener" style="font-family:'Lato',sans-serif;font-size:12px;font-weight:700;color:var(--navy-light);text-decoration:underline;">&#8599; View / Download PDF</a>
-      </div>`;
+  const fullPrev = document.getElementById('rd-full-preview-wrap');
+  const fullPrevImg = document.getElementById('rd-full-preview-img');
+  const dlBtn = document.getElementById('rd-download-docx-btn');
+  if (dlBtn) dlBtn.style.display = s.article_docx_url ? 'inline-block' : 'inline-block';
+  if (s.file_url && (s.file_type || '').startsWith('image/')) {
+    const bust = esc(s.file_url) + '?t=' + Date.now();
+    fc.innerHTML = `<img src="${bust}" alt="Article template preview" style="max-width:100%;max-height:320px;object-fit:contain;display:block;border:1px solid var(--border-light);cursor:zoom-in;" onclick="openLightbox('${esc(s.file_url)}',['${esc(s.file_url)}'],0)">
+      <a href="${esc(s.file_url)}" target="_blank" rel="noopener" style="display:inline-block;margin-top:8px;font-family:'Lato',sans-serif;font-size:11px;color:var(--navy-light);font-weight:700;">&#8599; Open full-size image</a>`;
+    if (fullPrev && fullPrevImg) {
+      fullPrev.style.display = 'block';
+      fullPrevImg.src = s.file_url;
     }
   } else {
-    fc.innerHTML = '<em style="font-family:Garamond,serif;color:var(--text-muted);font-size:14px;">No file attached</em>';
+    fc.innerHTML = '<em style="font-family:Garamond,serif;color:var(--text-muted);font-size:14px;">No preview image yet — edit body and click Regenerate Article Image</em>';
+    if (fullPrev) fullPrev.style.display = 'none';
   }
+  _rdPendingDocxFile = null;
+  const rdDocxFn = document.getElementById('rd-docx-filename');
+  if (rdDocxFn) rdDocxFn.textContent = s.article_docx_url ? 'Stored Word file available for download' : '';
 
   // Reset regen status
   const regenStatus = document.getElementById('rd-regen-status');
@@ -4515,7 +4649,7 @@ function closeReviewDetail() {
   document.getElementById('review-detail-overlay').classList.remove('open');
   document.body.style.overflow = 'hidden'; // keep editor overlay scroll locked
   const rdSilent = document.getElementById('rd-silent'); if (rdSilent) rdSilent.checked = false;
-  _activeSubmission = null; _rdNewFile = null;
+  _activeSubmission = null; _rdNewFile = null; _rdPendingDocxFile = null;
 }
 function closeReviewDetailOnBg(e) {
   if (e.target === document.getElementById('review-detail-overlay')) closeReviewDetail();
@@ -4562,6 +4696,13 @@ async function saveReviewEdits() {
       article_body:  document.getElementById('rd-article-body') ? document.getElementById('rd-article-body').innerHTML : (_activeSubmission.article_body || ''),
       file_url, file_type
     };
+    if (_rdPendingDocxFile) {
+      try {
+        updates.article_docx_url = await uploadBinaryToArticlesBucket(_rdPendingDocxFile, 'submissions/docx');
+      } catch (e) {
+        console.warn('DOCX upload on save failed:', e);
+      }
+    }
     const res = await fetch(`${SUPABASE_URL}/rest/v1/article_submissions?id=eq.${_activeSubmission.id}`, {
       method: 'PATCH',
       headers: { ...headers, 'Prefer': 'return=minimal' },
@@ -4571,6 +4712,12 @@ async function saveReviewEdits() {
     // Update local copy
     Object.assign(_activeSubmission, updates);
     if (_rdNewFile) { _rdNewFile = null; document.getElementById('rd-new-filename').textContent = ''; }
+    if (_rdPendingDocxFile) {
+      _activeSubmission.article_docx_url = updates.article_docx_url || _activeSubmission.article_docx_url;
+      _rdPendingDocxFile = null;
+      const rdDocxFn = document.getElementById('rd-docx-filename');
+      if (rdDocxFn) rdDocxFn.textContent = 'Word file saved';
+    }
     showToast('✓ Edits saved successfully', 2800);
     loadSubmissions(); // refresh list
   } catch(e) {
@@ -4667,9 +4814,15 @@ async function rdRegenerateImage() {
     _activeSubmission.file_type  = 'image/jpeg';
     _activeSubmission.article_body = articleHtml;
 
-    // Refresh the file preview thumbnail with the new image (cache-bust)
-    fc.innerHTML = `<img src="${esc(newUrl)}?t=${Date.now()}" alt="Article image" style="max-width:100%;max-height:200px;object-fit:contain;display:block;border:1px solid var(--border-light);">
-      <a href="${esc(newUrl)}" target="_blank" rel="noopener" style="display:inline-block;margin-top:8px;font-family:'Lato',sans-serif;font-size:11px;color:var(--navy-light);font-weight:700;">&#8599; Open Full Image</a>`;
+    const bust = esc(newUrl) + '?t=' + Date.now();
+    fc.innerHTML = `<img src="${bust}" alt="Article template preview" style="max-width:100%;max-height:320px;object-fit:contain;display:block;border:1px solid var(--border-light);cursor:zoom-in;" onclick="openLightbox('${esc(newUrl)}',['${esc(newUrl)}'],0)">
+      <a href="${esc(newUrl)}" target="_blank" rel="noopener" style="display:inline-block;margin-top:8px;font-family:'Lato',sans-serif;font-size:11px;color:var(--navy-light);font-weight:700;">&#8599; Open full-size image</a>`;
+    const fullPrev = document.getElementById('rd-full-preview-wrap');
+    const fullPrevImg = document.getElementById('rd-full-preview-img');
+    if (fullPrev && fullPrevImg) {
+      fullPrev.style.display = 'block';
+      fullPrevImg.src = newUrl + '?t=' + Date.now();
+    }
 
     statusEl.textContent = '✓ Image replaced successfully';
     statusEl.style.color = '#27500a';
@@ -4688,8 +4841,18 @@ async function rdRegenerateImage() {
 async function publishFromReview() {
   if (!_activeSubmission) return;
   const errEl = document.getElementById('rd-error');
+  const pub = document.getElementById('rd-publish-btn');
   const silent = document.getElementById('rd-silent') ? document.getElementById('rd-silent').checked : false;
   pub.disabled = true; pub.textContent = 'Publishing…'; errEl.textContent = '';
+
+  const rdEditor = document.getElementById('rd-article-body');
+  if (rdEditor) _activeSubmission.article_body = rdEditor.innerHTML;
+
+  if (!_activeSubmission.file_url || !(_activeSubmission.file_type || '').startsWith('image/')) {
+    errEl.textContent = 'Generate the article image first (Regenerate Article Image), then publish.';
+    pub.disabled = false; pub.textContent = '▶ Publish to Herald & Issue Certificate';
+    return;
+  }
 
   // First save any edits
   const authorName   = sanitizeInput(document.getElementById('rd-author-name').value, 150);
@@ -4706,16 +4869,16 @@ async function publishFromReview() {
   try {
     let file_url = _activeSubmission.file_url;
     let file_type = _activeSubmission.file_type;
-    // Upload new file if replaced
-    if (_rdNewFile) {
-      const fileName = `submissions/${Date.now()}_${_rdNewFile.name.replace(/[^a-zA-Z0-9._-]/g,'_')}`;
-      const upRes = await fetch(`${SUPABASE_URL}/storage/v1/object/articles/${fileName}`, {
-        method: 'POST', headers: { 'apikey': SUPABASE_KEY, 'Authorization': 'Bearer ' + SUPABASE_KEY,
-          'Content-Type': _rdNewFile.type, 'x-upsert': 'true' }, body: _rdNewFile
-      });
-      if (!upRes.ok) throw new Error('File upload failed');
-      file_url = `${SUPABASE_URL}/storage/v1/object/public/articles/${fileName}`;
-      file_type = _rdNewFile.type;
+    if (_rdPendingDocxFile) {
+      try {
+        const docxUrl = await uploadBinaryToArticlesBucket(_rdPendingDocxFile, 'submissions/docx');
+        _activeSubmission.article_docx_url = docxUrl;
+        await fetch(`${SUPABASE_URL}/rest/v1/article_submissions?id=eq.${_activeSubmission.id}`, {
+          method: 'PATCH', headers: { ...headers, 'Prefer': 'return=minimal' },
+          body: JSON.stringify({ article_docx_url: docxUrl, article_body: _activeSubmission.article_body })
+        }).catch(() => {});
+        _rdPendingDocxFile = null;
+      } catch (e) { console.warn('DOCX upload on publish failed:', e); }
     }
 
     // 1. Insert into articles table (goes live)
@@ -4867,6 +5030,262 @@ async function editorDeleteArticle(id) {
     loadPublishedArticles();
     fetchArticles(true);
   } catch(e) { showToast('✗ Could not delete: ' + e.message, 3500); }
+}
+
+// ═══════════════════════════════════════════════════════
+// ── WORD DOCUMENT ARTICLE BODY ──
+// ═══════════════════════════════════════════════════════
+const MAX_DOCX_BYTES = 4 * 1024 * 1024;
+const ARTICLE_BODY_GREY = '#e8e4dc';
+/** Max height of grey body zone at template canvas scale (≈1 page). */
+const ARTICLE_BODY_MAX_H = 2150;
+const ARTICLE_BODY_CAPTURE_W = 2368;
+let _subWordDocFile = null;
+let _subArticleBodyHtml = '';
+let _rdPendingDocxFile = null;
+
+function isDocxFile(file) {
+  if (!file) return false;
+  const n = (file.name || '').toLowerCase();
+  return n.endsWith('.docx') || file.type === 'application/vnd.openxmlformats-officedocument.wordprocessingml.document';
+}
+
+function getArticleHtmlBody() {
+  const ed = document.getElementById('sub-editor');
+  if (ed && ed.innerHTML.trim()) return ed.innerHTML;
+  return _subArticleBodyHtml || '';
+}
+
+function syncHiddenArticleEditor(html) {
+  const ed = document.getElementById('sub-editor');
+  if (ed) ed.innerHTML = html || '';
+  _subArticleBodyHtml = html || '';
+}
+
+async function uploadBinaryToArticlesBucket(file, folder) {
+  const fileName = `${folder}/${Date.now()}_${(file.name || 'file').replace(/[^a-zA-Z0-9._-]/g, '_')}`;
+  const upRes = await fetch(`${SUPABASE_URL}/storage/v1/object/articles/${fileName}`, {
+    method: 'POST',
+    headers: {
+      apikey: SUPABASE_KEY,
+      Authorization: 'Bearer ' + SUPABASE_KEY,
+      'Content-Type': file.type || 'application/octet-stream',
+      'x-upsert': 'true'
+    },
+    body: file
+  });
+  if (!upRes.ok) throw new Error('File upload failed');
+  return `${SUPABASE_URL}/storage/v1/object/public/articles/${fileName}`;
+}
+
+function waitForImagesIn(root) {
+  const imgs = root ? Array.from(root.querySelectorAll('img')) : [];
+  if (!imgs.length) return Promise.resolve();
+  return Promise.all(imgs.map(img => {
+    if (img.complete) return Promise.resolve();
+    return new Promise(res => {
+      img.onload = img.onerror = () => res();
+      setTimeout(res, 4000);
+    });
+  }));
+}
+
+async function renderDocxToContainer(arrayBuffer, container) {
+  if (typeof docx === 'undefined' || !docx.renderAsync) {
+    throw new Error('Word preview library failed to load. Please refresh the page.');
+  }
+  container.innerHTML = '';
+  await docx.renderAsync(arrayBuffer, container, null, {
+    className: 'docx-preview-content',
+    inWrapper: true,
+    ignoreWidth: false,
+    ignoreHeight: false,
+    breakPages: false,
+    renderHeaders: false,
+    renderFooters: false,
+    renderFootnotes: false,
+    renderEndnotes: false
+  });
+  return container.querySelector('.docx-wrapper') || container;
+}
+
+function measureDocxBodyHeight(html, width) {
+  const host = document.getElementById('sub-docx-measure-host') || document.getElementById('article-body-capture-host');
+  if (!host) return 0;
+  host.style.width = width + 'px';
+  host.innerHTML = `<div class="article-docx-body">${html}</div>`;
+  const inner = host.querySelector('.article-docx-body');
+  const h = inner ? inner.scrollHeight : host.scrollHeight;
+  host.innerHTML = '';
+  return h;
+}
+
+async function parseWordDocumentFile(file, opts) {
+  opts = opts || {};
+  if (!isDocxFile(file)) throw new Error('Please upload a .docx Word document.');
+  if (file.size > MAX_DOCX_BYTES) {
+    throw new Error('File exceeds 4 MB limit (' + (file.size / 1024 / 1024).toFixed(1) + ' MB).');
+  }
+  const buf = await file.arrayBuffer();
+  const renderHost = document.createElement('div');
+  const wrapper = await renderDocxToContainer(buf, renderHost);
+  const html = '<div class="article-docx-body">' + wrapper.innerHTML + '</div>';
+  const contentH = measureDocxBodyHeight(html, ARTICLE_BODY_CAPTURE_W);
+  if (contentH > ARTICLE_BODY_MAX_H) {
+    throw new Error(
+      'Your document is longer than one page for the article body area (' +
+      Math.round(contentH) + 'px tall, max ' + ARTICLE_BODY_MAX_H + 'px). Please shorten it in Word and re-upload.'
+    );
+  }
+  if (opts.previewHost) {
+    opts.previewHost.innerHTML = '';
+    const previewClone = wrapper.cloneNode(true);
+    opts.previewHost.appendChild(previewClone);
+  }
+  return html;
+}
+
+async function captureArticleBodyHtml(html, width, maxHeight) {
+  if (typeof html2canvas === 'undefined') throw new Error('html2canvas not loaded');
+  let host = document.getElementById('article-body-capture-host');
+  if (!host) {
+    host = document.createElement('div');
+    host.id = 'article-body-capture-host';
+    host.className = 'article-body-capture-host';
+    document.body.appendChild(host);
+  }
+  host.style.width = width + 'px';
+  host.style.height = '';
+  host.style.overflow = 'hidden';
+  host.innerHTML = html.includes('article-docx-body') ? html : `<div class="article-docx-body">${html}</div>`;
+  const inner = host.querySelector('.article-docx-body') || host;
+  inner.style.transform = '';
+  inner.style.transformOrigin = '';
+  inner.style.width = '';
+
+  await waitForImagesIn(inner);
+  const naturalH = inner.scrollHeight;
+  if (naturalH > maxHeight) {
+    const scale = maxHeight / naturalH;
+    inner.style.transform = `scale(${scale})`;
+    inner.style.transformOrigin = 'top left';
+    inner.style.width = (width / scale) + 'px';
+    host.style.height = maxHeight + 'px';
+  }
+
+  const shot = await html2canvas(host, {
+    backgroundColor: ARTICLE_BODY_GREY,
+    scale: 1,
+    useCORS: true,
+    allowTaint: true,
+    logging: false,
+    width: width,
+    windowWidth: width
+  });
+  host.innerHTML = '';
+  host.style.height = '';
+  host.style.overflow = '';
+  return shot;
+}
+
+function setSubDocxStatus(msg, isErr) {
+  const el = document.getElementById('sub-docx-status');
+  if (!el) return;
+  el.textContent = msg || '';
+  el.className = 'submit-docx-status' + (isErr ? ' err' : msg ? ' ok' : '');
+}
+
+async function handleSubDocxSelect(input) {
+  const file = input.files && input.files[0];
+  const fnEl = document.getElementById('sub-docx-filename');
+  const zone = document.getElementById('sub-docx-zone');
+  const errEl = document.getElementById('sub-error');
+  const previewWrap = document.getElementById('sub-docx-preview-wrap');
+  const previewHost = document.getElementById('sub-docx-preview-host');
+  if (!file) return;
+  _subWordDocFile = null;
+  syncHiddenArticleEditor('');
+  if (fnEl) fnEl.textContent = '';
+  if (zone) zone.classList.remove('has-file');
+  if (previewWrap) previewWrap.style.display = 'none';
+  if (previewHost) previewHost.innerHTML = '';
+  setSubDocxStatus('Processing Word document…', false);
+  if (errEl) errEl.textContent = '';
+  try {
+    const html = await parseWordDocumentFile(file, { previewHost });
+    _subWordDocFile = file;
+    syncHiddenArticleEditor(html);
+    if (fnEl) fnEl.textContent = '✓ ' + file.name + ' (' + (file.size / 1024 / 1024).toFixed(2) + ' MB)';
+    if (zone) zone.classList.add('has-file');
+    if (previewWrap) previewWrap.style.display = 'block';
+    setSubDocxStatus('✓ Document loaded — formatting preserved for the grey article area.', false);
+    scheduleSaveSubmitDraft();
+    schedulePreviewRefresh();
+  } catch (e) {
+    input.value = '';
+    setSubDocxStatus('✗ ' + (e.message || 'Could not read document'), true);
+    if (errEl) errEl.textContent = e.message || 'Could not read Word document.';
+  }
+}
+
+(function wireSubDocxDrop() {
+  const wire = () => {
+    const dz = document.getElementById('sub-docx-zone');
+    const fi = document.getElementById('sub-docx-file');
+    if (!dz || !fi) return;
+    dz.addEventListener('dragover', e => { e.preventDefault(); dz.classList.add('dragover'); });
+    dz.addEventListener('dragleave', () => dz.classList.remove('dragover'));
+    dz.addEventListener('drop', e => {
+      e.preventDefault();
+      dz.classList.remove('dragover');
+      const file = e.dataTransfer.files[0];
+      if (!file) return;
+      const dt = new DataTransfer();
+      dt.items.add(file);
+      fi.files = dt.files;
+      handleSubDocxSelect(fi);
+    });
+  };
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', wire);
+  else setTimeout(wire, 400);
+})();
+
+async function handleRdDocxSelect(input) {
+  const file = input.files && input.files[0];
+  const fn = document.getElementById('rd-docx-filename');
+  const errEl = document.getElementById('rd-error');
+  if (!file) return;
+  try {
+    const html = await parseWordDocumentFile(file, {});
+    _rdPendingDocxFile = file;
+    const rdEditor = document.getElementById('rd-article-body');
+    if (rdEditor) rdEditor.innerHTML = html;
+    if (_activeSubmission) _activeSubmission.article_body = html;
+    if (fn) fn.textContent = '✓ ' + file.name + ' — click “Regenerate Article Image” then Save';
+    if (errEl) errEl.textContent = '';
+    showToast('✓ Word document loaded — regenerate preview to apply', 3200);
+    await rdRegenerateImage();
+  } catch (e) {
+    input.value = '';
+    _rdPendingDocxFile = null;
+    if (fn) fn.textContent = '✗ ' + (e.message || 'Invalid file');
+    if (errEl) errEl.textContent = e.message || 'Could not read Word document.';
+  }
+}
+
+function rdDownloadWordDoc() {
+  const url = _activeSubmission && _activeSubmission.article_docx_url;
+  if (!url) {
+    showToast('No Word file on record — ask author to resubmit or use minor edits below', 3200);
+    return;
+  }
+  window.open(url, '_blank', 'noopener');
+}
+
+function rdOpenFullPreviewLightbox() {
+  const img = document.getElementById('rd-full-preview-img');
+  if (!img || !img.src) return;
+  openLightbox(img.src, [img.src], 0);
 }
 
 // ═══════════════════════════════════════════════════════
@@ -5208,9 +5627,7 @@ function validatePreviewForm() {
   const title    = (document.getElementById('sub-title').value || '').trim();
   const category = document.getElementById('sub-category').value;
   const abstract = (document.getElementById('sub-abstract').value || '').trim();
-  const editor   = document.getElementById('sub-editor');
-  const articleText = editor ? (editor.textContent || editor.innerText || '').trim() : '';
-  const wordCount = articleText ? articleText.split(/\s+/).filter(w=>w).length : 0;
+  const articleHtml = getArticleHtmlBody();
   const undertaking = document.getElementById('sub-undertaking').checked;
   const errEl = document.getElementById('sub-error');
 
@@ -5220,8 +5637,14 @@ function validatePreviewForm() {
   if (!title)          { errEl.textContent = 'Please enter the article title.'; return false; }
   if (!category)       { errEl.textContent = 'Please select a category.'; return false; }
   if (!abstract)       { errEl.textContent = 'Please enter an abstract or brief description.'; return false; }
-  if (wordCount < 50)  { errEl.textContent = 'Please write your full article (minimum 50 words).'; return false; }
-  if (wordCount > WORD_LIMIT + 50) { errEl.textContent = `Article exceeds ${WORD_LIMIT} word limit (${wordCount} words). Please shorten.`; return false; }
+  if (!_subWordDocFile && !articleHtml.trim()) {
+    errEl.textContent = 'Please upload your article as a Word (.docx) document.';
+    return false;
+  }
+  if (!articleHtml.trim()) {
+    errEl.textContent = 'Your Word document could not be processed. Please re-upload.';
+    return false;
+  }
   if (!undertaking)    { errEl.textContent = 'Please confirm the declaration of originality.'; return false; }
   errEl.textContent = '';
   return true;
@@ -5251,8 +5674,7 @@ async function _doGeneratePreview() {
   const category = document.getElementById('sub-category').value;
   const place    = (document.getElementById('sub-place').value || '');
   const occ      = document.getElementById('sub-occupation').value;
-  const editor   = document.getElementById('sub-editor');
-  const articleHtml = editor ? editor.innerHTML : '';
+  const articleHtml = getArticleHtmlBody();
 
   try {
     const dataUrl = await generateArticleImage({
@@ -5463,16 +5885,16 @@ async function generateArticleImage(articleData) {
         photoImg.crossOrigin = 'anonymous';
         photoImg.onload = () => {
           _drawAuthorPhoto(photoImg, AUTHOR_Y, PHOTO_SIZE);
-          _drawAuthorText(AUTHOR_Y, PHOTO_SIZE, () => _drawBody(AUTHOR_Y + PHOTO_SIZE + 60));
+          _drawAuthorText(AUTHOR_Y, PHOTO_SIZE, () => { _drawBody(AUTHOR_Y + PHOTO_SIZE + 60); });
         };
         photoImg.onerror = () => {
           _drawAuthorPlaceholder(AUTHOR_Y, PHOTO_SIZE);
-          _drawAuthorText(AUTHOR_Y, PHOTO_SIZE, () => _drawBody(AUTHOR_Y + PHOTO_SIZE + 60));
+          _drawAuthorText(AUTHOR_Y, PHOTO_SIZE, () => { _drawBody(AUTHOR_Y + PHOTO_SIZE + 60); });
         };
         photoImg.src = articleData.authorPhotoUrl;
       } else {
         _drawAuthorPlaceholder(AUTHOR_Y, PHOTO_SIZE);
-        _drawAuthorText(AUTHOR_Y, PHOTO_SIZE, () => _drawBody(AUTHOR_Y + PHOTO_SIZE + 60));
+        _drawAuthorText(AUTHOR_Y, PHOTO_SIZE, () => { _drawBody(AUTHOR_Y + PHOTO_SIZE + 60); });
       }
 
     function _drawAuthorPhoto(img, y, size) {
@@ -5520,18 +5942,63 @@ async function generateArticleImage(articleData) {
       if (cb) cb();
     }
 
-    function _drawBody(startY) {
-      // ── Rich HTML body rendering ──
+    async function _drawBody(startY) {
+      try {
+        const LEFT = 56;
+        const RIGHT_MARGIN = 56;
+        const CONTENT_W = W - LEFT - RIGHT_MARGIN;
+        const MAX_Y = H - 220;
+        const bodyMaxH = MAX_Y - startY;
+        const htmlBody = articleData.htmlBody || '';
+
+        ctx.fillStyle = ARTICLE_BODY_GREY;
+        ctx.fillRect(LEFT, startY, CONTENT_W, bodyMaxH);
+
+        if (htmlBody.trim() && typeof html2canvas !== 'undefined') {
+          try {
+            const bodyShot = await captureArticleBodyHtml(htmlBody, CONTENT_W, bodyMaxH);
+            const scale = Math.min(1, CONTENT_W / bodyShot.width, bodyMaxH / bodyShot.height);
+            const dw = bodyShot.width * scale;
+            const dh = bodyShot.height * scale;
+            ctx.drawImage(bodyShot, LEFT, startY, dw, dh);
+          } catch (capErr) {
+            console.warn('Docx body capture failed, using fallback renderer:', capErr);
+            _drawBodyLegacyCanvas(startY, LEFT, CONTENT_W, MAX_Y, htmlBody);
+          }
+        } else if (htmlBody.trim()) {
+          _drawBodyLegacyCanvas(startY, LEFT, CONTENT_W, MAX_Y, htmlBody);
+        }
+
+        ctx.fillStyle = NAVY;
+        ctx.fillRect(0, H - 180, W, 180);
+        ctx.fillStyle = GOLD;
+        ctx.fillRect(0, H - 184, W, 5);
+
+        ctx.textAlign = 'center';
+        ctx.fillStyle = GOLD;
+        ctx.font = 'bold 30px Georgia, serif';
+        ctx.fillText('The International Legal Inteligencia Research Herald, India', W / 2, H - 124);
+
+        ctx.fillStyle = '#a0b4c8';
+        ctx.font = '24px Georgia, serif';
+        ctx.fillText('Founder & Editor-in-Chief: Advocate Dr. Ajay Singh Rathore', W / 2, H - 84);
+
+        ctx.fillStyle = '#7a90a8';
+        ctx.font = '22px Georgia, serif';
+        ctx.fillText('ilirh.in  ·  Published ' + new Date().toLocaleDateString('en-IN', {day:'numeric',month:'long',year:'numeric'}), W / 2, H - 46);
+
+        ctx.textAlign = 'left';
+        resolve(canvas.toDataURL('image/jpeg', 0.93));
+      } catch (bodyErr) {
+        reject(bodyErr);
+      }
+    } // end _drawBody
+
+    function _drawBodyLegacyCanvas(startY, LEFT, CONTENT_W, MAX_Y, htmlBody) {
       const tmp = document.createElement('div');
-      tmp.innerHTML = articleData.htmlBody || '';
-
+      tmp.innerHTML = htmlBody;
       let y = startY;
-      const LEFT = 56;
-      const RIGHT_MARGIN = 56;
-      const CONTENT_W = W - LEFT - RIGHT_MARGIN;
-      const MAX_Y = H - 220;
 
-      // Walk child nodes and render with formatting
       function renderNode(node, opts) {
         if (y > MAX_Y) return;
         opts = opts || {};
@@ -5797,29 +6264,7 @@ async function generateArticleImage(articleData) {
       ctx.font = '38px Georgia, serif';
       ctx.textAlign = 'left';
       Array.from(tmp.childNodes).forEach(n => { if (y <= MAX_Y) renderNode(n, {}); });
-
-      // ── Footer ──
-      ctx.fillStyle = NAVY;
-      ctx.fillRect(0, H - 180, W, 180);
-      ctx.fillStyle = GOLD;
-      ctx.fillRect(0, H - 184, W, 5);
-
-      ctx.textAlign = 'center';
-      ctx.fillStyle = GOLD;
-      ctx.font = 'bold 30px Georgia, serif';
-      ctx.fillText('The International Legal Inteligencia Research Herald, India', W / 2, H - 124);
-
-      ctx.fillStyle = '#a0b4c8';
-      ctx.font = '24px Georgia, serif';
-      ctx.fillText('Founder & Editor-in-Chief: Advocate Dr. Ajay Singh Rathore', W / 2, H - 84);
-
-      ctx.fillStyle = '#7a90a8';
-      ctx.font = '22px Georgia, serif';
-      ctx.fillText('ilirh.in  ·  Published ' + new Date().toLocaleDateString('en-IN', {day:'numeric',month:'long',year:'numeric'}), W / 2, H - 46);
-
-      ctx.textAlign = 'left';
-      resolve(canvas.toDataURL('image/jpeg', 0.93));
-    } // end _drawBody
+    } // end _drawBodyLegacyCanvas
 
   } // end _drawPage
 
@@ -5962,6 +6407,12 @@ closeUpload = function() {
   <button id="lbx-nav-next" class="hidden" onclick="lbxNext()">&#8250;</button>
   <div class="lbx-hint" id="lbx-hint">Scroll or pinch to zoom &nbsp;·&nbsp; Drag to pan</div>
 </div>
+
+<div id="article-body-capture-host" class="article-body-capture-host" aria-hidden="true"></div>
+
+<script src="https://cdn.jsdelivr.net/npm/jszip@3.10.1/dist/jszip.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/docx-preview@0.3.5/dist/docx-preview.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
  
 </body>
 </html>
