@@ -876,6 +876,7 @@ body.dark-mode .silent-row label { color:var(--text-secondary); }
   transition: opacity 0.45s ease, transform 0.45s ease;
   will-change: opacity, transform;
   transform: scale(1.03);
+  object-position: top center;
 }
 .card-thumb-wrap img.loaded {
   opacity: 1;
@@ -1221,6 +1222,7 @@ body.dark-mode .editor-tab.active { color:#c8d8ea; }
 .card-thumb-wrap img {
   opacity:0;
   transition:opacity 0.4s ease, transform 0.4s ease;
+  object-position: top center;
 }
 .card-thumb-wrap img.loaded { opacity:1; }
 .article-card:hover .card-thumb-wrap img.loaded { transform:scale(1.04); }
@@ -1959,6 +1961,10 @@ body.dark-mode .editor-tab.active { color:#c8d8ea; }
           <span class="rte-sep"></span>
           <button type="button" class="rte-btn rte-btn-sm" onclick="rteExec('formatBlock','H2')" title="Heading 2">H2</button>
           <button type="button" class="rte-btn rte-btn-sm" onclick="rteExec('formatBlock','H3')" title="Heading 3">H3</button>
+          <span class="rte-sep"></span>
+          <button type="button" class="rte-btn rte-btn-sm" title="Align Left" onclick="rteExec('justifyLeft')"><svg width="14" height="14" viewBox="0 0 14 14" fill="currentColor"><rect x="0" y="1" width="14" height="1.8" rx="0.6"/><rect x="0" y="4.6" width="10" height="1.8" rx="0.6"/><rect x="0" y="8.2" width="14" height="1.8" rx="0.6"/><rect x="0" y="11.8" width="8" height="1.8" rx="0.6"/></svg></button>
+          <button type="button" class="rte-btn rte-btn-sm" title="Centre" onclick="rteExec('justifyCenter')"><svg width="14" height="14" viewBox="0 0 14 14" fill="currentColor"><rect x="0" y="1" width="14" height="1.8" rx="0.6"/><rect x="2" y="4.6" width="10" height="1.8" rx="0.6"/><rect x="0" y="8.2" width="14" height="1.8" rx="0.6"/><rect x="3" y="11.8" width="8" height="1.8" rx="0.6"/></svg></button>
+          <button type="button" class="rte-btn rte-btn-sm" title="Justify" onclick="rteExec('justifyFull')"><svg width="14" height="14" viewBox="0 0 14 14" fill="currentColor"><rect x="0" y="1" width="14" height="1.8" rx="0.6"/><rect x="0" y="4.6" width="14" height="1.8" rx="0.6"/><rect x="0" y="8.2" width="14" height="1.8" rx="0.6"/><rect x="0" y="11.8" width="14" height="1.8" rx="0.6"/></svg></button>
           <span class="rte-sep"></span>
           <button type="button" class="rte-btn" onclick="rteExec('insertUnorderedList')" title="Bullet list">&#8226; List</button>
           <button type="button" class="rte-btn" onclick="rteExec('insertOrderedList')" title="Numbered list">1. List</button>
@@ -4186,7 +4192,7 @@ async function doSubmitArticle() {
     }
 
     pfC.style.width = '55%';
-    btn.textContent = 'Saved — finalising…';
+    btn.textContent = 'Submitting…';
 
     // 2. Also store author photo URL if uploaded
     let author_photo_url = null;
@@ -4230,15 +4236,17 @@ async function doSubmitArticle() {
         const newSubFb = Array.isArray(insertedFb) ? insertedFb[0] : insertedFb;
         notifyAdminNewSubmission(name, email, occupation, institution, title, category, abstract, newSubFb?.id);
         pfC.style.width = '100%';
-        showSuccessState(); return;
+        btn.textContent = 'Saved ✓';
+        setTimeout(() => showSuccessState(), 600); return;
       }
       throw new Error('Submission failed. Please try again.');
     }
     const inserted = await insertRes.json();
     const newSub = Array.isArray(inserted) ? inserted[0] : inserted;
     pfC.style.width = '100%';
+    btn.textContent = 'Saved ✓';
     notifyAdminNewSubmission(name, email, occupation, institution, title, category, abstract, newSub?.id);
-    showSuccessState();
+    setTimeout(() => showSuccessState(), 600);
 
   } catch(e) {
     errEl.textContent = e.message || 'Submission failed. Please try again.';
@@ -4986,74 +4994,113 @@ async function generateArticleImage(articleData) {
     ctx.fillStyle = OFFWHITE;
     ctx.fillRect(0, 0, W, H);
 
-    // ── Header bar ──
+    // ── Header bar — taller to fit single-line layout ──
     ctx.fillStyle = NAVY;
-    ctx.fillRect(0, 0, W, 180);
+    ctx.fillRect(0, 0, W, 200);
     ctx.fillStyle = GOLD;
-    ctx.fillRect(0, 180, W, 10);
+    ctx.fillRect(0, 200, W, 14);
 
-    // ── Load logo then draw everything ──
+    // ── Load logo from known site asset, then draw everything ──
     const logoImg = new Image();
     logoImg.crossOrigin = 'anonymous';
     logoImg.onload  = () => _drawPage(logoImg);
     logoImg.onerror = () => _drawPage(null);
-    // Try multiple logo paths
-    logoImg.src = '/images/short-logo.png';
+    // Use the android-chrome icon — most reliable site asset
+    logoImg.src = '/android-chrome-192x192.png';
     // Fallback after 2s
     const logoTimeout = setTimeout(() => { if (!logoImg.complete) { logoImg.src = ''; _drawPage(null); } }, 2000);
 
     function _drawPage(logo) {
       clearTimeout(logoTimeout);
 
-      // ── Logo top-left ──
+      // ── Single-line header: [LOGO]  ILIRH  ·  FULL NAME ──
+      // Logo: square, vertically centred in the navy bar
+      const LOGO_SIZE = 140;
+      const LOGO_X    = 48;
+      const LOGO_Y    = (200 - LOGO_SIZE) / 2;   // ~30px from top
+
       if (logo) {
-        try { ctx.drawImage(logo, 56, 16, 96, 96); } catch(e) {
-          _drawTextLogo();
-        }
+        try {
+          // Clip to circle for a polished look
+          ctx.save();
+          ctx.beginPath();
+          ctx.arc(LOGO_X + LOGO_SIZE / 2, LOGO_Y + LOGO_SIZE / 2, LOGO_SIZE / 2, 0, Math.PI * 2);
+          ctx.clip();
+          ctx.drawImage(logo, LOGO_X, LOGO_Y, LOGO_SIZE, LOGO_SIZE);
+          ctx.restore();
+        } catch(e) { _drawTextLogo(); }
       } else { _drawTextLogo(); }
 
       function _drawTextLogo() {
         ctx.fillStyle = GOLD;
-        ctx.font = 'bold 64px Georgia, serif';
+        ctx.font = 'bold 90px Georgia, serif';
         ctx.textAlign = 'left';
-        ctx.fillText('ILIRH', 56, 104);
+        ctx.fillText('I', LOGO_X, LOGO_Y + LOGO_SIZE * 0.78);
       }
 
-      // ── Publication title centred to mirror site header ──
-      ctx.textAlign = 'center';
+      // ── "ILIRH" — bold accent word right after logo ──
+      const TEXT_Y = 126;   // vertical baseline, roughly centred in 200px bar
+      ctx.textAlign = 'left';
       ctx.fillStyle = GOLD;
-      ctx.font = 'bold 52px Georgia, serif';
-      const fullName = 'The International Legal Inteligencia Research Herald, India';
-      const nameLines = wrapTextGetLines(ctx, fullName, W - 260, 52);
-      // draw up to 2 lines, centred, in gold
-      const baseY = nameLines.length > 1 ? 80 : 110;
-      nameLines.slice(0, 2).forEach((line, i) => ctx.fillText(line, W / 2, baseY + i * 62));
+      ctx.font = 'bold 82px Georgia, serif';
+      const ilirh = 'ILIRH';
+      const ILIRH_X = LOGO_X + LOGO_SIZE + 36;
+      ctx.fillText(ilirh, ILIRH_X, TEXT_Y);
+      const ilirhW = ctx.measureText(ilirh).width;
+
+      // ── Thin vertical gold divider ──
+      const DIV_X = ILIRH_X + ilirhW + 32;
+      ctx.strokeStyle = GOLD;
+      ctx.lineWidth = 4;
+      ctx.globalAlpha = 0.55;
+      ctx.beginPath();
+      ctx.moveTo(DIV_X, 38);
+      ctx.lineTo(DIV_X, 162);
+      ctx.stroke();
+      ctx.globalAlpha = 1;
+
+      // ── Full publication name — two lines if needed, right of divider ──
+      const NAME_X = DIV_X + 32;
+      const NAME_MAX_W = W - NAME_X - 48;
+      ctx.fillStyle = '#e8d9b0';   // slightly softer gold for subtitle
+      ctx.font = '500 46px Georgia, serif';
+      const fullLine1 = 'THE INTERNATIONAL LEGAL INTELIGENCIA';
+      const fullLine2 = 'RESEARCH HERALD, INDIA';
+      // Measure to see if both fit at 46px; scale down if first line overflows
+      let nameFontSize = 46;
+      while (ctx.measureText(fullLine1).width > NAME_MAX_W && nameFontSize > 28) {
+        nameFontSize -= 2;
+        ctx.font = `500 ${nameFontSize}px Georgia, serif`;
+      }
+      const lineH = nameFontSize * 1.35;
+      const twoLineTop = TEXT_Y - lineH * 0.9;
+      ctx.fillText(fullLine1, NAME_X, twoLineTop);
+      ctx.fillText(fullLine2, NAME_X, twoLineTop + lineH);
+
       ctx.textAlign = 'left';
 
-      // ── Thin divider below header ──
+      // ── Thin divider below gold bar ──
       ctx.strokeStyle = BORDER;
       ctx.lineWidth = 2;
-      ctx.beginPath(); ctx.moveTo(56, 208); ctx.lineTo(W - 56, 208); ctx.stroke();
+      ctx.beginPath(); ctx.moveTo(56, 234); ctx.lineTo(W - 56, 234); ctx.stroke();
 
       // ── Category badge ──
-      ctx.textAlign = 'left';
       const catText = (articleData.category || 'RESEARCH').toUpperCase();
       ctx.fillStyle = NAVY;
-      ctx.fillRect(56, 222, W - 112, 72);
+      ctx.fillRect(56, 248, W - 112, 76);
       ctx.fillStyle = GOLD;
-      ctx.font = 'bold 26px Georgia, serif';
+      ctx.font = 'bold 28px Georgia, serif';
       ctx.letterSpacing = '6px';
       const catMaxWidth = W - 160;
-      const catLines = wrapTextGetLines(ctx, catText, catMaxWidth, 26);
-      const catBaseY = 266;
+      const catLines = wrapTextGetLines(ctx, catText, catMaxWidth, 28);
+      const catBaseY = 298;
       catLines.slice(0, 2).forEach((line, i) => {
-        ctx.fillText(line, 80, catBaseY + i * 32);
+        ctx.fillText(line, 80, catBaseY + i * 36);
       });
       ctx.letterSpacing = '';
 
       // ── Article title ──
-      // Increase vertical spacing so title never collides with category band
-      const TITLE_X = 56, TITLE_Y_START = 390;
+      const TITLE_X = 56, TITLE_Y_START = 430;
       ctx.fillStyle = NAVY;
       ctx.font = 'bold 72px "Playfair Display", Georgia, serif';
       let titleLines = wrapTextGetLines(ctx, articleData.title || 'Untitled', W - 112, 72);
