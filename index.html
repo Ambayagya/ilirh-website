@@ -1207,7 +1207,15 @@ body.dark-mode .rte-word-counter { background: #0d1624; border-color: var(--bord
   min-height: 0 !important;
 }
 .article-body-capture-host { background: #f7f4ef; }
-.article-body-capture-host .article-docx-body { background: #f7f4ef; color: #2c3e5a; }
+.article-body-capture-host .article-docx-body,
+.article-docx-body {
+  background: #f7f4ef; color: #2c3e5a;
+  font-family: Georgia, 'Times New Roman', serif;
+  font-size: 38px; line-height: 1.62; text-align: justify;
+  width: 100%; max-width: 100%; box-sizing: border-box;
+}
+.article-docx-body p { margin: 0 0 0.55em; }
+.article-docx-body img { max-width: 100%; height: auto; }
 .submit-docx-tips {
   background: #fff; border: 1px solid var(--border-light); border-left: 4px solid var(--gold);
   padding: 12px 14px 12px 16px; margin-bottom: 14px;
@@ -2075,7 +2083,7 @@ body.dark-mode .editor-tab.active { color:#c8d8ea; }
       <div class="submit-section-title">Upload Your Article (Word) *</div>
       <p class="submit-docx-hint">
         Prepare your article in <strong>Microsoft Word</strong> (formatting, spacing, images, highlights, alignment).
-        Upload the <strong>.docx</strong> file here — your text and layout will appear in the <strong>main article area</strong> of the Herald template, just like a written submission.
+        Upload the <strong>.docx</strong> file here — your article text will flow in the <strong>same place as before</strong> (below the author photo and name, above the footer), fitted like a professional Herald editorial image.
         <br>Limits: <strong>1 page maximum</strong> &nbsp;&bull;&nbsp; <strong>4 MB maximum</strong> &nbsp;&bull;&nbsp; .docx only
       </p>
       <div class="submit-docx-tips" role="note" aria-label="Word document tips">
@@ -5047,9 +5055,39 @@ async function editorDeleteArticle(id) {
 // ═══════════════════════════════════════════════════════
 const MAX_DOCX_BYTES = 4 * 1024 * 1024;
 const ARTICLE_PAGE_BG = '#f7f4ef';
-/** Max height of article body at template canvas scale (≈1 page). */
-const ARTICLE_BODY_MAX_H = 2150;
-const ARTICLE_BODY_CAPTURE_W = 2368;
+const TEMPLATE_W = 2480;
+const TEMPLATE_H = 3508;
+const TEMPLATE_FOOTER_TOP = TEMPLATE_H - 184;
+const ARTICLE_BODY_CAPTURE_W = TEMPLATE_W - 112;
+/** Conservative max body height for upload validation (author block + 1 page). */
+const ARTICLE_BODY_MAX_H = TEMPLATE_FOOTER_TOP - 1380 - 40;
+
+function getAuthorBlockEndY(authorY, photoSize) {
+  const photoBottom = authorY + photoSize;
+  const textBottom = authorY + 200;
+  return Math.max(photoBottom, textBottom) + 40;
+}
+
+function getTemplateBodyMaxHeight(bodyStartY) {
+  return TEMPLATE_FOOTER_TOP - bodyStartY - 20;
+}
+
+function normalizeDocxHtmlForTemplate(html) {
+  const tmp = document.createElement('div');
+  tmp.innerHTML = html || '';
+  tmp.querySelectorAll('p, div, span').forEach(el => {
+    const t = (el.textContent || '').trim();
+    if (/^n+$/i.test(t) && t.length > 2) el.remove();
+  });
+  if (tmp.querySelector('.article-docx-body')) return tmp.innerHTML;
+  const wrapper = tmp.querySelector('.docx-wrapper');
+  const chunk = wrapper ? wrapper.innerHTML : tmp.innerHTML;
+  return '<div class="article-docx-body">' + chunk + '</div>';
+}
+
+function htmlNeedsRasterCapture(html) {
+  return /<img[\s>]|<table[\s>]|docx-preview-wrapper/i.test(html || '');
+}
 let _subWordDocFile = null;
 let _subArticleBodyHtml = '';
 let _rdPendingDocxFile = null;
@@ -5067,9 +5105,10 @@ function getArticleHtmlBody() {
 }
 
 function syncHiddenArticleEditor(html) {
+  const norm = html ? normalizeDocxHtmlForTemplate(html) : '';
   const ed = document.getElementById('sub-editor');
-  if (ed) ed.innerHTML = html || '';
-  _subArticleBodyHtml = html || '';
+  if (ed) ed.innerHTML = norm;
+  _subArticleBodyHtml = norm;
 }
 
 async function uploadBinaryToArticlesBucket(file, folder) {
@@ -5108,8 +5147,8 @@ async function renderDocxToContainer(arrayBuffer, container) {
   await docx.renderAsync(arrayBuffer, container, null, {
     className: 'docx-preview-content',
     inWrapper: true,
-    ignoreWidth: false,
-    ignoreHeight: false,
+    ignoreWidth: true,
+    ignoreHeight: true,
     breakPages: false,
     renderHeaders: false,
     renderFooters: false,
@@ -5139,18 +5178,18 @@ async function parseWordDocumentFile(file, opts) {
   const buf = await file.arrayBuffer();
   const renderHost = document.createElement('div');
   const wrapper = await renderDocxToContainer(buf, renderHost);
-  const html = '<div class="article-docx-body">' + wrapper.innerHTML + '</div>';
+  const html = normalizeDocxHtmlForTemplate(wrapper.innerHTML);
+  const estBodyStart = getAuthorBlockEndY(900, 172);
+  const maxH = getTemplateBodyMaxHeight(estBodyStart);
   const contentH = measureDocxBodyHeight(html, ARTICLE_BODY_CAPTURE_W);
-  if (contentH > ARTICLE_BODY_MAX_H) {
+  if (contentH > maxH) {
     throw new Error(
-      'Your document is longer than one page for the article body area (' +
-      Math.round(contentH) + 'px tall, max ' + ARTICLE_BODY_MAX_H + 'px). Please shorten it in Word and re-upload.'
+      'Your document is longer than fits between the author section and footer (' +
+      'please keep it to about one page in Word and re-upload).'
     );
   }
   if (opts.previewHost) {
-    opts.previewHost.innerHTML = '';
-    const previewClone = wrapper.cloneNode(true);
-    opts.previewHost.appendChild(previewClone);
+    opts.previewHost.innerHTML = html;
   }
   return html;
 }
@@ -5167,11 +5206,13 @@ async function captureArticleBodyHtml(html, width, maxHeight) {
   host.style.width = width + 'px';
   host.style.height = '';
   host.style.overflow = 'hidden';
-  host.innerHTML = html.includes('article-docx-body') ? html : `<div class="article-docx-body">${html}</div>`;
+  host.innerHTML = normalizeDocxHtmlForTemplate(html);
+
   const inner = host.querySelector('.article-docx-body') || host;
   inner.style.transform = '';
   inner.style.transformOrigin = '';
-  inner.style.width = '';
+  inner.style.width = width + 'px';
+  inner.style.maxWidth = width + 'px';
 
   await waitForImagesIn(inner);
   const naturalH = inner.scrollHeight;
@@ -5196,6 +5237,35 @@ async function captureArticleBodyHtml(html, width, maxHeight) {
   host.style.height = '';
   host.style.overflow = '';
   return shot;
+}
+
+async function drawArticleBodyOnTemplate(ctx, bodyStartY, htmlBody, layout) {
+  const { LEFT, CONTENT_W, bodyMaxH, BORDER } = layout;
+  const html = normalizeDocxHtmlForTemplate(htmlBody);
+  if (!html.replace(/<[^>]+>/g, '').trim()) return;
+
+  ctx.strokeStyle = BORDER;
+  ctx.lineWidth = 1.5;
+  ctx.beginPath();
+  ctx.moveTo(LEFT, bodyStartY - 26);
+  ctx.lineTo(LEFT + CONTENT_W, bodyStartY - 26);
+  ctx.stroke();
+
+  if (!htmlNeedsRasterCapture(html)) {
+    layout._drawBodyLegacyCanvas(bodyStartY, LEFT, CONTENT_W, TEMPLATE_FOOTER_TOP - 12, html);
+    return;
+  }
+  if (typeof html2canvas !== 'undefined') {
+    try {
+      const shot = await captureArticleBodyHtml(html, CONTENT_W, bodyMaxH);
+      const scale = Math.min(CONTENT_W / shot.width, bodyMaxH / shot.height);
+      ctx.drawImage(shot, LEFT, bodyStartY, shot.width * scale, shot.height * scale);
+      return;
+    } catch (e) {
+      console.warn('Raster body fallback to canvas text:', e);
+    }
+  }
+  layout._drawBodyLegacyCanvas(bodyStartY, LEFT, CONTENT_W, TEMPLATE_FOOTER_TOP - 12, html);
 }
 
 function setSubDocxStatus(msg, isErr) {
@@ -5895,16 +5965,16 @@ async function generateArticleImage(articleData) {
         photoImg.crossOrigin = 'anonymous';
         photoImg.onload = () => {
           _drawAuthorPhoto(photoImg, AUTHOR_Y, PHOTO_SIZE);
-          _drawAuthorText(AUTHOR_Y, PHOTO_SIZE, () => { _drawBody(AUTHOR_Y + PHOTO_SIZE + 60); });
+          _drawAuthorText(AUTHOR_Y, PHOTO_SIZE, () => { _drawBody(getAuthorBlockEndY(AUTHOR_Y, PHOTO_SIZE)); });
         };
         photoImg.onerror = () => {
           _drawAuthorPlaceholder(AUTHOR_Y, PHOTO_SIZE);
-          _drawAuthorText(AUTHOR_Y, PHOTO_SIZE, () => { _drawBody(AUTHOR_Y + PHOTO_SIZE + 60); });
+          _drawAuthorText(AUTHOR_Y, PHOTO_SIZE, () => { _drawBody(getAuthorBlockEndY(AUTHOR_Y, PHOTO_SIZE)); });
         };
         photoImg.src = articleData.authorPhotoUrl;
       } else {
         _drawAuthorPlaceholder(AUTHOR_Y, PHOTO_SIZE);
-        _drawAuthorText(AUTHOR_Y, PHOTO_SIZE, () => { _drawBody(AUTHOR_Y + PHOTO_SIZE + 60); });
+        _drawAuthorText(AUTHOR_Y, PHOTO_SIZE, () => { _drawBody(getAuthorBlockEndY(AUTHOR_Y, PHOTO_SIZE)); });
       }
 
     function _drawAuthorPhoto(img, y, size) {
@@ -5952,29 +6022,17 @@ async function generateArticleImage(articleData) {
       if (cb) cb();
     }
 
-    async function _drawBody(startY) {
+    async function _drawBody(bodyStartY) {
       try {
         const LEFT = 56;
-        const RIGHT_MARGIN = 56;
-        const CONTENT_W = W - LEFT - RIGHT_MARGIN;
-        const MAX_Y = H - 220;
-        const bodyMaxH = MAX_Y - startY;
+        const CONTENT_W = W - LEFT - 56;
+        const bodyMaxH = getTemplateBodyMaxHeight(bodyStartY);
         const htmlBody = articleData.htmlBody || '';
 
-        if (htmlBody.trim() && typeof html2canvas !== 'undefined') {
-          try {
-            const bodyShot = await captureArticleBodyHtml(htmlBody, CONTENT_W, bodyMaxH);
-            const scale = Math.min(1, CONTENT_W / bodyShot.width, bodyMaxH / bodyShot.height);
-            const dw = bodyShot.width * scale;
-            const dh = bodyShot.height * scale;
-            ctx.drawImage(bodyShot, LEFT, startY, dw, dh);
-          } catch (capErr) {
-            console.warn('Docx body capture failed, using fallback renderer:', capErr);
-            _drawBodyLegacyCanvas(startY, LEFT, CONTENT_W, MAX_Y, htmlBody);
-          }
-        } else if (htmlBody.trim()) {
-          _drawBodyLegacyCanvas(startY, LEFT, CONTENT_W, MAX_Y, htmlBody);
-        }
+        await drawArticleBodyOnTemplate(ctx, bodyStartY, htmlBody, {
+          LEFT, CONTENT_W, bodyMaxH, BORDER,
+          _drawBodyLegacyCanvas
+        });
 
         ctx.fillStyle = NAVY;
         ctx.fillRect(0, H - 180, W, 180);
@@ -6004,7 +6062,8 @@ async function generateArticleImage(articleData) {
     function _drawBodyLegacyCanvas(startY, LEFT, CONTENT_W, MAX_Y, htmlBody) {
       const tmp = document.createElement('div');
       tmp.innerHTML = htmlBody;
-      let y = startY;
+      const root = tmp.querySelector('.article-docx-body') || tmp;
+      let y = startY + 8;
 
       function renderNode(node, opts) {
         if (y > MAX_Y) return;
@@ -6067,6 +6126,11 @@ async function generateArticleImage(articleData) {
           wrapTextGetLines(ctx, ht3, CONTENT_W, 44).forEach(line => { if (y > MAX_Y) return; ctx.fillText(line, LEFT, y); y += 58; });
           ctx.fillStyle = BODY_C;
           y += 8;
+          return;
+        }
+
+        if (tag === 'section' || tag === 'article') {
+          Array.from(node.childNodes).forEach(c => renderNode(c, opts));
           return;
         }
 
@@ -6270,7 +6334,7 @@ async function generateArticleImage(articleData) {
       ctx.fillStyle = BODY_C;
       ctx.font = '38px Georgia, serif';
       ctx.textAlign = 'left';
-      Array.from(tmp.childNodes).forEach(n => { if (y <= MAX_Y) renderNode(n, {}); });
+      Array.from(root.childNodes).forEach(n => { if (y <= MAX_Y) renderNode(n, {}); });
     } // end _drawBodyLegacyCanvas
 
   } // end _drawPage
