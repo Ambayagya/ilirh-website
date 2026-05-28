@@ -1935,137 +1935,45 @@ body.dark-mode .editor-tab.active { color:#c8d8ea; }
     </div>
 
     <div id="submit-form-body">
-      <!-- Personal Details -->
-      <div class="submit-section-title">Personal Details</div>
-      <div class="submit-2col">
-        <div class="submit-form-row">
-          <label>Full Name *</label>
-          <input type="text" id="sub-name" placeholder="As it should appear in publication">
-        </div>
-        <div class="submit-form-row">
-          <label>Email Address *</label>
-          <input type="email" id="sub-email" placeholder="For correspondence & certificate">
-        </div>
-      </div>
-      <div class="submit-2col">
-        <div class="submit-form-row">
-          <label>Occupation / Designation *</label>
-          <select id="sub-occupation">
-            <option value="">— Select Occupation —</option>
-            <optgroup label="Legal Professionals">
-              <option>Advocate / Lawyer</option>
-              <option>Senior Advocate</option>
-              <option>Judge / Judicial Officer</option>
-              <option>Legal Researcher</option>
-              <option>Legal Consultant</option>
-              <option>Public Prosecutor</option>
-              <option>Government Law Officer</option>
-            </optgroup>
-            <optgroup label="Academia">
-              <option>Professor of Law</option>
-              <option>Associate Professor</option>
-              <option>Assistant Professor</option>
-              <option>Professor of Practice</option>
-              <option>Research Scholar (PhD)</option>
-              <option>Post-Doctoral Fellow</option>
-              <option>Academic Dean / HoD</option>
-            </optgroup>
-            <optgroup label="Students">
-              <option>Law Student (LLB / LLM)</option>
-              <option>BA LLB Student</option>
-              <option>LLM Student</option>
-              <option>Law Intern</option>
-              <option>Undergraduate Student</option>
-              <option>Postgraduate Student</option>
-            </optgroup>
-            <optgroup label="Policy &amp; Research">
-              <option>Policy Analyst</option>
-              <option>Political Analyst</option>
-              <option>Researcher</option>
-              <option>Journalist / Legal Correspondent</option>
-              <option>Author / Writer</option>
-            </optgroup>
-            <optgroup label="Other">
-              <option>Civil Servant / IAS / IPS</option>
-              <option>Academician (Non-Law)</option>
-              <option>Vedic Scholar</option>
-              <option>Independent Researcher</option>
-              <option>Other</option>
-            </optgroup>
-          </select>
-        </div>
-        <div class="submit-form-row">
-          <label>Institution / Affiliation</label>
-          <input type="text" id="sub-institution" placeholder="University, Court, Organisation…">
-        </div>
-      </div>
-      <div class="submit-form-row">
-        <label>Phone / WhatsApp <span style="font-weight:400;text-transform:none;letter-spacing:0;font-family:'EB Garamond',serif;font-size:12px;color:var(--text-muted);">(optional)</span></label>
-        <input type="tel" id="sub-phone" placeholder="+91 XXXXX XXXXX">
-      </div>
-
-      <hr class="submit-rule">
-      <!-- Article Details -->
-      <div class="submit-section-title">Article Details</div>
+      <div class="submit-section-title">Journal Submission</div>
       <div class="submit-form-row">
         <label>Article Title *</label>
         <input type="text" id="sub-title" placeholder="Full title of your article">
       </div>
       <div class="submit-2col">
         <div class="submit-form-row">
-          <label>Category *</label>
-          <select id="sub-category">
-            <option value="">— Select Category —</option>
-            <option>Law</option>
-            <option>Education</option>
-            <option>Vedic Science</option>
-            <option>Political</option>
-            <option>Gen-Z Desk</option>
-          </select>
+          <label>Author Name *</label>
+          <input type="text" id="sub-name" placeholder="As it should appear in publication">
         </div>
         <div class="submit-form-row">
-          <label>Co-author(s) <span style="font-weight:400;text-transform:none;letter-spacing:0;font-family:'EB Garamond',serif;font-size:12px;color:var(--text-muted);">(if any)</span></label>
-          <input type="text" id="sub-coauthors" placeholder="Names of co-authors, if applicable">
+          <label>Occupation / Designation *</label>
+          <select id="sub-occupation">
+            <option value="">— Select Occupation —</option>
+            <option>Advocate / Lawyer</option>
+            <option>Senior Advocate</option>
+            <option>Judge / Judicial Officer</option>
+            <option>Legal Researcher</option>
+            <option>Professor of Law</option>
+            <option>Research Scholar (PhD)</option>
+            <option>Law Student (LLB / LLM)</option>
+            <option>Policy Analyst</option>
+            <option>Other</option>
+          </select>
         </div>
       </div>
-      <div class="submit-form-row">
-        <label>Abstract / Brief Description *</label>
-        <textarea id="sub-abstract" placeholder="A brief summary of your article (3–5 sentences)…" style="height:90px;"></textarea>
-      </div>
+      <input type="hidden" id="sub-email" value="">
+      <input type="hidden" id="sub-institution" value="">
+      <input type="hidden" id="sub-phone" value="">
+      <input type="hidden" id="sub-category" value="Law">
+      <input type="hidden" id="sub-coauthors" value="">
+      <textarea id="sub-abstract" style="display:none;"></textarea>
+      <input type="hidden" id="sub-country" value="">
+      <input type="hidden" id="sub-state" value="">
+      <input type="hidden" id="sub-city" value="">
+      <input type="hidden" id="sub-place" value="">
 
       <hr class="submit-rule">
-      <!-- Location -->
-      <div class="submit-section-title">Your Location</div>
-      <div class="submit-2col">
-        <div class="submit-form-row">
-          <label>Country *</label>
-          <select id="sub-country" onchange="populateStates()">
-            <option value="">— Select Country —</option>
-          </select>
-        </div>
-        <div class="submit-form-row">
-          <label>State / Province</label>
-          <select id="sub-state" onchange="populateCities()">
-            <option value="">— Select State —</option>
-          </select>
-        </div>
-      </div>
-      <div class="submit-2col">
-        <div class="submit-form-row">
-          <label>City</label>
-          <select id="sub-city" onchange="updatePlaceString()">
-            <option value="">— Select City —</option>
-          </select>
-        </div>
-        <div class="submit-form-row">
-          <label>Location (auto-generated)</label>
-          <input type="text" id="sub-place" placeholder="City, State, Country" readonly style="background:var(--cream);color:var(--text-muted);font-size:14px;">
-        </div>
-      </div>
-
-      <hr class="submit-rule">
-      <!-- Author Photo -->
-      <div class="submit-section-title">Author Photo <span style="font-weight:400;text-transform:none;letter-spacing:0;font-family:'EB Garamond',serif;font-size:12px;color:var(--text-muted);">(optional — appears on article image)</span></div>
+      <div class="submit-section-title">Author Photo</div>
       <div style="display:flex;align-items:flex-start;gap:18px;margin-bottom:14px;">
         <div id="sub-photo-preview" style="width:80px;height:80px;border:2px solid var(--border);background:var(--cream);border-radius:50%;overflow:hidden;flex-shrink:0;display:flex;align-items:center;justify-content:center;">
           <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="var(--border)" stroke-width="1.5"><circle cx="12" cy="8" r="4"/><path d="M6 20v-2a6 6 0 0 1 12 0v2"/></svg>
@@ -2081,60 +1989,27 @@ body.dark-mode .editor-tab.active { color:#c8d8ea; }
       </div>
 
       <hr class="submit-rule">
-      <!-- Rich Article Editor -->
-      <div class="submit-section-title">Write Your Article *</div>
-      <div id="sub-editor-wrap">
-        <div class="rich-editor-toolbar" id="sub-toolbar">
-          <button type="button" class="rte-btn" onclick="rteExec('bold')" title="Bold"><b>B</b></button>
-          <button type="button" class="rte-btn" onclick="rteExec('italic')" title="Italic"><i>I</i></button>
-          <button type="button" class="rte-btn" onclick="rteExec('underline')" title="Underline"><u>U</u></button>
-          <span class="rte-sep"></span>
-          <button type="button" class="rte-btn rte-btn-sm" onclick="rteExec('formatBlock','H2')" title="Heading 2">H2</button>
-          <button type="button" class="rte-btn rte-btn-sm" onclick="rteExec('formatBlock','H3')" title="Heading 3">H3</button>
-          <span class="rte-sep"></span>
-          <button type="button" class="rte-btn rte-btn-sm" title="Align Left" onclick="rteExec('justifyLeft')"><svg width="14" height="14" viewBox="0 0 14 14" fill="currentColor"><rect x="0" y="1" width="14" height="1.8" rx="0.6"/><rect x="0" y="4.6" width="10" height="1.8" rx="0.6"/><rect x="0" y="8.2" width="14" height="1.8" rx="0.6"/><rect x="0" y="11.8" width="8" height="1.8" rx="0.6"/></svg></button>
-          <button type="button" class="rte-btn rte-btn-sm" title="Centre" onclick="rteExec('justifyCenter')"><svg width="14" height="14" viewBox="0 0 14 14" fill="currentColor"><rect x="0" y="1" width="14" height="1.8" rx="0.6"/><rect x="2" y="4.6" width="10" height="1.8" rx="0.6"/><rect x="0" y="8.2" width="14" height="1.8" rx="0.6"/><rect x="3" y="11.8" width="8" height="1.8" rx="0.6"/></svg></button>
-          <button type="button" class="rte-btn rte-btn-sm" title="Justify" onclick="rteExec('justifyFull')"><svg width="14" height="14" viewBox="0 0 14 14" fill="currentColor"><rect x="0" y="1" width="14" height="1.8" rx="0.6"/><rect x="0" y="4.6" width="14" height="1.8" rx="0.6"/><rect x="0" y="8.2" width="14" height="1.8" rx="0.6"/><rect x="0" y="11.8" width="14" height="1.8" rx="0.6"/></svg></button>
-          <span class="rte-sep"></span>
-          <button type="button" class="rte-btn" onclick="rteExec('insertUnorderedList')" title="Bullet list">&#8226; List</button>
-          <button type="button" class="rte-btn" onclick="rteExec('insertOrderedList')" title="Numbered list">1. List</button>
-          <button type="button" class="rte-btn" onclick="rteExec('formatBlock','BLOCKQUOTE')" title="Blockquote">&ldquo;&rdquo;</button>
-          <button type="button" class="rte-btn rte-btn-sm" onclick="rteExec('insertHorizontalRule')" title="Divider">HR</button>
-          <button type="button" class="rte-btn rte-btn-sm" onclick="rteExec('justifyRight')" title="Align Right">Right</button>
-          <button type="button" class="rte-btn rte-btn-sm" onclick="rteExec('subscript')" title="Subscript">X<sub>2</sub></button>
-          <button type="button" class="rte-btn rte-btn-sm" onclick="rteExec('superscript')" title="Superscript">X<sup>2</sup></button>
-          <span class="rte-break"></span>
-          <span class="rte-sep"></span>
-          <button type="button" class="rte-btn" onclick="rteInsertLink()" title="Insert link">&#128279; Link</button>
-          <button type="button" class="rte-btn" onclick="rteInsertImageTrigger()" title="Insert image with text wrap">&#128444; Image</button>
-          <input type="file" id="rte-img-file" accept="image/*" style="display:none;" onchange="rteInsertImageFromFile(this)">
-          <button type="button" class="rte-btn rte-btn-sm" onclick="rteExec('removeFormat')" title="Clear format">&#10005; Clear</button>
-        </div>
-        <div id="sub-editor" class="rich-editor-area" contenteditable="true" spellcheck="true" data-placeholder="Write your full article here… (minimum 100 words, maximum 900 words)"></div>
-        <div class="rte-word-counter">
-          <span id="sub-word-count">0</span> / 900 words
-          <span id="sub-word-warn" style="display:none;color:#a32d2d;margin-left:8px;">⚠ Limit reached</span>
-        </div>
+      <div class="submit-section-title">Upload Article (.docx)</div>
+      <div class="submit-drop-zone" id="sub-drop-zone">
+        <input type="file" id="sub-file" accept=".docx,application/vnd.openxmlformats-officedocument.wordprocessingml.document" onchange="handleSubFileSelect(this)">
+        <div style="font-size:13px;font-weight:700;color:var(--text-secondary);margin-bottom:4px;">Upload your Microsoft Word file</div>
+        <div style="font-size:11px;color:var(--text-muted);">DOCX only · 1 page only · Max 5 MB</div>
+        <div class="submit-drop-filename" id="sub-drop-filename"></div>
       </div>
-
-      <!-- Undertaking Checkbox -->
-      <div class="submit-undertaking" onclick="toggleSubUndertaking()">
-        <input type="checkbox" id="sub-undertaking" onclick="event.stopPropagation()">
-        <p><strong>Declaration of Originality:</strong> I hereby solemnly declare that the article submitted is my own original work, has not been published elsewhere, does not infringe any intellectual property right, and that I am the sole/joint author with full authority to submit this work to the International Legal Inteligencia Research Herald, India. I understand that any misrepresentation may result in immediate rejection or retraction.</p>
-      </div>
+      <div id="sub-editor" style="display:none;"></div>
+      <input type="hidden" id="sub-undertaking" value="1">
 
       <div class="submit-progress" id="sub-progress"><div class="submit-progress-fill" id="sub-progress-fill"></div></div>
       <p class="submit-err" id="sub-error"></p>
 
-      <button class="submit-btn-primary ilirh-submit-btn" id="sub-show-preview-btn" onclick="showArticlePreview()">
-        <span style="font-size:14px;">👁</span> Preview Article Before Submission
-        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" style="margin-left:6px;vertical-align:middle;"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+      <button class="submit-btn-primary ilirh-submit-btn" id="sub-show-preview-btn" onclick="doSubmitArticle()">
+        <span style="font-size:14px;">✍</span> Submit for Editorial Review
       </button>
       <button class="submit-btn-cancel" onclick="closeSubmitArticle()">Cancel</button>
     </div>
 
     <!-- PREVIEW SECTION (shown after form is filled) -->
-    <div id="sub-preview-section">
+    <div id="sub-preview-section" style="display:none;">
       <div class="preview-section-title">
         Preview Your Article Before Submission
         <span class="preview-badge">Live Preview</span>
@@ -2237,11 +2112,14 @@ body.dark-mode .editor-tab.active { color:#c8d8ea; }
         <button type="button" class="rte-btn" onclick="rdRteExec('insertUnorderedList')" title="Bullet list">&#8226; List</button>
         <button type="button" class="rte-btn" onclick="rdRteExec('insertOrderedList')" title="Numbered list">1. List</button>
         <button type="button" class="rte-btn" onclick="rdRteExec('formatBlock','BLOCKQUOTE')" title="Blockquote">&ldquo;&rdquo;</button>
+        <button type="button" class="rte-btn" onclick="rdRteInsertLink()" title="Insert link">&#128279; Link</button>
+        <button type="button" class="rte-btn" onclick="rdRteInsertImageTrigger()" title="Insert image">&#128444; Image</button>
+        <input type="file" id="rd-rte-img-file" accept="image/*" style="display:none;" onchange="rdRteInsertImageFromFile(this)">
         <span class="rte-sep"></span>
         <button type="button" class="rte-btn rte-btn-sm" onclick="rdRteExec('removeFormat')" title="Clear format">&#10005; Clear</button>
       </div>
       <div id="rd-article-body" class="rich-editor-area" contenteditable="true" spellcheck="true"
-        style="min-height:220px;max-height:420px;overflow-y:auto;border-top:none;"></div>
+        style="min-height:220px;max-height:none;overflow:visible;border-top:none;"></div>
     </div>
 
     <div style="margin-bottom:14px;">
@@ -2254,7 +2132,7 @@ body.dark-mode .editor-tab.active { color:#c8d8ea; }
     </div>
 
     <div class="review-replace-drop" id="rd-replace-drop">
-      <input type="file" id="rd-new-file" accept=".pdf,image/*" onchange="handleRdFileSelect(this)">
+      <input type="file" id="rd-new-file" accept=".docx,.pdf,image/*" onchange="handleRdFileSelect(this)">
       <span style="font-size:13px;">&#128257; Replace file — drag &amp; drop or click to browse</span>
       <div style="font-family:'Lato',sans-serif;font-size:10px;margin-top:4px;color:var(--text-muted);" id="rd-new-filename"></div>
     </div>
@@ -4209,7 +4087,7 @@ function resetSubmitForm() {
   const placeEl = document.getElementById('sub-place'); if(placeEl) placeEl.value = '';
   const stateSel = document.getElementById('sub-state'); if(stateSel) stateSel.innerHTML = '<option value="">— Select State —</option>';
   const citySel = document.getElementById('sub-city'); if(citySel) citySel.innerHTML = '<option value="">— Select City —</option>';
-  const ck = document.getElementById('sub-undertaking'); if(ck) ck.checked = false;
+  const ck = document.getElementById('sub-undertaking'); if(ck && ck.type === 'checkbox') ck.checked = false;
   const fn = document.getElementById('sub-drop-filename'); if(fn) fn.textContent = '';
   const photoFn = document.getElementById('sub-photo-filename'); if(photoFn) photoFn.textContent = '';
   const photoPreview = document.getElementById('sub-photo-preview');
@@ -4238,7 +4116,7 @@ function resetSubmitForm() {
   if(formBody) formBody.style.display = 'block';
 
   const btn = document.getElementById('sub-show-preview-btn');
-  if(btn) { btn.disabled = false; btn.innerHTML = '<span style="font-size:14px;">👁</span> Preview Article Before Submission <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" style="margin-left:6px;vertical-align:middle;"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>'; }
+  if(btn) { btn.disabled = false; btn.innerHTML = '<span style="font-size:14px;">✍</span> Submit for Editorial Review'; }
   const confBtn = document.getElementById('sub-submit-btn');
   if(confBtn) { confBtn.disabled = false; confBtn.innerHTML = '<span style="font-size:14px;">✍</span> Confirm &amp; Submit Article <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>'; }
   _subPendingFile = null;
@@ -4346,10 +4224,15 @@ function handleSubFileSelect(input) {
   const fn = document.getElementById('sub-drop-filename');
   const err = document.getElementById('sub-error');
   if (!file) return;
-  const MAX = 3 * 1024 * 1024; // 3 MB
+  const MAX = 5 * 1024 * 1024; // 5 MB
+  if (!/\.docx$/i.test(file.name)) {
+    fn.textContent = '✗ Only .docx is allowed';
+    err.textContent = 'Please upload a Microsoft Word (.docx) document.';
+    input.value = ''; _subPendingFile = null; return;
+  }
   if (file.size > MAX) {
-    fn.textContent = '✗ File too large — max 3 MB';
-    err.textContent = 'File size ' + (file.size/1024/1024).toFixed(1) + ' MB exceeds the 3 MB limit.';
+    fn.textContent = '✗ File too large — max 5 MB';
+    err.textContent = 'File size ' + (file.size/1024/1024).toFixed(1) + ' MB exceeds the 5 MB limit.';
     input.value = ''; _subPendingFile = null; return;
   }
   _subPendingFile = file;
@@ -4365,64 +4248,149 @@ function handleSubFileSelect(input) {
   dz.addEventListener('drop', e => {
     e.preventDefault(); dz.classList.remove('dragover');
     const file = e.dataTransfer.files[0]; if(!file) return;
-    if (file.size > 3*1024*1024) {
-      document.getElementById('sub-drop-filename').textContent = '✗ Too large (max 3 MB)'; return;
+    if (!/\.docx$/i.test(file.name)) {
+      document.getElementById('sub-drop-filename').textContent = '✗ Only .docx is allowed'; return;
+    }
+    if (file.size > 5*1024*1024) {
+      document.getElementById('sub-drop-filename').textContent = '✗ Too large (max 5 MB)'; return;
     }
     _subPendingFile = file;
     document.getElementById('sub-drop-filename').textContent = '✓ ' + file.name + ' (' + (file.size/1024/1024).toFixed(2) + ' MB)';
   });
 })();
 
+let _jsZipLoader = null;
+function loadJSZip() {
+  if (window.JSZip) return Promise.resolve(window.JSZip);
+  if (_jsZipLoader) return _jsZipLoader;
+  _jsZipLoader = new Promise((resolve, reject) => {
+    const s = document.createElement('script');
+    s.src = 'https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js';
+    s.onload = () => resolve(window.JSZip);
+    s.onerror = reject;
+    document.head.appendChild(s);
+  });
+  return _jsZipLoader;
+}
+async function getDocxPageCount(file) {
+  await loadJSZip();
+  const ab = await file.arrayBuffer();
+  const zip = await window.JSZip.loadAsync(ab);
+  const appXmlFile = zip.file('docProps/app.xml');
+  if (!appXmlFile) return null;
+  const appXml = await appXmlFile.async('string');
+  const m = appXml.match(/<Pages>(\d+)<\/Pages>/i);
+  if (!m) return null;
+  const p = parseInt(m[1], 10);
+  return Number.isFinite(p) ? p : null;
+}
+
+let _mammothLoader = null;
+function loadMammothJs() {
+  if (window.mammoth) return Promise.resolve(window.mammoth);
+  if (_mammothLoader) return _mammothLoader;
+  _mammothLoader = new Promise((resolve, reject) => {
+    const s = document.createElement('script');
+    s.src = 'https://unpkg.com/mammoth/mammoth.browser.min.js';
+    s.onload = () => resolve(window.mammoth);
+    s.onerror = reject;
+    document.head.appendChild(s);
+  });
+  return _mammothLoader;
+}
+async function convertDocxFileToHtml(file) {
+  await loadMammothJs();
+  const arr = await file.arrayBuffer();
+  const out = await window.mammoth.convertToHtml({ arrayBuffer: arr });
+  return await uploadEmbeddedImagesInHtml(out.value || '');
+}
+async function uploadEmbeddedImagesInHtml(html) {
+  let out = html || '';
+  const matches = [...out.matchAll(/src="(data:image\/[^"]+)"/g)];
+  for (const m of matches) {
+    const dataUrl = m[1];
+    const hosted = await uploadArticleImageToSupabase(dataUrl);
+    if (hosted) out = out.replace(dataUrl, hosted);
+  }
+  return out;
+}
+
 
 async function doSubmitArticle() {
   const name       = sanitizeInput(document.getElementById('sub-name').value, 150);
-  const email      = sanitizeInput(document.getElementById('sub-email').value, 200).toLowerCase();
   const occupation = document.getElementById('sub-occupation').value;
-  const institution= sanitizeInput(document.getElementById('sub-institution').value, 200);
-  const phone      = sanitizeInput(document.getElementById('sub-phone').value, 30);
   const title      = sanitizeInput(document.getElementById('sub-title').value, 400);
-  const category   = document.getElementById('sub-category').value;
-  const abstract   = sanitizeInput(document.getElementById('sub-abstract').value, 1500);
-  const coauthors  = sanitizeInput(document.getElementById('sub-coauthors').value, 200);
-  const place      = document.getElementById('sub-place') ? document.getElementById('sub-place').value : '';
-  const editorEl   = document.getElementById('sub-editor');
-  const articleHtml = editorEl ? editorEl.innerHTML : '';
-  const articleText = editorEl ? (editorEl.textContent || editorEl.innerText || '').trim() : '';
-  const wordCount  = articleText ? articleText.split(/\s+/).filter(w=>w).length : 0;
-  const undertaking = document.getElementById('sub-undertaking').checked;
-  const errEl = document.getElementById('sub-error-confirm');
+  const docxFile   = _subPendingFile;
+  const category   = 'Law';
+  const email      = '';
+  const institution= '';
+  const phone      = '';
+  const abstract   = '';
+  const coauthors  = '';
+  const place      = '';
+  const errEl = document.getElementById('sub-error') || document.getElementById('sub-error-confirm');
   errEl.textContent = '';
 
-  const btn = document.getElementById('sub-submit-btn');
-  btn.disabled = true; btn.textContent = 'Uploading article image…';
+  if (!title) { errEl.textContent = 'Please enter article title.'; return; }
+  if (!name) { errEl.textContent = 'Please enter author name.'; return; }
+  if (!occupation) { errEl.textContent = 'Please select occupation.'; return; }
+  if (!docxFile) { errEl.textContent = 'Please upload a .docx file.'; return; }
+  if (!/\.docx$/i.test(docxFile.name)) { errEl.textContent = 'Only .docx files are allowed.'; return; }
+  if (docxFile.size > 5 * 1024 * 1024) { errEl.textContent = 'File exceeds 5 MB limit.'; return; }
+
+  const btn = document.getElementById('sub-show-preview-btn');
+  btn.disabled = true; btn.textContent = 'Reading Word document…';
   const progC = document.getElementById('sub-progress-confirm'); progC.style.display = 'block';
   const pfC = document.getElementById('sub-progress-fill-confirm'); pfC.style.width = '10%';
 
   try {
-    // 1. Upload the cached preview image or regenerate
-    let articleImageUrl = null;
-    const imageDataUrl = _previewDataUrl || await generateArticleImage({
+    const pages = await getDocxPageCount(docxFile);
+    if (pages !== null && pages !== 1) {
+      throw new Error('Only 1-page .docx files are accepted.');
+    }
+    // 1. Parse .docx to rich HTML
+    const articleHtml = await convertDocxFileToHtml(docxFile);
+    if (!articleHtml || !articleHtml.replace(/<[^>]+>/g, '').trim()) {
+      throw new Error('Word file content appears empty.');
+    }
+    pfC.style.width = '28%';
+    btn.textContent = 'Uploading Word file…';
+
+    // 2. Upload original .docx
+    const fileName = `submissions/${Date.now()}_${docxFile.name.replace(/[^a-zA-Z0-9._-]/g,'_')}`;
+    const upRes = await fetch(`${SUPABASE_URL}/storage/v1/object/articles/${fileName}`, {
+      method: 'POST',
+      headers: {
+        'apikey': SUPABASE_KEY,
+        'Authorization': 'Bearer ' + SUPABASE_KEY,
+        'Content-Type': 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+        'x-upsert': 'true'
+      },
+      body: docxFile
+    });
+    if (!upRes.ok) throw new Error('Word file upload failed');
+    const docxUrl = `${SUPABASE_URL}/storage/v1/object/public/articles/${fileName}`;
+    pfC.style.width = '48%';
+
+    // 3. Generate cover image from parsed body (keeps ILIRH layout)
+    btn.textContent = 'Generating article image…';
+    const imageDataUrl = await generateArticleImage({
       title, author: name, place, htmlBody: articleHtml,
       authorPhotoUrl: _subAuthorPhotoData, category, occupation
     });
-    pfC.style.width = '30%';
-    btn.textContent = 'Uploading article image…';
-    articleImageUrl = await uploadArticleImageToSupabase(imageDataUrl);
-    if (!articleImageUrl) {
-      throw new Error('Image upload failed. Please try again. If it keeps failing, open DevTools → Console and share the error text.');
-    }
+    let articleImageUrl = await uploadArticleImageToSupabase(imageDataUrl);
+    if (!articleImageUrl) articleImageUrl = null;
+    pfC.style.width = '68%';
 
-    pfC.style.width = '55%';
-    btn.textContent = 'Submitting…';
-
-    // 2. Also store author photo URL if uploaded
+    // 4. Also store author photo URL if uploaded
     let author_photo_url = null;
     if (_subAuthorPhotoData) {
       author_photo_url = await uploadArticleImageToSupabase(_subAuthorPhotoData);
     }
-    pfC.style.width = '70%';
+    pfC.style.width = '78%';
 
-    // 3. Insert into article_submissions table
+    // 5. Insert into article_submissions table as pending
+    btn.textContent = 'Submitting for review…';
     const insertRes = await fetch(`${SUPABASE_URL}/rest/v1/article_submissions`, {
       method: 'POST',
       headers: { ...headers, 'Prefer': 'return=representation' },
@@ -4432,49 +4400,27 @@ async function doSubmitArticle() {
         article_body: articleHtml,
         coauthors, place,
         author_photo_url,
-        file_url: articleImageUrl || null,
-        file_type: articleImageUrl ? 'image/jpeg' : null,
+        file_url: docxUrl,
+        file_type: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+        article_image_url: articleImageUrl,
         status: 'pending', undertaking_agreed: true
       })
     });
-    pfC.style.width = '88%';
+    pfC.style.width = '92%';
     if (!insertRes.ok) {
-      const errBody = await insertRes.text();
-      if (errBody.includes('article_body') || errBody.includes('place') || errBody.includes('author_photo_url')) {
-        const fallbackRes = await fetch(`${SUPABASE_URL}/rest/v1/article_submissions`, {
-          method: 'POST',
-          headers: { ...headers, 'Prefer': 'return=representation' },
-          body: JSON.stringify({
-            author_name: name, author_email: email, occupation, institution, phone,
-            article_title: title, category, abstract: abstract + '\n\n[ARTICLE BODY]\n' + articleText.slice(0, 1500),
-            coauthors, file_url: articleImageUrl || null,
-            file_type: articleImageUrl ? 'image/jpeg' : null,
-            status: 'pending', undertaking_agreed: true
-          })
-        });
-        if (!fallbackRes.ok) throw new Error('Submission failed. Please try again.');
-        const insertedFb = await fallbackRes.json();
-        const newSubFb = Array.isArray(insertedFb) ? insertedFb[0] : insertedFb;
-        await ensureSubmitterSubscribed(name, email);
-        notifyAdminNewSubmission(name, email, occupation, institution, title, category, abstract, newSubFb?.id);
-        pfC.style.width = '100%';
-        btn.textContent = 'Saved ✓';
-        setTimeout(() => showSuccessState(), 600); return;
-      }
       throw new Error('Submission failed. Please try again.');
     }
     const inserted = await insertRes.json();
     const newSub = Array.isArray(inserted) ? inserted[0] : inserted;
-    await ensureSubmitterSubscribed(name, email);
     pfC.style.width = '100%';
-    btn.textContent = 'Saved ✓';
+    btn.textContent = 'Submitted ✓';
     notifyAdminNewSubmission(name, email, occupation, institution, title, category, abstract, newSub?.id);
     setTimeout(() => showSuccessState(), 600);
 
   } catch(e) {
     errEl.textContent = e.message || 'Submission failed. Please try again.';
     progC.style.display = 'none';
-    btn.disabled = false; btn.innerHTML = '<span style="font-size:14px;">✍</span> Confirm &amp; Submit Article <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>';
+    btn.disabled = false; btn.innerHTML = '<span style="font-size:14px;">✍</span> Submit for Editorial Review';
   }
 }
 
@@ -4643,7 +4589,7 @@ function openReviewDetail(id) {
     } else {
       fc.innerHTML = `<div style="display:flex;align-items:center;gap:12px;padding:10px 0;">
         <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="var(--navy)" stroke-width="1.5"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14,2 14,8 20,8"/></svg>
-        <a href="${esc(s.file_url)}" target="_blank" rel="noopener" style="font-family:'Lato',sans-serif;font-size:12px;font-weight:700;color:var(--navy-light);text-decoration:underline;">&#8599; View / Download PDF</a>
+        <a href="${esc(s.file_url)}" target="_blank" rel="noopener" style="font-family:'Lato',sans-serif;font-size:12px;font-weight:700;color:var(--navy-light);text-decoration:underline;">&#8599; View / Download Original File</a>
       </div>`;
     }
   } else {
@@ -4682,7 +4628,7 @@ function handleRdFileSelect(input) {
   const file = input.files[0];
   const fn = document.getElementById('rd-new-filename');
   if (!file) return;
-  if (file.size > 3*1024*1024) { fn.textContent = '✗ Too large (max 3 MB)'; _rdNewFile = null; return; }
+  if (file.size > 10*1024*1024) { fn.textContent = '✗ Too large (max 10 MB)'; _rdNewFile = null; return; }
   _rdNewFile = file;
   fn.textContent = '✓ ' + file.name + ' (' + (file.size/1024/1024).toFixed(2) + ' MB) — will replace on save/publish';
 }
@@ -4771,6 +4717,46 @@ function rdRteExec(cmd, val) {
   }
   document.execCommand(cmd, false, val || null);
 }
+function rdRteInsertLink() {
+  const url = prompt('Enter URL:');
+  if (url) document.execCommand('createLink', false, url);
+}
+function rdRteInsertImageTrigger() {
+  const i = document.getElementById('rd-rte-img-file');
+  if (!i) return;
+  i.value = '';
+  i.click();
+}
+function rdRteInsertImageFromFile(input) {
+  const file = input.files && input.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = e => {
+    const ed = document.getElementById('rd-article-body');
+    if (!ed) return;
+    const wrap = document.createElement('span');
+    wrap.className = 'rte-inline-img-wrap';
+    wrap.contentEditable = 'false';
+    wrap.dataset.rteAlign = 'left';
+    const img = document.createElement('img');
+    img.src = e.target.result;
+    img.alt = file.name.replace(/\.[^.]+$/, '');
+    const cap = document.createElement('div');
+    cap.className = 'rte-img-caption';
+    cap.contentEditable = 'true';
+    cap.setAttribute('data-rte-caption', '1');
+    const rm = document.createElement('button');
+    rm.className = 'rte-img-remove';
+    rm.type = 'button';
+    rm.textContent = '✕';
+    rm.onclick = ev => { ev.preventDefault(); ev.stopPropagation(); wrap.remove(); };
+    wrap.appendChild(rm);
+    wrap.appendChild(img);
+    wrap.appendChild(cap);
+    ed.appendChild(wrap);
+  };
+  reader.readAsDataURL(file);
+}
 
 async function rdRegenerateImage() {
   if (!_activeSubmission) return;
@@ -4854,6 +4840,7 @@ async function publishFromReview() {
   const articleTitle = sanitizeInput(document.getElementById('rd-article-title').value, 400);
   const cat          = document.getElementById('rd-category').value;
   const excerpt      = sanitizeInput(document.getElementById('rd-abstract').value, 1500);
+  const articleBodyNow = document.getElementById('rd-article-body') ? document.getElementById('rd-article-body').innerHTML : (_activeSubmission.article_body || '');
 
   if (!authorName || !articleTitle || !cat) {
     errEl.textContent = 'Author name, article title, and category are required before publishing.';
@@ -4877,13 +4864,19 @@ async function publishFromReview() {
 
     // 1. Insert into articles table (goes live)
     const articlePayload = { title: articleTitle, author: authorName, category: cat, excerpt, file_url, file_type };
-    // Use article_image_url from submission if available
-    if (_activeSubmission.file_url && (_activeSubmission.file_type || '').startsWith('image/')) {
+    if (articleBodyNow) {
+      articlePayload.article_body = articleBodyNow;
+      try {
+        const generated = await generateArticleImage({
+          title: articleTitle, author: authorName, place: _activeSubmission.place || '',
+          htmlBody: articleBodyNow, authorPhotoUrl: _activeSubmission.author_photo_url || null,
+          category: cat, occupation: document.getElementById('rd-occupation').value || _activeSubmission.occupation || ''
+        });
+        const generatedUrl = await uploadArticleImageToSupabase(generated);
+        if (generatedUrl) articlePayload.article_image_url = generatedUrl;
+      } catch (_) {}
+    } else if (_activeSubmission.file_url && (_activeSubmission.file_type || '').startsWith('image/')) {
       articlePayload.article_image_url = _activeSubmission.file_url;
-    }
-    // If submission has article_body, include it
-    if (_activeSubmission.article_body) {
-      articlePayload.article_body = _activeSubmission.article_body;
     }
     const insertRes = await fetch(`${SUPABASE_URL}/rest/v1/articles`, {
       method: 'POST',
