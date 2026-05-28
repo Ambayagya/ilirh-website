@@ -1647,7 +1647,7 @@ body.dark-mode .editor-tab.active { color:#c8d8ea; }
   <button class="pop-close" onclick="closePop()" aria-label="Close">&times;</button>
   <div class="pop-kicker">Stay Informed</div>
   <div class="pop-title">Join the Herald's Readership</div>
-  <div class="pop-body">Get notified when new article is published.</div>
+  <div class="pop-body">Get notified when new legal research is published.</div>
   <div style="display:flex;flex-direction:column;gap:7px;margin-bottom:8px;">
     <input type="text" id="pop-name" placeholder="Your full name" style="width:100%;padding:8px 12px;border:1px solid var(--border);background:#fff;font-family:'EB Garamond',serif;font-size:15px;color:var(--text-primary);outline:none;transition:border-color 0.2s;" onfocus="this.style.borderColor='var(--navy)'" onblur="this.style.borderColor='var(--border)'">
     <div class="pop-row">
@@ -5072,16 +5072,46 @@ function getTemplateBodyMaxHeight(bodyStartY) {
   return TEMPLATE_FOOTER_TOP - bodyStartY - 20;
 }
 
+function stripNonContentNodes(root) {
+  if (!root) return;
+  root.querySelectorAll('style, script, link[rel="stylesheet"], meta, title').forEach(el => el.remove());
+}
+
+function extractDocxContentFromWrapper(wrapperEl) {
+  if (!wrapperEl) return '';
+  const clone = wrapperEl.cloneNode(true);
+  stripNonContentNodes(clone);
+  const contentRoot =
+    clone.querySelector('.docx-preview-content-wrapper') ||
+    clone.querySelector('.docx-preview-content') ||
+    clone.querySelector('article') ||
+    clone;
+  if (contentRoot && contentRoot !== clone) {
+    return contentRoot.innerHTML;
+  }
+  const sections = clone.querySelectorAll('section.docx');
+  if (sections.length) {
+    const buf = document.createElement('div');
+    sections.forEach(s => buf.appendChild(s.cloneNode(true)));
+    return buf.innerHTML;
+  }
+  return clone.innerHTML;
+}
+
 function normalizeDocxHtmlForTemplate(html) {
   const tmp = document.createElement('div');
   tmp.innerHTML = html || '';
+  stripNonContentNodes(tmp);
   tmp.querySelectorAll('p, div, span').forEach(el => {
     const t = (el.textContent || '').trim();
     if (/^n+$/i.test(t) && t.length > 2) el.remove();
   });
-  if (tmp.querySelector('.article-docx-body')) return tmp.innerHTML;
+  if (tmp.querySelector('.article-docx-body')) {
+    stripNonContentNodes(tmp);
+    return tmp.innerHTML;
+  }
   const wrapper = tmp.querySelector('.docx-wrapper');
-  const chunk = wrapper ? wrapper.innerHTML : tmp.innerHTML;
+  const chunk = wrapper ? extractDocxContentFromWrapper(wrapper) : tmp.innerHTML;
   return '<div class="article-docx-body">' + chunk + '</div>';
 }
 
@@ -5162,7 +5192,7 @@ function measureDocxBodyHeight(html, width) {
   const host = document.getElementById('sub-docx-measure-host') || document.getElementById('article-body-capture-host');
   if (!host) return 0;
   host.style.width = width + 'px';
-  host.innerHTML = `<div class="article-docx-body">${html}</div>`;
+  host.innerHTML = html.includes('article-docx-body') ? html : `<div class="article-docx-body">${html}</div>`;
   const inner = host.querySelector('.article-docx-body');
   const h = inner ? inner.scrollHeight : host.scrollHeight;
   host.innerHTML = '';
@@ -5178,7 +5208,7 @@ async function parseWordDocumentFile(file, opts) {
   const buf = await file.arrayBuffer();
   const renderHost = document.createElement('div');
   const wrapper = await renderDocxToContainer(buf, renderHost);
-  const html = normalizeDocxHtmlForTemplate(wrapper.innerHTML);
+  const html = normalizeDocxHtmlForTemplate(extractDocxContentFromWrapper(wrapper));
   const estBodyStart = getAuthorBlockEndY(900, 172);
   const maxH = getTemplateBodyMaxHeight(estBodyStart);
   const contentH = measureDocxBodyHeight(html, ARTICLE_BODY_CAPTURE_W);
@@ -5189,7 +5219,16 @@ async function parseWordDocumentFile(file, opts) {
     );
   }
   if (opts.previewHost) {
-    opts.previewHost.innerHTML = html;
+    opts.previewHost.innerHTML = '';
+    const liveStyle = renderHost.querySelector('style');
+    if (liveStyle && liveStyle.textContent) {
+      const st = document.createElement('style');
+      st.textContent = liveStyle.textContent;
+      opts.previewHost.appendChild(st);
+    }
+    const previewBody = document.createElement('div');
+    previewBody.innerHTML = html;
+    opts.previewHost.appendChild(previewBody.firstElementChild || previewBody);
   }
   return html;
 }
@@ -5206,7 +5245,16 @@ async function captureArticleBodyHtml(html, width, maxHeight) {
   host.style.width = width + 'px';
   host.style.height = '';
   host.style.overflow = 'hidden';
-  host.innerHTML = normalizeDocxHtmlForTemplate(html);
+  host.innerHTML = '';
+  const styleMatch = (html || '').match(/<style[^>]*>([\s\S]*?)<\/style>/i);
+  if (styleMatch) {
+    const st = document.createElement('style');
+    st.textContent = styleMatch[1];
+    host.appendChild(st);
+  }
+  const bodyDiv = document.createElement('div');
+  bodyDiv.innerHTML = normalizeDocxHtmlForTemplate(html);
+  host.appendChild(bodyDiv.firstElementChild || bodyDiv);
 
   const inner = host.querySelector('.article-docx-body') || host;
   inner.style.transform = '';
@@ -6104,6 +6152,8 @@ async function generateArticleImage(articleData) {
 
         if (node.nodeType !== Node.ELEMENT_NODE) return;
         const tag = node.tagName.toLowerCase();
+
+        if (tag === 'style' || tag === 'script' || tag === 'head' || tag === 'link' || tag === 'meta') return;
 
         if (tag === 'h2') {
           y += 18;
