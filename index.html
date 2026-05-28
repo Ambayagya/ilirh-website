@@ -2078,8 +2078,42 @@ body.dark-mode .editor-tab.active { color:#c8d8ea; }
     </div>
 
     <div class="review-file-preview" id="rd-file-preview">
-      <p>Submitted File</p>
+      <p>Submitted File / Article Image</p>
       <div id="rd-file-content"></div>
+    </div>
+
+    <!-- Rich article body editor -->
+    <div style="margin:16px 0 4px;">
+      <div style="font-family:'Lato',sans-serif;font-size:10px;font-weight:700;letter-spacing:0.14em;text-transform:uppercase;color:var(--text-muted);margin-bottom:6px;">Article Body <span style="font-weight:400;text-transform:none;letter-spacing:0;font-family:'EB Garamond',serif;font-size:12px;color:var(--text-muted);">(edit below, then regenerate image)</span></div>
+      <div class="rich-editor-toolbar" id="rd-toolbar" style="border-bottom:1px solid var(--border-light);">
+        <button type="button" class="rte-btn" onclick="rdRteExec('bold')" title="Bold"><b>B</b></button>
+        <button type="button" class="rte-btn" onclick="rdRteExec('italic')" title="Italic"><i>I</i></button>
+        <button type="button" class="rte-btn" onclick="rdRteExec('underline')" title="Underline"><u>U</u></button>
+        <span class="rte-sep"></span>
+        <button type="button" class="rte-btn rte-btn-sm" onclick="rdRteExec('formatBlock','H2')" title="Heading 2">H2</button>
+        <button type="button" class="rte-btn rte-btn-sm" onclick="rdRteExec('formatBlock','H3')" title="Heading 3">H3</button>
+        <span class="rte-sep"></span>
+        <button type="button" class="rte-btn rte-btn-sm" title="Align Left" onclick="rdRteExec('justifyLeft')"><svg width="14" height="14" viewBox="0 0 14 14" fill="currentColor"><rect x="0" y="1" width="14" height="1.8" rx="0.6"/><rect x="0" y="4.6" width="10" height="1.8" rx="0.6"/><rect x="0" y="8.2" width="14" height="1.8" rx="0.6"/><rect x="0" y="11.8" width="8" height="1.8" rx="0.6"/></svg></button>
+        <button type="button" class="rte-btn rte-btn-sm" title="Centre" onclick="rdRteExec('justifyCenter')"><svg width="14" height="14" viewBox="0 0 14 14" fill="currentColor"><rect x="0" y="1" width="14" height="1.8" rx="0.6"/><rect x="2" y="4.6" width="10" height="1.8" rx="0.6"/><rect x="0" y="8.2" width="14" height="1.8" rx="0.6"/><rect x="3" y="11.8" width="8" height="1.8" rx="0.6"/></svg></button>
+        <button type="button" class="rte-btn rte-btn-sm" title="Justify" onclick="rdRteExec('justifyFull')"><svg width="14" height="14" viewBox="0 0 14 14" fill="currentColor"><rect x="0" y="1" width="14" height="1.8" rx="0.6"/><rect x="0" y="4.6" width="14" height="1.8" rx="0.6"/><rect x="0" y="8.2" width="14" height="1.8" rx="0.6"/><rect x="0" y="11.8" width="14" height="1.8" rx="0.6"/></svg></button>
+        <span class="rte-sep"></span>
+        <button type="button" class="rte-btn" onclick="rdRteExec('insertUnorderedList')" title="Bullet list">&#8226; List</button>
+        <button type="button" class="rte-btn" onclick="rdRteExec('insertOrderedList')" title="Numbered list">1. List</button>
+        <button type="button" class="rte-btn" onclick="rdRteExec('formatBlock','BLOCKQUOTE')" title="Blockquote">&ldquo;&rdquo;</button>
+        <span class="rte-sep"></span>
+        <button type="button" class="rte-btn rte-btn-sm" onclick="rdRteExec('removeFormat')" title="Clear format">&#10005; Clear</button>
+      </div>
+      <div id="rd-article-body" class="rich-editor-area" contenteditable="true" spellcheck="true"
+        style="min-height:220px;max-height:420px;overflow-y:auto;border-top:none;"></div>
+    </div>
+
+    <div style="margin-bottom:14px;">
+      <button id="rd-regen-btn" onclick="rdRegenerateImage()"
+        style="background:var(--navy-light);color:#fff;border:none;font-family:'Lato',sans-serif;font-size:11px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;padding:9px 20px;cursor:pointer;display:inline-flex;align-items:center;gap:8px;transition:background 0.2s;">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/></svg>
+        Regenerate Article Image
+      </button>
+      <span id="rd-regen-status" style="font-family:'Lato',sans-serif;font-size:11px;color:var(--text-muted);margin-left:12px;"></span>
     </div>
 
     <div class="review-replace-drop" id="rd-replace-drop">
@@ -4388,15 +4422,17 @@ function openReviewDetail(id) {
   document.getElementById('rd-new-filename').textContent = '';
   document.getElementById('rd-error').textContent = '';
 
-  // File preview
+  // Article body rich editor
+  const rdEditor = document.getElementById('rd-article-body');
+  if (rdEditor) {
+    rdEditor.innerHTML = s.article_body || '<p></p>';
+  }
+
+  // File preview (image thumbnail / link only)
   const fc = document.getElementById('rd-file-content');
-  if (s.article_body) {
-    fc.innerHTML = `<div style="border:1px solid var(--border-light);padding:14px;background:#fff;max-height:240px;overflow-y:auto;font-family:'EB Garamond',serif;font-size:15px;line-height:1.7;color:var(--text-secondary);">${s.article_body}</div>
-      <div style="font-family:'Lato',sans-serif;font-size:10px;color:var(--text-muted);margin-top:5px;">Rich text article body · ${countWords ? countWords(s.article_body) : '?'} words</div>
-      ${s.file_url ? `<a href="${esc(s.file_url)}" target="_blank" rel="noopener" style="display:inline-block;margin-top:8px;font-family:'Lato',sans-serif;font-size:11px;color:var(--navy-light);font-weight:700;">&#8599; Open Article Image</a>` : ''}`;
-  } else if (s.file_url) {
+  if (s.file_url) {
     if (s.file_type && s.file_type.startsWith('image/')) {
-      fc.innerHTML = `<img src="${esc(s.file_url)}" alt="Submitted file" style="max-width:100%;max-height:240px;object-fit:contain;display:block;border:1px solid var(--border-light);">
+      fc.innerHTML = `<img src="${esc(s.file_url)}" alt="Article image" style="max-width:100%;max-height:200px;object-fit:contain;display:block;border:1px solid var(--border-light);">
         <a href="${esc(s.file_url)}" target="_blank" rel="noopener" style="display:inline-block;margin-top:8px;font-family:'Lato',sans-serif;font-size:11px;color:var(--navy-light);font-weight:700;">&#8599; Open Full Image</a>`;
     } else {
       fc.innerHTML = `<div style="display:flex;align-items:center;gap:12px;padding:10px 0;">
@@ -4407,6 +4443,10 @@ function openReviewDetail(id) {
   } else {
     fc.innerHTML = '<em style="font-family:Garamond,serif;color:var(--text-muted);font-size:14px;">No file attached</em>';
   }
+
+  // Reset regen status
+  const regenStatus = document.getElementById('rd-regen-status');
+  if (regenStatus) regenStatus.textContent = '';
 
   // Button state
   const pubBtn = document.getElementById('rd-publish-btn');
@@ -4470,6 +4510,7 @@ async function saveReviewEdits() {
       article_title: sanitizeInput(document.getElementById('rd-article-title').value, 400),
       category:      document.getElementById('rd-category').value,
       abstract:      sanitizeInput(document.getElementById('rd-abstract').value, 1500),
+      article_body:  document.getElementById('rd-article-body') ? document.getElementById('rd-article-body').innerHTML : (_activeSubmission.article_body || ''),
       file_url, file_type
     };
     const res = await fetch(`${SUPABASE_URL}/rest/v1/article_submissions?id=eq.${_activeSubmission.id}`, {
@@ -4491,7 +4532,109 @@ async function saveReviewEdits() {
   }
 }
 
-async function publishFromReview() {
+function rdRteExec(cmd, val) {
+  const ed = document.getElementById('rd-article-body');
+  if (!ed) return;
+  ed.focus();
+  // Alignment: scope to selection using same logic as rteExec
+  if (RTE_ALIGN_MAP && RTE_ALIGN_MAP[cmd]) {
+    const alignVal = RTE_ALIGN_MAP[cmd];
+    const sel = window.getSelection();
+    if (sel && !sel.isCollapsed && sel.rangeCount > 0) {
+      const range = sel.getRangeAt(0);
+      if (ed.contains(range.commonAncestorContainer)) {
+        const existing = range.commonAncestorContainer.parentElement;
+        if (existing && existing.dataset && existing.dataset.rteAlign) {
+          existing.style.textAlign = alignVal;
+          existing.dataset.rteAlign = alignVal;
+          return;
+        }
+        const span = document.createElement('span');
+        span.style.cssText = `display:inline-block; width:100%; text-align:${alignVal};`;
+        span.dataset.rteAlign = alignVal;
+        try { range.surroundContents(span); }
+        catch(e) { const frag = range.extractContents(); span.appendChild(frag); range.insertNode(span); }
+        const newRange = document.createRange();
+        newRange.selectNodeContents(span);
+        sel.removeAllRanges(); sel.addRange(newRange);
+        return;
+      }
+    }
+    document.execCommand(cmd, false, null);
+    return;
+  }
+  document.execCommand(cmd, false, val || null);
+}
+
+async function rdRegenerateImage() {
+  if (!_activeSubmission) return;
+  const btn = document.getElementById('rd-regen-btn');
+  const statusEl = document.getElementById('rd-regen-status');
+  const errEl = document.getElementById('rd-error');
+  const fc = document.getElementById('rd-file-content');
+
+  btn.disabled = true;
+  statusEl.textContent = 'Generating image…';
+  statusEl.style.color = 'var(--text-muted)';
+  errEl.textContent = '';
+
+  try {
+    // Read current editor content
+    const rdEditor = document.getElementById('rd-article-body');
+    const articleHtml = rdEditor ? rdEditor.innerHTML : (_activeSubmission.article_body || '');
+    const title    = document.getElementById('rd-article-title').value || _activeSubmission.article_title || '';
+    const author   = document.getElementById('rd-author-name').value   || _activeSubmission.author_name || '';
+    const category = document.getElementById('rd-category').value      || _activeSubmission.category || '';
+    const occupation = document.getElementById('rd-occupation').value  || _activeSubmission.occupation || '';
+    const place    = _activeSubmission.place || '';
+    const authorPhotoUrl = _activeSubmission.author_photo_url || null;
+
+    // Generate new image from current editor content
+    statusEl.textContent = 'Generating image…';
+    const dataUrl = await generateArticleImage({
+      title, author, place, htmlBody: articleHtml,
+      authorPhotoUrl, category, occupation
+    });
+
+    // Upload to Supabase, replacing old file
+    statusEl.textContent = 'Uploading…';
+    const newUrl = await uploadArticleImageToSupabase(dataUrl);
+    if (!newUrl) throw new Error('Upload failed — check console for details');
+
+    // Patch the submission record: update file_url + article_body
+    const patchRes = await fetch(`${SUPABASE_URL}/rest/v1/article_submissions?id=eq.${_activeSubmission.id}`, {
+      method: 'PATCH',
+      headers: { ...headers, 'Prefer': 'return=minimal' },
+      body: JSON.stringify({
+        file_url: newUrl,
+        file_type: 'image/jpeg',
+        article_body: articleHtml
+      })
+    });
+    if (!patchRes.ok) throw new Error('DB update failed');
+
+    // Update local state
+    _activeSubmission.file_url   = newUrl;
+    _activeSubmission.file_type  = 'image/jpeg';
+    _activeSubmission.article_body = articleHtml;
+
+    // Refresh the file preview thumbnail with the new image (cache-bust)
+    fc.innerHTML = `<img src="${esc(newUrl)}?t=${Date.now()}" alt="Article image" style="max-width:100%;max-height:200px;object-fit:contain;display:block;border:1px solid var(--border-light);">
+      <a href="${esc(newUrl)}" target="_blank" rel="noopener" style="display:inline-block;margin-top:8px;font-family:'Lato',sans-serif;font-size:11px;color:var(--navy-light);font-weight:700;">&#8599; Open Full Image</a>`;
+
+    statusEl.textContent = '✓ Image replaced successfully';
+    statusEl.style.color = '#27500a';
+    showToast('✓ Article image regenerated & saved', 3000);
+    loadSubmissions();
+
+  } catch(e) {
+    statusEl.textContent = '';
+    errEl.textContent = 'Regenerate failed: ' + (e.message || e);
+    console.error('rdRegenerateImage error:', e);
+  } finally {
+    btn.disabled = false;
+  }
+}
   if (!_activeSubmission) return;
   const pub = document.getElementById('rd-publish-btn');
   const errEl = document.getElementById('rd-error');
@@ -5145,23 +5288,21 @@ async function generateArticleImage(articleData) {
       ctx.stroke();
       ctx.globalAlpha = 1;
 
-      // ── Full publication name — two lines if needed, right of divider ──
+      // ── Full publication name — SINGLE LINE, auto-fit font size ──
       const NAME_X = DIV_X + 32;
       const NAME_MAX_W = W - NAME_X - 48;
       ctx.fillStyle = '#e8d9b0';   // slightly softer gold for subtitle
-      ctx.font = '500 46px Georgia, serif';
-      const fullLine1 = 'THE INTERNATIONAL LEGAL INTELIGENCIA';
-      const fullLine2 = 'RESEARCH HERALD, INDIA';
-      // Measure to see if both fit at 46px; scale down if first line overflows
-      let nameFontSize = 46;
-      while (ctx.measureText(fullLine1).width > NAME_MAX_W && nameFontSize > 28) {
-        nameFontSize -= 2;
-        ctx.font = `500 ${nameFontSize}px Georgia, serif`;
+      const fullName = 'THE INTERNATIONAL LEGAL INTELIGENCIA RESEARCH HERALD, INDIA';
+      // Start at 58px and scale down until it fits on one line
+      let nameFontSize = 58;
+      ctx.font = `600 ${nameFontSize}px Georgia, serif`;
+      while (ctx.measureText(fullName).width > NAME_MAX_W && nameFontSize > 22) {
+        nameFontSize -= 1;
+        ctx.font = `600 ${nameFontSize}px Georgia, serif`;
       }
-      const lineH = nameFontSize * 1.35;
-      const twoLineTop = TEXT_Y - lineH * 0.9;
-      ctx.fillText(fullLine1, NAME_X, twoLineTop);
-      ctx.fillText(fullLine2, NAME_X, twoLineTop + lineH);
+      // Vertically centre the single line in the bar (TEXT_Y is already the ILIRH baseline)
+      const nameBaseline = TEXT_Y + 4; // align baseline with ILIRH text
+      ctx.fillText(fullName, NAME_X, nameBaseline);
 
       ctx.textAlign = 'left';
 
