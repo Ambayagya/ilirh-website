@@ -4169,7 +4169,7 @@ async function doSubmitArticle() {
     btn.textContent = 'Uploading article image…';
     articleImageUrl = await uploadArticleImageToSupabase(imageDataUrl);
     if (!articleImageUrl) {
-      throw new Error('Image upload failed. Please check your connection and try again.');
+      throw new Error('Image upload failed. Please try again. If it keeps failing, open DevTools → Console and share the error text.');
     }
 
     pfC.style.width = '55%';
@@ -4278,6 +4278,8 @@ function switchEditorTab(tab) {
 let _submissions = [];
 let _activeSubmission = null;
 let _rdNewFile = null;
+let _reviewPage = 0;
+const _REVIEW_PAGE_SIZE = 10;
 
 async function loadSubmissions() {
   const listEl = document.getElementById('review-list');
@@ -4298,26 +4300,50 @@ async function loadSubmissions() {
 
     // Only show PENDING submissions in the review queue
     const pendingItems = _submissions.filter(s => s.status === 'pending');
+    _reviewPage = 0;
 
     if (pendingItems.length === 0) {
       listEl.innerHTML = '<div class="review-empty">No pending submissions. All articles have been reviewed. Check the <strong>Published Articles</strong> tab for published articles.</div>';
       return;
     }
-    listEl.innerHTML = pendingItems.map(s => `
-      <div class="review-item" onclick="openReviewDetail(${s.id})">
-        <span class="review-item-new">&#9679; Pending Review</span>
-        <div class="review-item-cat">${esc(s.category || '')} &nbsp;·&nbsp; ${esc(s.occupation || '')}</div>
-        <div class="review-item-title">${esc(s.article_title || '')}</div>
-        <div class="review-item-meta">
-          By <strong>${esc(s.author_name || '')}</strong> &nbsp;&bull;&nbsp; ${esc(s.author_email || '')}
-          &nbsp;&bull;&nbsp; Submitted: ${formatDate(s.submitted_at || s.created_at || new Date())}
-        </div>
-      </div>`).join('');
+    renderSubmissionPage(pendingItems);
   } catch(e) {
     loadEl.style.display = 'none';
     listEl.innerHTML = '<div class="review-empty">Could not load submissions. Please check your connection.</div>';
     console.error('Load submissions error:', e);
   }
+}
+
+function renderSubmissionPage(pendingItems) {
+  const listEl = document.getElementById('review-list');
+  if (!listEl) return;
+  const start = 0;
+  const end = (_reviewPage + 1) * _REVIEW_PAGE_SIZE;
+  const slice = pendingItems.slice(start, end);
+  const hasMore = pendingItems.length > slice.length;
+
+  listEl.innerHTML = slice.map(s => `
+    <div class="review-item" onclick="openReviewDetail(${s.id})">
+      <span class="review-item-new">&#9679; Pending Review</span>
+      <div class="review-item-cat">${esc(s.category || '')} &nbsp;·&nbsp; ${esc(s.occupation || '')}</div>
+      <div class="review-item-title">${esc(s.article_title || '')}</div>
+      <div class="review-item-meta">
+        By <strong>${esc(s.author_name || '')}</strong> &nbsp;&bull;&nbsp; ${esc(s.author_email || '')}
+        &nbsp;&bull;&nbsp; Submitted: ${formatDate(s.submitted_at || s.created_at || new Date())}
+      </div>
+    </div>`).join('') + (hasMore ? `
+      <div style="text-align:center;padding:16px 0;">
+        <button onclick="showMoreSubmissions()" style="background:var(--navy);color:#fff;border:2px solid var(--navy);font-family:'Lato',sans-serif;font-size:11px;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;padding:10px 18px;cursor:pointer;">
+          Show next ${_REVIEW_PAGE_SIZE}
+        </button>
+      </div>
+    ` : '');
+}
+
+function showMoreSubmissions() {
+  const pendingItems = _submissions.filter(s => s.status === 'pending');
+  _reviewPage++;
+  renderSubmissionPage(pendingItems);
 }
 
 function openReviewDetail(id) {
@@ -4584,13 +4610,37 @@ async function loadPublishedArticles() {
           <div class="review-item-title" style="font-size:14px;">${esc(a.title||'')}</div>
           <div class="review-item-meta">By ${esc(a.author||'')}</div>
         </div>
-        <button onclick="event.stopPropagation();editorDeleteArticle(${a.id})" style="flex-shrink:0;background:#b91c1c;color:#fff;border:none;font-family:'Lato',sans-serif;font-size:10px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;padding:5px 10px;cursor:pointer;border-radius:2px;" title="Delete this article">&#128465; Delete</button>
+        <div style="flex-shrink:0;display:flex;flex-direction:column;gap:8px;">
+          <button onclick="event.stopPropagation();editorEditArticle(${a.id})" style="background:var(--navy);color:#fff;border:none;font-family:'Lato',sans-serif;font-size:10px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;padding:5px 10px;cursor:pointer;border-radius:2px;" title="Edit this article">&#9998; Edit</button>
+          <button onclick="event.stopPropagation();editorDeleteArticle(${a.id})" style="background:#b91c1c;color:#fff;border:none;font-family:'Lato',sans-serif;font-size:10px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;padding:5px 10px;cursor:pointer;border-radius:2px;" title="Delete this article">&#128465; Delete</button>
+        </div>
       </div>`;
     }).join('');
   } catch(e) {
     loadEl.style.display = 'none';
     listEl.innerHTML = '<div class="review-empty">Could not load articles.</div>';
   }
+}
+
+function editorEditArticle(id) {
+  if (!isLoggedIn) return;
+  const a = (articles || []).find(x => x.id === id);
+  if (!a) return;
+  _editArticleId = a.id;
+  _editArticleExistingFileUrl = a.file_url || null;
+  _editArticleExistingFileType = a.file_type || null;
+  _editArticleExistingImageUrl = a.article_image_url || null;
+  openUpload();
+  switchEditorTab('publish');
+  const t = document.getElementById('up-title'); if (t) t.value = a.title || '';
+  const au = document.getElementById('up-author'); if (au) au.value = a.author || '';
+  const c = document.getElementById('up-category'); if (c) c.value = a.category || '';
+  const ex = document.getElementById('up-excerpt'); if (ex) ex.value = a.excerpt || '';
+  pendingFile = null;
+  const df = document.getElementById('drop-filename');
+  if (df) df.textContent = a.file_url ? 'Current file attached (drop to replace)' : 'Drop a file to attach';
+  const btn = document.getElementById('publish-btn');
+  if (btn) btn.textContent = 'Save Changes';
 }
 async function editorDeleteArticle(id) {
   if (!confirm('Permanently delete this article from the Herald? This cannot be undone.')) return;
@@ -4959,11 +5009,12 @@ async function generateArticleImage(articleData) {
       // ── Publication title centred to mirror site header ──
       ctx.textAlign = 'center';
       ctx.fillStyle = GOLD;
-      ctx.font = 'bold 52px "Playfair Display", Georgia, serif';
-      ctx.fillText('ILIRH', W / 2, 72);
-      ctx.fillStyle = '#6b8499';
-      ctx.font = '20px Georgia, serif';
-      ctx.fillText('The International Legal Inteligencia Research Herald, India', W / 2, 110);
+      ctx.font = 'bold 34px Georgia, serif';
+      const fullName = 'The International Legal Inteligencia Research Herald, India';
+      const nameLines = wrapTextGetLines(ctx, fullName, W - 220, 34);
+      // draw up to 2 lines, centred, in gold
+      const baseY = nameLines.length > 1 ? 62 : 76;
+      nameLines.slice(0, 2).forEach((line, i) => ctx.fillText(line, W / 2, baseY + i * 40));
       ctx.textAlign = 'left';
 
       // ── Thin divider below header ──
@@ -5288,25 +5339,20 @@ function wrapTextGetLines(ctx, text, maxW, fontSize) {
 
 async function uploadArticleImageToSupabase(dataUrl) {
   try {
-    const res = await fetch(dataUrl);
-    const blob = await res.blob();
-    const fileName = `article-images/${Date.now()}_article.jpg`;
-    const upRes = await fetch(`${SUPABASE_URL}/storage/v1/object/articles/${fileName}`, {
-      method: 'PUT',
-      headers: {
-        'apikey': SUPABASE_KEY,
-        'Authorization': 'Bearer ' + SUPABASE_KEY,
-        'Content-Type': blob.type || 'image/jpeg',
-        'x-upsert': 'true'
-      },
-      body: blob
+    // Upload via Edge Function (service role) to avoid Storage policy/RLS blocks
+    const fnRes = await fetch(`${SUPABASE_URL}/functions/v1/notify-subscribers`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + SUPABASE_KEY },
+      body: JSON.stringify({ type: 'upload_article_image', dataUrl })
     });
-    if (!upRes.ok) {
-      const t = await upRes.text().catch(() => '');
-      console.warn('Article image upload failed:', upRes.status, t);
+    if (!fnRes.ok) {
+      const t = await fnRes.text().catch(() => '');
+      console.warn('Article image upload failed:', fnRes.status, t);
       return null;
     }
-    return `${SUPABASE_URL}/storage/v1/object/public/articles/${fileName}`;
+    const out = await fnRes.json().catch(() => null);
+    if (!out || !out.ok || !out.url) return null;
+    return out.url;
   } catch(e) { console.warn('Article image upload failed:', e); return null; }
 }
 
