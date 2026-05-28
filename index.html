@@ -4680,10 +4680,96 @@ async function editorDeleteArticle(id) {
 // ── RICH TEXT EDITOR ──
 // ═══════════════════════════════════════════════════════
 const WORD_LIMIT = 900;
+// ── Alignment map for selection-scoped justify ──
+const RTE_ALIGN_MAP = {
+  justifyLeft:   'left',
+  justifyCenter: 'center',
+  justifyRight:  'right',
+  justifyFull:   'justify'
+};
+
 function rteExec(cmd, val) {
   const ed = document.getElementById('sub-editor');
   if (!ed) return;
   ed.focus();
+
+  // Alignment commands: apply only to the selected text, not the whole block
+  if (RTE_ALIGN_MAP[cmd]) {
+    const alignVal = RTE_ALIGN_MAP[cmd];
+    const sel = window.getSelection();
+    if (sel && !sel.isCollapsed && sel.rangeCount > 0) {
+      // There is a real selection — wrap it in a display:inline-block span
+      const range = sel.getRangeAt(0);
+      // Check if selection is entirely inside sub-editor
+      if (ed.contains(range.commonAncestorContainer)) {
+        // Remove any existing alignment span wrapping the same range
+        // to avoid double-wrapping on repeated clicks
+        const existing = range.commonAncestorContainer.parentElement;
+        if (existing && existing.dataset && existing.dataset.rteAlign) {
+          // If the whole span is selected, just update its alignment
+          existing.style.textAlign = alignVal;
+          existing.dataset.rteAlign = alignVal;
+          updateWordCount();
+          return;
+        }
+        // Wrap the selection
+        const span = document.createElement('span');
+        span.style.cssText = `display:inline-block; width:100%; text-align:${alignVal};`;
+        span.dataset.rteAlign = alignVal;
+        try {
+          range.surroundContents(span);
+        } catch(e) {
+          // surroundContents fails if selection crosses element boundaries
+          // Fall back: extract, wrap, reinsert
+          const frag = range.extractContents();
+          span.appendChild(frag);
+          range.insertNode(span);
+        }
+        // Re-select the content inside the span
+        const newRange = document.createRange();
+        newRange.selectNodeContents(span);
+        sel.removeAllRanges();
+        sel.addRange(newRange);
+        updateWordCount();
+        return;
+      }
+    }
+    // No selection or outside editor — fall through to execCommand (applies to whole block)
+    document.execCommand(cmd, false, null);
+    updateWordCount();
+    return;
+  }
+
+  // removeFormat: also strip our custom rteAlign spans from selection
+  if (cmd === 'removeFormat') {
+    const sel = window.getSelection();
+    if (sel && !sel.isCollapsed && sel.rangeCount > 0) {
+      const range = sel.getRangeAt(0);
+      if (ed.contains(range.commonAncestorContainer)) {
+        // Unwrap any rteAlign spans within the selection
+        const frag = range.cloneContents();
+        const spans = frag.querySelectorAll('span[data-rte-align]');
+        spans.forEach(s => {
+          const parent = s.parentNode;
+          while (s.firstChild) parent.insertBefore(s.firstChild, s);
+          parent.removeChild(s);
+        });
+        // Also check if the selection's parent is an rteAlign span
+        const anc = range.commonAncestorContainer;
+        const ancEl = anc.nodeType === 1 ? anc : anc.parentElement;
+        if (ancEl && ancEl.dataset && ancEl.dataset.rteAlign) {
+          ancEl.removeAttribute('style');
+          delete ancEl.dataset.rteAlign;
+        }
+      }
+    }
+    document.execCommand(cmd, false, null);
+    updateWordCount();
+    return;
+  }
+
+  // All other commands (bold, italic, underline, formatBlock, lists, etc.)
+  // work correctly on selection natively
   document.execCommand(cmd, false, val || null);
   updateWordCount();
 }
