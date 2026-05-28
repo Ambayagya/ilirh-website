@@ -1194,10 +1194,20 @@ body.dark-mode .rte-word-counter { background: #0d1624; border-color: var(--bord
 .submit-docx-status.ok { color: #27500a; }
 .submit-docx-preview-wrap { margin-bottom: 14px; }
 .submit-docx-preview-host {
-  border: 1px solid var(--border); background: #e8e4dc; padding: 12px 14px;
+  border: 1px solid var(--border); background: var(--offwhite); padding: 12px 14px;
   max-height: 280px; overflow: auto;
 }
-.submit-docx-preview-host .docx-wrapper { background: transparent !important; box-shadow: none !important; padding: 0 !important; }
+.article-docx-body .docx-wrapper,
+.submit-docx-preview-host .docx-wrapper {
+  background: transparent !important; box-shadow: none !important; padding: 0 !important; margin: 0 !important;
+}
+.article-docx-body section.docx,
+.submit-docx-preview-host section.docx {
+  background: transparent !important; box-shadow: none !important; margin: 0 !important; padding: 0 !important;
+  min-height: 0 !important;
+}
+.article-body-capture-host { background: #f7f4ef; }
+.article-body-capture-host .article-docx-body { background: #f7f4ef; color: #2c3e5a; }
 .submit-docx-tips {
   background: #fff; border: 1px solid var(--border-light); border-left: 4px solid var(--gold);
   padding: 12px 14px 12px 16px; margin-bottom: 14px;
@@ -1219,7 +1229,7 @@ body.dark-mode .submit-docx-tips { background: #0a1520; border-color: var(--bord
 .rte-word-counter { display: none !important; }
 .article-body-capture-host {
   position: fixed; left: -12000px; top: 0; z-index: -1; pointer-events: none;
-  background: #e8e4dc; overflow: hidden;
+  background: #f7f4ef; overflow: hidden;
 }
 .article-body-capture-host .article-docx-body { box-sizing: border-box; }
 .rd-docx-actions { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; margin: 12px 0 16px; }
@@ -2065,19 +2075,19 @@ body.dark-mode .editor-tab.active { color:#c8d8ea; }
       <div class="submit-section-title">Upload Your Article (Word) *</div>
       <p class="submit-docx-hint">
         Prepare your article in <strong>Microsoft Word</strong> (formatting, spacing, images, highlights, alignment).
-        Upload the <strong>.docx</strong> file here — it will appear <strong>unchanged</strong> in the grey article body area on the Herald template.
+        Upload the <strong>.docx</strong> file here — your text and layout will appear in the <strong>main article area</strong> of the Herald template, just like a written submission.
         <br>Limits: <strong>1 page maximum</strong> &nbsp;&bull;&nbsp; <strong>4 MB maximum</strong> &nbsp;&bull;&nbsp; .docx only
       </p>
       <div class="submit-docx-tips" role="note" aria-label="Word document tips">
         <div class="submit-docx-tips-title">Recommended Word settings</div>
         <ul>
           <li><strong>One page only</strong> — your full article must fit on a single page in Word; content beyond that will be rejected.</li>
-          <li><strong>Margins</strong> — use normal margins (about 2.5&nbsp;cm / 1&nbsp;inch on all sides) so text fits the grey article area cleanly.</li>
+          <li><strong>Margins</strong> — use normal margins (about 2.5&nbsp;cm / 1&nbsp;inch on all sides) so text fits the article area cleanly below your author details.</li>
           <li><strong>Fonts</strong> — prefer common fonts (e.g. Times New Roman, Georgia, Arial, Calibri). Rare or custom fonts may not match exactly on the Herald.</li>
           <li><strong>Images</strong> — insert pictures with <em>Insert → Pictures</em> (embedded in the file). Avoid oversized images; keep the total file under 4&nbsp;MB.</li>
-          <li><strong>Formatting</strong> — do all spacing, bold, highlight, lists, and alignment in Word; that is what appears in the grey body zone.</li>
+          <li><strong>Formatting</strong> — do all spacing, bold, highlight, lists, and alignment in Word; that is what appears in the published article image.</li>
           <li><strong>File type</strong> — save and upload as <strong>.docx</strong> (Word Document), not .doc or PDF.</li>
-          <li><strong>Before you submit</strong> — use <strong>Preview Article Before Submission</strong> below and check that the grey area matches what you see in Word.</li>
+          <li><strong>Before you submit</strong> — use <strong>Preview Article Before Submission</strong> below and check the full layout matches what you see in Word.</li>
         </ul>
       </div>
       <div class="submit-docx-zone" id="sub-docx-zone" onclick="document.getElementById('sub-docx-file').click()">
@@ -2089,7 +2099,7 @@ body.dark-mode .editor-tab.active { color:#c8d8ea; }
       </div>
       <div class="submit-docx-status" id="sub-docx-status"></div>
       <div class="submit-docx-preview-wrap" id="sub-docx-preview-wrap" style="display:none;">
-        <div style="font-family:'Lato',sans-serif;font-size:10px;font-weight:700;letter-spacing:0.14em;text-transform:uppercase;color:var(--text-muted);margin-bottom:6px;">Word document preview (grey article area)</div>
+        <div style="font-family:'Lato',sans-serif;font-size:10px;font-weight:700;letter-spacing:0.14em;text-transform:uppercase;color:var(--text-muted);margin-bottom:6px;">Word document preview (article body)</div>
         <div class="submit-docx-preview-host" id="sub-docx-preview-host"></div>
       </div>
       <!-- Hidden: stores HTML for admin minor edits + legacy hooks -->
@@ -2122,7 +2132,7 @@ body.dark-mode .editor-tab.active { color:#c8d8ea; }
         Preview Your Article Before Submission
         <span class="preview-badge">Live Preview</span>
       </div>
-      <p class="preview-sub">This is exactly how your article will appear on the Herald — including your Word formatting in the grey article body area. Review carefully before submitting. Re-upload your .docx above to change the article body.</p>
+      <p class="preview-sub">This is exactly how your article will appear on the Herald — header, title, author details, and your Word content flowing in the main article area. Review carefully before submitting. Re-upload your .docx above to change the article text.</p>
       <div id="article-preview-canvas-wrap" onclick="openPreviewLightbox()" title="Click to enlarge">
         <div id="preview-generating">
           <div class="spinner"></div>
@@ -5036,8 +5046,8 @@ async function editorDeleteArticle(id) {
 // ── WORD DOCUMENT ARTICLE BODY ──
 // ═══════════════════════════════════════════════════════
 const MAX_DOCX_BYTES = 4 * 1024 * 1024;
-const ARTICLE_BODY_GREY = '#e8e4dc';
-/** Max height of grey body zone at template canvas scale (≈1 page). */
+const ARTICLE_PAGE_BG = '#f7f4ef';
+/** Max height of article body at template canvas scale (≈1 page). */
 const ARTICLE_BODY_MAX_H = 2150;
 const ARTICLE_BODY_CAPTURE_W = 2368;
 let _subWordDocFile = null;
@@ -5174,7 +5184,7 @@ async function captureArticleBodyHtml(html, width, maxHeight) {
   }
 
   const shot = await html2canvas(host, {
-    backgroundColor: ARTICLE_BODY_GREY,
+    backgroundColor: ARTICLE_PAGE_BG,
     scale: 1,
     useCORS: true,
     allowTaint: true,
@@ -5218,7 +5228,7 @@ async function handleSubDocxSelect(input) {
     if (fnEl) fnEl.textContent = '✓ ' + file.name + ' (' + (file.size / 1024 / 1024).toFixed(2) + ' MB)';
     if (zone) zone.classList.add('has-file');
     if (previewWrap) previewWrap.style.display = 'block';
-    setSubDocxStatus('✓ Document loaded — formatting preserved for the grey article area.', false);
+    setSubDocxStatus('✓ Document loaded — your layout will appear in the article area on the template.', false);
     scheduleSaveSubmitDraft();
     schedulePreviewRefresh();
   } catch (e) {
@@ -5950,9 +5960,6 @@ async function generateArticleImage(articleData) {
         const MAX_Y = H - 220;
         const bodyMaxH = MAX_Y - startY;
         const htmlBody = articleData.htmlBody || '';
-
-        ctx.fillStyle = ARTICLE_BODY_GREY;
-        ctx.fillRect(LEFT, startY, CONTENT_W, bodyMaxH);
 
         if (htmlBody.trim() && typeof html2canvas !== 'undefined') {
           try {
