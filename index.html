@@ -1045,6 +1045,82 @@ button:focus-visible, a:focus-visible, input:focus-visible {
 .submit-btn-primary { background:var(--navy); color:#fff; border:none; font-family:'Lato',sans-serif; font-size:11.5px; font-weight:700; letter-spacing:0.14em; text-transform:uppercase; padding:13px 28px; cursor:pointer; transition:background 0.2s; width:100%; }
 .submit-btn-primary:hover { background:var(--navy-light); }
 .submit-btn-primary:disabled { opacity:0.55; cursor:not-allowed; }
+
+/* ── ILIRH PREMIUM SUBMIT BUTTON ── */
+.ilirh-submit-btn {
+  background: linear-gradient(135deg, var(--navy) 0%, var(--navy-light) 100%) !important;
+  color: var(--gold-light) !important;
+  border: 2px solid var(--gold) !important;
+  font-family: 'Cinzel', Georgia, serif !important;
+  font-size: 13px !important;
+  font-weight: 700 !important;
+  letter-spacing: 0.18em !important;
+  text-transform: uppercase !important;
+  padding: 16px 32px !important;
+  cursor: pointer !important;
+  width: 100% !important;
+  position: relative !important;
+  overflow: hidden !important;
+  transition: all 0.25s ease !important;
+  box-shadow: 0 4px 18px rgba(10,22,40,0.25) !important;
+  margin-top: 14px !important;
+  display: flex; align-items: center; justify-content: center; gap: 6px;
+}
+.ilirh-submit-btn::before {
+  content: '';
+  position: absolute; inset: 0;
+  background: linear-gradient(135deg, rgba(201,168,76,0.18) 0%, transparent 60%);
+  opacity: 0; transition: opacity 0.25s;
+}
+.ilirh-submit-btn:hover::before { opacity: 1; }
+.ilirh-submit-btn:hover {
+  background: linear-gradient(135deg, var(--navy-light) 0%, #2a4a8e 100%) !important;
+  border-color: var(--gold-light) !important;
+  color: #fff !important;
+  box-shadow: 0 6px 28px rgba(10,22,40,0.38) !important;
+  transform: translateY(-1px) !important;
+}
+.ilirh-submit-btn:disabled { opacity: 0.55 !important; cursor: not-allowed !important; transform: none !important; }
+
+/* ── RICH TEXT EDITOR ── */
+.rich-editor-toolbar {
+  display: flex; flex-wrap: wrap; gap: 3px; padding: 8px 10px;
+  background: var(--cream-dark); border: 1px solid var(--border); border-bottom: none;
+}
+.rte-btn {
+  background: #fff; border: 1px solid var(--border); color: var(--text-primary);
+  font-family: 'Lato', sans-serif; font-size: 11.5px; font-weight: 700;
+  padding: 5px 10px; cursor: pointer; transition: all 0.15s; border-radius: 2px;
+}
+.rte-btn:hover { background: var(--navy); color: #fff; border-color: var(--navy); }
+.rte-btn-sm { font-size: 10px; padding: 5px 8px; }
+.rte-sep { width: 1px; background: var(--border); margin: 3px 4px; }
+.rich-editor-area {
+  width: 100%; min-height: 260px; max-height: 420px; overflow-y: auto;
+  padding: 14px 16px; border: 1px solid var(--border); background: #fff;
+  font-family: 'EB Garamond', serif; font-size: 16px; color: var(--text-primary);
+  line-height: 1.75; outline: none; transition: border-color 0.2s;
+}
+.rich-editor-area:focus { border-color: var(--navy); }
+.rich-editor-area[data-placeholder]:empty::before {
+  content: attr(data-placeholder); color: var(--text-muted); pointer-events: none;
+  font-style: italic;
+}
+.rich-editor-area h2 { font-family: 'Playfair Display', serif; font-size: 20px; color: var(--navy); margin: 16px 0 8px; }
+.rich-editor-area h3 { font-family: 'Playfair Display', serif; font-size: 17px; color: var(--navy); margin: 12px 0 6px; }
+.rich-editor-area blockquote { border-left: 4px solid var(--gold); padding: 10px 16px; margin: 12px 0; background: var(--cream); font-style: italic; color: var(--text-secondary); }
+.rich-editor-area ul, .rich-editor-area ol { padding-left: 22px; margin: 8px 0; }
+.rich-editor-area a { color: var(--navy-light); }
+.rte-word-counter {
+  background: var(--cream); border: 1px solid var(--border); border-top: none;
+  padding: 5px 12px; font-family: 'Lato', sans-serif; font-size: 11px;
+  color: var(--text-muted); text-align: right; letter-spacing: 0.06em;
+  margin-bottom: 14px;
+}
+body.dark-mode .rich-editor-area { background: #0a1520; color: #c8d8ea; border-color: var(--border); }
+body.dark-mode .rich-editor-toolbar { background: #0d1624; border-color: var(--border); }
+body.dark-mode .rte-btn { background: #0a1520; color: #c8d8ea; border-color: var(--border); }
+body.dark-mode .rte-word-counter { background: #0d1624; border-color: var(--border); }
 .submit-btn-cancel { background:none; border:1px solid var(--border); color:var(--text-muted); font-family:'Lato',sans-serif; font-size:11px; font-weight:700; letter-spacing:0.1em; text-transform:uppercase; padding:10px 20px; cursor:pointer; margin-top:10px; width:100%; transition:border-color 0.2s; }
 .submit-btn-cancel:hover { border-color:var(--navy); color:var(--navy); }
 .submit-success-msg { display:none; background:#eaf3de; border:1px solid #c0dd97; color:#27500a; font-family:'EB Garamond',serif; font-size:15px; padding:14px 18px; margin-top:16px; line-height:1.6; }
@@ -1183,7 +1259,112 @@ body.dark-mode .editor-tab.active { color:#c8d8ea; }
 /* ── HERO IMAGE CURSOR ── */
 .hero-main img { cursor:pointer; }
 
+/* ══ MASTHEAD SUBMIT CTA ══ */
+.masthead-submit-cta {
+  display:inline-flex; align-items:center; gap:6px;
+  font-family:'Lato',sans-serif; font-size:11.5px; font-weight:700;
+  letter-spacing:0.13em; text-transform:uppercase;
+  color:var(--navy); background:var(--gold);
+  border:none; padding:7px 18px 7px 14px; cursor:pointer;
+  position:relative; overflow:hidden;
+  transition: background 0.22s ease, color 0.22s ease, box-shadow 0.22s ease, transform 0.18s ease;
+  box-shadow: 0 2px 10px rgba(184,150,62,0.28);
+  clip-path: polygon(0 0, calc(100% - 10px) 0, 100% 50%, calc(100% - 10px) 100%, 0 100%);
+}
+.masthead-submit-cta::before {
+  content:''; position:absolute; inset:0;
+  background:linear-gradient(90deg, rgba(255,255,255,0) 0%, rgba(255,255,255,0.22) 50%, rgba(255,255,255,0) 100%);
+  transform:translateX(-100%);
+  transition:transform 0.45s ease;
+}
+.masthead-submit-cta:hover::before { transform:translateX(100%); }
+.masthead-submit-cta:hover {
+  background:var(--navy); color:var(--gold-light);
+  box-shadow:0 4px 18px rgba(10,22,40,0.22);
+  transform:translateY(-1px);
+}
+.masthead-submit-cta:active { transform:translateY(0); }
 
+/* ══ ARTICLE PREVIEW PANEL ══ */
+#sub-preview-section {
+  display:none;
+  margin-top:24px;
+}
+.preview-section-title {
+  font-family:'Playfair Display',serif; font-size:18px; font-weight:700;
+  color:var(--navy); margin-bottom:6px;
+  padding-bottom:8px; border-bottom:2px solid var(--gold);
+  display:flex; align-items:center; gap:10px;
+}
+.preview-section-title .preview-badge {
+  font-family:'Lato',sans-serif; font-size:9px; font-weight:700;
+  letter-spacing:0.18em; text-transform:uppercase;
+  background:var(--gold); color:var(--navy);
+  padding:3px 9px; border-radius:1px;
+}
+.preview-sub {
+  font-family:'Lato',sans-serif; font-size:11px; color:var(--text-muted);
+  margin-bottom:14px; line-height:1.6;
+}
+#article-preview-canvas-wrap {
+  width:100%; border:2px solid var(--border);
+  background:var(--cream-dark); position:relative;
+  min-height:120px; display:flex; align-items:center; justify-content:center;
+  overflow:hidden; cursor:zoom-in;
+}
+#article-preview-canvas-wrap canvas,
+#article-preview-canvas-wrap img {
+  width:100%; height:auto; display:block;
+}
+#preview-generating {
+  position:absolute; inset:0; background:rgba(247,244,239,0.88);
+  display:flex; flex-direction:column; align-items:center; justify-content:center;
+  gap:10px; font-family:'Lato',sans-serif; font-size:12px; color:var(--text-muted);
+  z-index:2;
+}
+#preview-generating.hidden { display:none; }
+.preview-action-row {
+  display:flex; gap:12px; margin-top:16px;
+  flex-wrap:wrap;
+}
+.btn-preview-edit {
+  flex:1; min-width:140px;
+  background:#fff; color:var(--navy);
+  border:2px solid var(--navy);
+  font-family:'Lato',sans-serif; font-size:11.5px; font-weight:700;
+  letter-spacing:0.12em; text-transform:uppercase;
+  padding:12px 20px; cursor:pointer;
+  transition:background 0.18s, color 0.18s;
+}
+.btn-preview-edit:hover { background:var(--navy); color:#fff; }
+.btn-preview-confirm {
+  flex:2; min-width:200px;
+  background:var(--navy); color:#fff;
+  border:2px solid var(--navy);
+  font-family:'Lato',sans-serif; font-size:12px; font-weight:700;
+  letter-spacing:0.12em; text-transform:uppercase;
+  padding:13px 24px; cursor:pointer;
+  transition:background 0.18s, box-shadow 0.18s;
+  display:flex; align-items:center; justify-content:center; gap:8px;
+  position:relative; overflow:hidden;
+}
+.btn-preview-confirm::after {
+  content:''; position:absolute;
+  bottom:0; left:0; right:0; height:3px;
+  background:var(--gold);
+}
+.btn-preview-confirm:hover { background:var(--navy-light); box-shadow:0 4px 16px rgba(10,22,40,0.22); }
+.btn-preview-confirm:disabled { opacity:0.6; cursor:not-allowed; }
+
+/* ══ MODAL RICH TEXT BODY ══ */
+.modal-rich-body { font-family:'EB Garamond',serif; font-size:18px; line-height:1.85; color:var(--text-secondary); margin-top:8px; }
+.modal-rich-body h2 { font-family:'Playfair Display',serif; font-size:22px; font-weight:700; color:var(--navy); margin:20px 0 10px; border-bottom:1px solid var(--border-light); padding-bottom:6px; }
+.modal-rich-body h3 { font-family:'Playfair Display',serif; font-size:18px; font-weight:700; color:var(--navy); margin:16px 0 8px; }
+.modal-rich-body blockquote { border-left:4px solid var(--gold); padding:10px 20px; margin:14px 0; background:var(--cream); font-style:italic; color:var(--text-secondary); border-radius:1px; }
+.modal-rich-body ul, .modal-rich-body ol { padding-left:24px; margin:10px 0; }
+.modal-rich-body p { margin-bottom:12px; }
+.modal-rich-body a { color:var(--navy-light); text-decoration:underline; }
+.modal-rich-body strong { color:var(--navy); }
 
 </style>
 </head>
@@ -1227,7 +1408,7 @@ body.dark-mode .editor-tab.active { color:#c8d8ea; }
     <hr class="masthead-rule-bot">
     <div class="masthead-meta">
       <span id="live-date-2"></span>
-      <button onclick="openSubmitArticle()" style="font-style:italic;font-family:'IM Fell English',serif;font-size:13px;color:var(--navy-light);background:none;border:none;cursor:pointer;padding:0;letter-spacing:0.01em;transition:color 0.2s;text-decoration:underline;text-decoration-style:dotted;text-decoration-color:var(--gold);" onmouseover="this.style.color='var(--gold)'" onmouseout="this.style.color='var(--navy-light)'">✍ Submit Your Article</button>
+      <button onclick="openSubmitArticle()" class="masthead-submit-cta">✍ Submit Your Article</button>
       <span>Vol. I &bull; Est. 2026</span>
     </div>
   </div>
@@ -1504,6 +1685,7 @@ body.dark-mode .editor-tab.active { color:#c8d8ea; }
     <div class="editor-tabs">
       <button class="editor-tab active" id="tab-publish" onclick="switchEditorTab('publish')">&#128274; Publish Article</button>
       <button class="editor-tab" id="tab-review" onclick="switchEditorTab('review')">&#128203; Review Submissions <span class="tab-badge" id="review-tab-badge" style="display:none;">0</span></button>
+      <button class="editor-tab" id="tab-published" onclick="switchEditorTab('published')">&#128240; Published Articles</button>
     </div>
 
     <!-- PUBLISH TAB -->
@@ -1571,6 +1753,15 @@ body.dark-mode .editor-tab.active { color:#c8d8ea; }
       </div>
       <div id="review-list"></div>
     </div><!-- end panel-review -->
+
+    <!-- PUBLISHED ARTICLES TAB -->
+    <div class="editor-panel" id="panel-published">
+      <p class="upload-sub">All articles currently published on the Herald. Click any article to delete it if needed.</p>
+      <div id="published-loading" style="text-align:center;padding:28px;color:var(--text-muted);font-family:'Lato',sans-serif;font-size:12px;display:none;">
+        <div class="spinner" style="margin:0 auto 10px;"></div> Loading published articles…
+      </div>
+      <div id="published-list"></div>
+    </div><!-- end panel-published -->
 
   </div>
 </div>
@@ -1699,14 +1890,76 @@ body.dark-mode .editor-tab.active { color:#c8d8ea; }
       </div>
 
       <hr class="submit-rule">
-      <!-- File Upload -->
-      <div class="submit-section-title">Upload Your Article</div>
-      <div class="submit-drop-zone" id="sub-drop-zone">
-        <input type="file" id="sub-file" accept=".pdf,image/*" onchange="handleSubFileSelect(this)">
-        <div style="font-size:28px;margin-bottom:8px;opacity:0.4;">📄</div>
-        <div style="font-weight:700;margin-bottom:4px;color:var(--text-secondary);">Drag &amp; drop your article, or click to browse</div>
-        <div style="font-size:11px;color:var(--text-muted);">Accepted formats: PDF, JPG, PNG &nbsp;&bull;&nbsp; Max size: 3 MB</div>
-        <div class="submit-drop-filename" id="sub-drop-filename"></div>
+      <!-- Location -->
+      <div class="submit-section-title">Your Location</div>
+      <div class="submit-2col">
+        <div class="submit-form-row">
+          <label>Country *</label>
+          <select id="sub-country" onchange="populateStates()">
+            <option value="">— Select Country —</option>
+          </select>
+        </div>
+        <div class="submit-form-row">
+          <label>State / Province</label>
+          <select id="sub-state" onchange="populateCities()">
+            <option value="">— Select State —</option>
+          </select>
+        </div>
+      </div>
+      <div class="submit-2col">
+        <div class="submit-form-row">
+          <label>City</label>
+          <select id="sub-city" onchange="updatePlaceString()">
+            <option value="">— Select City —</option>
+          </select>
+        </div>
+        <div class="submit-form-row">
+          <label>Location (auto-generated)</label>
+          <input type="text" id="sub-place" placeholder="City, State, Country" readonly style="background:var(--cream);color:var(--text-muted);font-size:14px;">
+        </div>
+      </div>
+
+      <hr class="submit-rule">
+      <!-- Author Photo -->
+      <div class="submit-section-title">Author Photo <span style="font-weight:400;text-transform:none;letter-spacing:0;font-family:'EB Garamond',serif;font-size:12px;color:var(--text-muted);">(optional — appears on article image)</span></div>
+      <div style="display:flex;align-items:flex-start;gap:18px;margin-bottom:14px;">
+        <div id="sub-photo-preview" style="width:80px;height:80px;border:2px solid var(--border);background:var(--cream);border-radius:50%;overflow:hidden;flex-shrink:0;display:flex;align-items:center;justify-content:center;">
+          <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="var(--border)" stroke-width="1.5"><circle cx="12" cy="8" r="4"/><path d="M6 20v-2a6 6 0 0 1 12 0v2"/></svg>
+        </div>
+        <div style="flex:1;">
+          <div class="submit-drop-zone" id="sub-photo-zone" style="padding:14px 12px;margin-bottom:0;" onclick="document.getElementById('sub-photo-file').click()">
+            <input type="file" id="sub-photo-file" accept="image/*" style="display:none;" onchange="handleSubPhotoSelect(this)">
+            <div style="font-size:11px;font-weight:700;color:var(--text-secondary);margin-bottom:3px;">Click to upload your photo</div>
+            <div style="font-size:10px;color:var(--text-muted);">JPG, PNG &nbsp;&bull;&nbsp; Max 2 MB &nbsp;&bull;&nbsp; Square preferred</div>
+            <div class="submit-drop-filename" id="sub-photo-filename"></div>
+          </div>
+        </div>
+      </div>
+
+      <hr class="submit-rule">
+      <!-- Rich Article Editor -->
+      <div class="submit-section-title">Write Your Article *</div>
+      <div id="sub-editor-wrap">
+        <div class="rich-editor-toolbar" id="sub-toolbar">
+          <button type="button" class="rte-btn" onclick="rteExec('bold')" title="Bold"><b>B</b></button>
+          <button type="button" class="rte-btn" onclick="rteExec('italic')" title="Italic"><i>I</i></button>
+          <button type="button" class="rte-btn" onclick="rteExec('underline')" title="Underline"><u>U</u></button>
+          <span class="rte-sep"></span>
+          <button type="button" class="rte-btn rte-btn-sm" onclick="rteExec('formatBlock','H2')" title="Heading 2">H2</button>
+          <button type="button" class="rte-btn rte-btn-sm" onclick="rteExec('formatBlock','H3')" title="Heading 3">H3</button>
+          <span class="rte-sep"></span>
+          <button type="button" class="rte-btn" onclick="rteExec('insertUnorderedList')" title="Bullet list">&#8226; List</button>
+          <button type="button" class="rte-btn" onclick="rteExec('insertOrderedList')" title="Numbered list">1. List</button>
+          <button type="button" class="rte-btn" onclick="rteExec('formatBlock','BLOCKQUOTE')" title="Blockquote">&ldquo;&rdquo;</button>
+          <span class="rte-sep"></span>
+          <button type="button" class="rte-btn" onclick="rteInsertLink()" title="Insert link">&#128279; Link</button>
+          <button type="button" class="rte-btn rte-btn-sm" onclick="rteExec('removeFormat')" title="Clear format">&#10005; Clear</button>
+        </div>
+        <div id="sub-editor" class="rich-editor-area" contenteditable="true" spellcheck="true" data-placeholder="Write your full article here… (minimum 100 words, maximum 900 words)"></div>
+        <div class="rte-word-counter">
+          <span id="sub-word-count">0</span> / 900 words
+          <span id="sub-word-warn" style="display:none;color:#a32d2d;margin-left:8px;">⚠ Limit reached</span>
+        </div>
       </div>
 
       <!-- Undertaking Checkbox -->
@@ -1717,9 +1970,39 @@ body.dark-mode .editor-tab.active { color:#c8d8ea; }
 
       <div class="submit-progress" id="sub-progress"><div class="submit-progress-fill" id="sub-progress-fill"></div></div>
       <p class="submit-err" id="sub-error"></p>
-      <button class="submit-btn-primary" id="sub-submit-btn" onclick="doSubmitArticle()">Submit Article for Review &rarr;</button>
+
+      <button class="submit-btn-primary ilirh-submit-btn" id="sub-show-preview-btn" onclick="showArticlePreview()">
+        <span style="font-size:14px;">👁</span> Preview Article Before Submission
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" style="margin-left:6px;vertical-align:middle;"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+      </button>
       <button class="submit-btn-cancel" onclick="closeSubmitArticle()">Cancel</button>
     </div>
+
+    <!-- PREVIEW SECTION (shown after form is filled) -->
+    <div id="sub-preview-section">
+      <div class="preview-section-title">
+        Preview Your Article Before Submission
+        <span class="preview-badge">Live Preview</span>
+      </div>
+      <p class="preview-sub">This is exactly how your article will appear on the Herald. Review carefully before submitting. Any edits you make above will automatically update this preview.</p>
+      <div id="article-preview-canvas-wrap" onclick="openPreviewLightbox()" title="Click to enlarge">
+        <div id="preview-generating">
+          <div class="spinner"></div>
+          <span>Generating article preview…</span>
+        </div>
+        <img id="article-preview-img" src="" alt="Article Preview" style="display:none;">
+      </div>
+      <div class="preview-action-row">
+        <button class="btn-preview-edit" onclick="editArticleFromPreview()">← Edit Article</button>
+        <button class="btn-preview-confirm" id="sub-submit-btn" onclick="doSubmitArticle()">
+          <span style="font-size:14px;">✍</span> Confirm &amp; Submit Article
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+        </button>
+      </div>
+      <div class="submit-progress" id="sub-progress-confirm"><div class="submit-progress-fill" id="sub-progress-fill-confirm"></div></div>
+      <p class="submit-err" id="sub-error-confirm"></p>
+    </div>
+
   </div>
 </div>
 
@@ -1941,9 +2224,12 @@ function readTime(text) {
 }
  
 function cardThumbHtml(article) {
-  if (article.file_url && article.file_type && article.file_type.startsWith('image/')) {
-    // Image: clicking thumb opens lightbox directly
-    return `<div class="card-thumb-wrap" onclick="event.stopPropagation();openLightbox('${article.file_url}',['${article.file_url}'],0)" title="Click to enlarge"><img data-src="${article.file_url}" loading="lazy" decoding="async" alt="${esc(article.title)}" width="400" height="267"></div>`;
+  // Use article_image_url if available (generated thumbnail for PDFs / article image for submissions)
+  const imgSrc = article.article_image_url ||
+    (article.file_url && article.file_type && article.file_type.startsWith('image/') ? article.file_url : null);
+
+  if (imgSrc) {
+    return `<div class="card-thumb-wrap" onclick="event.stopPropagation();openLightbox('${imgSrc}',['${imgSrc}'],0)" title="Click to enlarge"><img data-src="${imgSrc}" loading="lazy" decoding="async" alt="${esc(article.title)}" width="400" height="267"></div>`;
   }
   const icon = article.file_type === 'application/pdf'
     ? `<svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="#0a1628" stroke-width="1.5"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14,2 14,8 20,8"/><line x1="9" y1="13" x2="15" y2="13"/><line x1="9" y1="17" x2="15" y2="17"/></svg>`
@@ -1952,8 +2238,10 @@ function cardThumbHtml(article) {
 }
  
 function heroThumbHtml(article) {
-  if (article.file_url && article.file_type && article.file_type.startsWith('image/')) {
-    return `<img src="${article.file_url}" alt="${esc(article.title)}" loading="lazy" decoding="async" style="width:100%;aspect-ratio:4/3;object-fit:cover;border:1px solid var(--border-light);margin-bottom:14px;display:block;opacity:0;transition:opacity 0.45s ease;cursor:zoom-in;" onload="this.style.opacity=1" onclick="openLightbox('${article.file_url}',['${article.file_url}'],0)" title="Click to enlarge">`;
+  const imgSrc = article.article_image_url ||
+    (article.file_url && article.file_type && article.file_type.startsWith('image/') ? article.file_url : null);
+  if (imgSrc) {
+    return `<img src="${imgSrc}" alt="${esc(article.title)}" loading="lazy" decoding="async" style="width:100%;aspect-ratio:4/3;object-fit:cover;border:1px solid var(--border-light);margin-bottom:14px;display:block;opacity:0;transition:opacity 0.45s ease;cursor:zoom-in;" onload="this.style.opacity=1" onclick="openLightbox('${imgSrc}',['${imgSrc}'],0)" title="Click to enlarge">`;
   }
   return `<div style="width:100%;aspect-ratio:4/3;background:var(--cream-dark);display:flex;align-items:center;justify-content:center;margin-bottom:14px;border:1px solid var(--border);opacity:0.4;">
     <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="#0a1628" stroke-width="1.2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14,2 14,8 20,8"/></svg>
@@ -2167,12 +2455,29 @@ async function openArticle(id, navDir) {
   document.getElementById('modal-cat').textContent = a.category;
   document.getElementById('modal-title').textContent = a.title;
   document.getElementById('modal-byline').innerHTML = `By <strong>${esc(a.author)}</strong> &bull; ${formatDate(a.created_at)}`;
-  let inner = a.excerpt ? `<p>${esc(a.excerpt)}</p>` : '';
-  if (a.file_url) {
-    if (a.file_type === 'application/pdf') {
-      inner += `<iframe class="modal-file-frame" src="${a.file_url}" title="${esc(a.title)}"></iframe>`;
-    } else if (a.file_type && a.file_type.startsWith('image/')) {
-      inner += `<img class="modal-img" src="${a.file_url}" alt="${esc(a.title)}" style="cursor:zoom-in;-webkit-tap-highlight-color:transparent;" onclick="openLightbox('${a.file_url}',['${a.file_url}'],0)">`;
+  let inner = '';
+  // If article has a rich text body, display it
+  if (a.article_body) {
+    inner = `<div class="modal-rich-body">${a.article_body}</div>`;
+    if (a.file_url && a.file_type && a.file_type.startsWith('image/')) {
+      inner += `<img class="modal-img" src="${a.file_url}" alt="${esc(a.title)}" style="cursor:zoom-in;margin-top:20px;" onclick="openLightbox('${a.file_url}',['${a.file_url}'],0)">`;
+    }
+  } else if (a.excerpt) {
+    inner = `<p>${esc(a.excerpt)}</p>`;
+    if (a.file_url) {
+      if (a.file_type === 'application/pdf') {
+        inner += `<iframe class="modal-file-frame" src="${a.file_url}" title="${esc(a.title)}"></iframe>`;
+      } else if (a.file_type && a.file_type.startsWith('image/')) {
+        inner += `<img class="modal-img" src="${a.file_url}" alt="${esc(a.title)}" style="cursor:zoom-in;-webkit-tap-highlight-color:transparent;" onclick="openLightbox('${a.file_url}',['${a.file_url}'],0)">`;
+      }
+    }
+  } else {
+    if (a.file_url) {
+      if (a.file_type === 'application/pdf') {
+        inner = `<iframe class="modal-file-frame" src="${a.file_url}" title="${esc(a.title)}"></iframe>`;
+      } else if (a.file_type && a.file_type.startsWith('image/')) {
+        inner = `<img class="modal-img" src="${a.file_url}" alt="${esc(a.title)}" style="cursor:zoom-in;-webkit-tap-highlight-color:transparent;" onclick="openLightbox('${a.file_url}',['${a.file_url}'],0)">`;
+      }
     }
   }
   document.getElementById('modal-content').innerHTML = inner;
@@ -2452,10 +2757,10 @@ async function publishArticle() {
   const btn = document.getElementById('publish-btn');
   btn.disabled = true; btn.textContent = 'Uploading…';
   document.getElementById('progress-bar').style.display = 'block';
-  document.getElementById('progress-fill').style.width = '30%';
+  document.getElementById('progress-fill').style.width = '20%';
  
   try {
-    // Upload file to Supabase Storage
+    // 1. Upload the main file
     const fileName = `${Date.now()}_${pendingFile.name.replace(/[^a-zA-Z0-9._-]/g,'_')}`;
     const uploadRes = await fetch(`${SUPABASE_URL}/storage/v1/object/articles/${fileName}`, {
       method: 'POST',
@@ -2468,17 +2773,33 @@ async function publishArticle() {
       body: pendingFile
     });
  
-    document.getElementById('progress-fill').style.width = '70%';
- 
+    document.getElementById('progress-fill').style.width = '50%';
     if (!uploadRes.ok) throw new Error('File upload failed');
- 
     const file_url = `${SUPABASE_URL}/storage/v1/object/public/articles/${fileName}`;
+
+    // 2. If PDF, try to generate thumbnail and use as article image
+    let thumb_url = null;
+    if (pendingFile.type === 'application/pdf') {
+      try {
+        btn.textContent = 'Generating thumbnail…';
+        await loadPdfJs();
+        const thumbDataUrl = await generatePdfThumbnail(pendingFile);
+        if (thumbDataUrl) {
+          btn.textContent = 'Uploading thumbnail…';
+          thumb_url = await uploadArticleImageToSupabase(thumbDataUrl);
+        }
+      } catch(thumbErr) { console.warn('PDF thumbnail failed (non-critical):', thumbErr); }
+    }
+    document.getElementById('progress-fill').style.width = '75%';
  
-    // Insert article record
+    // 3. Insert article record — use thumb_url as article image if PDF
+    const articlePayload = { title, author, category: cat, excerpt, file_url, file_type: pendingFile.type };
+    if (thumb_url) articlePayload.article_image_url = thumb_url;
+
     const insertRes = await fetch(`${SUPABASE_URL}/rest/v1/articles`, {
       method: 'POST',
       headers: { ...headers, 'Prefer': 'return=representation' },
-      body: JSON.stringify({ title, author, category: cat, excerpt, file_url, file_type: pendingFile.type })
+      body: JSON.stringify(articlePayload)
     });
  
     document.getElementById('progress-fill').style.width = '100%';
@@ -2488,7 +2809,6 @@ async function publishArticle() {
     const newArticle = Array.isArray(inserted) ? inserted[0] : inserted;
  
     if (newArticle) {
-      // Notify subscribers (unless silently published)
       if (!silent) {
         fetch(`${SUPABASE_URL}/functions/v1/notify-subscribers`, {
           method: 'POST',
@@ -2496,20 +2816,15 @@ async function publishArticle() {
           body: JSON.stringify({ type: 'new_article', article: newArticle })
         }).catch(e => console.warn('Subscriber notification failed:', e));
       }
- 
-      // Send publication certificate to external author
       if ((_authorOwnership === 'other' || _authorOwnership === 'genz') && authorEmail) {
         fetch(`${SUPABASE_URL}/functions/v1/notify-subscribers`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + SUPABASE_KEY },
           body: JSON.stringify({
             type: 'author_certificate',
-            author_name: author,
-            author_email: authorEmail,
-            article_title: title,
-            article_category: cat,
-            article_excerpt: excerpt,
-            article_id: newArticle.id,
+            author_name: author, author_email: authorEmail,
+            article_title: title, article_category: cat,
+            article_excerpt: excerpt, article_id: newArticle.id,
             published_at: newArticle.created_at
           })
         }).catch(e => console.warn('Author certificate email failed:', e));
@@ -3572,17 +3887,46 @@ function resetSubmitForm() {
   ['sub-name','sub-email','sub-phone','sub-institution','sub-title','sub-abstract','sub-coauthors'].forEach(id => {
     const el = document.getElementById(id); if(el) el.value = '';
   });
-  ['sub-occupation','sub-category'].forEach(id => {
+  ['sub-occupation','sub-category','sub-country','sub-state','sub-city'].forEach(id => {
     const el = document.getElementById(id); if(el) el.value = '';
   });
+  const placeEl = document.getElementById('sub-place'); if(placeEl) placeEl.value = '';
+  const stateSel = document.getElementById('sub-state'); if(stateSel) stateSel.innerHTML = '<option value="">— Select State —</option>';
+  const citySel = document.getElementById('sub-city'); if(citySel) citySel.innerHTML = '<option value="">— Select City —</option>';
   const ck = document.getElementById('sub-undertaking'); if(ck) ck.checked = false;
   const fn = document.getElementById('sub-drop-filename'); if(fn) fn.textContent = '';
+  const photoFn = document.getElementById('sub-photo-filename'); if(photoFn) photoFn.textContent = '';
+  const photoPreview = document.getElementById('sub-photo-preview');
+  if (photoPreview) photoPreview.innerHTML = '<svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="var(--border)" stroke-width="1.5"><circle cx="12" cy="8" r="4"/><path d="M6 20v-2a6 6 0 0 1 12 0v2"/></svg>';
+  _subAuthorPhotoData = null;
   const fi = document.getElementById('sub-file'); if(fi) fi.value = '';
+  const photoFi = document.getElementById('sub-photo-file'); if(photoFi) photoFi.value = '';
+  const editor = document.getElementById('sub-editor'); if(editor) { editor.innerHTML = ''; }
+  const wc = document.getElementById('sub-word-count'); if(wc) wc.textContent = '0';
+  const ww = document.getElementById('sub-word-warn'); if(ww) ww.style.display = 'none';
   const err = document.getElementById('sub-error'); if(err) err.textContent = '';
+  const errC = document.getElementById('sub-error-confirm'); if(errC) errC.textContent = '';
   const prog = document.getElementById('sub-progress'); if(prog) prog.style.display = 'none';
   const pf = document.getElementById('sub-progress-fill'); if(pf) pf.style.width = '0%';
-  const btn = document.getElementById('sub-submit-btn'); if(btn) { btn.disabled = false; btn.textContent = 'Submit Article for Review →'; }
+  const progC = document.getElementById('sub-progress-confirm'); if(progC) progC.style.display = 'none';
+  const pfC = document.getElementById('sub-progress-fill-confirm'); if(pfC) pfC.style.width = '0%';
+
+  // Reset preview section
+  const prevSec = document.getElementById('sub-preview-section');
+  if(prevSec) prevSec.style.display = 'none';
+  const prevImg = document.getElementById('article-preview-img');
+  if(prevImg) { prevImg.src = ''; prevImg.style.display = 'none'; }
+  const prevGen = document.getElementById('preview-generating');
+  if(prevGen) prevGen.classList.remove('hidden');
+  const formBody = document.getElementById('submit-form-body');
+  if(formBody) formBody.style.display = 'block';
+
+  const btn = document.getElementById('sub-show-preview-btn');
+  if(btn) { btn.disabled = false; btn.innerHTML = '<span style="font-size:14px;">👁</span> Preview Article Before Submission <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" style="margin-left:6px;vertical-align:middle;"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>'; }
+  const confBtn = document.getElementById('sub-submit-btn');
+  if(confBtn) { confBtn.disabled = false; confBtn.innerHTML = '<span style="font-size:14px;">✍</span> Confirm &amp; Submit Article <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>'; }
   _subPendingFile = null;
+  _previewDataUrl = null;
 }
 function toggleSubUndertaking() {
   const ck = document.getElementById('sub-undertaking');
@@ -3630,74 +3974,110 @@ async function doSubmitArticle() {
   const category   = document.getElementById('sub-category').value;
   const abstract   = sanitizeInput(document.getElementById('sub-abstract').value, 1500);
   const coauthors  = sanitizeInput(document.getElementById('sub-coauthors').value, 200);
+  const place      = document.getElementById('sub-place') ? document.getElementById('sub-place').value : '';
+  const editorEl   = document.getElementById('sub-editor');
+  const articleHtml = editorEl ? editorEl.innerHTML : '';
+  const articleText = editorEl ? (editorEl.textContent || editorEl.innerText || '').trim() : '';
+  const wordCount  = articleText ? articleText.split(/\s+/).filter(w=>w).length : 0;
   const undertaking = document.getElementById('sub-undertaking').checked;
-  const errEl = document.getElementById('sub-error');
+  const errEl = document.getElementById('sub-error-confirm');
   errEl.textContent = '';
 
-  if (!name)       { errEl.textContent = 'Please enter your full name.'; return; }
-  if (!validateEmail(email)) { errEl.textContent = 'Please enter a valid email address.'; return; }
-  if (!occupation) { errEl.textContent = 'Please select your occupation.'; return; }
-  if (!title)      { errEl.textContent = 'Please enter the article title.'; return; }
-  if (!category)   { errEl.textContent = 'Please select a category.'; return; }
-  if (!abstract)   { errEl.textContent = 'Please enter an abstract or brief description.'; return; }
-  if (!_subPendingFile) { errEl.textContent = 'Please upload your article (PDF or image).'; return; }
-  if (!undertaking) { errEl.textContent = 'Please confirm the declaration of originality.'; return; }
-
   const btn = document.getElementById('sub-submit-btn');
-  btn.disabled = true; btn.textContent = 'Uploading…';
-  const prog = document.getElementById('sub-progress'); prog.style.display = 'block';
-  const pf = document.getElementById('sub-progress-fill'); pf.style.width = '25%';
+  btn.disabled = true; btn.textContent = 'Uploading image…';
+  const progC = document.getElementById('sub-progress-confirm'); progC.style.display = 'block';
+  const pfC = document.getElementById('sub-progress-fill-confirm'); pfC.style.width = '10%';
 
   try {
-    // Upload file to submissions bucket
-    const fileName = `submissions/${Date.now()}_${_subPendingFile.name.replace(/[^a-zA-Z0-9._-]/g,'_')}`;
-    const uploadRes = await fetch(`${SUPABASE_URL}/storage/v1/object/articles/${fileName}`, {
-      method: 'POST',
-      headers: { 'apikey': SUPABASE_KEY, 'Authorization': 'Bearer ' + SUPABASE_KEY,
-        'Content-Type': _subPendingFile.type, 'x-upsert': 'true' },
-      body: _subPendingFile
-    });
-    pf.style.width = '65%';
-    if (!uploadRes.ok) throw new Error('File upload failed. Please try again.');
-    const file_url = `${SUPABASE_URL}/storage/v1/object/public/articles/${fileName}`;
+    // 1. Upload the cached preview image or regenerate
+    let articleImageUrl = null;
+    try {
+      const imageDataUrl = _previewDataUrl || await generateArticleImage({
+        title, author: name, place, htmlBody: articleHtml,
+        authorPhotoUrl: _subAuthorPhotoData, category, occupation
+      });
+      pfC.style.width = '30%';
+      btn.textContent = 'Uploading image…';
+      articleImageUrl = await uploadArticleImageToSupabase(imageDataUrl);
+    } catch(imgErr) { console.warn('Image gen/upload failed (non-critical):', imgErr); }
 
-    // Insert into article_submissions table
+    pfC.style.width = '55%';
+    btn.textContent = 'Saving submission…';
+
+    // 2. Also store author photo URL if uploaded
+    let author_photo_url = null;
+    if (_subAuthorPhotoData) {
+      author_photo_url = await uploadArticleImageToSupabase(_subAuthorPhotoData);
+    }
+    pfC.style.width = '70%';
+
+    // 3. Insert into article_submissions table
     const insertRes = await fetch(`${SUPABASE_URL}/rest/v1/article_submissions`, {
       method: 'POST',
       headers: { ...headers, 'Prefer': 'return=representation' },
       body: JSON.stringify({
         author_name: name, author_email: email, occupation, institution, phone,
-        article_title: title, category, abstract, coauthors,
-        file_url, file_type: _subPendingFile.type, status: 'pending',
-        undertaking_agreed: true
+        article_title: title, category, abstract,
+        article_body: articleHtml,
+        coauthors, place,
+        author_photo_url,
+        file_url: articleImageUrl || null,
+        file_type: articleImageUrl ? 'image/jpeg' : null,
+        status: 'pending', undertaking_agreed: true
       })
     });
-    pf.style.width = '85%';
-    if (!insertRes.ok) throw new Error('Submission failed. Please try again.');
+    pfC.style.width = '88%';
+    if (!insertRes.ok) {
+      const errBody = await insertRes.text();
+      if (errBody.includes('article_body') || errBody.includes('place') || errBody.includes('author_photo_url')) {
+        const fallbackRes = await fetch(`${SUPABASE_URL}/rest/v1/article_submissions`, {
+          method: 'POST',
+          headers: { ...headers, 'Prefer': 'return=representation' },
+          body: JSON.stringify({
+            author_name: name, author_email: email, occupation, institution, phone,
+            article_title: title, category, abstract: abstract + '\n\n[ARTICLE BODY]\n' + articleText.slice(0, 1500),
+            coauthors, file_url: articleImageUrl || null,
+            file_type: articleImageUrl ? 'image/jpeg' : null,
+            status: 'pending', undertaking_agreed: true
+          })
+        });
+        if (!fallbackRes.ok) throw new Error('Submission failed. Please try again.');
+        const insertedFb = await fallbackRes.json();
+        const newSubFb = Array.isArray(insertedFb) ? insertedFb[0] : insertedFb;
+        notifyAdminNewSubmission(name, email, occupation, institution, title, category, abstract, newSubFb?.id);
+        pfC.style.width = '100%';
+        showSuccessState(); return;
+      }
+      throw new Error('Submission failed. Please try again.');
+    }
     const inserted = await insertRes.json();
     const newSub = Array.isArray(inserted) ? inserted[0] : inserted;
-    pf.style.width = '100%';
-
-    // Notify admin via edge function
-    fetch(`${SUPABASE_URL}/functions/v1/notify-subscribers`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + SUPABASE_KEY },
-      body: JSON.stringify({
-        type: 'new_submission',
-        submission: { author_name: name, author_email: email, occupation, institution, title, category, abstract, id: newSub?.id || '' }
-      })
-    }).catch(e => console.warn('Admin submission notify failed:', e));
-
-    // Show success
-    document.getElementById('submit-form-body').style.display = 'none';
-    document.getElementById('submit-success-state').style.display = 'block';
-    _subPendingFile = null;
+    pfC.style.width = '100%';
+    notifyAdminNewSubmission(name, email, occupation, institution, title, category, abstract, newSub?.id);
+    showSuccessState();
 
   } catch(e) {
     errEl.textContent = e.message || 'Submission failed. Please try again.';
-    prog.style.display = 'none';
-    btn.disabled = false; btn.textContent = 'Submit Article for Review →';
+    progC.style.display = 'none';
+    btn.disabled = false; btn.innerHTML = '<span style="font-size:14px;">✍</span> Confirm &amp; Submit Article <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>';
   }
+}
+
+function notifyAdminNewSubmission(name, email, occupation, institution, title, category, abstract, id) {
+  fetch(`${SUPABASE_URL}/functions/v1/notify-subscribers`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + SUPABASE_KEY },
+    body: JSON.stringify({
+      type: 'new_submission',
+      submission: { author_name: name, author_email: email, occupation, institution, title, category, abstract, id: id || '' }
+    })
+  }).catch(e => console.warn('Admin submission notify failed:', e));
+}
+
+function showSuccessState() {
+  document.getElementById('submit-form-body').style.display = 'none';
+  document.getElementById('submit-success-state').style.display = 'block';
+  _subAuthorPhotoData = null;
 }
 
 // ═══════════════════════════════════════════════════════
@@ -3709,9 +4089,12 @@ function switchEditorTab(tab) {
   _currentEditorTab = tab;
   document.getElementById('tab-publish').classList.toggle('active', tab === 'publish');
   document.getElementById('tab-review').classList.toggle('active', tab === 'review');
+  document.getElementById('tab-published').classList.toggle('active', tab === 'published');
   document.getElementById('panel-publish').classList.toggle('active', tab === 'publish');
   document.getElementById('panel-review').classList.toggle('active', tab === 'review');
+  document.getElementById('panel-published').classList.toggle('active', tab === 'published');
   if (tab === 'review') loadSubmissions();
+  if (tab === 'published') loadPublishedArticles();
 }
 
 // ═══════════════════════════════════════════════════════
@@ -3727,23 +4110,27 @@ async function loadSubmissions() {
   loadEl.style.display = 'block';
   listEl.innerHTML = '';
   try {
+    // Fetch ALL submissions to count pending badge, but only render pending ones here
     const res = await fetch(`${SUPABASE_URL}/rest/v1/article_submissions?order=submitted_at.desc&limit=100`, { headers });
     const data = await res.json();
     _submissions = Array.isArray(data) ? data : [];
     loadEl.style.display = 'none';
 
-    // Update badge
+    // Badge: count all pending
     const pending = _submissions.filter(s => s.status === 'pending').length;
     const badge = document.getElementById('review-tab-badge');
     if (badge) { badge.textContent = pending; badge.style.display = pending > 0 ? 'inline-flex' : 'none'; }
 
-    if (_submissions.length === 0) {
-      listEl.innerHTML = '<div class="review-empty">No article submissions yet. When contributors submit articles via the "Submit Your Article" button, they will appear here.</div>';
+    // Only show PENDING submissions in the review queue
+    const pendingItems = _submissions.filter(s => s.status === 'pending');
+
+    if (pendingItems.length === 0) {
+      listEl.innerHTML = '<div class="review-empty">No pending submissions. All articles have been reviewed. Check the <strong>Published Articles</strong> tab for published articles.</div>';
       return;
     }
-    listEl.innerHTML = _submissions.map(s => `
+    listEl.innerHTML = pendingItems.map(s => `
       <div class="review-item" onclick="openReviewDetail(${s.id})">
-        ${s.status === 'pending' ? '<span class="review-item-new">&#9679; New</span>' : '<span class="review-item-new" style="background:var(--gold);color:var(--navy);">Published</span>'}
+        <span class="review-item-new">&#9679; Pending Review</span>
         <div class="review-item-cat">${esc(s.category || '')} &nbsp;·&nbsp; ${esc(s.occupation || '')}</div>
         <div class="review-item-title">${esc(s.article_title || '')}</div>
         <div class="review-item-meta">
@@ -3781,7 +4168,11 @@ function openReviewDetail(id) {
 
   // File preview
   const fc = document.getElementById('rd-file-content');
-  if (s.file_url) {
+  if (s.article_body) {
+    fc.innerHTML = `<div style="border:1px solid var(--border-light);padding:14px;background:#fff;max-height:240px;overflow-y:auto;font-family:'EB Garamond',serif;font-size:15px;line-height:1.7;color:var(--text-secondary);">${s.article_body}</div>
+      <div style="font-family:'Lato',sans-serif;font-size:10px;color:var(--text-muted);margin-top:5px;">Rich text article body · ${countWords ? countWords(s.article_body) : '?'} words</div>
+      ${s.file_url ? `<a href="${esc(s.file_url)}" target="_blank" rel="noopener" style="display:inline-block;margin-top:8px;font-family:'Lato',sans-serif;font-size:11px;color:var(--navy-light);font-weight:700;">&#8599; Open Article Image</a>` : ''}`;
+  } else if (s.file_url) {
     if (s.file_type && s.file_type.startsWith('image/')) {
       fc.innerHTML = `<img src="${esc(s.file_url)}" alt="Submitted file" style="max-width:100%;max-height:240px;object-fit:contain;display:block;border:1px solid var(--border-light);">
         <a href="${esc(s.file_url)}" target="_blank" rel="noopener" style="display:inline-block;margin-top:8px;font-family:'Lato',sans-serif;font-size:11px;color:var(--navy-light);font-weight:700;">&#8599; Open Full Image</a>`;
@@ -3913,10 +4304,19 @@ async function publishFromReview() {
     }
 
     // 1. Insert into articles table (goes live)
+    const articlePayload = { title: articleTitle, author: authorName, category: cat, excerpt, file_url, file_type };
+    // Use article_image_url from submission if available
+    if (_activeSubmission.file_url && (_activeSubmission.file_type || '').startsWith('image/')) {
+      articlePayload.article_image_url = _activeSubmission.file_url;
+    }
+    // If submission has article_body, include it
+    if (_activeSubmission.article_body) {
+      articlePayload.article_body = _activeSubmission.article_body;
+    }
     const insertRes = await fetch(`${SUPABASE_URL}/rest/v1/articles`, {
       method: 'POST',
       headers: { ...headers, 'Prefer': 'return=representation' },
-      body: JSON.stringify({ title: articleTitle, author: authorName, category: cat, excerpt, file_url, file_type })
+      body: JSON.stringify(articlePayload)
     });
     if (!insertRes.ok) throw new Error('Article publish failed');
     const inserted = await insertRes.json();
@@ -3982,6 +4382,776 @@ async function deleteSubmission() {
     document.getElementById('rd-error').textContent = e.message;
     btn.disabled = false; btn.textContent = '🗑 Delete';
   }
+}
+
+// ═══════════════════════════════════════════════════════
+// ── PUBLISHED ARTICLES TAB (editor) ──
+// ═══════════════════════════════════════════════════════
+async function loadPublishedArticles() {
+  const listEl = document.getElementById('published-list');
+  const loadEl = document.getElementById('published-loading');
+  loadEl.style.display = 'block'; listEl.innerHTML = '';
+  try {
+    const res = await fetch(`${SUPABASE_URL}/rest/v1/articles?order=created_at.desc&limit=200`, { headers });
+    const data = await res.json();
+    loadEl.style.display = 'none';
+    const arts = Array.isArray(data) ? data : [];
+    if (!arts.length) {
+      listEl.innerHTML = '<div class="review-empty">No articles published yet.</div>'; return;
+    }
+    listEl.innerHTML = arts.map(a => {
+      const thumb = a.article_image_url || (a.file_url && (a.file_type||'').startsWith('image/') ? a.file_url : null);
+      return `
+      <div class="review-item" style="display:flex;align-items:flex-start;gap:12px;">
+        ${thumb ? `<img src="${esc(thumb)}" style="width:64px;height:48px;object-fit:cover;flex-shrink:0;border:1px solid var(--border-light);" loading="lazy">` : `<div style="width:64px;height:48px;background:var(--cream-dark);flex-shrink:0;display:flex;align-items:center;justify-content:center;border:1px solid var(--border-light);"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#0a1628" stroke-width="1.5"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14,2 14,8 20,8"/></svg></div>`}
+        <div style="flex:1;min-width:0;">
+          <div class="review-item-cat">${esc(a.category||'')} &nbsp;·&nbsp; ${formatDate(a.created_at)}</div>
+          <div class="review-item-title" style="font-size:14px;">${esc(a.title||'')}</div>
+          <div class="review-item-meta">By ${esc(a.author||'')}</div>
+        </div>
+        <button onclick="event.stopPropagation();editorDeleteArticle(${a.id})" style="flex-shrink:0;background:#b91c1c;color:#fff;border:none;font-family:'Lato',sans-serif;font-size:10px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;padding:5px 10px;cursor:pointer;border-radius:2px;" title="Delete this article">&#128465; Delete</button>
+      </div>`;
+    }).join('');
+  } catch(e) {
+    loadEl.style.display = 'none';
+    listEl.innerHTML = '<div class="review-empty">Could not load articles.</div>';
+  }
+}
+async function editorDeleteArticle(id) {
+  if (!confirm('Permanently delete this article from the Herald? This cannot be undone.')) return;
+  try {
+    await fetch(`${SUPABASE_URL}/rest/v1/article_likes?article_id=eq.${id}`, { method:'DELETE', headers }).catch(()=>{});
+    await fetch(`${SUPABASE_URL}/rest/v1/certificates?article_id=eq.${id}`, { method:'DELETE', headers }).catch(()=>{});
+    const res = await fetch(`${SUPABASE_URL}/rest/v1/articles?id=eq.${id}`, { method:'DELETE', headers:{ ...headers, 'Prefer':'return=minimal' } });
+    if (!res.ok) throw new Error('Delete failed');
+    showToast('✓ Article deleted', 2500);
+    loadPublishedArticles();
+    fetchArticles(true);
+  } catch(e) { showToast('✗ Could not delete: ' + e.message, 3500); }
+}
+
+// ═══════════════════════════════════════════════════════
+// ── RICH TEXT EDITOR ──
+// ═══════════════════════════════════════════════════════
+const WORD_LIMIT = 900;
+function rteExec(cmd, val) {
+  const ed = document.getElementById('sub-editor');
+  if (!ed) return;
+  ed.focus();
+  document.execCommand(cmd, false, val || null);
+  updateWordCount();
+}
+function rteInsertLink() {
+  const url = prompt('Enter URL:');
+  if (url) { document.execCommand('createLink', false, url); }
+}
+function countWords(html) {
+  const tmp = document.createElement('div');
+  tmp.innerHTML = html;
+  const text = (tmp.textContent || tmp.innerText || '').trim();
+  if (!text) return 0;
+  return text.split(/\s+/).filter(w => w.length > 0).length;
+}
+function updateWordCount() {
+  const ed = document.getElementById('sub-editor');
+  if (!ed) return;
+  const count = countWords(ed.innerHTML);
+  const el = document.getElementById('sub-word-count');
+  const warn = document.getElementById('sub-word-warn');
+  if (el) el.textContent = count;
+  if (warn) warn.style.display = count >= WORD_LIMIT ? 'inline' : 'none';
+  if (el) el.style.color = count >= WORD_LIMIT ? '#a32d2d' : count > WORD_LIMIT * 0.85 ? '#b8963e' : '';
+}
+// Wire up word count on input
+(function() {
+  const wire = () => {
+    const ed = document.getElementById('sub-editor');
+    if (ed) { ed.addEventListener('input', updateWordCount); ed.addEventListener('paste', () => setTimeout(updateWordCount, 50)); return; }
+    setTimeout(wire, 400);
+  };
+  wire();
+})();
+
+// ═══════════════════════════════════════════════════════
+// ── AUTHOR PHOTO UPLOAD ──
+// ═══════════════════════════════════════════════════════
+let _subAuthorPhotoData = null; // base64 data URL
+function handleSubPhotoSelect(input) {
+  const file = input.files[0]; if (!file) return;
+  if (file.size > 2 * 1024 * 1024) {
+    document.getElementById('sub-photo-filename').textContent = '✗ Too large — max 2 MB';
+    return;
+  }
+  const reader = new FileReader();
+  reader.onload = e => {
+    _subAuthorPhotoData = e.target.result;
+    const preview = document.getElementById('sub-photo-preview');
+    if (preview) preview.innerHTML = `<img src="${_subAuthorPhotoData}" style="width:80px;height:80px;object-fit:cover;border-radius:50%;">`;
+    const fn = document.getElementById('sub-photo-filename');
+    if (fn) fn.textContent = '✓ ' + file.name;
+  };
+  reader.readAsDataURL(file);
+}
+
+// ═══════════════════════════════════════════════════════
+// ── LOCATION SELECTOR ──
+// ═══════════════════════════════════════════════════════
+const GEO_DATA = {
+  'India': {
+    'Andhra Pradesh': ['Visakhapatnam','Vijayawada','Guntur','Nellore','Kurnool','Tirupati','Anantapur'],
+    'Assam': ['Guwahati','Silchar','Dibrugarh','Jorhat','Nagaon'],
+    'Bihar': ['Patna','Gaya','Muzaffarpur','Bhagalpur','Darbhanga'],
+    'Chhattisgarh': ['Raipur','Bhilai','Bilaspur','Durg','Korba'],
+    'Delhi': ['New Delhi','Delhi'],
+    'Goa': ['Panaji','Vasco da Gama','Margao','Mapusa'],
+    'Gujarat': ['Ahmedabad','Surat','Vadodara','Rajkot','Gandhinagar','Bhavnagar'],
+    'Haryana': ['Faridabad','Gurugram','Ambala','Rohtak','Hisar','Panipat'],
+    'Himachal Pradesh': ['Shimla','Manali','Dharamshala','Solan','Mandi'],
+    'Jharkhand': ['Ranchi','Jamshedpur','Dhanbad','Bokaro','Hazaribagh'],
+    'Karnataka': ['Bengaluru','Mysuru','Hubballi','Mangaluru','Belagavi','Kalaburagi'],
+    'Kerala': ['Thiruvananthapuram','Kochi','Kozhikode','Thrissur','Kollam','Palakkad'],
+    'Madhya Pradesh': ['Bhopal','Indore','Jabalpur','Gwalior','Ujjain','Sagar'],
+    'Maharashtra': ['Mumbai','Pune','Nagpur','Nashik','Aurangabad','Thane','Solapur'],
+    'Manipur': ['Imphal','Thoubal','Kakching'],
+    'Meghalaya': ['Shillong','Tura','Nongstoin'],
+    'Nagaland': ['Kohima','Dimapur','Mokokchung'],
+    'Odisha': ['Bhubaneswar','Cuttack','Rourkela','Sambalpur','Berhampur','Puri'],
+    'Punjab': ['Ludhiana','Amritsar','Jalandhar','Patiala','Bathinda','Mohali'],
+    'Rajasthan': ['Jaipur','Jodhpur','Udaipur','Kota','Ajmer','Bikaner','Sikar','Alwar','Bharatpur'],
+    'Tamil Nadu': ['Chennai','Coimbatore','Madurai','Tiruchirappalli','Salem','Tirunelveli'],
+    'Telangana': ['Hyderabad','Warangal','Nizamabad','Karimnagar','Khammam'],
+    'Uttar Pradesh': ['Lucknow','Kanpur','Agra','Varanasi','Prayagraj','Meerut','Noida','Ghaziabad','Bareilly','Gorakhpur'],
+    'Uttarakhand': ['Dehradun','Haridwar','Roorkee','Haldwani','Rishikesh','Nainital'],
+    'West Bengal': ['Kolkata','Howrah','Durgapur','Asansol','Siliguri','Bardhaman'],
+  },
+  'United States': {
+    'California': ['Los Angeles','San Francisco','San Diego','San Jose','Sacramento','Oakland','Fresno'],
+    'New York': ['New York City','Buffalo','Rochester','Albany','Syracuse','Yonkers'],
+    'Texas': ['Houston','Dallas','Austin','San Antonio','Fort Worth','El Paso','Plano'],
+    'Florida': ['Miami','Orlando','Tampa','Jacksonville','St. Petersburg','Tallahassee'],
+    'Illinois': ['Chicago','Aurora','Rockford','Joliet','Naperville','Springfield'],
+    'Pennsylvania': ['Philadelphia','Pittsburgh','Allentown','Erie','Reading'],
+    'Ohio': ['Columbus','Cleveland','Cincinnati','Toledo','Akron','Dayton'],
+    'Georgia': ['Atlanta','Augusta','Columbus','Savannah','Athens','Macon'],
+    'Michigan': ['Detroit','Grand Rapids','Warren','Sterling Heights','Lansing','Ann Arbor'],
+    'Washington': ['Seattle','Spokane','Tacoma','Vancouver','Bellevue','Olympia'],
+  },
+  'United Kingdom': {
+    'England': ['London','Manchester','Birmingham','Leeds','Liverpool','Bristol','Sheffield','Newcastle','Nottingham','Leicester'],
+    'Scotland': ['Edinburgh','Glasgow','Aberdeen','Dundee','Inverness','Perth'],
+    'Wales': ['Cardiff','Swansea','Newport','Bangor','St Davids'],
+    'Northern Ireland': ['Belfast','Londonderry','Lisburn','Newry','Armagh'],
+  },
+  'Canada': {
+    'Ontario': ['Toronto','Ottawa','Mississauga','Hamilton','London','Kitchener','Windsor'],
+    'Quebec': ['Montreal','Quebec City','Laval','Gatineau','Longueuil','Sherbrooke'],
+    'British Columbia': ['Vancouver','Victoria','Surrey','Burnaby','Richmond','Kelowna'],
+    'Alberta': ['Calgary','Edmonton','Red Deer','Lethbridge','St. Albert','Medicine Hat'],
+    'Manitoba': ['Winnipeg','Brandon','Steinbach','Thompson','Portage la Prairie'],
+  },
+  'Australia': {
+    'New South Wales': ['Sydney','Newcastle','Wollongong','Central Coast','Maitland'],
+    'Victoria': ['Melbourne','Geelong','Ballarat','Bendigo','Shepparton'],
+    'Queensland': ['Brisbane','Gold Coast','Sunshine Coast','Townsville','Cairns'],
+    'Western Australia': ['Perth','Mandurah','Bunbury','Geraldton','Albany'],
+    'South Australia': ['Adelaide','Mount Gambier','Whyalla','Murray Bridge'],
+    'Tasmania': ['Hobart','Launceston','Devonport','Burnie'],
+  },
+  'Other': { 'Other': ['Other'] }
+};
+
+function populateCountries() {
+  const sel = document.getElementById('sub-country'); if (!sel) return;
+  sel.innerHTML = '<option value="">— Select Country —</option>';
+  Object.keys(GEO_DATA).sort((a,b) => a === 'India' ? -1 : b === 'India' ? 1 : a.localeCompare(b)).forEach(c => {
+    const opt = document.createElement('option'); opt.value = c; opt.textContent = c;
+    sel.appendChild(opt);
+  });
+}
+function populateStates() {
+  const country = document.getElementById('sub-country').value;
+  const stateSel = document.getElementById('sub-state');
+  const citySel = document.getElementById('sub-city');
+  stateSel.innerHTML = '<option value="">— Select State —</option>';
+  citySel.innerHTML = '<option value="">— Select City —</option>';
+  document.getElementById('sub-place').value = '';
+  if (!country || !GEO_DATA[country]) return;
+  Object.keys(GEO_DATA[country]).sort().forEach(s => {
+    const opt = document.createElement('option'); opt.value = s; opt.textContent = s;
+    stateSel.appendChild(opt);
+  });
+  updatePlaceString();
+}
+function populateCities() {
+  const country = document.getElementById('sub-country').value;
+  const state = document.getElementById('sub-state').value;
+  const citySel = document.getElementById('sub-city');
+  citySel.innerHTML = '<option value="">— Select City —</option>';
+  if (!country || !state || !GEO_DATA[country] || !GEO_DATA[country][state]) return;
+  GEO_DATA[country][state].sort().forEach(c => {
+    const opt = document.createElement('option'); opt.value = c; opt.textContent = c;
+    citySel.appendChild(opt);
+  });
+  updatePlaceString();
+}
+function updatePlaceString() {
+  const country = document.getElementById('sub-country').value;
+  const state = document.getElementById('sub-state').value;
+  const city = document.getElementById('sub-city').value;
+  const parts = [city, state, country].filter(Boolean);
+  document.getElementById('sub-place').value = parts.join(', ');
+}
+// Init countries on load
+(function() { const init = () => { if (document.getElementById('sub-country')) { populateCountries(); return; } setTimeout(init, 500); }; init(); })();
+
+// ═══════════════════════════════════════════════════════
+// ── LIVE ARTICLE PREVIEW WORKFLOW ──
+// ═══════════════════════════════════════════════════════
+let _previewDataUrl = null;
+let _previewDebounceTimer = null;
+
+function validatePreviewForm() {
+  const name     = (document.getElementById('sub-name').value || '').trim();
+  const email    = (document.getElementById('sub-email').value || '').trim();
+  const occ      = document.getElementById('sub-occupation').value;
+  const title    = (document.getElementById('sub-title').value || '').trim();
+  const category = document.getElementById('sub-category').value;
+  const abstract = (document.getElementById('sub-abstract').value || '').trim();
+  const editor   = document.getElementById('sub-editor');
+  const articleText = editor ? (editor.textContent || editor.innerText || '').trim() : '';
+  const wordCount = articleText ? articleText.split(/\s+/).filter(w=>w).length : 0;
+  const undertaking = document.getElementById('sub-undertaking').checked;
+  const errEl = document.getElementById('sub-error');
+
+  if (!name)           { errEl.textContent = 'Please enter your full name.'; return false; }
+  if (!validateEmail(email)) { errEl.textContent = 'Please enter a valid email address.'; return false; }
+  if (!occ)            { errEl.textContent = 'Please select your occupation.'; return false; }
+  if (!title)          { errEl.textContent = 'Please enter the article title.'; return false; }
+  if (!category)       { errEl.textContent = 'Please select a category.'; return false; }
+  if (!abstract)       { errEl.textContent = 'Please enter an abstract or brief description.'; return false; }
+  if (wordCount < 50)  { errEl.textContent = 'Please write your full article (minimum 50 words).'; return false; }
+  if (wordCount > WORD_LIMIT + 50) { errEl.textContent = `Article exceeds ${WORD_LIMIT} word limit (${wordCount} words). Please shorten.`; return false; }
+  if (!undertaking)    { errEl.textContent = 'Please confirm the declaration of originality.'; return false; }
+  errEl.textContent = '';
+  return true;
+}
+
+async function showArticlePreview() {
+  if (!validatePreviewForm()) return;
+
+  // Scroll to show the form body stays visible, then reveal preview
+  const formBody = document.getElementById('submit-form-body');
+  const prevSec  = document.getElementById('sub-preview-section');
+  prevSec.style.display = 'block';
+  // Scroll preview into view
+  setTimeout(() => prevSec.scrollIntoView({ behavior: 'smooth', block: 'start' }), 60);
+  await _doGeneratePreview();
+}
+
+async function _doGeneratePreview() {
+  const prevGen = document.getElementById('preview-generating');
+  const prevImg = document.getElementById('article-preview-img');
+
+  prevGen.classList.remove('hidden');
+  prevImg.style.display = 'none';
+
+  const name     = (document.getElementById('sub-name').value || '').trim();
+  const title    = (document.getElementById('sub-title').value || '').trim();
+  const category = document.getElementById('sub-category').value;
+  const place    = (document.getElementById('sub-place').value || '');
+  const occ      = document.getElementById('sub-occupation').value;
+  const editor   = document.getElementById('sub-editor');
+  const articleHtml = editor ? editor.innerHTML : '';
+
+  try {
+    const dataUrl = await generateArticleImage({
+      title, author: name, place, htmlBody: articleHtml,
+      authorPhotoUrl: _subAuthorPhotoData, category, occupation: occ
+    });
+    _previewDataUrl = dataUrl;
+    prevImg.src = dataUrl;
+    prevImg.style.display = 'block';
+    prevGen.classList.add('hidden');
+  } catch(e) {
+    prevGen.classList.add('hidden');
+    prevImg.style.display = 'none';
+    console.warn('Preview generation error:', e);
+  }
+}
+
+function schedulePreviewRefresh() {
+  // Only refresh if preview is already showing
+  const prevSec = document.getElementById('sub-preview-section');
+  if (!prevSec || prevSec.style.display === 'none') return;
+  clearTimeout(_previewDebounceTimer);
+  _previewDataUrl = null; // invalidate cache
+  _previewDebounceTimer = setTimeout(_doGeneratePreview, 800);
+}
+
+function editArticleFromPreview() {
+  const prevSec = document.getElementById('sub-preview-section');
+  if (prevSec) prevSec.style.display = 'none';
+  const formBody = document.getElementById('submit-form-body');
+  if (formBody) formBody.scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
+function openPreviewLightbox() {
+  if (!_previewDataUrl) return;
+  openLightbox(_previewDataUrl, [_previewDataUrl], 0);
+}
+
+// Wire up live preview refresh on field changes
+(function() {
+  const wire = () => {
+    const fields = ['sub-name','sub-title','sub-category','sub-place','sub-occupation'];
+    fields.forEach(id => {
+      const el = document.getElementById(id);
+      if (el) el.addEventListener('input', schedulePreviewRefresh);
+      if (el && (el.tagName === 'SELECT')) el.addEventListener('change', schedulePreviewRefresh);
+    });
+    const ed = document.getElementById('sub-editor');
+    if (ed) ed.addEventListener('input', () => { updateWordCount(); schedulePreviewRefresh(); });
+    // Photo change triggers immediate refresh
+    const photoFile = document.getElementById('sub-photo-file');
+    if (photoFile) photoFile.addEventListener('change', () => setTimeout(schedulePreviewRefresh, 200));
+    // Country/state/city selects
+    ['sub-country','sub-state','sub-city'].forEach(id => {
+      const el = document.getElementById(id);
+      if (el) el.addEventListener('change', schedulePreviewRefresh);
+    });
+  };
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', wire);
+  else setTimeout(wire, 500);
+})();
+
+// ═══════════════════════════════════════════════════════
+// ── ARTICLE IMAGE GENERATION (A4 canvas → Supabase upload) ──
+// ═══════════════════════════════════════════════════════
+async function generateArticleImage(articleData) {
+  // articleData: { title, author, place, htmlBody, authorPhotoUrl, category, occupation }
+  return new Promise((resolve, reject) => {
+    const W = 2480, H = 3508;
+    const canvas = document.createElement('canvas');
+    canvas.width = W; canvas.height = H;
+    const ctx = canvas.getContext('2d');
+
+    const NAVY    = '#0a1628';
+    const NAVY_MID= '#132040';
+    const GOLD    = '#c9a84c';
+    const OFFWHITE= '#f7f4ef';
+    const CREAM   = '#f0ebe1';
+    const MUTED   = '#5a6a80';
+    const BODY_C  = '#2c3e5a';
+    const BORDER  = '#cfc9bc';
+
+    // ── Background ──
+    ctx.fillStyle = OFFWHITE;
+    ctx.fillRect(0, 0, W, H);
+
+    // ── Header bar ──
+    ctx.fillStyle = NAVY;
+    ctx.fillRect(0, 0, W, 130);
+    ctx.fillStyle = GOLD;
+    ctx.fillRect(0, 130, W, 10);
+
+    // ── Load logo then draw everything ──
+    const logoImg = new Image();
+    logoImg.crossOrigin = 'anonymous';
+    logoImg.onload  = () => _drawPage(logoImg);
+    logoImg.onerror = () => _drawPage(null);
+    // Try multiple logo paths
+    logoImg.src = '/images/short-logo.png';
+    // Fallback after 2s
+    const logoTimeout = setTimeout(() => { if (!logoImg.complete) { logoImg.src = ''; _drawPage(null); } }, 2000);
+
+    function _drawPage(logo) {
+      clearTimeout(logoTimeout);
+
+      // ── Logo top-left ──
+      if (logo) {
+        try { ctx.drawImage(logo, 56, 16, 96, 96); } catch(e) {
+          _drawTextLogo();
+        }
+      } else { _drawTextLogo(); }
+
+      function _drawTextLogo() {
+        ctx.fillStyle = GOLD;
+        ctx.font = 'bold 64px Georgia, serif';
+        ctx.textAlign = 'left';
+        ctx.fillText('ILIRH', 56, 104);
+      }
+
+      // ── Publication title top-right ──
+      ctx.fillStyle = GOLD;
+      ctx.font = 'bold 30px Georgia, serif';
+      ctx.textAlign = 'right';
+      const pubTitle = 'The International Legal Inteligencia Research Herald, India';
+      const pubLines = wrapTextGetLines(ctx, pubTitle, W - 220, 30);
+      pubLines.slice(0,3).forEach((line, i) => ctx.fillText(line, W - 56, 40 + i * 42));
+
+      // ── Thin divider below header ──
+      ctx.strokeStyle = BORDER;
+      ctx.lineWidth = 2;
+      ctx.beginPath(); ctx.moveTo(56, 158); ctx.lineTo(W - 56, 158); ctx.stroke();
+
+      // ── Category badge ──
+      ctx.textAlign = 'left';
+      const catText = (articleData.category || 'RESEARCH').toUpperCase();
+      ctx.fillStyle = NAVY;
+      ctx.fillRect(56, 172, W - 112, 72);
+      ctx.fillStyle = GOLD;
+      ctx.font = 'bold 30px Georgia, serif';
+      ctx.letterSpacing = '6px';
+      ctx.fillText(catText, 80, 222);
+      ctx.letterSpacing = '';
+
+      // ── Article title ──
+      const TITLE_X = 56, TITLE_Y_START = 284;
+      ctx.fillStyle = NAVY;
+      ctx.font = 'bold 72px "Playfair Display", Georgia, serif';
+      let titleLines = wrapTextGetLines(ctx, articleData.title || 'Untitled', W - 112, 72);
+      if (titleLines.length > 4) { titleLines = titleLines.slice(0, 4); if (titleLines[3]) { titleLines[3] = titleLines[3].slice(0, -3) + '…'; } }
+      titleLines.forEach((line, i) => ctx.fillText(line, TITLE_X, TITLE_Y_START + i * 90));
+      const titleBottomY = TITLE_Y_START + Math.min(titleLines.length, 4) * 90 + 20;
+
+      // ── Gold separator ──
+      ctx.fillStyle = GOLD;
+      ctx.fillRect(56, titleBottomY, W - 112, 5);
+
+      // ── Author block ──
+      const AUTHOR_Y = titleBottomY + 44;
+      const PHOTO_SIZE = 172;
+
+      // Draw photo or placeholder, then author text, then body
+      if (articleData.authorPhotoUrl) {
+        const photoImg = new Image();
+        photoImg.crossOrigin = 'anonymous';
+        photoImg.onload = () => {
+          _drawAuthorPhoto(photoImg, AUTHOR_Y, PHOTO_SIZE);
+          _drawAuthorText(AUTHOR_Y, PHOTO_SIZE, () => _drawBody(AUTHOR_Y + PHOTO_SIZE + 60));
+        };
+        photoImg.onerror = () => {
+          _drawAuthorPlaceholder(AUTHOR_Y, PHOTO_SIZE);
+          _drawAuthorText(AUTHOR_Y, PHOTO_SIZE, () => _drawBody(AUTHOR_Y + PHOTO_SIZE + 60));
+        };
+        photoImg.src = articleData.authorPhotoUrl;
+      } else {
+        _drawAuthorPlaceholder(AUTHOR_Y, PHOTO_SIZE);
+        _drawAuthorText(AUTHOR_Y, PHOTO_SIZE, () => _drawBody(AUTHOR_Y + PHOTO_SIZE + 60));
+      }
+    }
+
+    function _drawAuthorPhoto(img, y, size) {
+      ctx.save();
+      ctx.beginPath();
+      ctx.arc(56 + size / 2, y + size / 2, size / 2, 0, Math.PI * 2);
+      ctx.closePath();
+      ctx.clip();
+      try { ctx.drawImage(img, 56, y, size, size); } catch(e) {}
+      ctx.restore();
+      // Gold ring
+      ctx.strokeStyle = GOLD; ctx.lineWidth = 5;
+      ctx.beginPath();
+      ctx.arc(56 + size / 2, y + size / 2, size / 2 + 2, 0, Math.PI * 2);
+      ctx.stroke();
+    }
+
+    function _drawAuthorPlaceholder(y, size) {
+      ctx.fillStyle = CREAM;
+      ctx.beginPath(); ctx.arc(56 + size / 2, y + size / 2, size / 2, 0, Math.PI * 2); ctx.fill();
+      ctx.strokeStyle = GOLD; ctx.lineWidth = 4;
+      ctx.beginPath(); ctx.arc(56 + size / 2, y + size / 2, size / 2, 0, Math.PI * 2); ctx.stroke();
+      // Person icon
+      ctx.fillStyle = BORDER;
+      ctx.beginPath(); ctx.arc(56 + size / 2, y + size / 2 - 28, 30, 0, Math.PI * 2); ctx.fill();
+      ctx.beginPath(); ctx.arc(56 + size / 2, y + size / 2 + 55, 54, Math.PI, 0); ctx.fill();
+    }
+
+    function _drawAuthorText(y, photoSize, cb) {
+      const textX = 56 + photoSize + 36;
+      const avW = W - textX - 56;
+
+      ctx.fillStyle = NAVY;
+      ctx.font = 'bold 50px Georgia, serif';
+      wrapTextCanvas(ctx, articleData.author || 'Author', textX, y + 54, avW, 50, 1);
+
+      ctx.fillStyle = MUTED;
+      ctx.font = '34px Georgia, serif';
+      wrapTextCanvas(ctx, articleData.occupation || '', textX, y + 112, avW, 34, 1);
+
+      ctx.fillStyle = GOLD;
+      ctx.font = 'italic 32px Georgia, serif';
+      wrapTextCanvas(ctx, articleData.place || '', textX, y + 164, avW, 32, 1);
+
+      if (cb) cb();
+    }
+
+    function _drawBody(startY) {
+      // ── Rich HTML body rendering ──
+      const tmp = document.createElement('div');
+      tmp.innerHTML = articleData.htmlBody || '';
+
+      let y = startY;
+      const LEFT = 56;
+      const RIGHT_MARGIN = 56;
+      const CONTENT_W = W - LEFT - RIGHT_MARGIN;
+      const MAX_Y = H - 220;
+
+      // Walk child nodes and render with formatting
+      function renderNode(node, opts) {
+        if (y > MAX_Y) return;
+        opts = opts || {};
+
+        if (node.nodeType === Node.TEXT_NODE) {
+          const text = node.textContent.replace(/\s+/g, ' ');
+          if (!text.trim()) return;
+          const sz = opts.fontSize || 38;
+          let fontStr = '';
+          if (opts.bold && opts.italic) fontStr = `bold italic ${sz}px Georgia, serif`;
+          else if (opts.bold)  fontStr = `bold ${sz}px Georgia, serif`;
+          else if (opts.italic) fontStr = `italic ${sz}px Georgia, serif`;
+          else fontStr = `${sz}px Georgia, serif`;
+          ctx.font = fontStr;
+          if (opts.underline) {
+            // measure and draw underlines per line
+            ctx.fillStyle = opts.color || BODY_C;
+            const lines = wrapTextGetLines(ctx, text, opts.maxW || CONTENT_W, sz);
+            lines.forEach(line => {
+              if (y > MAX_Y) return;
+              ctx.fillText(line, opts.x || LEFT, y);
+              const tw = ctx.measureText(line).width;
+              ctx.fillRect(opts.x || LEFT, y + 3, tw, 2);
+              y += (opts.lineH || sz + 20);
+            });
+          } else {
+            ctx.fillStyle = opts.color || BODY_C;
+            const lines = wrapTextGetLines(ctx, text, opts.maxW || CONTENT_W, sz);
+            lines.forEach(line => {
+              if (y > MAX_Y) return;
+              ctx.fillText(line, opts.x || LEFT, y);
+              y += (opts.lineH || sz + 20);
+            });
+          }
+          return;
+        }
+
+        if (node.nodeType !== Node.ELEMENT_NODE) return;
+        const tag = node.tagName.toLowerCase();
+
+        if (tag === 'h2') {
+          y += 18;
+          ctx.fillStyle = NAVY;
+          ctx.font = 'bold 52px Georgia, serif';
+          // Underline rule
+          const ht = node.textContent.trim();
+          const htLines = wrapTextGetLines(ctx, ht, CONTENT_W, 52);
+          htLines.forEach(line => { if (y > MAX_Y) return; ctx.fillText(line, LEFT, y); y += 68; });
+          ctx.fillStyle = GOLD; ctx.fillRect(LEFT, y - 8, CONTENT_W, 3);
+          ctx.fillStyle = BODY_C;
+          y += 14;
+          return;
+        }
+        if (tag === 'h3') {
+          y += 14;
+          ctx.fillStyle = NAVY;
+          ctx.font = 'bold 44px Georgia, serif';
+          const ht3 = node.textContent.trim();
+          wrapTextGetLines(ctx, ht3, CONTENT_W, 44).forEach(line => { if (y > MAX_Y) return; ctx.fillText(line, LEFT, y); y += 58; });
+          ctx.fillStyle = BODY_C;
+          y += 8;
+          return;
+        }
+
+        if (tag === 'blockquote') {
+          y += 20;
+          // Ivory background
+          const bqPad = 40;
+          const bqTextW = CONTENT_W - bqPad * 2 - 14;
+          ctx.font = 'italic 36px Georgia, serif';
+          const bqText = node.textContent.trim();
+          const bqLines = wrapTextGetLines(ctx, bqText, bqTextW, 36);
+          const bqH = bqLines.length * 52 + 40;
+          if (y + bqH <= MAX_Y) {
+            ctx.fillStyle = CREAM;
+            ctx.fillRect(LEFT, y - 28, CONTENT_W, bqH);
+            ctx.fillStyle = GOLD;
+            ctx.fillRect(LEFT, y - 28, 8, bqH);
+          }
+          ctx.fillStyle = MUTED;
+          bqLines.forEach(line => {
+            if (y > MAX_Y) return;
+            ctx.fillText(line, LEFT + bqPad, y);
+            y += 52;
+          });
+          y += 28;
+          return;
+        }
+
+        if (tag === 'ul' || tag === 'ol') {
+          y += 12;
+          const items = node.querySelectorAll(':scope > li');
+          items.forEach((li, idx) => {
+            if (y > MAX_Y) return;
+            ctx.fillStyle = BODY_C;
+            ctx.font = '38px Georgia, serif';
+            const bullet = tag === 'ol' ? `${idx + 1}.` : '•';
+            ctx.fillText(bullet, LEFT, y);
+            const liText = li.textContent.trim();
+            const liLines = wrapTextGetLines(ctx, liText, CONTENT_W - 70, 38);
+            liLines.forEach((line, li2) => {
+              if (y > MAX_Y) return;
+              ctx.fillText(line, LEFT + 60, y);
+              y += 56;
+            });
+            y += 4;
+          });
+          y += 12;
+          return;
+        }
+
+        if (tag === 'p' || tag === 'div' || tag === 'span') {
+          const childOpts = {
+            bold: opts.bold, italic: opts.italic, underline: opts.underline,
+            color: opts.color, fontSize: opts.fontSize, x: opts.x, maxW: opts.maxW, lineH: opts.lineH
+          };
+          let addedBreak = false;
+          Array.from(node.childNodes).forEach(child => {
+            if (y > MAX_Y) return;
+            const ctag = child.nodeType === Node.ELEMENT_NODE ? child.tagName.toLowerCase() : '';
+            let newOpts = { ...childOpts };
+            if (ctag === 'strong' || ctag === 'b') newOpts.bold = true;
+            if (ctag === 'em' || ctag === 'i') newOpts.italic = true;
+            if (ctag === 'u') newOpts.underline = true;
+            if (ctag === 'a') newOpts.color = '#1e3a6e';
+            renderNode(child, newOpts);
+            addedBreak = true;
+          });
+          if (tag === 'p' || tag === 'div') y += 18; // paragraph spacing
+          return;
+        }
+
+        if (tag === 'strong' || tag === 'b') {
+          Array.from(node.childNodes).forEach(c => renderNode(c, { ...opts, bold: true }));
+          return;
+        }
+        if (tag === 'em' || tag === 'i') {
+          Array.from(node.childNodes).forEach(c => renderNode(c, { ...opts, italic: true }));
+          return;
+        }
+        if (tag === 'u') {
+          Array.from(node.childNodes).forEach(c => renderNode(c, { ...opts, underline: true }));
+          return;
+        }
+        if (tag === 'a') {
+          Array.from(node.childNodes).forEach(c => renderNode(c, { ...opts, color: '#1e3a6e', underline: true }));
+          return;
+        }
+        if (tag === 'br') { y += 28; return; }
+
+        // Default: recurse
+        Array.from(node.childNodes).forEach(c => renderNode(c, opts));
+      }
+
+      ctx.fillStyle = BODY_C;
+      ctx.font = '38px Georgia, serif';
+      ctx.textAlign = 'left';
+      Array.from(tmp.childNodes).forEach(n => { if (y <= MAX_Y) renderNode(n, {}); });
+
+      // ── Footer ──
+      ctx.fillStyle = NAVY;
+      ctx.fillRect(0, H - 180, W, 180);
+      ctx.fillStyle = GOLD;
+      ctx.fillRect(0, H - 184, W, 5);
+
+      ctx.textAlign = 'center';
+      ctx.fillStyle = GOLD;
+      ctx.font = 'bold 30px Georgia, serif';
+      ctx.fillText('The International Legal Inteligencia Research Herald, India', W / 2, H - 124);
+
+      ctx.fillStyle = '#a0b4c8';
+      ctx.font = '24px Georgia, serif';
+      ctx.fillText('Founder & Editor-in-Chief: Advocate Dr. Ajay Singh Rathore', W / 2, H - 84);
+
+      ctx.fillStyle = '#7a90a8';
+      ctx.font = '22px Georgia, serif';
+      ctx.fillText('ilirh.in  ·  Published ' + new Date().toLocaleDateString('en-IN', {day:'numeric',month:'long',year:'numeric'}), W / 2, H - 46);
+
+      ctx.textAlign = 'left';
+      resolve(canvas.toDataURL('image/jpeg', 0.93));
+    }
+  });
+}
+
+function wrapTextCanvas(ctx, text, x, y, maxW, fontSize, maxLines) {
+  const lines = wrapTextGetLines(ctx, text, maxW, fontSize);
+  const limited = lines.slice(0, maxLines || 999);
+  limited.forEach((line, i) => ctx.fillText(line, x, y + i * (fontSize + 10)));
+}
+
+function wrapTextGetLines(ctx, text, maxW, fontSize) {
+  if (!text) return [];
+  const words = text.split(' ');
+  const lines = [];
+  let current = '';
+  for (const word of words) {
+    const test = current ? current + ' ' + word : word;
+    if (ctx.measureText(test).width > maxW && current) {
+      lines.push(current); current = word;
+    } else { current = test; }
+  }
+  if (current) lines.push(current);
+  return lines;
+}
+
+async function uploadArticleImageToSupabase(dataUrl) {
+  try {
+    const res = await fetch(dataUrl);
+    const blob = await res.blob();
+    const fileName = `article-images/${Date.now()}_article.jpg`;
+    const upRes = await fetch(`${SUPABASE_URL}/storage/v1/object/articles/${fileName}`, {
+      method: 'POST',
+      headers: { 'apikey': SUPABASE_KEY, 'Authorization': 'Bearer ' + SUPABASE_KEY,
+        'Content-Type': 'image/jpeg', 'x-upsert': 'true' },
+      body: blob
+    });
+    if (!upRes.ok) return null;
+    return `${SUPABASE_URL}/storage/v1/object/public/articles/${fileName}`;
+  } catch(e) { console.warn('Article image upload failed:', e); return null; }
+}
+
+// ═══════════════════════════════════════════════════════
+// ── PDF THUMBNAIL GENERATION ──
+// ═══════════════════════════════════════════════════════
+async function generatePdfThumbnail(pdfFile) {
+  try {
+    if (typeof pdfjsLib === 'undefined') return null;
+    const ab = await pdfFile.arrayBuffer();
+    const pdf = await pdfjsLib.getDocument({ data: ab }).promise;
+    const page = await pdf.getPage(1);
+    const viewport = page.getViewport({ scale: 2.0 });
+    const canvas = document.createElement('canvas');
+    canvas.width = viewport.width; canvas.height = viewport.height;
+    const ctx = canvas.getContext('2d');
+    await page.render({ canvasContext: ctx, viewport }).promise;
+    return canvas.toDataURL('image/jpeg', 0.88);
+  } catch(e) { console.warn('PDF thumbnail error:', e); return null; }
+}
+
+// Load PDF.js lazily
+function loadPdfJs() {
+  if (typeof pdfjsLib !== 'undefined') return Promise.resolve();
+  return new Promise((resolve) => {
+    const s = document.createElement('script');
+    s.src = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js';
+    s.onload = () => {
+      if (typeof pdfjsLib !== 'undefined') {
+        pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+      }
+      resolve();
+    };
+    s.onerror = resolve;
+    document.head.appendChild(s);
+  });
 }
 
 // Load submission count when editor opens (to show badge)
