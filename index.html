@@ -1235,10 +1235,17 @@ body.dark-mode .rte-word-counter { background: #0d1624; border-color: var(--bord
   background: #ffffff; overflow: visible;
 }
 #sub-docx-live-preview {
-  position: fixed; left: -9999px; top: 0; z-index: -1;
-  opacity: 1; pointer-events: none; overflow: visible; visibility: visible;
+  /* Off-screen but FULLY laid out — browser must compute width/height */
+  position: fixed;
+  left: -9999px;
+  top: 0;
+  z-index: -1;
+  width: 794px;       /* A4 at 96dpi */
+  min-height: 1123px; /* A4 at 96dpi */
   background: #ffffff;
-  width: 794px; min-height: 1123px;
+  overflow: visible;
+  visibility: visible;
+  pointer-events: none;
 }
 #sub-docx-live-preview .docx-wrapper {
   background: #ffffff !important; box-shadow: none !important;
@@ -5079,56 +5086,65 @@ function getTemplateBodyMaxHeight() {
   return A4_BODY_H;
 }
 
-/** Returns page count AND whether page size is A4 (±5mm tolerance). */
+/** Returns page count AND whether page size is A4.
+ *  Primary: reads <Pages> from docProps/app.xml (written by Word on every save).
+ *  Fallback: counts explicit page/section breaks in document.xml. */
 async function countDocxPages(arrayBuffer) {
-  // Parse page count and size directly from docx XML — no DOM rendering needed.
   try {
     const zip = await JSZip.loadAsync(arrayBuffer);
-    const xml = await zip.file('word/document.xml').async('string');
 
-    // ── PAGE BREAK COUNT ────────────────────────────────────────────────────
-    // 1. Explicit page breaks: <w:br w:type="page"/>
-    const pageBreaks = (xml.match(/<w:br[^>]*w:type=["']page["'][^>]*\/?>/g) || []).length;
+    // ── STRATEGY 1: docProps/app.xml <Pages> ──────────────────────────────
+    // Word writes the true page count here on every save — most reliable source.
+    let appPageCount = 0;
+    try {
+      const appXml = await zip.file('docProps/app.xml').async('string');
+      const m = appXml.match(/<Pages>(\d+)<\/Pages>/);
+      if (m) appPageCount = parseInt(m[1], 10);
+    } catch(e) { /* app.xml absent — fall through */ }
 
-    // 2. Section breaks that introduce a new page.
-    //    IMPORTANT: <w:sectPr> inside <w:tc> (table cells) are LAYOUT overrides,
-    //    NOT page breaks — we must exclude them. We do this by stripping all
-    //    <w:tc>…</w:tc> blocks before counting.
-    //    Also, the LAST <w:sectPr> in <w:body> is the document-level section
-    //    (not a page break) — subtract 1 only if there are any.
-    const xmlNoTables = xml.replace(/<w:tc[\s>][\s\S]*?<\/w:tc>/g, '');
-    const allSectPr = (xmlNoTables.match(/<w:sectPr[\s>]/g) || []).length;
-    // allSectPr includes the doc-level one; interior section breaks = allSectPr - 1
-    const sectBreaks = Math.max(0, allSectPr - 1);
+    // ── STRATEGY 2: document.xml break counting ───────────────────────────
+    const docXml = await zip.file('word/document.xml').async('string');
 
-    const count = 1 + pageBreaks + sectBreaks;
+    // Explicit page breaks
+    const pageBreaks = (docXml.match(/<w:br[^>]*w:type=["']page["'][^>]*\/?>/g) || []).length;
 
-    // ── A4 PAGE SIZE CHECK ───────────────────────────────────────────────────
-    // Twip values for A4: Word stores 11906 × 16838 (ISO) or 11909 × 16834,
-    // some templates use 12240 × 15840 (incorrect but common). We accept any
-    // value that maps to 210 mm wide ±8 mm AND 297 mm tall ±8 mm.
-    // 1 mm = 56.7 twips  →  ±8 mm ≈ ±454 twips
-    //   A4 w: 11906 twips — accept 11452 … 12360
-    //   A4 h: 16838 twips — accept 16384 … 17292
-    let isA4 = true; // default: accept if no pgSz found (avoid blocking)
-    const pgSzMatch = xml.match(/<w:pgSz\b([^/]{0,300}?)\/>/);
-    if (pgSzMatch) {
-      const pgSzStr = pgSzMatch[1];
-      const wm = pgSzStr.match(/\bw:w=["']?(\d+)["']?/);
-      const hm = pgSzStr.match(/\bw:h=["']?(\d+)["']?/);
+    // Section breaks — only those that force a new page.
+    // Rules:
+    //   • Exclude <w:sectPr> inside <w:tc> (table cells) — layout overrides, not page breaks.
+    //   • Exclude the LAST <w:sectPr> in the document — that is the document-level section.
+    //   • Exclude <w:sectPr> that contain w:type val="continuous" — column/layout breaks only.
+    const xmlNoTC = docXml.replace(/<w:tc[\s>][\s\S]*?<\/w:tc>/g, '');
+    const sectPrBlocks = xmlNoTC.match(/<w:sectPr[\s>][\s\S]*?<\/w:sectPr>/g) || [];
+    const midSects = sectPrBlocks.slice(0, -1); // drop last (doc-level)
+    const sectBreaks = midSects.filter(function(b) {
+      return !/w:type[^>]*w:val=["']continuous["']/.test(b);
+    }).length;
+
+    const xmlCount = 1 + pageBreaks + sectBreaks;
+
+    // app.xml is authoritative when present; XML heuristic can over-count.
+    const count = appPageCount > 0 ? appPageCount : xmlCount;
+
+    // ── A4 PAGE SIZE CHECK ─────────────────────────────────────────────────
+    // Standard A4 in twips: 11906 × 16838.  Accept ±500 twips (~8.8 mm).
+    // Use the LAST <w:pgSz> in the doc (= document-level sectPr).
+    // If no pgSz present, accept (don't block on ambiguity).
+    let isA4 = true;
+    const pgSzRe = /<w:pgSz\b([^>]*?)(?:\/>|>)/g;
+    let pgSzMatch, lastPgSz = null;
+    while ((pgSzMatch = pgSzRe.exec(docXml)) !== null) { lastPgSz = pgSzMatch[1]; }
+    if (lastPgSz) {
+      const wm = lastPgSz.match(/\bw:w=["']?(\d+)["']?/);
+      const hm = lastPgSz.match(/\bw:h=["']?(\d+)["']?/);
       if (wm && hm) {
-        const pw = parseInt(wm[1], 10);
-        const ph = parseInt(hm[1], 10);
-        const wOk = pw >= 11452 && pw <= 12360;
-        const hOk = ph >= 16384 && ph <= 17292;
-        isA4 = wOk && hOk;
+        const pw = parseInt(wm[1], 10), ph = parseInt(hm[1], 10);
+        isA4 = (pw >= 11406 && pw <= 12406) && (ph >= 16338 && ph <= 17338);
       }
-      // If only one dimension found, be lenient (some templates omit one attr)
     }
 
-    return { count, isA4 };
+    return { count: count, isA4: isA4 };
   } catch(e) {
-    // If zip parse fails the file is corrupt/not a real docx
+    if (e.message && (e.message.indexOf('A4') >= 0 || e.message.indexOf('page') >= 0)) throw e;
     throw new Error('Could not read the Word document. Please ensure it is a valid .docx file and try again.');
   }
 }
@@ -5160,17 +5176,19 @@ async function ensureDocxLiveRender(arrayBuffer) {
   const liveEl = document.getElementById('sub-docx-live-preview');
   if (!liveEl) throw new Error('Word render host missing');
   const key = docxBufferKey(arrayBuffer);
-  if (_subDocxLiveReady && _subDocxLiveBufferKey === key && liveEl.querySelector('section.docx')) {
+  // Reuse cached render only if section.docx is actually present
+  if (_subDocxLiveReady && _subDocxLiveBufferKey === key &&
+      (liveEl.querySelector('section.docx') || liveEl.querySelector('.docx-wrapper'))) {
     return liveEl.querySelector('.docx-wrapper') || liveEl;
   }
+  // Fresh render
   liveEl.innerHTML = '';
   _subDocxLiveReady = false;
   _subDocxLiveBufferKey = '';
   const wrapper = await renderDocxToContainer(arrayBuffer, liveEl);
-  // Give docx-preview time to inject section.docx into the DOM
-  await new Promise(r => setTimeout(r, 600));
+  // Give docx-preview time to build the DOM (section.docx is added async)
+  await new Promise(r => setTimeout(r, 800));
   await layoutDocxMeasureHost(liveEl);
-  // Extra rAF settle so the browser has committed layout
   await new Promise(r => requestAnimationFrame(() => requestAnimationFrame(() => requestAnimationFrame(r))));
   _subDocxLiveReady = true;
   _subDocxLiveBufferKey = key;
@@ -5350,57 +5368,64 @@ async function captureWordDocPageForTemplate(arrayBuffer) {
   const liveEl = document.getElementById('sub-docx-live-preview');
   if (!liveEl) throw new Error('Word render host missing');
 
-  // Render into the live host at A4 native width
+  // Set exact A4 dimensions on the host before rendering
   liveEl.style.width     = A4_PAGE_W_NATIVE + 'px';
   liveEl.style.minHeight = A4_PAGE_H_NATIVE + 'px';
 
+  // Render (or reuse cached render)
   await ensureDocxLiveRender(arrayBuffer);
 
-  // Wait for full layout: images, fonts, reflow
-  await layoutDocxMeasureHost(liveEl);
+  // Find the best capture target.
+  // Prefer section.docx (one Word page with margins intact).
+  // Fall back to .docx-wrapper, then liveEl — never fail just because
+  // docx-preview produced a slightly different DOM structure.
+  function getBestTarget() {
+    return liveEl.querySelector('section.docx') ||
+           liveEl.querySelector('.docx-wrapper') ||
+           (liveEl.children.length > 0 ? liveEl.children[0] : null) ||
+           liveEl;
+  }
 
-  // Poll for section.docx — fixed timeouts are unreliable on slow machines or
-  // large/complex documents. Check every animation frame; give up after 8 s.
-  const section = await new Promise(function(resolve) {
-    var deadline = Date.now() + 8000;
-    (function poll() {
-      var el = liveEl.querySelector('section.docx');
-      if (el && el.getBoundingClientRect().width > 0) return resolve(el);
-      if (Date.now() > deadline) return resolve(null);
-      requestAnimationFrame(poll);
-    })();
-  });
-  if (!section) throw new Error('Could not find Word page — please re-upload your .docx file.');
+  var captureTarget = getBestTarget();
 
-  // Measure the rendered section's true dimensions (includes Word page margins)
-  const rect = section.getBoundingClientRect();
-  const captureW = rect.width  || A4_PAGE_W_NATIVE;
-  const captureH = rect.height || A4_PAGE_H_NATIVE;
+  // If we only got liveEl itself (nothing rendered yet), poll briefly
+  if (captureTarget === liveEl) {
+    captureTarget = await new Promise(function(resolve) {
+      var deadline = Date.now() + 5000;
+      (function poll() {
+        var el = liveEl.querySelector('section.docx') || liveEl.querySelector('.docx-wrapper');
+        if (el) return resolve(el);
+        if (Date.now() >= deadline) return resolve(liveEl);
+        requestAnimationFrame(poll);
+      })();
+    });
+  }
 
-  // Scale so the full page width maps exactly to TEMPLATE_W
-  const captureScale = TEMPLATE_W / captureW;
+  // Measure actual rendered size
+  var rect = captureTarget.getBoundingClientRect();
+  var captureW = rect.width  > 10 ? rect.width  : A4_PAGE_W_NATIVE;
+  var captureH = rect.height > 10 ? rect.height : A4_PAGE_H_NATIVE;
 
-  const shot = await html2canvas(section, {
+  var captureScale = TEMPLATE_W / captureW;
+
+  var shot = await html2canvas(captureTarget, {
     backgroundColor: '#ffffff',
     scale: captureScale,
     useCORS: true,
     allowTaint: true,
     logging: false,
-    scrollX: -liveEl.getBoundingClientRect().left,
+    scrollX: -(liveEl.getBoundingClientRect().left),
     scrollY: -window.scrollY,
     width:  captureW,
     height: captureH,
-    windowWidth:  1200,   // realistic viewport — prevents layout reflow
+    windowWidth:  1200,
     windowHeight: 900,
-    onclone: (_cloneDoc, cloneEl) => {
-      // In the clone: ensure visibility, do NOT override padding/margins
-      // so Word's page layout (centred images, indents, etc.) is preserved
+    onclone: function(_cloneDoc, cloneEl) {
       cloneEl.style.opacity    = '1';
       cloneEl.style.visibility = 'visible';
       cloneEl.style.overflow   = 'visible';
       cloneEl.style.boxSizing  = 'border-box';
-      // Ensure all images in clone are visible
-      cloneEl.querySelectorAll('img').forEach(img => {
+      cloneEl.querySelectorAll('img').forEach(function(img) {
         img.style.opacity    = '1';
         img.style.visibility = 'visible';
         img.crossOrigin      = 'anonymous';
@@ -5412,15 +5437,13 @@ async function captureWordDocPageForTemplate(arrayBuffer) {
     throw new Error('Word page capture failed. Please try again.');
   }
 
-  // Blit into exactly TEMPLATE_W × A4_BODY_H output canvas
-  const out = document.createElement('canvas');
+  var out = document.createElement('canvas');
   out.width  = TEMPLATE_W;
   out.height = A4_BODY_H;
-  const octx = out.getContext('2d');
+  var octx = out.getContext('2d');
   octx.fillStyle = '#ffffff';
   octx.fillRect(0, 0, TEMPLATE_W, A4_BODY_H);
-  // Draw shot scaled to fill full width; crop height to A4 body slot
-  const drawH = Math.min(shot.height, Math.round(A4_BODY_H));
+  var drawH = Math.min(shot.height, Math.round(A4_BODY_H));
   octx.drawImage(shot, 0, 0, shot.width, drawH, 0, 0, TEMPLATE_W, A4_BODY_H);
   return out;
 }
