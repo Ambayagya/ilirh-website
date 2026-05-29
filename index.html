@@ -1238,7 +1238,6 @@ body.dark-mode .rte-word-counter { background: #0d1624; border-color: var(--bord
   position: fixed; left: -9999px; top: 0; z-index: -9998;
   opacity: 0.01; pointer-events: none; overflow: visible;
   background: #ffffff;
-  /* Exact A4 at 96 dpi so docx-preview lays out identically to MS Word */
   width: 794px; min-height: 1123px;
 }
 #sub-docx-live-preview .docx-wrapper {
@@ -5046,22 +5045,24 @@ async function editorDeleteArticle(id) {
 // ═══════════════════════════════════════════════════════
 const MAX_DOCX_BYTES = 4 * 1024 * 1024;
 const ARTICLE_PAGE_BG = '#ffffff';
-const TEMPLATE_W = 2480;
-/** Exact A4 page height at 300 DPI — fixed body slot between author block and footer. */
-const A4_BODY_H = 3508;
-const TEMPLATE_FOOTER_H = 184;
-const ARTICLE_BODY_CAPTURE_W = TEMPLATE_W;
 /** Word/docx-preview renders at 96 DPI; template canvas is 300 DPI. */
 const DOCX_NATIVE_DPI = 96;
 const TEMPLATE_DPI = 300;
 const DOCX_TO_TEMPLATE_SCALE = TEMPLATE_DPI / DOCX_NATIVE_DPI;
-const A4_PAGE_W_NATIVE = Math.round(210 / 25.4 * DOCX_NATIVE_DPI);
-const A4_PAGE_H_NATIVE = Math.round(297 / 25.4 * DOCX_NATIVE_DPI);
+const A4_PAGE_W_NATIVE = Math.round(210 / 25.4 * DOCX_NATIVE_DPI);   // 794 px
+const A4_PAGE_H_NATIVE = Math.round(297 / 25.4 * DOCX_NATIVE_DPI);   // 1123 px
+/** Final canvas width = exact A4 at 300 DPI — no extra side margins */
+const TEMPLATE_W = Math.round(A4_PAGE_W_NATIVE * DOCX_TO_TEMPLATE_SCALE); // ~2481 px
+/** Exact A4 body height at 300 DPI */
+const A4_BODY_H = Math.round(A4_PAGE_H_NATIVE * DOCX_TO_TEMPLATE_SCALE);  // ~3510 px
+const TEMPLATE_FOOTER_H = 184;
+const ARTICLE_BODY_CAPTURE_W = TEMPLATE_W;
 
 function getAuthorBlockEndY(authorY, photoSize) {
   const photoBottom = authorY + photoSize;
   const textBottom = authorY + 200;
-  return Math.max(photoBottom, textBottom) + 40;
+  // Small gap: just 16px after author content — thin grey line drawn there
+  return Math.max(photoBottom, textBottom) + 16;
 }
 
 function computeArticleBodyStartY(articleData, W) {
@@ -5069,7 +5070,7 @@ function computeArticleBodyStartY(articleData, W) {
   const ctx = measureCanvas.getContext('2d');
   const TITLE_Y_START = 430;
   ctx.font = 'bold 72px "Playfair Display", Georgia, serif';
-  let titleLines = wrapTextGetLines(ctx, articleData.title || 'Untitled', W - 112, 72);
+  let titleLines = wrapTextGetLines(ctx, articleData.title || 'Untitled', W - 96, 72);
   if (titleLines.length > 4) titleLines = titleLines.slice(0, 4);
   const titleBottomY = TITLE_Y_START + Math.min(titleLines.length, 4) * 90 + 20;
   const AUTHOR_Y = titleBottomY + 44;
@@ -5123,7 +5124,6 @@ async function layoutDocxMeasureHost(root) {
   if (document.fonts && document.fonts.ready) {
     try { await document.fonts.ready; } catch {}
   }
-  // Three rAFs + small timeout ensures full CSS reflow & image decode
   await new Promise(r => requestAnimationFrame(() => requestAnimationFrame(() => requestAnimationFrame(r))));
   await new Promise(r => setTimeout(r, 150));
 }
@@ -5144,7 +5144,6 @@ async function ensureDocxLiveRender(arrayBuffer) {
   }
   liveEl.innerHTML = '';
   const wrapper = await renderDocxToContainer(arrayBuffer, liveEl);
-  // Extra settle so docx-preview finishes all async DOM insertions
   await new Promise(r => setTimeout(r, 350));
   await layoutDocxMeasureHost(liveEl);
   _subDocxLiveReady = true;
@@ -5295,10 +5294,9 @@ async function parseWordDocumentFile(file, opts) {
 }
 
 /**
- * Rasterize the live docx-preview render at EXACT A4 dimensions.
- * The returned canvas is always TEMPLATE_W × A4_BODY_H so it fills
- * the body slot in the output image with zero distortion — exactly
- * as the document looks in MS Word (fonts, spacing, images unchanged).
+ * Rasterize the live docx-preview at EXACT A4 dimensions.
+ * Returns a canvas that is TEMPLATE_W × A4_BODY_H, ready to be placed
+ * directly into the body slot — no side margins added, no distortion.
  */
 async function captureWordDocPageForTemplate(arrayBuffer) {
   if (typeof html2canvas === 'undefined') throw new Error('html2canvas not loaded');
@@ -5307,13 +5305,12 @@ async function captureWordDocPageForTemplate(arrayBuffer) {
   const liveEl = document.getElementById('sub-docx-live-preview');
   if (!liveEl) throw new Error('Word render host missing');
 
-  // Force exact A4 native size on the container before rendering
-  liveEl.style.width = A4_PAGE_W_NATIVE + 'px';
+  liveEl.style.width    = A4_PAGE_W_NATIVE + 'px';
   liveEl.style.minHeight = A4_PAGE_H_NATIVE + 'px';
 
   await ensureDocxLiveRender(arrayBuffer);
 
-  // Wait up to 4 s for section.docx to appear in the DOM
+  // Retry up to 4 s for section.docx to appear
   let target = null;
   for (let i = 0; i < 20; i++) {
     target = liveEl.querySelector('section.docx') ||
@@ -5327,19 +5324,17 @@ async function captureWordDocPageForTemplate(arrayBuffer) {
 
   await layoutDocxMeasureHost(liveEl);
 
-  // Force the target to exact A4 native width so html2canvas sees correct layout
-  const prevWidth = target.style.width;
-  const prevMinH  = target.style.minHeight;
-  target.style.width    = A4_PAGE_W_NATIVE + 'px';
-  target.style.minHeight = A4_PAGE_H_NATIVE + 'px';
-  target.style.boxSizing = 'border-box';
-  // One more rAF so the browser reflows before capture
+  // Pin to exact A4 native dimensions before capture
+  const prevWidth  = target.style.width;
+  const prevMinH   = target.style.minHeight;
+  const prevBoxSizing = target.style.boxSizing;
+  target.style.width      = A4_PAGE_W_NATIVE + 'px';
+  target.style.minHeight  = A4_PAGE_H_NATIVE + 'px';
+  target.style.boxSizing  = 'border-box';
   await new Promise(r => requestAnimationFrame(() => requestAnimationFrame(r)));
 
-  // Capture at a scale that maps A4 native width → TEMPLATE_W
-  // This gives us a canvas that is exactly TEMPLATE_W wide and
-  // proportionally ~A4_BODY_H tall (300 dpi equivalent)
-  const captureScale = TEMPLATE_W / A4_PAGE_W_NATIVE;   // ≈ 3.125
+  // Scale so A4 native width maps exactly to TEMPLATE_W (no side margins)
+  const captureScale = TEMPLATE_W / A4_PAGE_W_NATIVE;  // ≈ 3.125
 
   const shot = await html2canvas(target, {
     backgroundColor: '#ffffff',
@@ -5349,46 +5344,41 @@ async function captureWordDocPageForTemplate(arrayBuffer) {
     logging: false,
     scrollX: 0,
     scrollY: -window.scrollY,
-    width:  A4_PAGE_W_NATIVE,
-    height: A4_PAGE_H_NATIVE,
-    windowWidth:  A4_PAGE_W_NATIVE,
+    width:       A4_PAGE_W_NATIVE,
+    height:      A4_PAGE_H_NATIVE,
+    windowWidth: A4_PAGE_W_NATIVE,
     windowHeight: A4_PAGE_H_NATIVE,
     onclone: (_doc, el) => {
-      el.style.opacity = '1';
+      el.style.opacity    = '1';
       el.style.visibility = 'visible';
-      el.style.width    = A4_PAGE_W_NATIVE + 'px';
-      el.style.minHeight = A4_PAGE_H_NATIVE + 'px';
+      el.style.width      = A4_PAGE_W_NATIVE + 'px';
+      el.style.minHeight  = A4_PAGE_H_NATIVE + 'px';
     }
   });
 
-  // Restore original styles
   target.style.width    = prevWidth;
   target.style.minHeight = prevMinH;
+  target.style.boxSizing = prevBoxSizing;
 
   if (!shot || shot.width < 10 || shot.height < 10) {
     throw new Error('Word page capture failed. Please try again.');
   }
 
-  // Produce a final canvas exactly TEMPLATE_W × A4_BODY_H
-  // by drawing the shot centred / fitted — this IS the body slot fill
+  // Produce exact TEMPLATE_W × A4_BODY_H canvas — fills the body slot perfectly
   const out = document.createElement('canvas');
   out.width  = TEMPLATE_W;
   out.height = A4_BODY_H;
   const octx = out.getContext('2d');
   octx.fillStyle = '#ffffff';
   octx.fillRect(0, 0, TEMPLATE_W, A4_BODY_H);
-  // shot.width should already equal TEMPLATE_W; stretch height to fill slot exactly
   octx.drawImage(shot, 0, 0, TEMPLATE_W, A4_BODY_H);
   return out;
 }
 
 async function drawArticleBodyOnTemplate(ctx, bodyStartY, htmlBody, layout) {
   const docxBuf = layout.docxArrayBuffer || _subDocxArrayBuffer || _rdDocxArrayBuffer;
-  if (!docxBuf) {
-    throw new Error('Word document required for article body rendering.');
-  }
-
-  // shot is already exactly TEMPLATE_W × A4_BODY_H — place it directly into the body slot
+  if (!docxBuf) throw new Error('Word document required for article body rendering.');
+  // shot is already TEMPLATE_W × A4_BODY_H — place directly into the body slot
   const shot = await captureWordDocPageForTemplate(docxBuf);
   ctx.drawImage(shot, 0, bodyStartY, TEMPLATE_W, A4_BODY_H);
 }
@@ -6090,38 +6080,38 @@ async function generateArticleImage(articleData) {
 
       ctx.textAlign = 'left';
 
-      // ── Thin divider below gold bar ──
+      // ── Thin divider below gold bar — full width, no side margins ──
       ctx.strokeStyle = BORDER;
       ctx.lineWidth = 2;
-      ctx.beginPath(); ctx.moveTo(56, 234); ctx.lineTo(W - 56, 234); ctx.stroke();
+      ctx.beginPath(); ctx.moveTo(0, 234); ctx.lineTo(W, 234); ctx.stroke();
 
-      // ── Category badge ──
+      // ── Category badge — full width ──
       const catText = (articleData.category || 'RESEARCH').toUpperCase();
       ctx.fillStyle = NAVY;
-      ctx.fillRect(56, 248, W - 112, 76);
+      ctx.fillRect(0, 248, W, 76);
       ctx.fillStyle = GOLD;
       ctx.font = 'bold 28px Georgia, serif';
       ctx.letterSpacing = '6px';
-      const catMaxWidth = W - 160;
+      const catMaxWidth = W - 96;
       const catLines = wrapTextGetLines(ctx, catText, catMaxWidth, 28);
       const catBaseY = 298;
       catLines.slice(0, 2).forEach((line, i) => {
-        ctx.fillText(line, 80, catBaseY + i * 36);
+        ctx.fillText(line, 48, catBaseY + i * 36);
       });
       ctx.letterSpacing = '';
 
-      // ── Article title ──
-      const TITLE_X = 56, TITLE_Y_START = 430;
+      // ── Article title — no extra side margins ──
+      const TITLE_X = 48, TITLE_Y_START = 430;
       ctx.fillStyle = NAVY;
       ctx.font = 'bold 72px "Playfair Display", Georgia, serif';
-      let titleLines = wrapTextGetLines(ctx, articleData.title || 'Untitled', W - 112, 72);
+      let titleLines = wrapTextGetLines(ctx, articleData.title || 'Untitled', W - 96, 72);
       if (titleLines.length > 4) { titleLines = titleLines.slice(0, 4); if (titleLines[3]) { titleLines[3] = titleLines[3].slice(0, -3) + '…'; } }
       titleLines.forEach((line, i) => ctx.fillText(line, TITLE_X, TITLE_Y_START + i * 90));
       const titleBottomY = TITLE_Y_START + Math.min(titleLines.length, 4) * 90 + 20;
 
-      // ── Gold separator ──
+      // ── Gold separator — full width ──
       ctx.fillStyle = GOLD;
-      ctx.fillRect(56, titleBottomY, W - 112, 5);
+      ctx.fillRect(0, titleBottomY, W, 5);
 
       // ── Author block ──
       const AUTHOR_Y = titleBottomY + 44;
@@ -6146,32 +6136,32 @@ async function generateArticleImage(articleData) {
     function _drawAuthorPhoto(img, y, size) {
       ctx.save();
       ctx.beginPath();
-      ctx.arc(56 + size / 2, y + size / 2, size / 2, 0, Math.PI * 2);
+      ctx.arc(48 + size / 2, y + size / 2, size / 2, 0, Math.PI * 2);
       ctx.closePath();
       ctx.clip();
-      try { ctx.drawImage(img, 56, y, size, size); } catch(e) {}
+      try { ctx.drawImage(img, 48, y, size, size); } catch(e) {}
       ctx.restore();
       // Gold ring
       ctx.strokeStyle = GOLD; ctx.lineWidth = 5;
       ctx.beginPath();
-      ctx.arc(56 + size / 2, y + size / 2, size / 2 + 2, 0, Math.PI * 2);
+      ctx.arc(48 + size / 2, y + size / 2, size / 2 + 2, 0, Math.PI * 2);
       ctx.stroke();
     }
 
     function _drawAuthorPlaceholder(y, size) {
       ctx.fillStyle = CREAM;
-      ctx.beginPath(); ctx.arc(56 + size / 2, y + size / 2, size / 2, 0, Math.PI * 2); ctx.fill();
+      ctx.beginPath(); ctx.arc(48 + size / 2, y + size / 2, size / 2, 0, Math.PI * 2); ctx.fill();
       ctx.strokeStyle = GOLD; ctx.lineWidth = 4;
-      ctx.beginPath(); ctx.arc(56 + size / 2, y + size / 2, size / 2, 0, Math.PI * 2); ctx.stroke();
+      ctx.beginPath(); ctx.arc(48 + size / 2, y + size / 2, size / 2, 0, Math.PI * 2); ctx.stroke();
       // Person icon
       ctx.fillStyle = BORDER;
-      ctx.beginPath(); ctx.arc(56 + size / 2, y + size / 2 - 28, 30, 0, Math.PI * 2); ctx.fill();
-      ctx.beginPath(); ctx.arc(56 + size / 2, y + size / 2 + 55, 54, Math.PI, 0); ctx.fill();
+      ctx.beginPath(); ctx.arc(48 + size / 2, y + size / 2 - 28, 30, 0, Math.PI * 2); ctx.fill();
+      ctx.beginPath(); ctx.arc(48 + size / 2, y + size / 2 + 55, 54, Math.PI, 0); ctx.fill();
     }
 
     function _drawAuthorText(y, photoSize, cb) {
-      const textX = 56 + photoSize + 36;
-      const avW = W - textX - 56;
+      const textX = 48 + photoSize + 36;
+      const avW = W - textX - 48;
 
       ctx.fillStyle = NAVY;
       ctx.font = 'bold 50px Georgia, serif';
@@ -6190,11 +6180,14 @@ async function generateArticleImage(articleData) {
 
     async function _drawBody(bodyStartY) {
       try {
-        const LEFT = 56;
-        const CONTENT_W = W - LEFT - 56;
         const bodyMaxH = A4_BODY_H;
         const htmlBody = articleData.htmlBody || '';
         const footerY = bodyStartY + A4_BODY_H;
+
+        // Thin grey separator line between author block and body — 1px
+        ctx.strokeStyle = BORDER;
+        ctx.lineWidth = 2;
+        ctx.beginPath(); ctx.moveTo(0, bodyStartY - 8); ctx.lineTo(W, bodyStartY - 8); ctx.stroke();
 
         // Exact A4 body slot — pure white
         ctx.fillStyle = '#ffffff';
