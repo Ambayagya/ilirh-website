@@ -5067,8 +5067,8 @@ const ARTICLE_BODY_CAPTURE_W = TEMPLATE_W;
 
 function getAuthorBlockEndY(authorY, photoSize) {
   const photoBottom = authorY + photoSize;
-  const textBottom = authorY + 200;
-  return Math.max(photoBottom, textBottom) + 16;
+  const textBottom = authorY + 230;  // name(66)+occupation(132)+place(192)+padding
+  return Math.max(photoBottom, textBottom) + 20;
 }
 
 function computeArticleBodyStartY(articleData, W) {
@@ -5080,7 +5080,7 @@ function computeArticleBodyStartY(articleData, W) {
   if (titleLines.length > 4) titleLines = titleLines.slice(0, 4);
   const titleBottomY = TITLE_Y_START + Math.min(titleLines.length, 4) * 90 + 20;
   const AUTHOR_Y = titleBottomY + 44;
-  const PHOTO_SIZE = 172;
+  const PHOTO_SIZE = 210;
   return getAuthorBlockEndY(AUTHOR_Y, PHOTO_SIZE);
 }
 
@@ -6250,7 +6250,7 @@ async function generateArticleImage(articleData) {
 
       // ── Author block ──
       const AUTHOR_Y = titleBottomY + 44;
-      const PHOTO_SIZE = 172;
+      const PHOTO_SIZE = 210;
       if (articleData.authorPhotoUrl) {
         const photoImg = new Image();
         photoImg.crossOrigin = 'anonymous';
@@ -6297,16 +6297,16 @@ async function generateArticleImage(articleData) {
       const avW = W - textX - 48;
 
       ctx.fillStyle = NAVY;
-      ctx.font = 'bold 50px Georgia, serif';
-      wrapTextCanvas(ctx, articleData.author || 'Author', textX, y + 54, avW, 50, 1);
+      ctx.font = 'bold 62px Georgia, serif';
+      wrapTextCanvas(ctx, articleData.author || 'Author', textX, y + 66, avW, 62, 1);
 
       ctx.fillStyle = MUTED;
-      ctx.font = '34px Georgia, serif';
-      wrapTextCanvas(ctx, articleData.occupation || '', textX, y + 112, avW, 34, 1);
+      ctx.font = '42px Georgia, serif';
+      wrapTextCanvas(ctx, articleData.occupation || '', textX, y + 132, avW, 42, 1);
 
       ctx.fillStyle = GOLD;
-      ctx.font = 'italic 32px Georgia, serif';
-      wrapTextCanvas(ctx, articleData.place || '', textX, y + 164, avW, 32, 1);
+      ctx.font = 'italic 40px Georgia, serif';
+      wrapTextCanvas(ctx, articleData.place || '', textX, y + 192, avW, 40, 1);
 
       if (cb) cb();
     }
@@ -6316,18 +6316,23 @@ async function generateArticleImage(articleData) {
         const htmlBody = articleData.htmlBody || '';
         const footerY = bodyStartY + A4_BODY_H;
 
-        // Exact A4 body slot — pure white, no overlap seam
-        ctx.fillStyle = '#ffffff';
-        ctx.fillRect(0, bodyStartY, W, A4_BODY_H);
+        // Gold bar between author block and document body
+        ctx.fillStyle = GOLD;
+        ctx.fillRect(0, bodyStartY, W, 8);
 
-        await drawArticleBodyOnTemplate(ctx, bodyStartY, htmlBody, {
+        // Exact A4 body slot — pure white, starts after gold bar
+        ctx.fillStyle = '#ffffff';
+        ctx.fillRect(0, bodyStartY + 8, W, A4_BODY_H);
+
+        await drawArticleBodyOnTemplate(ctx, bodyStartY + 8, htmlBody, {
           bodyMaxH: A4_BODY_H,
           docxArrayBuffer: articleData.docxArrayBuffer || _subDocxArrayBuffer || _rdDocxArrayBuffer
         });
 
-        // Gold accent bar flush against bottom of A4 body, then navy footer below
+        // Gold bar between body and footer (matching top gold bar)
         ctx.fillStyle = GOLD;
         ctx.fillRect(0, footerY, W, 8);
+        // Navy footer directly after gold bar
         ctx.fillStyle = NAVY;
         ctx.fillRect(0, footerY + 8, W, TEMPLATE_FOOTER_H - 8);
 
