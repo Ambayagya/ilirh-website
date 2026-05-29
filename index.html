@@ -6204,7 +6204,7 @@ async function generateArticleImage(articleData) {
         ctx.fillRect(0, bodyStartY, W, A4_BODY_H);
 
         await drawArticleBodyOnTemplate(ctx, bodyStartY, htmlBody, {
-          bodyMaxH,
+          bodyMaxH: A4_BODY_H,
           docxArrayBuffer: articleData.docxArrayBuffer || _subDocxArrayBuffer || _rdDocxArrayBuffer
         });
 
