@@ -1211,11 +1211,13 @@ body.dark-mode .rte-word-counter { background: #0d1624; border-color: var(--bord
   box-shadow: none !important;
   margin: 0 !important;
   padding: 0 !important;
+  border: none !important;
 }
 .article-body-capture-host .docx-word-page section.docx {
   background: #ffffff !important;
   box-shadow: none !important;
   margin: 0 auto !important;
+  border: none !important;
 }
 .article-body-capture-host { background: #ffffff; }
 .article-body-capture-host .article-docx-body,
@@ -1249,11 +1251,11 @@ body.dark-mode .rte-word-counter { background: #0d1624; border-color: var(--bord
 }
 #sub-docx-live-preview .docx-wrapper {
   background: #ffffff !important; box-shadow: none !important;
-  margin: 0 !important;
+  margin: 0 !important; padding: 0 !important; border: none !important;
 }
 #sub-docx-live-preview section.docx {
   background: #ffffff !important; box-shadow: none !important;
-  margin: 0 !important;
+  margin: 0 !important; border: none !important; padding: 0 !important;
 }
 .article-body-capture-host .article-docx-body { box-sizing: border-box; }
 .rd-docx-actions { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; margin: 12px 0 16px; }
@@ -6197,10 +6199,7 @@ async function generateArticleImage(articleData) {
 
       ctx.textAlign = 'left';
 
-      // ── Thin divider below gold bar — full width ──
-      ctx.strokeStyle = BORDER;
-      ctx.lineWidth = 0.4;
-      ctx.beginPath(); ctx.moveTo(0, 234); ctx.lineTo(W, 234); ctx.stroke();
+      // ── No divider line below gold bar — pure white gap ──
 
       // ── Category badge — full width ──
       const catText = (articleData.category || 'RESEARCH').toUpperCase();
@@ -6298,32 +6297,33 @@ async function generateArticleImage(articleData) {
         const htmlBody = articleData.htmlBody || '';
         const footerY = bodyStartY + A4_BODY_H;
 
-        // Exact A4 body slot — pure white (no separator line)
+        // Exact A4 body slot — pure white, no overlap seam
         ctx.fillStyle = '#ffffff';
-        ctx.fillRect(0, bodyStartY - 10, W, A4_BODY_H + 10);
+        ctx.fillRect(0, bodyStartY, W, A4_BODY_H);
 
         await drawArticleBodyOnTemplate(ctx, bodyStartY, htmlBody, {
           bodyMaxH: A4_BODY_H,
           docxArrayBuffer: articleData.docxArrayBuffer || _subDocxArrayBuffer || _rdDocxArrayBuffer
         });
 
-        ctx.fillStyle = NAVY;
-        ctx.fillRect(0, footerY, W, TEMPLATE_FOOTER_H);
+        // Gold accent bar flush against bottom of A4 body, then navy footer below
         ctx.fillStyle = GOLD;
-        ctx.fillRect(0, footerY - 4, W, 5);
+        ctx.fillRect(0, footerY, W, 8);
+        ctx.fillStyle = NAVY;
+        ctx.fillRect(0, footerY + 8, W, TEMPLATE_FOOTER_H - 8);
 
         ctx.textAlign = 'center';
         ctx.fillStyle = GOLD;
         ctx.font = 'bold 30px Georgia, serif';
-        ctx.fillText('The International Legal Inteligencia Research Herald, India', W / 2, footerY + 56);
+        ctx.fillText('The International Legal Inteligencia Research Herald, India', W / 2, footerY + 8 + 52);
 
         ctx.fillStyle = '#a0b4c8';
         ctx.font = '24px Georgia, serif';
-        ctx.fillText('Founder & Editor-in-Chief: Advocate Dr. Ajay Singh Rathore', W / 2, footerY + 96);
+        ctx.fillText('Founder & Editor-in-Chief: Advocate Dr. Ajay Singh Rathore', W / 2, footerY + 8 + 92);
 
         ctx.fillStyle = '#7a90a8';
         ctx.font = '22px Georgia, serif';
-        ctx.fillText('ilirh.in  ·  Published ' + new Date().toLocaleDateString('en-IN', {day:'numeric',month:'long',year:'numeric'}), W / 2, footerY + 134);
+        ctx.fillText('ilirh.in  ·  Published ' + new Date().toLocaleDateString('en-IN', {day:'numeric',month:'long',year:'numeric'}), W / 2, footerY + 8 + 130);
 
         ctx.textAlign = 'left';
         resolve(canvas.toDataURL('image/jpeg', 0.93));
