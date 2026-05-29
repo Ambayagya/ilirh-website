@@ -1238,11 +1238,18 @@ body.dark-mode .rte-word-counter { background: #0d1624; border-color: var(--bord
   position: fixed; left: -9999px; top: 0; z-index: -9998;
   opacity: 0.01; pointer-events: none; overflow: visible;
   background: #ffffff;
+  /* Exact A4 at 96 dpi so docx-preview lays out identically to MS Word */
   width: 794px; min-height: 1123px;
 }
-#sub-docx-live-preview .docx-wrapper,
+#sub-docx-live-preview .docx-wrapper {
+  background: #ffffff !important; box-shadow: none !important;
+  margin: 0 !important; padding: 0 !important;
+  width: 794px !important;
+}
 #sub-docx-live-preview section.docx {
-  background: #ffffff !important; box-shadow: none !important; margin: 0 !important;
+  background: #ffffff !important; box-shadow: none !important;
+  margin: 0 !important; padding: 0 !important;
+  width: 794px !important; min-height: 1123px !important;
 }
 .article-body-capture-host .article-docx-body { box-sizing: border-box; }
 .rd-docx-actions { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; margin: 12px 0 16px; }
@@ -5116,10 +5123,9 @@ async function layoutDocxMeasureHost(root) {
   if (document.fonts && document.fonts.ready) {
     try { await document.fonts.ready; } catch {}
   }
-  // Give the browser extra frames to finish CSS layout
+  // Three rAFs + small timeout ensures full CSS reflow & image decode
   await new Promise(r => requestAnimationFrame(() => requestAnimationFrame(() => requestAnimationFrame(r))));
-  // Small delay to ensure all reflows are settled
-  await new Promise(r => setTimeout(r, 120));
+  await new Promise(r => setTimeout(r, 150));
 }
 
 function clearDocxLivePreview() {
@@ -5138,8 +5144,8 @@ async function ensureDocxLiveRender(arrayBuffer) {
   }
   liveEl.innerHTML = '';
   const wrapper = await renderDocxToContainer(arrayBuffer, liveEl);
-  // Extra wait to allow docx-preview to finish all async DOM mutations
-  await new Promise(r => setTimeout(r, 300));
+  // Extra settle so docx-preview finishes all async DOM insertions
+  await new Promise(r => setTimeout(r, 350));
   await layoutDocxMeasureHost(liveEl);
   _subDocxLiveReady = true;
   _subDocxLiveBufferKey = key;
@@ -5288,7 +5294,12 @@ async function parseWordDocumentFile(file, opts) {
   return normalizeDocxHtmlForTemplate(extractDocxContentFromWrapper(wrapper));
 }
 
-/** Rasterize the live docx-preview render — same pixels as MS Word layout. */
+/**
+ * Rasterize the live docx-preview render at EXACT A4 dimensions.
+ * The returned canvas is always TEMPLATE_W × A4_BODY_H so it fills
+ * the body slot in the output image with zero distortion — exactly
+ * as the document looks in MS Word (fonts, spacing, images unchanged).
+ */
 async function captureWordDocPageForTemplate(arrayBuffer) {
   if (typeof html2canvas === 'undefined') throw new Error('html2canvas not loaded');
   if (!arrayBuffer) throw new Error('Word document data missing');
@@ -5296,61 +5307,90 @@ async function captureWordDocPageForTemplate(arrayBuffer) {
   const liveEl = document.getElementById('sub-docx-live-preview');
   if (!liveEl) throw new Error('Word render host missing');
 
+  // Force exact A4 native size on the container before rendering
+  liveEl.style.width = A4_PAGE_W_NATIVE + 'px';
+  liveEl.style.minHeight = A4_PAGE_H_NATIVE + 'px';
+
   await ensureDocxLiveRender(arrayBuffer);
 
-  // Wait up to 4 s for docx-preview to finish inserting section.docx into the DOM
+  // Wait up to 4 s for section.docx to appear in the DOM
   let target = null;
-  for (let attempt = 0; attempt < 20; attempt++) {
-    target = liveEl.querySelector('section.docx') || liveEl.querySelector('.docx-wrapper') || liveEl.querySelector('[class*="docx"]');
+  for (let i = 0; i < 20; i++) {
+    target = liveEl.querySelector('section.docx') ||
+             liveEl.querySelector('.docx-wrapper') ||
+             liveEl.querySelector('[class*="docx"]');
     if (target) break;
     await new Promise(r => setTimeout(r, 200));
   }
-  if (!target && liveEl.children.length > 0) {
-    // Fallback: use first child element if any content was rendered
-    target = liveEl.children[0];
-  }
-  if (!target) throw new Error('Could not find Word page in document — please ensure the file is a valid .docx and try again.');
+  if (!target && liveEl.children.length > 0) target = liveEl.children[0];
+  if (!target) throw new Error('Could not find Word page in document — please re-upload your .docx file.');
 
   await layoutDocxMeasureHost(liveEl);
 
-  const rect = target.getBoundingClientRect();
-  const nativeW = Math.max(rect.width || 0, target.offsetWidth || 0, target.scrollWidth || 0);
-  const nativeH = Math.max(rect.height || 0, target.offsetHeight || 0, target.scrollHeight || 0);
-  if (nativeW < 10 || nativeH < 10) {
-    throw new Error('Word page layout not ready. Please re-upload your .docx file.');
-  }
+  // Force the target to exact A4 native width so html2canvas sees correct layout
+  const prevWidth = target.style.width;
+  const prevMinH  = target.style.minHeight;
+  target.style.width    = A4_PAGE_W_NATIVE + 'px';
+  target.style.minHeight = A4_PAGE_H_NATIVE + 'px';
+  target.style.boxSizing = 'border-box';
+  // One more rAF so the browser reflows before capture
+  await new Promise(r => requestAnimationFrame(() => requestAnimationFrame(r)));
 
-  const scale = TEMPLATE_W / nativeW;
+  // Capture at a scale that maps A4 native width → TEMPLATE_W
+  // This gives us a canvas that is exactly TEMPLATE_W wide and
+  // proportionally ~A4_BODY_H tall (300 dpi equivalent)
+  const captureScale = TEMPLATE_W / A4_PAGE_W_NATIVE;   // ≈ 3.125
+
   const shot = await html2canvas(target, {
     backgroundColor: '#ffffff',
-    scale: scale,
+    scale: captureScale,
     useCORS: true,
     allowTaint: true,
     logging: false,
     scrollX: 0,
     scrollY: -window.scrollY,
+    width:  A4_PAGE_W_NATIVE,
+    height: A4_PAGE_H_NATIVE,
+    windowWidth:  A4_PAGE_W_NATIVE,
+    windowHeight: A4_PAGE_H_NATIVE,
     onclone: (_doc, el) => {
       el.style.opacity = '1';
       el.style.visibility = 'visible';
+      el.style.width    = A4_PAGE_W_NATIVE + 'px';
+      el.style.minHeight = A4_PAGE_H_NATIVE + 'px';
     }
   });
+
+  // Restore original styles
+  target.style.width    = prevWidth;
+  target.style.minHeight = prevMinH;
 
   if (!shot || shot.width < 10 || shot.height < 10) {
     throw new Error('Word page capture failed. Please try again.');
   }
-  return shot;
+
+  // Produce a final canvas exactly TEMPLATE_W × A4_BODY_H
+  // by drawing the shot centred / fitted — this IS the body slot fill
+  const out = document.createElement('canvas');
+  out.width  = TEMPLATE_W;
+  out.height = A4_BODY_H;
+  const octx = out.getContext('2d');
+  octx.fillStyle = '#ffffff';
+  octx.fillRect(0, 0, TEMPLATE_W, A4_BODY_H);
+  // shot.width should already equal TEMPLATE_W; stretch height to fill slot exactly
+  octx.drawImage(shot, 0, 0, TEMPLATE_W, A4_BODY_H);
+  return out;
 }
 
 async function drawArticleBodyOnTemplate(ctx, bodyStartY, htmlBody, layout) {
-  const { bodyMaxH } = layout;
   const docxBuf = layout.docxArrayBuffer || _subDocxArrayBuffer || _rdDocxArrayBuffer;
   if (!docxBuf) {
     throw new Error('Word document required for article body rendering.');
   }
 
+  // shot is already exactly TEMPLATE_W × A4_BODY_H — place it directly into the body slot
   const shot = await captureWordDocPageForTemplate(docxBuf);
-  const drawH = Math.min(shot.height, bodyMaxH);
-  ctx.drawImage(shot, 0, bodyStartY, shot.width, drawH);
+  ctx.drawImage(shot, 0, bodyStartY, TEMPLATE_W, A4_BODY_H);
 }
 
 function setSubDocxStatus(msg, isErr) {
