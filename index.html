@@ -5332,17 +5332,23 @@ async function captureWordDocPageForTemplate(arrayBuffer) {
   liveEl.style.width     = A4_PAGE_W_NATIVE + 'px';
   liveEl.style.minHeight = A4_PAGE_H_NATIVE + 'px';
 
-  await ensureDocxLiveRender(arrayBuffer);
+await ensureDocxLiveRender(arrayBuffer);
 
-  // Wait for full layout: images, fonts, reflow
-  await layoutDocxMeasureHost(liveEl);
-  // Extra settle time for complex documents
-  await new Promise(r => setTimeout(r, 400));
-  await new Promise(r => requestAnimationFrame(() => requestAnimationFrame(r)));
+// Wait for full layout: images, fonts, reflow
+await layoutDocxMeasureHost(liveEl);
 
-  // Target the FIRST section.docx — this is exactly one Word page with margins intact
-  const section = liveEl.querySelector('section.docx');
-  if (!section) throw new Error('Could not find Word page — please re-upload your .docx file.');
+// Poll for section.docx to appear — fixed timeouts can be too short on slow
+// machines or large files. Wait up to 5 s before giving up.
+const section = await new Promise(resolve => {
+  const deadline = Date.now() + 5000;
+  (function poll() {
+    const el = liveEl.querySelector('section.docx');
+    if (el) return resolve(el);
+    if (Date.now() > deadline) return resolve(null);
+    requestAnimationFrame(poll);
+  })();
+});
+if (!section) throw new Error('Could not find Word page — please re-upload your .docx file.');
 
   // Measure the rendered section's true dimensions (includes Word page margins)
   const rect = section.getBoundingClientRect();
