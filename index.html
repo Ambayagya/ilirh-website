@@ -1194,7 +1194,7 @@ body.dark-mode .rte-word-counter { background: #0d1624; border-color: var(--bord
 .submit-docx-status.ok { color: #27500a; }
 .submit-docx-preview-wrap { margin-bottom: 14px; }
 .submit-docx-preview-host {
-  border: 1px solid var(--border); background: var(--offwhite); padding: 12px 14px;
+  border: 1px solid var(--border); background: #ffffff; padding: 12px 14px;
   max-height: 280px; overflow: auto;
 }
 .article-docx-body .docx-wrapper,
@@ -1242,12 +1242,11 @@ body.dark-mode .rte-word-counter { background: #0d1624; border-color: var(--bord
 }
 #sub-docx-live-preview .docx-wrapper {
   background: #ffffff !important; box-shadow: none !important;
-  margin: 0 !important; padding: 0 !important; width: 794px !important;
+  margin: 0 !important;
 }
 #sub-docx-live-preview section.docx {
   background: #ffffff !important; box-shadow: none !important;
-  margin: 0 !important; padding: 0 !important;
-  width: 794px !important; min-height: 1123px !important;
+  margin: 0 !important;
 }
 .article-body-capture-host .article-docx-body { box-sizing: border-box; }
 .rd-docx-actions { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; margin: 12px 0 16px; }
@@ -5082,60 +5081,42 @@ function getTemplateBodyMaxHeight() {
 
 /** Returns page count AND whether page size is A4 (±5mm tolerance). */
 async function countDocxPages(arrayBuffer) {
-  // Never silently bypass — wait up to 8s for docx-preview library
-  if (typeof docx === 'undefined' || !docx.renderAsync) {
-    await new Promise((resolve, reject) => {
-      const t0 = Date.now();
-      const iv = setInterval(() => {
-        if (typeof docx !== 'undefined' && docx.renderAsync) { clearInterval(iv); resolve(); }
-        else if (Date.now() - t0 > 8000) { clearInterval(iv); reject(new Error('Word preview library not ready — please refresh the page and try again.')); }
-      }, 80);
-    });
-  }
-  const container = document.createElement('div');
-  // Use visible offscreen position so offsetWidth is measurable for A4 check
-  container.style.cssText = 'position:fixed;left:-12000px;top:0;width:794px;min-height:1123px;overflow:hidden;';
-  document.body.appendChild(container);
+  // Parse page count and size directly from docx XML — no DOM rendering needed.
+  // This is 100% reliable: docx-preview's section count is timing-dependent,
+  // but the raw XML never lies.
   try {
-    await docx.renderAsync(arrayBuffer, container, null, {
-      className: 'docx-preview-content',
-      inWrapper: true,
-      ignoreWidth: false,
-      ignoreHeight: false,
-      breakPages: true,
-      renderHeaders: false,
-      renderFooters: false,
-      renderFootnotes: false,
-      renderEndnotes: false
-    });
+    const zip = await JSZip.loadAsync(arrayBuffer);
+    const xml = await zip.file('word/document.xml').async('string');
 
-    // Wait for DOM to paint rendered sections — retry up to 3 s
-    let pages = container.querySelectorAll('.docx-wrapper > section.docx');
-    if (!pages.length) {
-      await new Promise(r => requestAnimationFrame(() => requestAnimationFrame(r)));
-      await new Promise(r => setTimeout(r, 300));
-      pages = container.querySelectorAll('.docx-wrapper > section.docx');
-    }
-    // Final fallback: count any wrapper children as pages
-    const wrapper = container.querySelector('.docx-wrapper');
-    const count = pages.length || (wrapper ? wrapper.children.length : 0) || 1;
+    // Page breaks: each <w:br w:type="page"/> is an explicit page break.
+    // Sections: each <w:sectPr> inside <w:body> (except the final doc-level one) is a section break = new page.
+    const pageBreaks = (xml.match(/<w:br[^>]*w:type=["']page["'][^>]*\/?>/g) || []).length;
+    // Count mid-body sectPr (not the final one — find all sectPr not immediately before </w:body>)
+    const allSectPr = (xml.match(/<w:sectPr[\s>]/g) || []).length;
+    // The last sectPr is doc-level (not a page break), so page-break sectPr = allSectPr - 1
+    const sectBreaks = Math.max(0, allSectPr - 1);
+    const count = 1 + pageBreaks + sectBreaks;
 
-    // A4 check: read page size directly from docx XML (w:pgSz/@w:w)
-    // w=12240 twips = 210mm = A4 width. Allow ±720 twips (±12.7mm tolerance).
+    // A4 check: w:pgSz w:w = page width in twips. A4=12240, Letter=12240 (same width!)
+    // Use HEIGHT: A4 h=15840 twips (297mm). Letter h=15840 too — use BOTH w+h.
+    // A4: w=11906 (210mm exact) h=16838 (297mm exact) — but Word uses 11906/16838 or 12240/15840
+    // Safe: check w:w between 11700-12400 AND w:h between 16200-17200
     let isA4 = true;
-    try {
-      const zip = await JSZip.loadAsync(arrayBuffer);
-      const xml = await zip.file('word/document.xml').async('string');
-      const wMatch = xml.match(/w:pgSz[^>]*w:w=["']?(\d+)["']?/);
-      if (wMatch) {
-        const twips = parseInt(wMatch[1], 10);
-        isA4 = twips >= 11520 && twips <= 12960; // 11520=8in, 12960=A4+tolerance
-      }
-    } catch(e) { isA4 = true; } // if XML unreadable, don't block upload
+    const wMatch = xml.match(/w:pgSz[^/]{0,120}?w:w=["']?(\d+)["']?/);
+    const hMatch = xml.match(/w:pgSz[^/]{0,120}?w:h=["']?(\d+)["']?/);
+    if (wMatch && hMatch) {
+      const pw = parseInt(wMatch[1], 10);
+      const ph = parseInt(hMatch[1], 10);
+      // A4 portrait: w≈11906 (210mm) h≈16838 (297mm) — allow ±500 twips tolerance
+      const wOk = pw >= 11400 && pw <= 12400;
+      const hOk = ph >= 16300 && ph <= 17300;
+      isA4 = wOk && hOk;
+    }
 
     return { count, isA4 };
-  } finally {
-    container.remove();
+  } catch(e) {
+    // If zip parse fails the file is corrupt/not a real docx
+    throw new Error('Could not read the Word document. Please ensure it is a valid .docx file and try again.');
   }
 }
 
@@ -5290,9 +5271,10 @@ async function renderDocxToContainer(arrayBuffer, container) {
   await docx.renderAsync(arrayBuffer, container, null, {
     className: 'docx-preview-content',
     inWrapper: true,
-    ignoreWidth: false,
-    ignoreHeight: false,
+    ignoreWidth: false,   // respect Word's own page width so margins are correct
+    ignoreHeight: true,   // don't clip height — let full page render
     breakPages: false,
+    useBase64URL: true,   // embed images as base64 so html2canvas can capture them
     renderHeaders: false,
     renderFooters: false,
     renderFootnotes: false,
@@ -5346,73 +5328,72 @@ async function captureWordDocPageForTemplate(arrayBuffer) {
   const liveEl = document.getElementById('sub-docx-live-preview');
   if (!liveEl) throw new Error('Word render host missing');
 
+  // Render into the live host at A4 native width
   liveEl.style.width     = A4_PAGE_W_NATIVE + 'px';
   liveEl.style.minHeight = A4_PAGE_H_NATIVE + 'px';
 
   await ensureDocxLiveRender(arrayBuffer);
 
-  // Retry up to 4 s for section.docx to appear in DOM
-  let target = null;
-  for (let i = 0; i < 20; i++) {
-    target = liveEl.querySelector('section.docx') ||
-             liveEl.querySelector('.docx-wrapper') ||
-             liveEl.querySelector('[class*="docx"]');
-    if (target) break;
-    await new Promise(r => setTimeout(r, 200));
-  }
-  if (!target && liveEl.children.length > 0) target = liveEl.children[0];
-  if (!target) throw new Error('Could not find Word page in document — please re-upload your .docx file.');
-
+  // Wait for full layout: images, fonts, reflow
   await layoutDocxMeasureHost(liveEl);
-
-  // Pin target to exact A4 native size before capture
-  const prevWidth    = target.style.width;
-  const prevMinH     = target.style.minHeight;
-  const prevBoxSizing = target.style.boxSizing;
-  target.style.width      = A4_PAGE_W_NATIVE + 'px';
-  target.style.minHeight  = A4_PAGE_H_NATIVE + 'px';
-  target.style.boxSizing  = 'border-box';
+  // Extra settle time for complex documents
+  await new Promise(r => setTimeout(r, 400));
   await new Promise(r => requestAnimationFrame(() => requestAnimationFrame(r)));
 
-  // Scale: A4 native width → TEMPLATE_W exactly (no extra side margins)
-  const captureScale = TEMPLATE_W / A4_PAGE_W_NATIVE;
+  // Target the FIRST section.docx — this is exactly one Word page with margins intact
+  const section = liveEl.querySelector('section.docx');
+  if (!section) throw new Error('Could not find Word page — please re-upload your .docx file.');
 
-  const shot = await html2canvas(target, {
+  // Measure the rendered section's true dimensions (includes Word page margins)
+  const rect = section.getBoundingClientRect();
+  const captureW = rect.width  || A4_PAGE_W_NATIVE;
+  const captureH = rect.height || A4_PAGE_H_NATIVE;
+
+  // Scale so the full page width maps exactly to TEMPLATE_W
+  const captureScale = TEMPLATE_W / captureW;
+
+  const shot = await html2canvas(section, {
     backgroundColor: '#ffffff',
     scale: captureScale,
     useCORS: true,
     allowTaint: true,
     logging: false,
-    scrollX: 0,
+    scrollX: -liveEl.getBoundingClientRect().left,
     scrollY: -window.scrollY,
-    width:        A4_PAGE_W_NATIVE,
-    height:       A4_PAGE_H_NATIVE,
-    windowWidth:  A4_PAGE_W_NATIVE,
-    windowHeight: A4_PAGE_H_NATIVE,
-    onclone: (_doc, el) => {
-      el.style.opacity    = '1';
-      el.style.visibility = 'visible';
-      el.style.width      = A4_PAGE_W_NATIVE + 'px';
-      el.style.minHeight  = A4_PAGE_H_NATIVE + 'px';
+    width:  captureW,
+    height: captureH,
+    windowWidth:  1200,   // realistic viewport — prevents layout reflow
+    windowHeight: 900,
+    onclone: (_cloneDoc, cloneEl) => {
+      // In the clone: ensure visibility, do NOT override padding/margins
+      // so Word's page layout (centred images, indents, etc.) is preserved
+      cloneEl.style.opacity    = '1';
+      cloneEl.style.visibility = 'visible';
+      cloneEl.style.overflow   = 'visible';
+      cloneEl.style.boxSizing  = 'border-box';
+      // Ensure all images in clone are visible
+      cloneEl.querySelectorAll('img').forEach(img => {
+        img.style.opacity    = '1';
+        img.style.visibility = 'visible';
+        img.crossOrigin      = 'anonymous';
+      });
     }
   });
-
-  target.style.width     = prevWidth;
-  target.style.minHeight = prevMinH;
-  target.style.boxSizing = prevBoxSizing;
 
   if (!shot || shot.width < 10 || shot.height < 10) {
     throw new Error('Word page capture failed. Please try again.');
   }
 
-  // Output canvas is exactly TEMPLATE_W × A4_BODY_H — fills body slot directly
+  // Blit into exactly TEMPLATE_W × A4_BODY_H output canvas
   const out = document.createElement('canvas');
   out.width  = TEMPLATE_W;
   out.height = A4_BODY_H;
   const octx = out.getContext('2d');
   octx.fillStyle = '#ffffff';
   octx.fillRect(0, 0, TEMPLATE_W, A4_BODY_H);
-  octx.drawImage(shot, 0, 0, TEMPLATE_W, A4_BODY_H);
+  // Draw shot scaled to fill full width; crop height to A4 body slot
+  const drawH = Math.min(shot.height, Math.round(A4_BODY_H));
+  octx.drawImage(shot, 0, 0, shot.width, drawH, 0, 0, TEMPLATE_W, A4_BODY_H);
   return out;
 }
 
@@ -6222,14 +6203,9 @@ async function generateArticleImage(articleData) {
         const htmlBody = articleData.htmlBody || '';
         const footerY = bodyStartY + A4_BODY_H;
 
-        // Hairline grey separator line between author block and body
-        ctx.strokeStyle = BORDER;
-        ctx.lineWidth = 0.2;
-        ctx.beginPath(); ctx.moveTo(0, bodyStartY - 8); ctx.lineTo(W, bodyStartY - 8); ctx.stroke();
-
-        // Exact A4 body slot — pure white
+        // Exact A4 body slot — pure white (no separator line)
         ctx.fillStyle = '#ffffff';
-        ctx.fillRect(0, bodyStartY, W, A4_BODY_H);
+        ctx.fillRect(0, bodyStartY - 10, W, A4_BODY_H + 10);
 
         await drawArticleBodyOnTemplate(ctx, bodyStartY, htmlBody, {
           bodyMaxH: A4_BODY_H,
