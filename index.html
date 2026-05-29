@@ -5289,6 +5289,16 @@ async function parseWordDocumentFile(file, opts) {
   if (file.size > MAX_DOCX_BYTES) {
     throw new Error('File exceeds 4 MB limit (' + (file.size / 1024 / 1024).toFixed(1) + ' MB).');
   }
+  // Wait up to 8 s for docx-preview library to finish loading
+  if (typeof docx === 'undefined' || !docx.renderAsync) {
+    await new Promise((resolve, reject) => {
+      const deadline = Date.now() + 8000;
+      const poll = setInterval(() => {
+        if (typeof docx !== 'undefined' && docx.renderAsync) { clearInterval(poll); resolve(); }
+        else if (Date.now() > deadline) { clearInterval(poll); reject(new Error('Word preview library failed to load. Please refresh the page and try again.')); }
+      }, 100);
+    });
+  }
   const buf = await file.arrayBuffer();
   const { count: pageCount, isA4 } = await countDocxPages(buf);
   if (!isA4) {
@@ -6194,9 +6204,9 @@ async function generateArticleImage(articleData) {
         const htmlBody = articleData.htmlBody || '';
         const footerY = bodyStartY + A4_BODY_H;
 
-        // Thin grey separator line between author block and body
+        // Hairline grey separator line between author block and body
         ctx.strokeStyle = BORDER;
-        ctx.lineWidth = 2;
+        ctx.lineWidth = 0.5;
         ctx.beginPath(); ctx.moveTo(0, bodyStartY - 8); ctx.lineTo(W, bodyStartY - 8); ctx.stroke();
 
         // Exact A4 body slot — pure white
