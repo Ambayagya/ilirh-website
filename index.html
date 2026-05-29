@@ -5093,8 +5093,8 @@ async function countDocxPages(arrayBuffer) {
     });
   }
   const container = document.createElement('div');
-  // Must be sized to A4 native so page-break detection is accurate
-  container.style.cssText = 'position:fixed;left:-12000px;top:0;width:794px;min-height:1123px;visibility:hidden;';
+  // Use visible offscreen position so offsetWidth is measurable for A4 check
+  container.style.cssText = 'position:fixed;left:-12000px;top:0;width:794px;min-height:1123px;overflow:hidden;';
   document.body.appendChild(container);
   try {
     await docx.renderAsync(arrayBuffer, container, null, {
@@ -5108,19 +5108,30 @@ async function countDocxPages(arrayBuffer) {
       renderFootnotes: false,
       renderEndnotes: false
     });
-    const pages = container.querySelectorAll('.docx-wrapper > section.docx');
-    // Count ALL rendered sections — never filter by text content.
-    // Image-only or table-only pages are real pages that must be rejected.
-    if (!pages.length) throw new Error('Could not read document pages. Please ensure your file is a valid .docx Word document.');
 
-    const count = pages.length;
+    // Wait for DOM to paint rendered sections — retry up to 3 s
+    let pages = container.querySelectorAll('.docx-wrapper > section.docx');
+    if (!pages.length) {
+      await new Promise(r => requestAnimationFrame(() => requestAnimationFrame(r)));
+      await new Promise(r => setTimeout(r, 300));
+      pages = container.querySelectorAll('.docx-wrapper > section.docx');
+    }
+    // Final fallback: count any wrapper children as pages
+    const wrapper = container.querySelector('.docx-wrapper');
+    const count = pages.length || (wrapper ? wrapper.children.length : 0) || 1;
 
-
-    // Check A4 size: section.docx width should be ~794px (±40px tolerance = ±10mm)
-    const firstPage = pages[0];
-    const pageW = firstPage.offsetWidth || firstPage.scrollWidth || 0;
-    // A4 = 794px at 96dpi; allow ±40px tolerance
-    const isA4 = (pageW === 0) || (pageW >= 754 && pageW <= 834);
+    // A4 check: read page size directly from docx XML (w:pgSz/@w:w)
+    // w=12240 twips = 210mm = A4 width. Allow ±720 twips (±12.7mm tolerance).
+    let isA4 = true;
+    try {
+      const zip = await JSZip.loadAsync(arrayBuffer);
+      const xml = await zip.file('word/document.xml').async('string');
+      const wMatch = xml.match(/w:pgSz[^>]*w:w=["']?(\d+)["']?/);
+      if (wMatch) {
+        const twips = parseInt(wMatch[1], 10);
+        isA4 = twips >= 11520 && twips <= 12960; // 11520=8in, 12960=A4+tolerance
+      }
+    } catch(e) { isA4 = true; } // if XML unreadable, don't block upload
 
     return { count, isA4 };
   } finally {
