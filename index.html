@@ -1235,9 +1235,10 @@ body.dark-mode .rte-word-counter { background: #0d1624; border-color: var(--bord
   background: #ffffff; overflow: visible;
 }
 #sub-docx-live-preview {
-  position: fixed; left: 0; top: 0; z-index: -9998;
+  position: fixed; left: -9999px; top: 0; z-index: -9998;
   opacity: 0.01; pointer-events: none; overflow: visible;
   background: #ffffff;
+  width: 794px; min-height: 1123px;
 }
 #sub-docx-live-preview .docx-wrapper,
 #sub-docx-live-preview section.docx {
@@ -5115,7 +5116,10 @@ async function layoutDocxMeasureHost(root) {
   if (document.fonts && document.fonts.ready) {
     try { await document.fonts.ready; } catch {}
   }
-  await new Promise(r => requestAnimationFrame(() => requestAnimationFrame(r)));
+  // Give the browser extra frames to finish CSS layout
+  await new Promise(r => requestAnimationFrame(() => requestAnimationFrame(() => requestAnimationFrame(r))));
+  // Small delay to ensure all reflows are settled
+  await new Promise(r => setTimeout(r, 120));
 }
 
 function clearDocxLivePreview() {
@@ -5134,6 +5138,8 @@ async function ensureDocxLiveRender(arrayBuffer) {
   }
   liveEl.innerHTML = '';
   const wrapper = await renderDocxToContainer(arrayBuffer, liveEl);
+  // Extra wait to allow docx-preview to finish all async DOM mutations
+  await new Promise(r => setTimeout(r, 300));
   await layoutDocxMeasureHost(liveEl);
   _subDocxLiveReady = true;
   _subDocxLiveBufferKey = key;
@@ -5292,8 +5298,18 @@ async function captureWordDocPageForTemplate(arrayBuffer) {
 
   await ensureDocxLiveRender(arrayBuffer);
 
-  const target = liveEl.querySelector('section.docx') || liveEl.querySelector('.docx-wrapper');
-  if (!target) throw new Error('Could not find Word page in document');
+  // Wait up to 4 s for docx-preview to finish inserting section.docx into the DOM
+  let target = null;
+  for (let attempt = 0; attempt < 20; attempt++) {
+    target = liveEl.querySelector('section.docx') || liveEl.querySelector('.docx-wrapper') || liveEl.querySelector('[class*="docx"]');
+    if (target) break;
+    await new Promise(r => setTimeout(r, 200));
+  }
+  if (!target && liveEl.children.length > 0) {
+    // Fallback: use first child element if any content was rendered
+    target = liveEl.children[0];
+  }
+  if (!target) throw new Error('Could not find Word page in document — please ensure the file is a valid .docx and try again.');
 
   await layoutDocxMeasureHost(liveEl);
 
