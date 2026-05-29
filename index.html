@@ -5368,28 +5368,18 @@ async function captureWordDocPageForTemplate(arrayBuffer) {
   const liveEl = document.getElementById('sub-docx-live-preview');
   if (!liveEl) throw new Error('Word render host missing');
 
-  // Set exact A4 dimensions on the host before rendering
+  // Ensure docx is rendered into liveEl
   liveEl.style.width     = A4_PAGE_W_NATIVE + 'px';
   liveEl.style.minHeight = A4_PAGE_H_NATIVE + 'px';
-
-  // Render (or reuse cached render)
   await ensureDocxLiveRender(arrayBuffer);
 
-  // Find the best capture target.
-  // Prefer section.docx (one Word page with margins intact).
-  // Fall back to .docx-wrapper, then liveEl — never fail just because
-  // docx-preview produced a slightly different DOM structure.
-  function getBestTarget() {
-    return liveEl.querySelector('section.docx') ||
-           liveEl.querySelector('.docx-wrapper') ||
-           (liveEl.children.length > 0 ? liveEl.children[0] : null) ||
-           liveEl;
-  }
+  // Find the best element to capture
+  var captureTarget = liveEl.querySelector('section.docx') ||
+                      liveEl.querySelector('.docx-wrapper') ||
+                      liveEl;
 
-  var captureTarget = getBestTarget();
-
-  // If we only got liveEl itself (nothing rendered yet), poll briefly
-  if (captureTarget === liveEl) {
+  // Poll briefly if nothing rendered yet
+  if (captureTarget === liveEl && !liveEl.querySelector('section.docx, .docx-wrapper')) {
     captureTarget = await new Promise(function(resolve) {
       var deadline = Date.now() + 5000;
       (function poll() {
@@ -5401,50 +5391,102 @@ async function captureWordDocPageForTemplate(arrayBuffer) {
     });
   }
 
-  // Measure actual rendered size
+  // ── CRITICAL FIX ────────────────────────────────────────────────────────
+  // html2canvas clips position:fixed elements that are off-screen (left:-9999px)
+  // and renders them blank. We must temporarily move liveEl into the visible
+  // document so html2canvas can see and capture its content.
+  // We use position:absolute at a large negative top so it doesn't affect layout
+  // but IS within the document coordinate space (not the viewport).
+  const savedPosition = liveEl.style.position;
+  const savedLeft     = liveEl.style.left;
+  const savedTop      = liveEl.style.top;
+  const savedZIndex   = liveEl.style.zIndex;
+  const savedOpacity  = liveEl.style.opacity;
+
+  liveEl.style.position = 'absolute';
+  liveEl.style.left     = '0px';
+  liveEl.style.top      = '-99999px';   // outside viewport vertically — won't shift page layout
+  liveEl.style.zIndex   = '-1';
+  liveEl.style.opacity  = '0';          // stay invisible to user
+
+  // Let browser reflow after repositioning
+  await new Promise(r => requestAnimationFrame(() => requestAnimationFrame(r)));
+
+  // Measure after reflow
   var rect = captureTarget.getBoundingClientRect();
-  var captureW = rect.width  > 10 ? rect.width  : A4_PAGE_W_NATIVE;
-  var captureH = rect.height > 10 ? rect.height : A4_PAGE_H_NATIVE;
+  // For position:absolute at top:-99999px, getBoundingClientRect returns negative top.
+  // We need the actual layout width/height — use offsetWidth/offsetHeight instead.
+  var captureW = captureTarget.offsetWidth  || A4_PAGE_W_NATIVE;
+  var captureH = captureTarget.offsetHeight || A4_PAGE_H_NATIVE;
+  if (captureW < 10) captureW = A4_PAGE_W_NATIVE;
+  if (captureH < 10) captureH = A4_PAGE_H_NATIVE;
 
   var captureScale = TEMPLATE_W / captureW;
 
-  var shot = await html2canvas(captureTarget, {
-    backgroundColor: '#ffffff',
-    scale: captureScale,
-    useCORS: true,
-    allowTaint: true,
-    logging: false,
-    scrollX: -(liveEl.getBoundingClientRect().left),
-    scrollY: -window.scrollY,
-    width:  captureW,
-    height: captureH,
-    windowWidth:  1200,
-    windowHeight: 900,
-    onclone: function(_cloneDoc, cloneEl) {
-      cloneEl.style.opacity    = '1';
-      cloneEl.style.visibility = 'visible';
-      cloneEl.style.overflow   = 'visible';
-      cloneEl.style.boxSizing  = 'border-box';
-      cloneEl.querySelectorAll('img').forEach(function(img) {
-        img.style.opacity    = '1';
-        img.style.visibility = 'visible';
-        img.crossOrigin      = 'anonymous';
-      });
-    }
-  });
+  var shot;
+  try {
+    shot = await html2canvas(captureTarget, {
+      backgroundColor: '#ffffff',
+      scale: captureScale,
+      useCORS: true,
+      allowTaint: true,
+      logging: false,
+      // scrollX/scrollY: 0 because element is now at absolute position in doc
+      scrollX: 0,
+      scrollY: -window.scrollY,
+      width:  captureW,
+      height: captureH,
+      windowWidth:  captureW + 40,
+      windowHeight: captureH + 40,
+      x: 0,
+      y: 0,
+      onclone: function(cloneDoc, cloneEl) {
+        // In the clone, make fully visible and ensure no clipping
+        cloneEl.style.opacity    = '1';
+        cloneEl.style.visibility = 'visible';
+        cloneEl.style.overflow   = 'visible';
+        cloneEl.style.position   = 'static';
+        cloneEl.style.left       = '0';
+        cloneEl.style.top        = '0';
+        cloneEl.style.boxSizing  = 'border-box';
+        // Also fix the parent in the clone
+        var parent = cloneEl.parentElement;
+        while (parent) {
+          parent.style.overflow   = 'visible';
+          parent.style.clipPath   = 'none';
+          parent.style.opacity    = '1';
+          parent.style.visibility = 'visible';
+          parent = parent.parentElement;
+        }
+        cloneEl.querySelectorAll('img').forEach(function(img) {
+          img.style.opacity    = '1';
+          img.style.visibility = 'visible';
+          img.crossOrigin      = 'anonymous';
+        });
+      }
+    });
+  } finally {
+    // Always restore original position, even if capture throws
+    liveEl.style.position = savedPosition;
+    liveEl.style.left     = savedLeft;
+    liveEl.style.top      = savedTop;
+    liveEl.style.zIndex   = savedZIndex;
+    liveEl.style.opacity  = savedOpacity;
+  }
 
   if (!shot || shot.width < 10 || shot.height < 10) {
     throw new Error('Word page capture failed. Please try again.');
   }
 
+  // Blit into TEMPLATE_W × A4_BODY_H canvas (the body slot of the article image)
   var out = document.createElement('canvas');
   out.width  = TEMPLATE_W;
   out.height = A4_BODY_H;
   var octx = out.getContext('2d');
   octx.fillStyle = '#ffffff';
   octx.fillRect(0, 0, TEMPLATE_W, A4_BODY_H);
-  var drawH = Math.min(shot.height, Math.round(A4_BODY_H));
-  octx.drawImage(shot, 0, 0, shot.width, drawH, 0, 0, TEMPLATE_W, A4_BODY_H);
+  // Draw shot scaled to fill the full width; crop to A4_BODY_H
+  octx.drawImage(shot, 0, 0, shot.width, shot.height, 0, 0, TEMPLATE_W, A4_BODY_H);
   return out;
 }
 
