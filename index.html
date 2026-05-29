@@ -1232,7 +1232,16 @@ body.dark-mode .rte-word-counter { background: #0d1624; border-color: var(--bord
 .rte-word-counter { display: none !important; }
 .article-body-capture-host {
   position: fixed; left: -12000px; top: 0; z-index: -1; pointer-events: none;
-  background: #ffffff; overflow: hidden;
+  background: #ffffff; overflow: visible;
+}
+#sub-docx-live-preview {
+  position: fixed; left: 0; top: 0; z-index: -9998;
+  opacity: 0.01; pointer-events: none; overflow: visible;
+  background: #ffffff;
+}
+#sub-docx-live-preview .docx-wrapper,
+#sub-docx-live-preview section.docx {
+  background: #ffffff !important; box-shadow: none !important; margin: 0 !important;
 }
 .article-body-capture-host .article-docx-body { box-sizing: border-box; }
 .rd-docx-actions { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; margin: 12px 0 16px; }
@@ -4149,7 +4158,8 @@ function resetSubmitForm() {
   const fi = document.getElementById('sub-file'); if(fi) fi.value = '';
   const photoFi = document.getElementById('sub-photo-file'); if(photoFi) photoFi.value = '';
   const editor = document.getElementById('sub-editor'); if(editor) { editor.innerHTML = ''; }
-  _subWordDocFile = null; _subArticleBodyHtml = ''; _subDocxCaptureBundle = null;
+  _subWordDocFile = null; _subArticleBodyHtml = ''; _subDocxArrayBuffer = null;
+  clearDocxLivePreview();
   const docxFi = document.getElementById('sub-docx-file'); if(docxFi) docxFi.value = '';
   const docxFn = document.getElementById('sub-docx-filename'); if(docxFn) docxFn.textContent = '';
   const docxZone = document.getElementById('sub-docx-zone'); if(docxZone) docxZone.classList.remove('has-file');
@@ -4343,7 +4353,7 @@ async function doSubmitArticle() {
     const imageDataUrl = _previewDataUrl || await generateArticleImage({
       title, author: name, place, htmlBody: articleHtml,
       authorPhotoUrl: _subAuthorPhotoData, category, occupation,
-      docxCaptureBundle: _subDocxCaptureBundle
+      docxArrayBuffer: _subDocxArrayBuffer
     });
     pfC.style.width = '30%';
     btn.textContent = 'Uploading article image…';
@@ -4780,7 +4790,7 @@ async function rdRegenerateImage() {
     const dataUrl = await generateArticleImage({
       title, author, place, htmlBody: articleHtml,
       authorPhotoUrl, category, occupation,
-      docxCaptureBundle: _subDocxCaptureBundle
+      docxArrayBuffer: _subDocxArrayBuffer
     });
 
     // Upload to Supabase, replacing old file
@@ -5087,25 +5097,45 @@ async function countDocxPages(arrayBuffer) {
   }
 }
 
-function validateDocxPageDimensions(bundle) {
-  const pageH = bundle.pageHeightPx || 0;
-  if (pageH > A4_PAGE_H_NATIVE * 1.05) {
+function validateDocxPageHeight(section) {
+  const pageH = Math.max(section.scrollHeight || 0, section.offsetHeight || 0, section.getBoundingClientRect().height || 0);
+  if (pageH > A4_PAGE_H_NATIVE * 1.08) {
     throw new Error('Your article exceeds one A4 page. Please shorten or reformat your Word document as a single A4 page.');
   }
   if (pageH < 20) {
     throw new Error('Your Word document appears empty. Please add your article text.');
   }
+  return pageH;
 }
 
-function buildDocxCaptureBundle(renderHost, wrapper) {
-  const styleEl = renderHost.querySelector('style');
-  const styles = styleEl ? styleEl.textContent : '';
-  const wrapperHtml = wrapper.outerHTML;
-  void wrapper.offsetHeight;
-  const section = wrapper.querySelector('section.docx') || wrapper;
-  const pageWidthPx = Math.max(section.scrollWidth || 0, section.offsetWidth || 0, A4_PAGE_W_NATIVE);
-  const pageHeightPx = Math.max(section.scrollHeight || 0, section.offsetHeight || 0);
-  return { styles, wrapperHtml, pageWidthPx, pageHeightPx };
+async function layoutDocxMeasureHost(root) {
+  await waitForImagesIn(root);
+  if (document.fonts && document.fonts.ready) {
+    try { await document.fonts.ready; } catch {}
+  }
+  await new Promise(r => requestAnimationFrame(() => requestAnimationFrame(r)));
+}
+
+function clearDocxLivePreview() {
+  const liveEl = document.getElementById('sub-docx-live-preview');
+  if (liveEl) liveEl.innerHTML = '';
+  _subDocxLiveReady = false;
+  _subDocxLiveBufferKey = '';
+}
+
+async function ensureDocxLiveRender(arrayBuffer) {
+  const liveEl = document.getElementById('sub-docx-live-preview');
+  if (!liveEl) throw new Error('Word render host missing');
+  const key = docxBufferKey(arrayBuffer);
+  if (_subDocxLiveReady && _subDocxLiveBufferKey === key && liveEl.querySelector('section.docx, .docx-wrapper')) {
+    return liveEl.querySelector('.docx-wrapper') || liveEl;
+  }
+  liveEl.innerHTML = '';
+  const wrapper = await renderDocxToContainer(arrayBuffer, liveEl);
+  await layoutDocxMeasureHost(liveEl);
+  _subDocxLiveReady = true;
+  _subDocxLiveBufferKey = key;
+  return wrapper;
 }
 
 function stripNonContentNodes(root) {
@@ -5153,8 +5183,17 @@ function normalizeDocxHtmlForTemplate(html) {
 
 let _subWordDocFile = null;
 let _subArticleBodyHtml = '';
-let _subDocxCaptureBundle = null;
+let _subDocxArrayBuffer = null;
+let _rdDocxArrayBuffer = null;
+let _subDocxLiveReady = false;
+let _subDocxLiveBufferKey = '';
 let _rdPendingDocxFile = null;
+
+function docxBufferKey(buf) {
+  if (!buf) return '';
+  const view = new Uint8Array(buf, 0, Math.min(32, buf.byteLength));
+  return buf.byteLength + ':' + Array.from(view).join(',');
+}
 
 function isDocxFile(file) {
   if (!file) return false;
@@ -5233,104 +5272,67 @@ async function parseWordDocumentFile(file, opts) {
   if (pageCount > 1) {
     throw new Error('Only single-page A4 Word documents are accepted. Your file has ' + pageCount + ' pages — please reduce to one A4 page.');
   }
-  const renderHost = document.createElement('div');
-  renderHost.style.cssText = 'position:fixed;left:-12000px;top:0;visibility:hidden;pointer-events:none;';
-  document.body.appendChild(renderHost);
-  try {
-    const wrapper = await renderDocxToContainer(buf, renderHost);
-    const bundle = buildDocxCaptureBundle(renderHost, wrapper);
-    validateDocxPageDimensions(bundle);
-    _subDocxCaptureBundle = bundle;
-    return normalizeDocxHtmlForTemplate(extractDocxContentFromWrapper(wrapper));
-  } finally {
-    renderHost.remove();
-  }
+
+  const wrapper = await ensureDocxLiveRender(buf);
+  const section = wrapper.querySelector('section.docx') || wrapper;
+  validateDocxPageHeight(section);
+  _subDocxArrayBuffer = buf.slice(0);
+  return normalizeDocxHtmlForTemplate(extractDocxContentFromWrapper(wrapper));
 }
 
-async function captureWordDocPageForTemplate(bundle) {
+/** Rasterize the live docx-preview render — same pixels as MS Word layout. */
+async function captureWordDocPageForTemplate(arrayBuffer) {
   if (typeof html2canvas === 'undefined') throw new Error('html2canvas not loaded');
-  if (!bundle || !bundle.wrapperHtml) throw new Error('Word capture data missing');
+  if (!arrayBuffer) throw new Error('Word document data missing');
 
-  let host = document.getElementById('article-body-capture-host');
-  if (!host) {
-    host = document.createElement('div');
-    host.id = 'article-body-capture-host';
-    host.className = 'article-body-capture-host';
-    document.body.appendChild(host);
-  }
-  host.innerHTML = '';
-  host.style.overflow = 'visible';
-  host.style.width = 'auto';
-  host.style.height = 'auto';
+  const liveEl = document.getElementById('sub-docx-live-preview');
+  if (!liveEl) throw new Error('Word render host missing');
 
-  if (bundle.styles) {
-    const st = document.createElement('style');
-    st.textContent = bundle.styles;
-    host.appendChild(st);
-  }
-  const pageDiv = document.createElement('div');
-  pageDiv.className = 'docx-word-page';
-  pageDiv.innerHTML = bundle.wrapperHtml;
-  host.appendChild(pageDiv);
+  await ensureDocxLiveRender(arrayBuffer);
 
-  const target = pageDiv.querySelector('section.docx') || pageDiv.querySelector('.docx-wrapper');
-  if (!target) throw new Error('Could not find Word page content');
+  const target = liveEl.querySelector('section.docx') || liveEl.querySelector('.docx-wrapper');
+  if (!target) throw new Error('Could not find Word page in document');
 
-  await waitForImagesIn(target);
-  if (document.fonts && document.fonts.ready) {
-    try { await document.fonts.ready; } catch {}
+  await layoutDocxMeasureHost(liveEl);
+
+  const rect = target.getBoundingClientRect();
+  const nativeW = Math.max(rect.width || 0, target.offsetWidth || 0, target.scrollWidth || 0);
+  const nativeH = Math.max(rect.height || 0, target.offsetHeight || 0, target.scrollHeight || 0);
+  if (nativeW < 10 || nativeH < 10) {
+    throw new Error('Word page layout not ready. Please re-upload your .docx file.');
   }
 
-  const nativeW = Math.max(target.scrollWidth || 0, target.offsetWidth || 0, bundle.pageWidthPx || A4_PAGE_W_NATIVE);
-  const nativeH = Math.max(target.scrollHeight || 0, target.offsetHeight || 0, bundle.pageHeightPx || 1);
   const scale = TEMPLATE_W / nativeW;
-
   const shot = await html2canvas(target, {
-    backgroundColor: ARTICLE_PAGE_BG,
+    backgroundColor: '#ffffff',
     scale: scale,
     useCORS: true,
     allowTaint: true,
     logging: false,
-    width: nativeW,
-    height: nativeH,
-    windowWidth: nativeW + 80
+    scrollX: 0,
+    scrollY: -window.scrollY,
+    onclone: (_doc, el) => {
+      el.style.opacity = '1';
+      el.style.visibility = 'visible';
+    }
   });
 
-  host.innerHTML = '';
-  host.style.overflow = '';
+  if (!shot || shot.width < 10 || shot.height < 10) {
+    throw new Error('Word page capture failed. Please try again.');
+  }
   return shot;
 }
 
 async function drawArticleBodyOnTemplate(ctx, bodyStartY, htmlBody, layout) {
-  const { bodyMaxH, captureBundle } = layout;
-  if (!htmlBody || !htmlBody.replace(/<[^>]+>/g, '').trim()) return;
+  const { bodyMaxH } = layout;
+  const docxBuf = layout.docxArrayBuffer || _subDocxArrayBuffer || _rdDocxArrayBuffer;
+  if (!docxBuf) {
+    throw new Error('Word document required for article body rendering.');
+  }
 
-  if (typeof html2canvas !== 'undefined' && captureBundle) {
-    try {
-      const shot = await captureWordDocPageForTemplate(captureBundle);
-      const drawW = TEMPLATE_W;
-      const drawH = Math.min(shot.height, bodyMaxH);
-      ctx.drawImage(shot, 0, bodyStartY, drawW, drawH);
-      return;
-    } catch (e) {
-      console.warn('Word-fidelity capture failed:', e);
-    }
-  }
-  if (typeof html2canvas !== 'undefined') {
-    try {
-      const shot = await captureWordDocPageForTemplate({
-        styles: '',
-        wrapperHtml: '<div class="docx-wrapper">' + normalizeDocxHtmlForTemplate(htmlBody) + '</div>',
-        pageWidthPx: A4_PAGE_W_NATIVE,
-        pageHeightPx: A4_PAGE_H_NATIVE
-      });
-      ctx.drawImage(shot, 0, bodyStartY, TEMPLATE_W, Math.min(shot.height, bodyMaxH));
-      return;
-    } catch (e) {
-      console.warn('HTML fallback capture failed:', e);
-    }
-  }
-  layout._drawBodyLegacyCanvas(bodyStartY, 0, TEMPLATE_W, bodyStartY + bodyMaxH, htmlBody);
+  const shot = await captureWordDocPageForTemplate(docxBuf);
+  const drawH = Math.min(shot.height, bodyMaxH);
+  ctx.drawImage(shot, 0, bodyStartY, shot.width, drawH);
 }
 
 function setSubDocxStatus(msg, isErr) {
@@ -5349,7 +5351,8 @@ async function handleSubDocxSelect(input) {
   _subWordDocFile = null;
   syncHiddenArticleEditor('');
   _previewDataUrl = null;
-  _subDocxCaptureBundle = null;
+  _subDocxArrayBuffer = null;
+  clearDocxLivePreview();
   if (fnEl) fnEl.textContent = '';
   if (zone) zone.classList.remove('has-file');
   hideArticleImagePreview();
@@ -5401,6 +5404,7 @@ async function handleRdDocxSelect(input) {
   try {
     const html = await parseWordDocumentFile(file, {});
     _rdPendingDocxFile = file;
+    _rdDocxArrayBuffer = _subDocxArrayBuffer ? _subDocxArrayBuffer.slice(0) : null;
     const rdEditor = document.getElementById('rd-article-body');
     if (rdEditor) rdEditor.innerHTML = html;
     if (_activeSubmission) _activeSubmission.article_body = html;
@@ -5852,7 +5856,7 @@ async function _doGeneratePreview() {
     const dataUrl = await generateArticleImage({
       title, author: name, place, htmlBody: articleHtml,
       authorPhotoUrl: _subAuthorPhotoData, category, occupation: occ,
-      docxCaptureBundle: _subDocxCaptureBundle
+      docxArrayBuffer: _subDocxArrayBuffer
     });
     _previewDataUrl = dataUrl;
     prevImg.src = dataUrl;
@@ -5861,7 +5865,11 @@ async function _doGeneratePreview() {
   } catch(e) {
     prevGen.classList.add('hidden');
     prevImg.style.display = 'none';
-    console.warn('Preview generation error:', e);
+    _previewDataUrl = null;
+    const errEl = document.getElementById('sub-error');
+    if (errEl) errEl.textContent = e.message || 'Could not generate article image.';
+    setSubDocxStatus('✗ ' + (e.message || 'Image generation failed'), true);
+    console.error('Preview generation error:', e);
   }
 }
 
@@ -6135,9 +6143,8 @@ async function generateArticleImage(articleData) {
         ctx.fillRect(0, bodyStartY, W, A4_BODY_H);
 
         await drawArticleBodyOnTemplate(ctx, bodyStartY, htmlBody, {
-          LEFT: 0, CONTENT_W: TEMPLATE_W, bodyMaxH, BORDER,
-          captureBundle: articleData.docxCaptureBundle || _subDocxCaptureBundle,
-          _drawBodyLegacyCanvas
+          bodyMaxH,
+          docxArrayBuffer: articleData.docxArrayBuffer || _subDocxArrayBuffer || _rdDocxArrayBuffer
         });
 
         ctx.fillStyle = NAVY;
@@ -6587,6 +6594,7 @@ closeUpload = function() {
   <div class="lbx-hint" id="lbx-hint">Scroll or pinch to zoom &nbsp;·&nbsp; Drag to pan</div>
 </div>
 
+<div id="sub-docx-live-preview" aria-hidden="true"></div>
 <div id="article-body-capture-host" class="article-body-capture-host" aria-hidden="true"></div>
 
 <script src="https://cdn.jsdelivr.net/npm/jszip@3.10.1/dist/jszip.min.js"></script>
