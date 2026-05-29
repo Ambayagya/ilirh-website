@@ -1235,8 +1235,8 @@ body.dark-mode .rte-word-counter { background: #0d1624; border-color: var(--bord
   background: #ffffff; overflow: visible;
 }
 #sub-docx-live-preview {
-  position: fixed; left: -9999px; top: 0; z-index: -9998;
-  opacity: 1; pointer-events: none; overflow: visible;
+  position: fixed; left: -9999px; top: 0; z-index: -1;
+  opacity: 1; pointer-events: none; overflow: visible; visibility: visible;
   background: #ffffff;
   width: 794px; min-height: 1123px;
 }
@@ -5082,35 +5082,48 @@ function getTemplateBodyMaxHeight() {
 /** Returns page count AND whether page size is A4 (±5mm tolerance). */
 async function countDocxPages(arrayBuffer) {
   // Parse page count and size directly from docx XML — no DOM rendering needed.
-  // This is 100% reliable: docx-preview's section count is timing-dependent,
-  // but the raw XML never lies.
   try {
     const zip = await JSZip.loadAsync(arrayBuffer);
     const xml = await zip.file('word/document.xml').async('string');
 
-    // Page breaks: each <w:br w:type="page"/> is an explicit page break.
-    // Sections: each <w:sectPr> inside <w:body> (except the final doc-level one) is a section break = new page.
+    // ── PAGE BREAK COUNT ────────────────────────────────────────────────────
+    // 1. Explicit page breaks: <w:br w:type="page"/>
     const pageBreaks = (xml.match(/<w:br[^>]*w:type=["']page["'][^>]*\/?>/g) || []).length;
-    // Count mid-body sectPr (not the final one — find all sectPr not immediately before </w:body>)
-    const allSectPr = (xml.match(/<w:sectPr[\s>]/g) || []).length;
-    // The last sectPr is doc-level (not a page break), so page-break sectPr = allSectPr - 1
+
+    // 2. Section breaks that introduce a new page.
+    //    IMPORTANT: <w:sectPr> inside <w:tc> (table cells) are LAYOUT overrides,
+    //    NOT page breaks — we must exclude them. We do this by stripping all
+    //    <w:tc>…</w:tc> blocks before counting.
+    //    Also, the LAST <w:sectPr> in <w:body> is the document-level section
+    //    (not a page break) — subtract 1 only if there are any.
+    const xmlNoTables = xml.replace(/<w:tc[\s>][\s\S]*?<\/w:tc>/g, '');
+    const allSectPr = (xmlNoTables.match(/<w:sectPr[\s>]/g) || []).length;
+    // allSectPr includes the doc-level one; interior section breaks = allSectPr - 1
     const sectBreaks = Math.max(0, allSectPr - 1);
+
     const count = 1 + pageBreaks + sectBreaks;
 
-    // A4 check: w:pgSz w:w = page width in twips. A4=12240, Letter=12240 (same width!)
-    // Use HEIGHT: A4 h=15840 twips (297mm). Letter h=15840 too — use BOTH w+h.
-    // A4: w=11906 (210mm exact) h=16838 (297mm exact) — but Word uses 11906/16838 or 12240/15840
-    // Safe: check w:w between 11700-12400 AND w:h between 16200-17200
-    let isA4 = true;
-    const wMatch = xml.match(/w:pgSz[^/]{0,120}?w:w=["']?(\d+)["']?/);
-    const hMatch = xml.match(/w:pgSz[^/]{0,120}?w:h=["']?(\d+)["']?/);
-    if (wMatch && hMatch) {
-      const pw = parseInt(wMatch[1], 10);
-      const ph = parseInt(hMatch[1], 10);
-      // A4 portrait: w≈11906 (210mm) h≈16838 (297mm) — allow ±500 twips tolerance
-      const wOk = pw >= 11400 && pw <= 12400;
-      const hOk = ph >= 16300 && ph <= 17300;
-      isA4 = wOk && hOk;
+    // ── A4 PAGE SIZE CHECK ───────────────────────────────────────────────────
+    // Twip values for A4: Word stores 11906 × 16838 (ISO) or 11909 × 16834,
+    // some templates use 12240 × 15840 (incorrect but common). We accept any
+    // value that maps to 210 mm wide ±8 mm AND 297 mm tall ±8 mm.
+    // 1 mm = 56.7 twips  →  ±8 mm ≈ ±454 twips
+    //   A4 w: 11906 twips — accept 11452 … 12360
+    //   A4 h: 16838 twips — accept 16384 … 17292
+    let isA4 = true; // default: accept if no pgSz found (avoid blocking)
+    const pgSzMatch = xml.match(/<w:pgSz\b([^/]{0,300}?)\/>/);
+    if (pgSzMatch) {
+      const pgSzStr = pgSzMatch[1];
+      const wm = pgSzStr.match(/\bw:w=["']?(\d+)["']?/);
+      const hm = pgSzStr.match(/\bw:h=["']?(\d+)["']?/);
+      if (wm && hm) {
+        const pw = parseInt(wm[1], 10);
+        const ph = parseInt(hm[1], 10);
+        const wOk = pw >= 11452 && pw <= 12360;
+        const hOk = ph >= 16384 && ph <= 17292;
+        isA4 = wOk && hOk;
+      }
+      // If only one dimension found, be lenient (some templates omit one attr)
     }
 
     return { count, isA4 };
@@ -5147,13 +5160,18 @@ async function ensureDocxLiveRender(arrayBuffer) {
   const liveEl = document.getElementById('sub-docx-live-preview');
   if (!liveEl) throw new Error('Word render host missing');
   const key = docxBufferKey(arrayBuffer);
-  if (_subDocxLiveReady && _subDocxLiveBufferKey === key && liveEl.querySelector('section.docx, .docx-wrapper')) {
+  if (_subDocxLiveReady && _subDocxLiveBufferKey === key && liveEl.querySelector('section.docx')) {
     return liveEl.querySelector('.docx-wrapper') || liveEl;
   }
   liveEl.innerHTML = '';
+  _subDocxLiveReady = false;
+  _subDocxLiveBufferKey = '';
   const wrapper = await renderDocxToContainer(arrayBuffer, liveEl);
-  await new Promise(r => setTimeout(r, 350));
+  // Give docx-preview time to inject section.docx into the DOM
+  await new Promise(r => setTimeout(r, 600));
   await layoutDocxMeasureHost(liveEl);
+  // Extra rAF settle so the browser has committed layout
+  await new Promise(r => requestAnimationFrame(() => requestAnimationFrame(() => requestAnimationFrame(r))));
   _subDocxLiveReady = true;
   _subDocxLiveBufferKey = key;
   return wrapper;
@@ -5292,7 +5310,7 @@ async function parseWordDocumentFile(file, opts) {
   // Ensure docx-preview library is ready before validation
   if (typeof docx === 'undefined' || !docx.renderAsync) {
     await new Promise((resolve, reject) => {
-      const deadline = Date.now() + 8000;
+      const deadline = Date.now() + 10000;
       const poll = setInterval(() => {
         if (typeof docx !== 'undefined' && docx.renderAsync) { clearInterval(poll); resolve(); }
         else if (Date.now() > deadline) { clearInterval(poll); reject(new Error('Word preview library not ready — please refresh the page and try again.')); }
@@ -5302,14 +5320,18 @@ async function parseWordDocumentFile(file, opts) {
   const buf = await file.arrayBuffer();
   const { count: pageCount, isA4 } = await countDocxPages(buf);
   if (!isA4) {
-    throw new Error('❌ Wrong page size. Only A4 (210 × 297 mm) documents are accepted. In Microsoft Word: Layout → Size → A4, then re-upload.');
+    throw new Error('❌ Wrong page size. Only A4 (210 × 297 mm) documents are accepted. In Microsoft Word: go to Layout → Size → A4, then re-upload.');
   }
   if (pageCount > 1) {
-    throw new Error('❌ Your document has ' + pageCount + ' pages. Only a single-page A4 document is accepted. Please reduce your content to fit one A4 page and re-upload.');
+    throw new Error('❌ Your document has ' + pageCount + ' pages. Only a single-page A4 document is accepted. Please reduce your content to fit one page and re-upload.');
   }
 
   const wrapper = await ensureDocxLiveRender(buf);
-  const section = wrapper.querySelector('section.docx') || wrapper;
+  // Prefer first section.docx; fall back to wrapper itself
+  const liveEl = document.getElementById('sub-docx-live-preview');
+  const section = (liveEl && liveEl.querySelector('section.docx')) ||
+                  wrapper.querySelector('section.docx') ||
+                  wrapper;
   validateDocxHasContent(section);
   _subDocxArrayBuffer = buf.slice(0);
   return normalizeDocxHtmlForTemplate(extractDocxContentFromWrapper(wrapper));
@@ -5332,23 +5354,23 @@ async function captureWordDocPageForTemplate(arrayBuffer) {
   liveEl.style.width     = A4_PAGE_W_NATIVE + 'px';
   liveEl.style.minHeight = A4_PAGE_H_NATIVE + 'px';
 
-await ensureDocxLiveRender(arrayBuffer);
+  await ensureDocxLiveRender(arrayBuffer);
 
-// Wait for full layout: images, fonts, reflow
-await layoutDocxMeasureHost(liveEl);
+  // Wait for full layout: images, fonts, reflow
+  await layoutDocxMeasureHost(liveEl);
 
-// Poll for section.docx to appear — fixed timeouts can be too short on slow
-// machines or large files. Wait up to 5 s before giving up.
-const section = await new Promise(resolve => {
-  const deadline = Date.now() + 5000;
-  (function poll() {
-    const el = liveEl.querySelector('section.docx');
-    if (el) return resolve(el);
-    if (Date.now() > deadline) return resolve(null);
-    requestAnimationFrame(poll);
-  })();
-});
-if (!section) throw new Error('Could not find Word page — please re-upload your .docx file.');
+  // Poll for section.docx — fixed timeouts are unreliable on slow machines or
+  // large/complex documents. Check every animation frame; give up after 8 s.
+  const section = await new Promise(function(resolve) {
+    var deadline = Date.now() + 8000;
+    (function poll() {
+      var el = liveEl.querySelector('section.docx');
+      if (el && el.getBoundingClientRect().width > 0) return resolve(el);
+      if (Date.now() > deadline) return resolve(null);
+      requestAnimationFrame(poll);
+    })();
+  });
+  if (!section) throw new Error('Could not find Word page — please re-upload your .docx file.');
 
   // Measure the rendered section's true dimensions (includes Word page margins)
   const rect = section.getBoundingClientRect();
@@ -5481,6 +5503,8 @@ async function handleRdDocxSelect(input) {
     const html = await parseWordDocumentFile(file, {});
     _rdPendingDocxFile = file;
     _rdDocxArrayBuffer = _subDocxArrayBuffer ? _subDocxArrayBuffer.slice(0) : null;
+    // Use the newly-parsed buffer (already stored in _subDocxArrayBuffer by parseWordDocumentFile)
+    if (_subDocxArrayBuffer) _rdDocxArrayBuffer = _subDocxArrayBuffer.slice(0);
     const rdEditor = document.getElementById('rd-article-body');
     if (rdEditor) rdEditor.innerHTML = html;
     if (_activeSubmission) _activeSubmission.article_body = html;
