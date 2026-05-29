@@ -5480,24 +5480,31 @@ async function captureWordDocPageForTemplate(arrayBuffer) {
     throw new Error('Word page capture failed. Please try again.');
   }
 
-  // Blit into TEMPLATE_W × A4_BODY_H canvas (the body slot of the article image)
+  // Scale to TEMPLATE_W preserving exact aspect ratio — no stretch, no crop
+  var scaledH = Math.round(shot.height * (TEMPLATE_W / shot.width));
+
+  // Blit into TEMPLATE_W × scaledH canvas — pixel-perfect Word page
   var out = document.createElement('canvas');
   out.width  = TEMPLATE_W;
-  out.height = A4_BODY_H;
+  out.height = scaledH;
   var octx = out.getContext('2d');
   octx.fillStyle = '#ffffff';
-  octx.fillRect(0, 0, TEMPLATE_W, A4_BODY_H);
-  // Draw shot scaled to fill the full width; crop to A4_BODY_H
-  octx.drawImage(shot, 0, 0, shot.width, shot.height, 0, 0, TEMPLATE_W, A4_BODY_H);
+  octx.fillRect(0, 0, TEMPLATE_W, scaledH);
+  octx.drawImage(shot, 0, 0, shot.width, shot.height, 0, 0, TEMPLATE_W, scaledH);
+  // Expose actual body height so the template can size the canvas correctly
+  out._docBodyH = scaledH;
   return out;
 }
 
 async function drawArticleBodyOnTemplate(ctx, bodyStartY, htmlBody, layout) {
   const docxBuf = layout.docxArrayBuffer || _subDocxArrayBuffer || _rdDocxArrayBuffer;
   if (!docxBuf) throw new Error('Word document required for article body rendering.');
-  // shot is already TEMPLATE_W × A4_BODY_H — place directly into the body slot
+  // shot is TEMPLATE_W × scaledH — pixel-perfect Word page at natural aspect ratio
   const shot = await captureWordDocPageForTemplate(docxBuf);
-  ctx.drawImage(shot, 0, bodyStartY, TEMPLATE_W, A4_BODY_H);
+  const actualBodyH = shot._docBodyH || shot.height;
+  ctx.drawImage(shot, 0, bodyStartY, TEMPLATE_W, actualBodyH);
+  // Return the actual height so caller can position footer correctly
+  return actualBodyH;
 }
 
 function setSubDocxStatus(msg, isErr) {
@@ -6098,7 +6105,8 @@ async function generateArticleImage(articleData) {
   return new Promise((resolve, reject) => {
     const W = TEMPLATE_W;
     const preBodyStartY = computeArticleBodyStartY(articleData, W);
-    const H = preBodyStartY + A4_BODY_H + TEMPLATE_FOOTER_H;
+    // Use generous initial height; canvas is cropped to actual size after body capture
+    const H = preBodyStartY + A4_BODY_H + TEMPLATE_FOOTER_H + 500;
     const canvas = document.createElement('canvas');
     canvas.width = W; canvas.height = H;
     const ctx = canvas.getContext('2d');
@@ -6295,18 +6303,20 @@ async function generateArticleImage(articleData) {
     async function _drawBody(bodyStartY) {
       try {
         const htmlBody = articleData.htmlBody || '';
-        const footerY = bodyStartY + A4_BODY_H;
 
-        // Exact A4 body slot — pure white, no overlap seam
+        // Clear area generously; actual body height determined after capture
         ctx.fillStyle = '#ffffff';
-        ctx.fillRect(0, bodyStartY, W, A4_BODY_H);
+        ctx.fillRect(0, bodyStartY, W, A4_BODY_H + TEMPLATE_FOOTER_H);
 
-        await drawArticleBodyOnTemplate(ctx, bodyStartY, htmlBody, {
+        const actualBodyH = await drawArticleBodyOnTemplate(ctx, bodyStartY, htmlBody, {
           bodyMaxH: A4_BODY_H,
           docxArrayBuffer: articleData.docxArrayBuffer || _subDocxArrayBuffer || _rdDocxArrayBuffer
         });
 
-        // Gold accent bar flush against bottom of A4 body, then navy footer below
+        // Footer sits flush against the REAL bottom of the Word page
+        const footerY = bodyStartY + actualBodyH;
+
+        // Gold accent bar flush against bottom of Word page, then navy footer below
         ctx.fillStyle = GOLD;
         ctx.fillRect(0, footerY, W, 8);
         ctx.fillStyle = NAVY;
@@ -6326,7 +6336,14 @@ async function generateArticleImage(articleData) {
         ctx.fillText('ilirh.in  ·  Published ' + new Date().toLocaleDateString('en-IN', {day:'numeric',month:'long',year:'numeric'}), W / 2, footerY + 8 + 130);
 
         ctx.textAlign = 'left';
-        resolve(canvas.toDataURL('image/jpeg', 0.93));
+
+        // Crop canvas to exact final height (no empty whitespace at bottom)
+        const finalH = footerY + TEMPLATE_FOOTER_H;
+        const cropped = document.createElement('canvas');
+        cropped.width = W; cropped.height = finalH;
+        const croppedCtx = cropped.getContext('2d');
+        croppedCtx.drawImage(canvas, 0, 0);
+        resolve(cropped.toDataURL('image/jpeg', 0.93));
       } catch (bodyErr) {
         reject(bodyErr);
       }
