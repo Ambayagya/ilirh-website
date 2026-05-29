@@ -5309,7 +5309,7 @@ async function renderDocxToContainer(arrayBuffer, container) {
   await docx.renderAsync(arrayBuffer, container, null, {
     className: 'docx-preview-content',
     inWrapper: true,
-    ignoreWidth: false,   // respect Word's own page width so margins are correct
+    ignoreWidth: true,    // let container width drive layout so content fills A4 slot exactly
     ignoreHeight: true,   // don't clip height — let full page render
     breakPages: false,
     useBase64URL: true,   // embed images as base64 so html2canvas can capture them
@@ -5400,6 +5400,13 @@ async function captureWordDocPageForTemplate(arrayBuffer) {
     el.style.margin     = '0';
     el.style.padding    = '0';
     el.style.background = '#ffffff';
+    el.style.width      = '100%';
+  });
+  // Also strip padding from the inner content area so layout matches Word exactly
+  liveEl.querySelectorAll('.docx-preview-content, .docx-preview-content-wrapper').forEach(function(el) {
+    el.style.padding    = '0';
+    el.style.margin     = '0';
+    el.style.width      = '100%';
   });
 
   // ── 4. Move into document coordinate space (html2canvas needs this) ─────
@@ -5454,6 +5461,13 @@ async function captureWordDocPageForTemplate(arrayBuffer) {
           el.style.margin     = '0';
           el.style.padding    = '0';
           el.style.background = '#ffffff';
+          el.style.width      = '100%';
+        });
+        // Strip inner content wrapper padding to match Word's layout exactly
+        cloneEl.querySelectorAll('.docx-preview-content, .docx-preview-content-wrapper').forEach(function(el) {
+          el.style.padding = '0';
+          el.style.margin  = '0';
+          el.style.width   = '100%';
         });
         // Unclip parent chain
         var parent = cloneEl.parentElement;
@@ -5488,7 +5502,7 @@ async function captureWordDocPageForTemplate(arrayBuffer) {
   // ── 6. Guarantee exact TEMPLATE_W × A4_BODY_H output ───────────────────
   // html2canvas with scale=3.125 on 794×1123 produces 2481×3509 —
   // which matches TEMPLATE_W × A4_BODY_H exactly (both = 300 DPI A4).
-  // If rounding gives ±1 px, blit with uniform scale (never stretch).
+  // If rounding gives ±1 px, stretch-fill to eliminate any grey bars.
   if (shot.width === TEMPLATE_W && shot.height === A4_BODY_H) {
     return shot;
   }
@@ -5498,16 +5512,10 @@ async function captureWordDocPageForTemplate(arrayBuffer) {
   var octx = out.getContext('2d');
   octx.fillStyle = '#ffffff';
   octx.fillRect(0, 0, TEMPLATE_W, A4_BODY_H);
-  // Uniform scale — never distort width vs height
-  var scaleX = TEMPLATE_W / shot.width;
-  var scaleY = A4_BODY_H  / shot.height;
-  var s  = Math.min(scaleX, scaleY);
-  var dw = Math.round(shot.width  * s);
-  var dh = Math.round(shot.height * s);
+  // Stretch-fill: cover the entire body slot with no letterbox gaps.
+  // The source is already an A4 page at near-exact scale so distortion is imperceptible.
   octx.drawImage(shot, 0, 0, shot.width, shot.height,
-                 Math.round((TEMPLATE_W - dw) / 2),
-                 Math.round((A4_BODY_H  - dh) / 2),
-                 dw, dh);
+                 0, 0, TEMPLATE_W, A4_BODY_H);
   return out;
 }
 
