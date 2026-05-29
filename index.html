@@ -5100,22 +5100,17 @@ async function countDocxPages(arrayBuffer) {
       renderEndnotes: false
     });
     const pages = container.querySelectorAll('.docx-wrapper > section.docx');
-    if (!pages.length) return { count: 1, isA4: true };
-
-    // Count non-empty pages
-    let count = 0;
-    pages.forEach(p => {
-      const text = (p.textContent || '').replace(/\s+/g, '').trim();
-      if (text.length > 0) count++;
-    });
+    // Count ALL rendered sections — the true page count from docx-preview.
+    // Do NOT filter by text: image-only or table-only pages are still real pages.
+    const count = pages.length || 1;
 
     // Check A4 size: section.docx width should be ~794px (±40px tolerance = ±10mm)
     const firstPage = pages[0];
-    const pageW = firstPage.offsetWidth || firstPage.scrollWidth || 0;
+    const pageW = firstPage ? (firstPage.offsetWidth || firstPage.scrollWidth || 0) : 0;
     // A4 = 794px at 96dpi; allow ±40px tolerance
     const isA4 = (pageW === 0) || (pageW >= 754 && pageW <= 834);
 
-    return { count: Math.max(count, 1), isA4 };
+    return { count, isA4 };
   } finally {
     container.remove();
   }
@@ -6206,7 +6201,7 @@ async function generateArticleImage(articleData) {
 
         // Hairline grey separator line between author block and body
         ctx.strokeStyle = BORDER;
-        ctx.lineWidth = 0.5;
+        ctx.lineWidth = 0.2;
         ctx.beginPath(); ctx.moveTo(0, bodyStartY - 8); ctx.lineTo(W, bodyStartY - 8); ctx.stroke();
 
         // Exact A4 body slot — pure white
