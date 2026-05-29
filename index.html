@@ -5091,21 +5091,23 @@ async function countDocxPages(arrayBuffer) {
       renderEndnotes: false
     });
     const pages = container.querySelectorAll('.docx-wrapper > section.docx');
-    return pages.length || 1;
+    if (!pages.length) return 1;
+    let count = 0;
+    pages.forEach(p => {
+      const text = (p.textContent || '').replace(/\s+/g, '').trim();
+      if (text.length > 0) count++;
+    });
+    return Math.max(count, 1);
   } finally {
     container.remove();
   }
 }
 
-function validateDocxPageHeight(section) {
-  const pageH = Math.max(section.scrollHeight || 0, section.offsetHeight || 0, section.getBoundingClientRect().height || 0);
-  if (pageH > A4_PAGE_H_NATIVE * 1.08) {
-    throw new Error('Your article exceeds one A4 page. Please shorten or reformat your Word document as a single A4 page.');
-  }
-  if (pageH < 20) {
+function validateDocxHasContent(section) {
+  const text = (section.textContent || '').replace(/\s+/g, ' ').trim();
+  if (text.length < 10) {
     throw new Error('Your Word document appears empty. Please add your article text.');
   }
-  return pageH;
 }
 
 async function layoutDocxMeasureHost(root) {
@@ -5275,7 +5277,7 @@ async function parseWordDocumentFile(file, opts) {
 
   const wrapper = await ensureDocxLiveRender(buf);
   const section = wrapper.querySelector('section.docx') || wrapper;
-  validateDocxPageHeight(section);
+  validateDocxHasContent(section);
   _subDocxArrayBuffer = buf.slice(0);
   return normalizeDocxHtmlForTemplate(extractDocxContentFromWrapper(wrapper));
 }
@@ -5369,8 +5371,8 @@ async function handleSubDocxSelect(input) {
     await tryAutoShowArticleImage();
   } catch (e) {
     input.value = '';
+    if (errEl) errEl.textContent = '';
     setSubDocxStatus('✗ ' + (e.message || 'Could not read document'), true);
-    if (errEl) errEl.textContent = e.message || 'Could not read Word document.';
   }
 }
 
@@ -5867,7 +5869,7 @@ async function _doGeneratePreview() {
     prevImg.style.display = 'none';
     _previewDataUrl = null;
     const errEl = document.getElementById('sub-error');
-    if (errEl) errEl.textContent = e.message || 'Could not generate article image.';
+    if (errEl) errEl.textContent = '';
     setSubDocxStatus('✗ ' + (e.message || 'Image generation failed'), true);
     console.error('Preview generation error:', e);
   }
