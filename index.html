@@ -1203,7 +1203,7 @@ body.dark-mode .rte-word-counter { background: #0d1624; border-color: var(--bord
 }
 .article-docx-body section.docx,
 .submit-docx-preview-host section.docx {
-  background: transparent !important; box-shadow: none !important; margin: 0 !important; padding: 0 !important;
+  background: transparent !important; box-shadow: none !important; margin: 0 !important;
   min-height: 0 !important;
 }
 .article-body-capture-host .docx-word-page .docx-wrapper {
@@ -1255,7 +1255,7 @@ body.dark-mode .rte-word-counter { background: #0d1624; border-color: var(--bord
 }
 #sub-docx-live-preview section.docx {
   background: #ffffff !important; box-shadow: none !important;
-  margin: 0 !important; border: none !important; padding: 0 !important;
+  margin: 0 !important; border: none !important;
 }
 .article-body-capture-host .article-docx-body { box-sizing: border-box; }
 .rd-docx-actions { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; margin: 12px 0 16px; }
@@ -4410,7 +4410,7 @@ async function doSubmitArticle() {
         author_photo_url,
         article_docx_url: article_docx_url || null,
         file_url: articleImageUrl || null,
-        file_type: articleImageUrl ? 'image/jpeg' : null,
+        file_type: articleImageUrl ? 'image/png' : null,
         status: 'pending', undertaking_agreed: true
       })
     });
@@ -4428,7 +4428,7 @@ async function doSubmitArticle() {
             coauthors, place,
             author_photo_url,
             file_url: articleImageUrl || null,
-            file_type: articleImageUrl ? 'image/jpeg' : null,
+            file_type: articleImageUrl ? 'image/png' : null,
             status: 'pending', undertaking_agreed: true
           })
         });
@@ -4449,7 +4449,7 @@ async function doSubmitArticle() {
             author_name: name, author_email: email, occupation, institution, phone,
             article_title: title, category, abstract: abstract + '\n\n[ARTICLE BODY]\n' + articleText.slice(0, 1500),
             coauthors, file_url: articleImageUrl || null,
-            file_type: articleImageUrl ? 'image/jpeg' : null,
+            file_type: articleImageUrl ? 'image/png' : null,
             status: 'pending', undertaking_agreed: true
           })
         });
@@ -4818,7 +4818,7 @@ async function rdRegenerateImage() {
       headers: { ...headers, 'Prefer': 'return=minimal' },
       body: JSON.stringify({
         file_url: newUrl,
-        file_type: 'image/jpeg',
+        file_type: 'image/png',
         article_body: articleHtml
       })
     });
@@ -4826,7 +4826,7 @@ async function rdRegenerateImage() {
 
     // Update local state
     _activeSubmission.file_url   = newUrl;
-    _activeSubmission.file_type  = 'image/jpeg';
+    _activeSubmission.file_type  = 'image/png';
     _activeSubmission.article_body = articleHtml;
 
     const bust = esc(newUrl) + '?t=' + Date.now();
@@ -5163,8 +5163,17 @@ async function layoutDocxMeasureHost(root) {
   if (document.fonts && document.fonts.ready) {
     try { await document.fonts.ready; } catch {}
   }
-  await new Promise(r => requestAnimationFrame(() => requestAnimationFrame(() => requestAnimationFrame(r))));
-  await new Promise(r => setTimeout(r, 150));
+  await new Promise(r => requestAnimationFrame(() => requestAnimationFrame(r)));
+  await new Promise(r => setTimeout(r, 40));
+}
+
+async function waitForDocxRenderReady(root) {
+  const deadline = performance.now() + 2400;
+  while (performance.now() < deadline) {
+    const page = root && root.querySelector('section.docx, .docx-wrapper');
+    if (page && page.scrollHeight > 20) return;
+    await new Promise(r => requestAnimationFrame(r));
+  }
 }
 
 function clearDocxLivePreview() {
@@ -5172,6 +5181,11 @@ function clearDocxLivePreview() {
   if (liveEl) liveEl.innerHTML = '';
   _subDocxLiveReady = false;
   _subDocxLiveBufferKey = '';
+  _docxCaptureCacheKey = '';
+  _docxCaptureCacheCanvas = null;
+  _docxCaptureCacheTrim = 0;
+  _docxPictureEffectKey = '';
+  _docxPictureShadowCss = '';
 }
 
 async function ensureDocxLiveRender(arrayBuffer) {
@@ -5188,10 +5202,9 @@ async function ensureDocxLiveRender(arrayBuffer) {
   _subDocxLiveReady = false;
   _subDocxLiveBufferKey = '';
   const wrapper = await renderDocxToContainer(arrayBuffer, liveEl);
-  // Give docx-preview time to build the DOM (section.docx is added async)
-  await new Promise(r => setTimeout(r, 800));
+  await waitForDocxRenderReady(liveEl);
   await layoutDocxMeasureHost(liveEl);
-  await new Promise(r => requestAnimationFrame(() => requestAnimationFrame(() => requestAnimationFrame(r))));
+  await new Promise(r => requestAnimationFrame(() => requestAnimationFrame(r)));
   _subDocxLiveReady = true;
   _subDocxLiveBufferKey = key;
   return wrapper;
@@ -5247,6 +5260,11 @@ let _rdDocxArrayBuffer = null;
 let _subDocxLiveReady = false;
 let _subDocxLiveBufferKey = '';
 let _rdPendingDocxFile = null;
+let _docxCaptureCacheKey = '';
+let _docxCaptureCacheCanvas = null;
+let _docxCaptureCacheTrim = 0;
+let _docxPictureEffectKey = '';
+let _docxPictureShadowCss = '';
 
 function docxBufferKey(buf) {
   if (!buf) return '';
@@ -5301,6 +5319,49 @@ function waitForImagesIn(root) {
   }));
 }
 
+async function getDocxPictureShadowCss(arrayBuffer) {
+  const key = docxBufferKey(arrayBuffer);
+  if (_docxPictureEffectKey === key) return _docxPictureShadowCss;
+  _docxPictureEffectKey = key;
+  _docxPictureShadowCss = '';
+  try {
+    if (typeof JSZip === 'undefined') return '';
+    const zip = await JSZip.loadAsync(arrayBuffer);
+    const docXml = await zip.file('word/document.xml').async('string');
+    const m = docXml.match(/<a:outerShdw\b([^>]*)>([\s\S]*?)<\/a:outerShdw>|<a:outerShdw\b([^>]*)\/>/);
+    if (!m) return '';
+    const attrs = m[1] || m[3] || '';
+    const body = m[2] || '';
+    const dist = Math.min(28, Math.max(2, Math.round((parseInt((attrs.match(/\bdist=["'](\d+)["']/) || [0, 38100])[1], 10) || 38100) / 9525)));
+    const blur = Math.min(32, Math.max(4, Math.round((parseInt((attrs.match(/\bblurRad=["'](\d+)["']/) || [0, 63500])[1], 10) || 63500) / 9525)));
+    const dir = ((parseInt((attrs.match(/\bdir=["'](\d+)["']/) || [0, 2700000])[1], 10) || 2700000) / 60000) * Math.PI / 180;
+    const x = Math.round(Math.cos(dir) * dist);
+    const y = Math.round(Math.sin(dir) * dist);
+    const color = (body.match(/<a:srgbClr\b[^>]*val=["']([0-9A-Fa-f]{6})["']/) || [0, '000000'])[1];
+    const alphaVal = parseInt((body.match(/<a:alpha\b[^>]*val=["'](\d+)["']/) || [0, 35000])[1], 10);
+    const alpha = Math.max(0.12, Math.min(0.55, (alphaVal || 35000) / 100000));
+    const r = parseInt(color.slice(0, 2), 16), g = parseInt(color.slice(2, 4), 16), b = parseInt(color.slice(4, 6), 16);
+    _docxPictureShadowCss = `${x}px ${y}px ${blur}px rgba(${r}, ${g}, ${b}, ${alpha})`;
+    return _docxPictureShadowCss;
+  } catch(e) {
+    return '';
+  }
+}
+
+async function applyDocxPictureEffects(arrayBuffer, root) {
+  if (!root) return;
+  const shadowCss = await getDocxPictureShadowCss(arrayBuffer);
+  root.querySelectorAll('img, svg, canvas').forEach(function(el) {
+    el.style.opacity = '1';
+    el.style.visibility = 'visible';
+    if (shadowCss && !el.style.boxShadow && !el.style.filter) el.style.boxShadow = shadowCss;
+    let p = el.parentElement;
+    for (let i = 0; p && i < 6; i++, p = p.parentElement) {
+      p.style.overflow = 'visible';
+    }
+  });
+}
+
 async function renderDocxToContainer(arrayBuffer, container) {
   if (typeof docx === 'undefined' || !docx.renderAsync) {
     throw new Error('Word preview library failed to load. Please refresh the page.');
@@ -5309,14 +5370,14 @@ async function renderDocxToContainer(arrayBuffer, container) {
   await docx.renderAsync(arrayBuffer, container, null, {
     className: 'docx-preview-content',
     inWrapper: true,
-    ignoreWidth: true,    // let container width drive layout so content fills A4 slot exactly
-    ignoreHeight: true,   // don't clip height — let full page render
-    breakPages: false,
+    ignoreWidth: false,
+    ignoreHeight: false,
+    breakPages: true,
     useBase64URL: true,   // embed images as base64 so html2canvas can capture them
-    renderHeaders: false,
-    renderFooters: false,
-    renderFootnotes: false,
-    renderEndnotes: false
+    renderHeaders: true,
+    renderFooters: true,
+    renderFootnotes: true,
+    renderEndnotes: true
   });
   return container.querySelector('.docx-wrapper') || container;
 }
@@ -5370,6 +5431,10 @@ async function parseWordDocumentFile(file, opts) {
 async function captureWordDocPageForTemplate(arrayBuffer) {
   if (typeof html2canvas === 'undefined') throw new Error('html2canvas not loaded');
   if (!arrayBuffer) throw new Error('Word document data missing');
+  const cacheKey = docxBufferKey(arrayBuffer);
+  if (_docxCaptureCacheCanvas && _docxCaptureCacheKey === cacheKey) {
+    return _docxCaptureCacheCanvas;
+  }
 
   const liveEl = document.getElementById('sub-docx-live-preview');
   if (!liveEl) throw new Error('Word render host missing');
@@ -5394,19 +5459,18 @@ async function captureWordDocPageForTemplate(arrayBuffer) {
   });
 
   // ── 3. Strip docx-preview chrome before capture ─────────────────────────
-  liveEl.querySelectorAll('.docx-wrapper, section.docx, .docx-page').forEach(function(el) {
+  liveEl.querySelectorAll('.docx-wrapper, .docx-page').forEach(function(el) {
     el.style.boxShadow  = 'none';
     el.style.border     = 'none';
     el.style.margin     = '0';
     el.style.padding    = '0';
     el.style.background = '#ffffff';
-    el.style.width      = '100%';
   });
-  // Also strip padding from the inner content area so layout matches Word exactly
-  liveEl.querySelectorAll('.docx-preview-content, .docx-preview-content-wrapper').forEach(function(el) {
-    el.style.padding    = '0';
-    el.style.margin     = '0';
-    el.style.width      = '100%';
+  liveEl.querySelectorAll('section.docx').forEach(function(el) {
+    el.style.boxShadow  = 'none';
+    el.style.border     = 'none';
+    el.style.margin     = '0 auto';
+    el.style.background = '#ffffff';
   });
 
   // ── 4. Move into document coordinate space (html2canvas needs this) ─────
@@ -5416,12 +5480,14 @@ async function captureWordDocPageForTemplate(arrayBuffer) {
   const savedZIndex   = liveEl.style.zIndex;
   const savedOpacity  = liveEl.style.opacity;
   const savedOverflow = liveEl.style.overflow;
+  const savedVisibility = liveEl.style.visibility;
 
   liveEl.style.position = 'absolute';
   liveEl.style.left     = '0px';
-  liveEl.style.top      = '-999999px';
+  liveEl.style.top      = '0px';
   liveEl.style.zIndex   = '-1';
-  liveEl.style.opacity  = '0';
+  liveEl.style.opacity  = '1';
+  liveEl.style.visibility = 'visible';
 
   // Two rAF so browser reflows before capture
   await new Promise(r => requestAnimationFrame(() => requestAnimationFrame(r)));
@@ -5434,6 +5500,8 @@ async function captureWordDocPageForTemplate(arrayBuffer) {
       scale:           DOCX_TO_TEMPLATE_SCALE,   // 300/96 ≈ 3.125
       useCORS:         true,
       allowTaint:      true,
+      imageTimeout:    0,
+      removeContainer: true,
       logging:         false,
       scrollX:         0,
       scrollY:         -window.scrollY,
@@ -5455,19 +5523,18 @@ async function captureWordDocPageForTemplate(arrayBuffer) {
         cloneEl.style.height     = A4_PAGE_H_NATIVE + 'px';
         cloneEl.style.minHeight  = A4_PAGE_H_NATIVE + 'px';
         // Strip chrome in clone too
-        cloneEl.querySelectorAll('.docx-wrapper, section.docx, .docx-page').forEach(function(el) {
+        cloneEl.querySelectorAll('.docx-wrapper, .docx-page').forEach(function(el) {
           el.style.boxShadow  = 'none';
           el.style.border     = 'none';
           el.style.margin     = '0';
           el.style.padding    = '0';
           el.style.background = '#ffffff';
-          el.style.width      = '100%';
         });
-        // Strip inner content wrapper padding to match Word's layout exactly
-        cloneEl.querySelectorAll('.docx-preview-content, .docx-preview-content-wrapper').forEach(function(el) {
-          el.style.padding = '0';
-          el.style.margin  = '0';
-          el.style.width   = '100%';
+        cloneEl.querySelectorAll('section.docx').forEach(function(el) {
+          el.style.boxShadow  = 'none';
+          el.style.border     = 'none';
+          el.style.margin     = '0 auto';
+          el.style.background = '#ffffff';
         });
         // Unclip parent chain
         var parent = cloneEl.parentElement;
@@ -5491,6 +5558,7 @@ async function captureWordDocPageForTemplate(arrayBuffer) {
     liveEl.style.top      = savedTop;
     liveEl.style.zIndex   = savedZIndex;
     liveEl.style.opacity  = savedOpacity;
+    liveEl.style.visibility = savedVisibility;
     liveEl.style.overflow = savedOverflow || 'visible';
     liveEl.style.height   = '';
   }
@@ -5498,12 +5566,20 @@ async function captureWordDocPageForTemplate(arrayBuffer) {
   if (!shot || shot.width < 10 || shot.height < 10) {
     throw new Error('Word page capture failed. Please try again.');
   }
+  if (isCanvasMostlyBlank(shot)) {
+    _docxCaptureCacheKey = '';
+    _docxCaptureCacheCanvas = null;
+    throw new Error('Word page rendered blank. Please re-upload the document and try again.');
+  }
 
   // ── 6. Guarantee exact TEMPLATE_W × A4_BODY_H output ───────────────────
   // html2canvas with scale=3.125 on 794×1123 produces 2481×3509 —
   // which matches TEMPLATE_W × A4_BODY_H exactly (both = 300 DPI A4).
   // If rounding gives ±1 px, stretch-fill to eliminate any grey bars.
   if (shot.width === TEMPLATE_W && shot.height === A4_BODY_H) {
+    _docxCaptureCacheKey = cacheKey;
+    _docxCaptureCacheCanvas = shot;
+    _docxCaptureCacheTrim = detectTopGreySeparatorHeight(shot);
     return shot;
   }
   var out = document.createElement('canvas');
@@ -5512,11 +5588,31 @@ async function captureWordDocPageForTemplate(arrayBuffer) {
   var octx = out.getContext('2d');
   octx.fillStyle = '#ffffff';
   octx.fillRect(0, 0, TEMPLATE_W, A4_BODY_H);
-  // Stretch-fill: cover the entire body slot with no letterbox gaps.
-  // The source is already an A4 page at near-exact scale so distortion is imperceptible.
+  const dx = Math.floor((TEMPLATE_W - shot.width) / 2);
+  const dy = Math.floor((A4_BODY_H - shot.height) / 2);
   octx.drawImage(shot, 0, 0, shot.width, shot.height,
-                 0, 0, TEMPLATE_W, A4_BODY_H);
+                 dx, dy, shot.width, shot.height);
+  _docxCaptureCacheKey = cacheKey;
+  _docxCaptureCacheCanvas = out;
+  _docxCaptureCacheTrim = detectTopGreySeparatorHeight(out);
   return out;
+}
+
+function isCanvasMostlyBlank(canvas) {
+  const ctx = canvas.getContext('2d');
+  const stepX = Math.max(1, Math.floor(canvas.width / 40));
+  const stepY = Math.max(1, Math.floor(canvas.height / 60));
+  const data = ctx.getImageData(0, 0, canvas.width, canvas.height).data;
+  let nonWhite = 0, sampled = 0;
+  for (let y = 0; y < canvas.height; y += stepY) {
+    for (let x = 0; x < canvas.width; x += stepX) {
+      const i = (y * canvas.width + x) * 4;
+      const r = data[i], g = data[i + 1], b = data[i + 2], a = data[i + 3];
+      if (a > 10 && (r < 245 || g < 245 || b < 245)) nonWhite++;
+      sampled++;
+    }
+  }
+  return sampled > 0 && nonWhite / sampled < 0.003;
 }
 
 async function drawArticleBodyOnTemplate(ctx, bodyStartY, htmlBody, layout) {
@@ -5524,7 +5620,35 @@ async function drawArticleBodyOnTemplate(ctx, bodyStartY, htmlBody, layout) {
   if (!docxBuf) throw new Error('Word document required for article body rendering.');
   // shot is already TEMPLATE_W × A4_BODY_H — place directly into the body slot
   const shot = await captureWordDocPageForTemplate(docxBuf);
-  ctx.drawImage(shot, 0, bodyStartY, TEMPLATE_W, A4_BODY_H);
+  const topTrim = _docxCaptureCacheCanvas === shot ? _docxCaptureCacheTrim : detectTopGreySeparatorHeight(shot);
+  if (topTrim > 0) {
+    ctx.drawImage(shot, 0, topTrim, TEMPLATE_W, A4_BODY_H - topTrim,
+                  0, bodyStartY, TEMPLATE_W, A4_BODY_H - topTrim);
+    return A4_BODY_H - topTrim;
+  } else {
+    ctx.drawImage(shot, 0, bodyStartY, TEMPLATE_W, A4_BODY_H);
+    return A4_BODY_H;
+  }
+}
+
+function detectTopGreySeparatorHeight(canvas) {
+  const maxScan = Math.min(180, canvas.height);
+  const sampleStep = Math.max(1, Math.floor(canvas.width / 80));
+  const data = canvas.getContext('2d').getImageData(0, 0, canvas.width, maxScan).data;
+  let trim = 0;
+  for (let y = 0; y < maxScan; y++) {
+    let greyish = 0, sampled = 0;
+    for (let x = 0; x < canvas.width; x += sampleStep) {
+      const i = (y * canvas.width + x) * 4;
+      const r = data[i], g = data[i + 1], b = data[i + 2];
+      const spread = Math.max(r, g, b) - Math.min(r, g, b);
+      if (r > 80 && r < 180 && g > 80 && g < 180 && b > 80 && b < 180 && spread < 18) greyish++;
+      sampled++;
+    }
+    if (sampled && greyish / sampled > 0.85) trim = y + 1;
+    else if (trim > 0) break;
+  }
+  return trim >= 8 ? trim : 0;
 }
 
 function setSubDocxStatus(msg, isErr) {
@@ -6072,7 +6196,7 @@ function schedulePreviewRefresh() {
   if (!prevSec || prevSec.style.display === 'none') return;
   clearTimeout(_previewDebounceTimer);
   _previewDataUrl = null;
-  _previewDebounceTimer = setTimeout(_doGeneratePreview, 800);
+  _previewDebounceTimer = setTimeout(_doGeneratePreview, 250);
 }
 
 function editArticleFromPreview() {
@@ -6125,7 +6249,7 @@ async function generateArticleImage(articleData) {
   return new Promise((resolve, reject) => {
     const W = TEMPLATE_W;
     const preBodyStartY = computeArticleBodyStartY(articleData, W);
-    const H = preBodyStartY + A4_BODY_H + TEMPLATE_FOOTER_H;
+    const H = preBodyStartY + 8 + A4_BODY_H + TEMPLATE_FOOTER_H;
     const canvas = document.createElement('canvas');
     canvas.width = W; canvas.height = H;
     const ctx = canvas.getContext('2d');
@@ -6322,7 +6446,7 @@ async function generateArticleImage(articleData) {
     async function _drawBody(bodyStartY) {
       try {
         const htmlBody = articleData.htmlBody || '';
-        const footerY = bodyStartY + A4_BODY_H;
+        let footerY = bodyStartY + 8 + A4_BODY_H;
 
         // Gold bar between author block and document body
         ctx.fillStyle = GOLD;
@@ -6332,10 +6456,11 @@ async function generateArticleImage(articleData) {
         ctx.fillStyle = '#ffffff';
         ctx.fillRect(0, bodyStartY + 8, W, A4_BODY_H);
 
-        await drawArticleBodyOnTemplate(ctx, bodyStartY + 8, htmlBody, {
+        const drawnBodyH = await drawArticleBodyOnTemplate(ctx, bodyStartY + 8, htmlBody, {
           bodyMaxH: A4_BODY_H,
           docxArrayBuffer: articleData.docxArrayBuffer || _subDocxArrayBuffer || _rdDocxArrayBuffer
         });
+        footerY = bodyStartY + 8 + drawnBodyH;
 
         // Gold bar between body and footer (matching top gold bar)
         ctx.fillStyle = GOLD;
@@ -6358,7 +6483,16 @@ async function generateArticleImage(articleData) {
         ctx.fillText('ilirh.in  ·  Published ' + new Date().toLocaleDateString('en-IN', {day:'numeric',month:'long',year:'numeric'}), W / 2, footerY + 8 + 130);
 
         ctx.textAlign = 'left';
-        resolve(canvas.toDataURL('image/jpeg', 0.93));
+        const finalH = footerY + TEMPLATE_FOOTER_H;
+        if (finalH < canvas.height) {
+          const cropped = document.createElement('canvas');
+          cropped.width = W;
+          cropped.height = finalH;
+          cropped.getContext('2d').drawImage(canvas, 0, 0);
+          resolve(cropped.toDataURL('image/png'));
+        } else {
+          resolve(canvas.toDataURL('image/png'));
+        }
       } catch (bodyErr) {
         reject(bodyErr);
       }
