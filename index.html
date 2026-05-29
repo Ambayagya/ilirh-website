@@ -5358,10 +5358,14 @@ async function parseWordDocumentFile(file, opts) {
 }
 
 /**
- * Rasterize the live docx-preview at EXACT A4 native dimensions.
- * Returns a canvas that is TEMPLATE_W × A4_BODY_H — exactly fills
- * the body slot in the output image with no added side margins.
- * Every font, spacing and image appears identical to MS Word.
+ * Capture the Word document pixel-perfectly — exact A4 size, zero distortion.
+ *
+ * Pipeline:
+ *  1. Lock liveEl to EXACT A4 at 96 DPI  (794 × 1123 px).
+ *  2. Strip all docx-preview chrome (shadow, border, padding).
+ *  3. html2canvas scale = 300/96 = 3.125  →  output is 2481 × 3509 px
+ *     = TEMPLATE_W × A4_BODY_H.  No separate blit/scale step needed.
+ *  4. Preserve every font, spacing, image exactly as Word rendered them.
  */
 async function captureWordDocPageForTemplate(arrayBuffer) {
   if (typeof html2canvas === 'undefined') throw new Error('html2canvas not loaded');
@@ -5370,88 +5374,88 @@ async function captureWordDocPageForTemplate(arrayBuffer) {
   const liveEl = document.getElementById('sub-docx-live-preview');
   if (!liveEl) throw new Error('Word render host missing');
 
-  // Ensure docx is rendered into liveEl
-  liveEl.style.width     = A4_PAGE_W_NATIVE + 'px';
+  // ── 1. Lock to exact A4 at 96 DPI ──────────────────────────────────────
+  liveEl.style.width     = A4_PAGE_W_NATIVE + 'px';   // 794 px
+  liveEl.style.height    = A4_PAGE_H_NATIVE + 'px';   // 1123 px
   liveEl.style.minHeight = A4_PAGE_H_NATIVE + 'px';
+  liveEl.style.overflow  = 'hidden';
+
+  // ── 2. Render docx ──────────────────────────────────────────────────────
   await ensureDocxLiveRender(arrayBuffer);
 
-  // Find the best element to capture
-  var captureTarget = liveEl.querySelector('section.docx') ||
-                      liveEl.querySelector('.docx-wrapper') ||
-                      liveEl;
+  // Wait until section.docx appears (up to 5 s)
+  await new Promise(function(resolve) {
+    var deadline = Date.now() + 5000;
+    (function poll() {
+      if (liveEl.querySelector('section.docx, .docx-wrapper')) return resolve();
+      if (Date.now() >= deadline) return resolve();
+      requestAnimationFrame(poll);
+    })();
+  });
 
-  // Poll briefly if nothing rendered yet
-  if (captureTarget === liveEl && !liveEl.querySelector('section.docx, .docx-wrapper')) {
-    captureTarget = await new Promise(function(resolve) {
-      var deadline = Date.now() + 5000;
-      (function poll() {
-        var el = liveEl.querySelector('section.docx') || liveEl.querySelector('.docx-wrapper');
-        if (el) return resolve(el);
-        if (Date.now() >= deadline) return resolve(liveEl);
-        requestAnimationFrame(poll);
-      })();
-    });
-  }
+  // ── 3. Strip docx-preview chrome before capture ─────────────────────────
+  liveEl.querySelectorAll('.docx-wrapper, section.docx, .docx-page').forEach(function(el) {
+    el.style.boxShadow  = 'none';
+    el.style.border     = 'none';
+    el.style.margin     = '0';
+    el.style.padding    = '0';
+    el.style.background = '#ffffff';
+  });
 
-  // ── CRITICAL FIX ────────────────────────────────────────────────────────
-  // html2canvas clips position:fixed elements that are off-screen (left:-9999px)
-  // and renders them blank. We must temporarily move liveEl into the visible
-  // document so html2canvas can see and capture its content.
-  // We use position:absolute at a large negative top so it doesn't affect layout
-  // but IS within the document coordinate space (not the viewport).
+  // ── 4. Move into document coordinate space (html2canvas needs this) ─────
   const savedPosition = liveEl.style.position;
   const savedLeft     = liveEl.style.left;
   const savedTop      = liveEl.style.top;
   const savedZIndex   = liveEl.style.zIndex;
   const savedOpacity  = liveEl.style.opacity;
+  const savedOverflow = liveEl.style.overflow;
 
   liveEl.style.position = 'absolute';
   liveEl.style.left     = '0px';
-  liveEl.style.top      = '-99999px';   // outside viewport vertically — won't shift page layout
+  liveEl.style.top      = '-999999px';
   liveEl.style.zIndex   = '-1';
-  liveEl.style.opacity  = '0';          // stay invisible to user
+  liveEl.style.opacity  = '0';
 
-  // Let browser reflow after repositioning
+  // Two rAF so browser reflows before capture
   await new Promise(r => requestAnimationFrame(() => requestAnimationFrame(r)));
 
-  // Measure after reflow
-  var rect = captureTarget.getBoundingClientRect();
-  // For position:absolute at top:-99999px, getBoundingClientRect returns negative top.
-  // We need the actual layout width/height — use offsetWidth/offsetHeight instead.
-  var captureW = captureTarget.offsetWidth  || A4_PAGE_W_NATIVE;
-  var captureH = captureTarget.offsetHeight || A4_PAGE_H_NATIVE;
-  if (captureW < 10) captureW = A4_PAGE_W_NATIVE;
-  if (captureH < 10) captureH = A4_PAGE_H_NATIVE;
-
-  var captureScale = TEMPLATE_W / captureW;
-
+  // ── 5. Capture at scale=3.125 → output = 2481 × 3509 px ────────────────
   var shot;
   try {
-    shot = await html2canvas(captureTarget, {
+    shot = await html2canvas(liveEl, {
       backgroundColor: '#ffffff',
-      scale: captureScale,
-      useCORS: true,
-      allowTaint: true,
-      logging: false,
-      // scrollX/scrollY: 0 because element is now at absolute position in doc
-      scrollX: 0,
-      scrollY: -window.scrollY,
-      width:  captureW,
-      height: captureH,
-      windowWidth:  captureW + 40,
-      windowHeight: captureH + 40,
+      scale:           DOCX_TO_TEMPLATE_SCALE,   // 300/96 ≈ 3.125
+      useCORS:         true,
+      allowTaint:      true,
+      logging:         false,
+      scrollX:         0,
+      scrollY:         -window.scrollY,
+      width:           A4_PAGE_W_NATIVE,          // 794
+      height:          A4_PAGE_H_NATIVE,          // 1123
+      windowWidth:     A4_PAGE_W_NATIVE + 40,
+      windowHeight:    A4_PAGE_H_NATIVE + 40,
       x: 0,
       y: 0,
       onclone: function(cloneDoc, cloneEl) {
-        // In the clone, make fully visible and ensure no clipping
+        // Force exact A4 size in the clone
         cloneEl.style.opacity    = '1';
         cloneEl.style.visibility = 'visible';
-        cloneEl.style.overflow   = 'visible';
+        cloneEl.style.overflow   = 'hidden';
         cloneEl.style.position   = 'static';
         cloneEl.style.left       = '0';
         cloneEl.style.top        = '0';
-        cloneEl.style.boxSizing  = 'border-box';
-        // Also fix the parent in the clone
+        cloneEl.style.width      = A4_PAGE_W_NATIVE + 'px';
+        cloneEl.style.height     = A4_PAGE_H_NATIVE + 'px';
+        cloneEl.style.minHeight  = A4_PAGE_H_NATIVE + 'px';
+        // Strip chrome in clone too
+        cloneEl.querySelectorAll('.docx-wrapper, section.docx, .docx-page').forEach(function(el) {
+          el.style.boxShadow  = 'none';
+          el.style.border     = 'none';
+          el.style.margin     = '0';
+          el.style.padding    = '0';
+          el.style.background = '#ffffff';
+        });
+        // Unclip parent chain
         var parent = cloneEl.parentElement;
         while (parent) {
           parent.style.overflow   = 'visible';
@@ -5468,43 +5472,51 @@ async function captureWordDocPageForTemplate(arrayBuffer) {
       }
     });
   } finally {
-    // Always restore original position, even if capture throws
     liveEl.style.position = savedPosition;
     liveEl.style.left     = savedLeft;
     liveEl.style.top      = savedTop;
     liveEl.style.zIndex   = savedZIndex;
     liveEl.style.opacity  = savedOpacity;
+    liveEl.style.overflow = savedOverflow || 'visible';
+    liveEl.style.height   = '';
   }
 
   if (!shot || shot.width < 10 || shot.height < 10) {
     throw new Error('Word page capture failed. Please try again.');
   }
 
-  // Scale to TEMPLATE_W preserving exact aspect ratio — no stretch, no crop
-  var scaledH = Math.round(shot.height * (TEMPLATE_W / shot.width));
-
-  // Blit into TEMPLATE_W × scaledH canvas — pixel-perfect Word page
+  // ── 6. Guarantee exact TEMPLATE_W × A4_BODY_H output ───────────────────
+  // html2canvas with scale=3.125 on 794×1123 produces 2481×3509 —
+  // which matches TEMPLATE_W × A4_BODY_H exactly (both = 300 DPI A4).
+  // If rounding gives ±1 px, blit with uniform scale (never stretch).
+  if (shot.width === TEMPLATE_W && shot.height === A4_BODY_H) {
+    return shot;
+  }
   var out = document.createElement('canvas');
   out.width  = TEMPLATE_W;
-  out.height = scaledH;
+  out.height = A4_BODY_H;
   var octx = out.getContext('2d');
   octx.fillStyle = '#ffffff';
-  octx.fillRect(0, 0, TEMPLATE_W, scaledH);
-  octx.drawImage(shot, 0, 0, shot.width, shot.height, 0, 0, TEMPLATE_W, scaledH);
-  // Expose actual body height so the template can size the canvas correctly
-  out._docBodyH = scaledH;
+  octx.fillRect(0, 0, TEMPLATE_W, A4_BODY_H);
+  // Uniform scale — never distort width vs height
+  var scaleX = TEMPLATE_W / shot.width;
+  var scaleY = A4_BODY_H  / shot.height;
+  var s  = Math.min(scaleX, scaleY);
+  var dw = Math.round(shot.width  * s);
+  var dh = Math.round(shot.height * s);
+  octx.drawImage(shot, 0, 0, shot.width, shot.height,
+                 Math.round((TEMPLATE_W - dw) / 2),
+                 Math.round((A4_BODY_H  - dh) / 2),
+                 dw, dh);
   return out;
 }
 
 async function drawArticleBodyOnTemplate(ctx, bodyStartY, htmlBody, layout) {
   const docxBuf = layout.docxArrayBuffer || _subDocxArrayBuffer || _rdDocxArrayBuffer;
   if (!docxBuf) throw new Error('Word document required for article body rendering.');
-  // shot is TEMPLATE_W × scaledH — pixel-perfect Word page at natural aspect ratio
+  // shot is already TEMPLATE_W × A4_BODY_H — place directly into the body slot
   const shot = await captureWordDocPageForTemplate(docxBuf);
-  const actualBodyH = shot._docBodyH || shot.height;
-  ctx.drawImage(shot, 0, bodyStartY, TEMPLATE_W, actualBodyH);
-  // Return the actual height so caller can position footer correctly
-  return actualBodyH;
+  ctx.drawImage(shot, 0, bodyStartY, TEMPLATE_W, A4_BODY_H);
 }
 
 function setSubDocxStatus(msg, isErr) {
@@ -6105,8 +6117,7 @@ async function generateArticleImage(articleData) {
   return new Promise((resolve, reject) => {
     const W = TEMPLATE_W;
     const preBodyStartY = computeArticleBodyStartY(articleData, W);
-    // Use generous initial height; canvas is cropped to actual size after body capture
-    const H = preBodyStartY + A4_BODY_H + TEMPLATE_FOOTER_H + 500;
+    const H = preBodyStartY + A4_BODY_H + TEMPLATE_FOOTER_H;
     const canvas = document.createElement('canvas');
     canvas.width = W; canvas.height = H;
     const ctx = canvas.getContext('2d');
@@ -6303,20 +6314,18 @@ async function generateArticleImage(articleData) {
     async function _drawBody(bodyStartY) {
       try {
         const htmlBody = articleData.htmlBody || '';
+        const footerY = bodyStartY + A4_BODY_H;
 
-        // Clear area generously; actual body height determined after capture
+        // Exact A4 body slot — pure white, no overlap seam
         ctx.fillStyle = '#ffffff';
-        ctx.fillRect(0, bodyStartY, W, A4_BODY_H + TEMPLATE_FOOTER_H);
+        ctx.fillRect(0, bodyStartY, W, A4_BODY_H);
 
-        const actualBodyH = await drawArticleBodyOnTemplate(ctx, bodyStartY, htmlBody, {
+        await drawArticleBodyOnTemplate(ctx, bodyStartY, htmlBody, {
           bodyMaxH: A4_BODY_H,
           docxArrayBuffer: articleData.docxArrayBuffer || _subDocxArrayBuffer || _rdDocxArrayBuffer
         });
 
-        // Footer sits flush against the REAL bottom of the Word page
-        const footerY = bodyStartY + actualBodyH;
-
-        // Gold accent bar flush against bottom of Word page, then navy footer below
+        // Gold accent bar flush against bottom of A4 body, then navy footer below
         ctx.fillStyle = GOLD;
         ctx.fillRect(0, footerY, W, 8);
         ctx.fillStyle = NAVY;
@@ -6336,14 +6345,7 @@ async function generateArticleImage(articleData) {
         ctx.fillText('ilirh.in  ·  Published ' + new Date().toLocaleDateString('en-IN', {day:'numeric',month:'long',year:'numeric'}), W / 2, footerY + 8 + 130);
 
         ctx.textAlign = 'left';
-
-        // Crop canvas to exact final height (no empty whitespace at bottom)
-        const finalH = footerY + TEMPLATE_FOOTER_H;
-        const cropped = document.createElement('canvas');
-        cropped.width = W; cropped.height = finalH;
-        const croppedCtx = cropped.getContext('2d');
-        croppedCtx.drawImage(canvas, 0, 0);
-        resolve(cropped.toDataURL('image/jpeg', 0.93));
+        resolve(canvas.toDataURL('image/jpeg', 0.93));
       } catch (bodyErr) {
         reject(bodyErr);
       }
