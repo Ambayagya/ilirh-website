@@ -1487,6 +1487,24 @@ body.dark-mode .editor-tab.active { color:#c8d8ea; }
   z-index:2;
 }
 #preview-generating.hidden { display:none; }
+
+/* ── EDITOR PANEL — article image preview buffer ── */
+#up-docx-preview-canvas-wrap {
+  width:100%; border:2px solid var(--border);
+  background:#ffffff; position:relative;
+  min-height:120px; display:flex; align-items:center; justify-content:center;
+  overflow:hidden;
+}
+#up-docx-preview-canvas-wrap img {
+  width:100%; height:auto; display:block; cursor:zoom-in;
+}
+#up-preview-generating {
+  position:absolute; inset:0; background:rgba(255,255,255,0.92);
+  display:flex; flex-direction:column; align-items:center; justify-content:center;
+  gap:10px; font-family:'Lato',sans-serif; font-size:12px; color:var(--text-muted);
+  z-index:2;
+}
+#up-preview-generating.hidden { display:none; }
 .preview-action-row {
   display:flex; gap:12px; margin-top:16px;
   flex-wrap:wrap;
@@ -1915,7 +1933,13 @@ body.dark-mode .editor-tab.active { color:#c8d8ea; }
     </div>
     <div class="rd-full-preview-wrap" id="up-docx-preview-wrap" style="display:none;">
       <p style="font-family:'Lato',sans-serif;font-size:10px;font-weight:700;letter-spacing:0.14em;text-transform:uppercase;color:var(--text-muted);margin-bottom:8px;">Generated article image preview</p>
-      <img id="up-docx-preview-img" src="" alt="Generated article image preview" onclick="openLightbox(this.src,[this.src],0)">
+      <div id="up-docx-preview-canvas-wrap">
+        <div id="up-preview-generating">
+          <div class="spinner"></div>
+          <span>Generating article image…</span>
+        </div>
+        <img id="up-docx-preview-img" src="" alt="Generated article image preview" style="display:none;" onclick="openLightbox(this.src,[this.src],0)">
+      </div>
     </div>
 
     <!-- Silent Publish -->
@@ -3007,7 +3031,8 @@ function closeUpload() {
   const upDocx = document.getElementById('up-docx-file'); if (upDocx) upDocx.value = '';
   const upDocxFn = document.getElementById('up-docx-filename'); if (upDocxFn) upDocxFn.textContent = '';
   const upPrevWrap = document.getElementById('up-docx-preview-wrap'); if (upPrevWrap) upPrevWrap.style.display = 'none';
-  const upPrevImg = document.getElementById('up-docx-preview-img'); if (upPrevImg) upPrevImg.src = '';
+  const upPrevImg = document.getElementById('up-docx-preview-img'); if (upPrevImg) { upPrevImg.src = ''; upPrevImg.style.display = 'none'; }
+  const upPrevGen = document.getElementById('up-preview-generating'); if (upPrevGen) upPrevGen.classList.remove('hidden');
   const upPlace = document.getElementById('up-place'); if (upPlace) upPlace.value = '';
   ['up-country','up-state','up-city'].forEach(id => { const el = document.getElementById(id); if (el) el.value = ''; });
   document.getElementById('up-silent').checked = false;
@@ -3069,20 +3094,34 @@ async function handleUpDocxSelect(input) {
 async function refreshUpDocxPreview() {
   const wrap = document.getElementById('up-docx-preview-wrap');
   const img = document.getElementById('up-docx-preview-img');
+  const genBuf = document.getElementById('up-preview-generating');
   if (!_upDocxArrayBuffer || !wrap || !img) return;
   const title = (document.getElementById('up-title')?.value || '').trim() || 'Untitled';
   const author = (document.getElementById('up-author')?.value || '').trim() || 'Author';
   const category = document.getElementById('up-category')?.value || 'Research';
   const place = document.getElementById('up-place')?.value || '';
+  // Show the wrap and the generating buffer
   wrap.style.display = 'block';
+  img.style.display = 'none';
   img.removeAttribute('src');
-  const dataUrl = await generateArticleImage({
-    title, author, place, htmlBody: _upArticleBodyHtml,
-    authorPhotoUrl: null, category, occupation: '',
-    docxArrayBuffer: _upDocxArrayBuffer
-  });
-  _upDocxPreviewDataUrl = dataUrl;
-  img.src = dataUrl;
+  if (genBuf) genBuf.classList.remove('hidden');
+  try {
+    const dataUrl = await generateArticleImage({
+      title, author, place, htmlBody: _upArticleBodyHtml,
+      authorPhotoUrl: null, category, occupation: '',
+      docxArrayBuffer: _upDocxArrayBuffer
+    });
+    _upDocxPreviewDataUrl = dataUrl;
+    img.src = dataUrl;
+    img.style.display = 'block';
+    if (genBuf) genBuf.classList.add('hidden');
+  } catch(e) {
+    if (genBuf) genBuf.classList.add('hidden');
+    img.style.display = 'none';
+    _upDocxPreviewDataUrl = null;
+    const errEl = document.getElementById('up-error');
+    if (errEl) errEl.textContent = '✗ ' + (e.message || 'Image generation failed');
+  }
 }
 
 function handleFileSelect(input) {
