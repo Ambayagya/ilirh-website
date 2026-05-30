@@ -2,6 +2,11 @@ name: Generate static article pages
 
 on:
   workflow_dispatch:
+    inputs:
+      reason:
+        description: 'Why the article pages are being regenerated'
+        required: false
+        default: 'manual'
   schedule:
     - cron: '*/5 * * * *'
 
