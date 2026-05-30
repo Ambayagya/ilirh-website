@@ -880,6 +880,10 @@ body.dark-mode .share-btn:hover { border-color:#8fa8c0; color:#c8d8ea; }
 .ownership-btn { flex:1; padding:9px 12px; border:1px solid var(--border); background:#fff; font-family:'Lato',sans-serif; font-size:11px; font-weight:700; letter-spacing:0.1em; text-transform:uppercase; color:var(--text-muted); cursor:pointer; transition:all 0.18s; text-align:center; }
 .ownership-btn.selected { background:var(--navy); color:#fff; border-color:var(--navy); }
 .ownership-btn:hover:not(.selected) { border-color:var(--navy); color:var(--navy); }
+.upload-mode-row { display:flex; gap:10px; margin-bottom:14px; }
+.upload-mode-btn { flex:1; padding:9px 12px; border:1px solid var(--border); background:#fff; font-family:'Lato',sans-serif; font-size:10px; font-weight:700; letter-spacing:0.1em; text-transform:uppercase; color:var(--text-secondary); cursor:pointer; transition:all 0.2s; }
+.upload-mode-btn.selected { background:var(--navy); color:#fff; border-color:var(--navy); }
+.upload-mode-btn:hover:not(.selected) { border-color:var(--navy); color:var(--navy); }
 body.dark-mode .ownership-btn { background:#0a1520; color:var(--text-muted); border-color:var(--border); }
 body.dark-mode .ownership-btn.selected { background:#1c3560; color:#c8d8ea; border-color:#1c3560; }
  
@@ -1851,7 +1855,7 @@ body.dark-mode .editor-tab.active { color:#c8d8ea; }
 
     <!-- PUBLISH TAB -->
     <div class="editor-panel active" id="panel-publish">
-    <p class="upload-sub">Upload a PDF or image. It will appear on the Herald for all visitors instantly.</p>
+    <p class="upload-sub">Upload a PDF/image directly, or upload a Word document to generate a premium article image before publishing.</p>
     <div class="form-row"><label>Article Title *</label><input type="text" id="up-title" placeholder="Enter the full article title…"></div>
  
     <!-- Author Ownership -->
@@ -1877,7 +1881,22 @@ body.dark-mode .editor-tab.active { color:#c8d8ea; }
       </select>
     </div>
     <div class="form-row"><label>Brief Description / Abstract</label><textarea id="up-excerpt" placeholder="A short summary (2–3 sentences)…"></textarea></div>
-    <div class="form-row"><label>Upload File (PDF or Image) *</label>
+    <div class="submit-2col">
+      <div class="form-row"><label>Country</label><select id="up-country" onchange="populateStatesFor('up')"><option value="">â€” Select Country â€”</option></select></div>
+      <div class="form-row"><label>State / Province</label><select id="up-state" onchange="populateCitiesFor('up')"><option value="">â€” Select State â€”</option></select></div>
+    </div>
+    <div class="submit-2col">
+      <div class="form-row"><label>City</label><select id="up-city" onchange="updatePlaceStringFor('up')"><option value="">â€” Select City â€”</option></select></div>
+      <div class="form-row"><label>Place</label><input type="text" id="up-place" placeholder="City, State, Country" readonly style="background:var(--cream);color:var(--text-muted);"></div>
+    </div>
+    <div class="form-row">
+      <label>Upload Type *</label>
+      <div class="upload-mode-row">
+        <button type="button" class="upload-mode-btn selected" id="up-mode-media" onclick="setUploadMode('media')">&#10003; PDF / Image</button>
+        <button type="button" class="upload-mode-btn" id="up-mode-docx" onclick="setUploadMode('docx')">&#10003; Word DOCX</button>
+      </div>
+    </div>
+    <div class="form-row" id="up-media-row"><label>Upload File (PDF or Image) *</label>
       <div class="drop-zone" id="drop-zone">
         <input type="file" id="up-file" accept=".pdf,image/*" onchange="handleFileSelect(this)">
         <div style="font-size:32px;margin-bottom:8px;opacity:0.4;">📄</div>
@@ -1886,6 +1905,15 @@ body.dark-mode .editor-tab.active { color:#c8d8ea; }
       </div>
     </div>
  
+    <div class="form-row" id="up-docx-row" style="display:none;"><label>Upload Word Article (.docx) *</label>
+      <div class="drop-zone" id="up-docx-zone" onclick="document.getElementById('up-docx-file').click()">
+        <input type="file" id="up-docx-file" accept=".docx,application/vnd.openxmlformats-officedocument.wordprocessingml.document" style="display:none;" onchange="handleUpDocxSelect(this)">
+        <div style="font-size:32px;margin-bottom:8px;opacity:0.4;">&#128196;</div>
+        <div>Upload a single-page A4 Word document to generate the article image</div>
+        <div class="drop-filename" id="up-docx-filename"></div>
+      </div>
+    </div>
+
     <!-- Silent Publish -->
     <div class="silent-row" onclick="document.getElementById('up-silent').click()">
       <input type="checkbox" id="up-silent" onclick="event.stopPropagation()">
@@ -2196,6 +2224,33 @@ body.dark-mode .editor-tab.active { color:#c8d8ea; }
       <div class="review-field">
         <label>Submitted On</label>
         <input type="text" id="rd-submitted-at" readonly style="opacity:0.65;cursor:default;">
+      </div>
+      <div class="review-field">
+        <label>Country</label>
+        <select id="rd-country" onchange="populateStatesFor('rd')"><option value="">â€” Select Country â€”</option></select>
+      </div>
+      <div class="review-field">
+        <label>State / Province</label>
+        <select id="rd-state" onchange="populateCitiesFor('rd')"><option value="">â€” Select State â€”</option></select>
+      </div>
+      <div class="review-field">
+        <label>City</label>
+        <select id="rd-city" onchange="updatePlaceStringFor('rd')"><option value="">â€” Select City â€”</option></select>
+      </div>
+      <div class="review-field">
+        <label>Place</label>
+        <input type="text" id="rd-place" placeholder="City, State, Country" readonly style="background:var(--cream);color:var(--text-muted);">
+      </div>
+      <div class="review-field review-field-full">
+        <label>Author Photo</label>
+        <div style="display:flex;gap:14px;align-items:center;">
+          <div id="rd-author-photo-preview" style="width:70px;height:70px;border:1px solid var(--border);border-radius:50%;overflow:hidden;background:var(--cream);display:flex;align-items:center;justify-content:center;flex-shrink:0;"></div>
+          <div class="review-replace-drop" style="margin:0;flex:1;">
+            <input type="file" id="rd-author-photo-file" accept="image/*" onchange="handleRdAuthorPhotoSelect(this)">
+            <span style="font-size:12px;">Replace author photo</span>
+            <div id="rd-author-photo-filename" style="font-family:'Lato',sans-serif;font-size:10px;margin-top:4px;color:var(--text-muted);"></div>
+          </div>
+        </div>
       </div>
       <div class="review-field review-field-full">
         <label>Abstract / Description</label>
@@ -2905,6 +2960,10 @@ function setOwnership(type) {
  
 // ── UPLOAD ──
 let pendingFile = null;
+let _uploadMode = 'media';
+let _upDocxFile = null;
+let _upDocxArrayBuffer = null;
+let _upArticleBodyHtml = '';
 let _editArticleId = null;
 let _editArticleExistingFileUrl = null;
 let _editArticleExistingFileType = null;
@@ -2912,6 +2971,7 @@ let _editArticleExistingImageUrl = null;
 function openUpload() {
   document.getElementById('upload-overlay').classList.add('open');
   document.body.style.overflow = 'hidden';
+  ['up','rd'].forEach(populateCountriesFor);
   // Default to "myself"
   setOwnership('myself');
 }
@@ -2919,6 +2979,10 @@ function closeUpload() {
   document.getElementById('upload-overlay').classList.remove('open');
   document.body.style.overflow = '';
   pendingFile = null;
+  _upDocxFile = null;
+  _upDocxArrayBuffer = null;
+  _upArticleBodyHtml = '';
+  setUploadMode('media');
   _editArticleId = null;
   _editArticleExistingFileUrl = null;
   _editArticleExistingFileType = null;
@@ -2934,6 +2998,10 @@ function closeUpload() {
   document.getElementById('up-author-email').value = '';
   document.getElementById('up-category').value = '';
   document.getElementById('up-file').value = '';
+  const upDocx = document.getElementById('up-docx-file'); if (upDocx) upDocx.value = '';
+  const upDocxFn = document.getElementById('up-docx-filename'); if (upDocxFn) upDocxFn.textContent = '';
+  const upPlace = document.getElementById('up-place'); if (upPlace) upPlace.value = '';
+  ['up-country','up-state','up-city'].forEach(id => { const el = document.getElementById(id); if (el) el.value = ''; });
   document.getElementById('up-silent').checked = false;
   document.getElementById('author-email-row').style.display = 'none';
   _authorOwnership = 'myself';
@@ -2949,6 +3017,39 @@ function closeUpload() {
   document.getElementById('progress-fill').style.width = '0%';
 }
 function closeUploadOnBg(e) { if (e.target === document.getElementById('upload-overlay')) closeUpload(); }
+function setUploadMode(mode) {
+  _uploadMode = mode === 'docx' ? 'docx' : 'media';
+  const mediaBtn = document.getElementById('up-mode-media');
+  const docxBtn = document.getElementById('up-mode-docx');
+  const mediaRow = document.getElementById('up-media-row');
+  const docxRow = document.getElementById('up-docx-row');
+  if (mediaBtn) mediaBtn.classList.toggle('selected', _uploadMode === 'media');
+  if (docxBtn) docxBtn.classList.toggle('selected', _uploadMode === 'docx');
+  if (mediaRow) mediaRow.style.display = _uploadMode === 'media' ? 'block' : 'none';
+  if (docxRow) docxRow.style.display = _uploadMode === 'docx' ? 'block' : 'none';
+}
+
+async function handleUpDocxSelect(input) {
+  const file = input.files && input.files[0];
+  const fn = document.getElementById('up-docx-filename');
+  const errEl = document.getElementById('up-error');
+  if (!file) return;
+  if (errEl) errEl.textContent = '';
+  try {
+    if (fn) fn.textContent = 'Processing Word document...';
+    const html = await parseWordDocumentFile(file);
+    _upDocxFile = file;
+    _upDocxArrayBuffer = _subDocxArrayBuffer ? _subDocxArrayBuffer.slice(0) : null;
+    _upArticleBodyHtml = html;
+    if (fn) fn.textContent = '✓ ' + file.name + ' (' + (file.size / 1024 / 1024).toFixed(2) + ' MB)';
+  } catch (e) {
+    _upDocxFile = null;
+    _upDocxArrayBuffer = null;
+    _upArticleBodyHtml = '';
+    input.value = '';
+    if (fn) fn.textContent = '✗ ' + (e.message || 'Could not read document');
+  }
+}
 function handleFileSelect(input) {
   const file = input.files[0];
   if (!file) return;
@@ -2986,6 +3087,7 @@ async function publishArticle() {
   const author   = sanitizeInput(document.getElementById('up-author').value, 150);
   const catEl = document.getElementById('up-category'); const cat = _authorOwnership === 'genz' ? 'Gen-Z Desk' : catEl.value;
   const excerpt  = sanitizeInput(document.getElementById('up-excerpt').value, 1000);
+  const place    = (document.getElementById('up-place')?.value || '');
   const authorEmail = (_authorOwnership === 'other' || _authorOwnership === 'genz') ? document.getElementById('up-author-email').value.trim() : '';
   const silent   = document.getElementById('up-silent').checked;
   const errEl    = document.getElementById('up-error');
@@ -2993,7 +3095,8 @@ async function publishArticle() {
   if (!title)  { errEl.textContent = 'Please enter an article title.'; return; }
   if (!author) { errEl.textContent = 'Please enter an author name.'; return; }
   if (!cat)    { errEl.textContent = 'Please select a category.'; return; }
-  if (!_editArticleId && !pendingFile) { errEl.textContent = 'Please upload a PDF or image file.'; return; }
+  if (_uploadMode === 'media' && !_editArticleId && !pendingFile) { errEl.textContent = 'Please upload a PDF or image file.'; return; }
+  if (_uploadMode === 'docx' && !_upDocxArrayBuffer) { errEl.textContent = 'Please upload a Word (.docx) article file.'; return; }
   if (pendingFile && pendingFile.size > 3*1024*1024) { errEl.textContent = 'File exceeds 3 MB limit.'; return; }
   if ((_authorOwnership === 'other' || _authorOwnership === 'genz') && authorEmail && !authorEmail.includes('@')) {
     errEl.textContent = 'Please enter a valid author email.'; return;
@@ -3009,7 +3112,18 @@ async function publishArticle() {
     let file_url = _editArticleExistingFileUrl || null;
     let file_type = _editArticleExistingFileType || null;
     let article_image_url = _editArticleExistingImageUrl || null;
-    if (pendingFile) {
+    if (_uploadMode === 'docx' && _upDocxArrayBuffer) {
+      btn.textContent = 'Generating article image...';
+      const dataUrl = await generateArticleImage({
+        title, author, place, htmlBody: _upArticleBodyHtml,
+        authorPhotoUrl: null, category: cat, occupation: '',
+        docxArrayBuffer: _upDocxArrayBuffer
+      });
+      article_image_url = await uploadArticleImageToSupabase(dataUrl);
+      file_url = article_image_url;
+      file_type = 'image/png';
+      document.getElementById('progress-fill').style.width = '65%';
+    } else if (pendingFile) {
       const fileName = `${Date.now()}_${pendingFile.name.replace(/[^a-zA-Z0-9._-]/g,'_')}`;
       const uploadRes = await fetch(`${SUPABASE_URL}/storage/v1/object/articles/${fileName}`, {
         method: 'PUT',
@@ -3032,7 +3146,7 @@ async function publishArticle() {
 
     // 2. If PDF, try to generate thumbnail and use as article image
     let thumb_url = null;
-    if (pendingFile && pendingFile.type === 'application/pdf') {
+    if (_uploadMode === 'media' && pendingFile && pendingFile.type === 'application/pdf') {
       try {
         btn.textContent = 'Generating thumbnail…';
         await loadPdfJs();
@@ -3049,6 +3163,7 @@ async function publishArticle() {
     // 3. Insert or update article record
     const articlePayload = { title, author, category: cat, excerpt, file_url, file_type };
     if (article_image_url) articlePayload.article_image_url = article_image_url;
+    if (_uploadMode === 'docx' && _upArticleBodyHtml) articlePayload.article_body = _upArticleBodyHtml;
 
     const insertRes = await fetch(
       _editArticleId
@@ -4524,6 +4639,7 @@ function switchEditorTab(tab) {
 let _submissions = [];
 let _activeSubmission = null;
 let _rdNewFile = null;
+let _rdAuthorPhotoData = null;
 let _reviewPage = 0;
 const _REVIEW_PAGE_SIZE = 10;
 
@@ -4597,6 +4713,7 @@ function openReviewDetail(id) {
   if (!s) return;
   _activeSubmission = s;
   _rdNewFile = null;
+  _rdAuthorPhotoData = null;
 
   // Populate fields
   document.getElementById('rd-title-display').textContent = s.article_title || 'Untitled';
@@ -4610,6 +4727,14 @@ function openReviewDetail(id) {
   document.getElementById('rd-category').value     = s.category || 'Law';
   document.getElementById('rd-abstract').value     = s.abstract || '';
   document.getElementById('rd-submitted-at').value = s.submitted_at ? formatDate(s.submitted_at) : '—';
+  setPlaceSelectorsFromString('rd', s.place || '');
+  const rdPhotoPrev = document.getElementById('rd-author-photo-preview');
+  if (rdPhotoPrev) {
+    rdPhotoPrev.innerHTML = s.author_photo_url
+      ? `<img src="${esc(s.author_photo_url)}" style="width:100%;height:100%;object-fit:cover;">`
+      : '<svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="var(--border)" stroke-width="1.5"><circle cx="12" cy="8" r="4"/><path d="M6 20v-2a6 6 0 0 1 12 0v2"/></svg>';
+  }
+  const rdPhotoFn = document.getElementById('rd-author-photo-filename'); if (rdPhotoFn) rdPhotoFn.textContent = '';
   document.getElementById('rd-new-filename').textContent = '';
   document.getElementById('rd-error').textContent = '';
 
@@ -4663,7 +4788,7 @@ function closeReviewDetail() {
   document.getElementById('review-detail-overlay').classList.remove('open');
   document.body.style.overflow = 'hidden'; // keep editor overlay scroll locked
   const rdSilent = document.getElementById('rd-silent'); if (rdSilent) rdSilent.checked = false;
-  _activeSubmission = null; _rdNewFile = null; _rdPendingDocxFile = null;
+  _activeSubmission = null; _rdNewFile = null; _rdPendingDocxFile = null; _rdAuthorPhotoData = null;
 }
 function closeReviewDetailOnBg(e) {
   if (e.target === document.getElementById('review-detail-overlay')) closeReviewDetail();
@@ -4676,6 +4801,21 @@ function handleRdFileSelect(input) {
   if (file.size > 3*1024*1024) { fn.textContent = '✗ Too large (max 3 MB)'; _rdNewFile = null; return; }
   _rdNewFile = file;
   fn.textContent = '✓ ' + file.name + ' (' + (file.size/1024/1024).toFixed(2) + ' MB) — will replace on save/publish';
+}
+
+function handleRdAuthorPhotoSelect(input) {
+  const file = input.files && input.files[0];
+  const fn = document.getElementById('rd-author-photo-filename');
+  if (!file) return;
+  if (file.size > 2 * 1024 * 1024) { if (fn) fn.textContent = 'Too large - max 2 MB'; return; }
+  const reader = new FileReader();
+  reader.onload = e => {
+    _rdAuthorPhotoData = e.target.result;
+    const prev = document.getElementById('rd-author-photo-preview');
+    if (prev) prev.innerHTML = `<img src="${_rdAuthorPhotoData}" style="width:100%;height:100%;object-fit:cover;">`;
+    if (fn) fn.textContent = 'Selected ' + file.name;
+  };
+  reader.readAsDataURL(file);
 }
 
 async function saveReviewEdits() {
@@ -4697,6 +4837,10 @@ async function saveReviewEdits() {
       file_url = `${SUPABASE_URL}/storage/v1/object/public/articles/${fileName}`;
       file_type = _rdNewFile.type;
     }
+    let author_photo_url = _activeSubmission.author_photo_url || null;
+    if (_rdAuthorPhotoData) {
+      author_photo_url = await uploadArticleImageToSupabase(_rdAuthorPhotoData);
+    }
     const updates = {
       author_name:   sanitizeInput(document.getElementById('rd-author-name').value, 150),
       author_email:  sanitizeInput(document.getElementById('rd-author-email').value, 200),
@@ -4707,8 +4851,10 @@ async function saveReviewEdits() {
       article_title: sanitizeInput(document.getElementById('rd-article-title').value, 400),
       category:      document.getElementById('rd-category').value,
       abstract:      sanitizeInput(document.getElementById('rd-abstract').value, 1500),
+      place:         sanitizeInput(document.getElementById('rd-place') ? document.getElementById('rd-place').value : '', 200),
       article_body:  document.getElementById('rd-article-body') ? document.getElementById('rd-article-body').innerHTML : (_activeSubmission.article_body || ''),
-      file_url, file_type
+      file_url, file_type,
+      author_photo_url
     };
     if (_rdPendingDocxFile) {
       try {
@@ -4726,6 +4872,7 @@ async function saveReviewEdits() {
     // Update local copy
     Object.assign(_activeSubmission, updates);
     if (_rdNewFile) { _rdNewFile = null; document.getElementById('rd-new-filename').textContent = ''; }
+    if (_rdAuthorPhotoData) { _rdAuthorPhotoData = null; const fn = document.getElementById('rd-author-photo-filename'); if (fn) fn.textContent = 'Photo saved'; }
     if (_rdPendingDocxFile) {
       _activeSubmission.article_docx_url = updates.article_docx_url || _activeSubmission.article_docx_url;
       _rdPendingDocxFile = null;
@@ -4796,8 +4943,8 @@ async function rdRegenerateImage() {
     const author   = document.getElementById('rd-author-name').value   || _activeSubmission.author_name || '';
     const category = document.getElementById('rd-category').value      || _activeSubmission.category || '';
     const occupation = document.getElementById('rd-occupation').value  || _activeSubmission.occupation || '';
-    const place    = _activeSubmission.place || '';
-    const authorPhotoUrl = _activeSubmission.author_photo_url || null;
+    const place    = (document.getElementById('rd-place') && document.getElementById('rd-place').value) || _activeSubmission.place || '';
+    const authorPhotoUrl = _rdAuthorPhotoData || _activeSubmission.author_photo_url || null;
 
     // Generate new image from current editor content
     statusEl.textContent = 'Generating image…';
@@ -4980,19 +5127,36 @@ async function deleteSubmission() {
 // ═══════════════════════════════════════════════════════
 // ── PUBLISHED ARTICLES TAB (editor) ──
 // ═══════════════════════════════════════════════════════
+let _publishedEditorArticles = [];
+let _publishedEditorPage = 0;
+const _PUBLISHED_EDITOR_PAGE_SIZE = 10;
+
 async function loadPublishedArticles() {
   const listEl = document.getElementById('published-list');
   const loadEl = document.getElementById('published-loading');
   loadEl.style.display = 'block'; listEl.innerHTML = '';
   try {
-    const res = await fetch(`${SUPABASE_URL}/rest/v1/articles?order=created_at.desc&limit=200`, { headers });
+    const res = await fetch(`${SUPABASE_URL}/rest/v1/articles?order=created_at.desc&limit=100`, { headers });
     const data = await res.json();
     loadEl.style.display = 'none';
-    const arts = Array.isArray(data) ? data : [];
-    if (!arts.length) {
+    _publishedEditorArticles = Array.isArray(data) ? data : [];
+    _publishedEditorPage = 0;
+    if (!_publishedEditorArticles.length) {
       listEl.innerHTML = '<div class="review-empty">No articles published yet.</div>'; return;
     }
-    listEl.innerHTML = arts.map(a => {
+    renderPublishedArticlesPage();
+  } catch(e) {
+    loadEl.style.display = 'none';
+    listEl.innerHTML = '<div class="review-empty">Could not load articles.</div>';
+  }
+}
+
+function renderPublishedArticlesPage() {
+  const listEl = document.getElementById('published-list');
+  if (!listEl) return;
+  const shown = _publishedEditorArticles.slice(0, (_publishedEditorPage + 1) * _PUBLISHED_EDITOR_PAGE_SIZE);
+  const hasMore = shown.length < _publishedEditorArticles.length;
+  listEl.innerHTML = shown.map(a => {
       const thumb = a.article_image_url || (a.file_url && (a.file_type||'').startsWith('image/') ? a.file_url : null);
       return `
       <div class="review-item" style="display:flex;align-items:flex-start;gap:12px;">
@@ -5007,11 +5171,12 @@ async function loadPublishedArticles() {
           <button onclick="event.stopPropagation();editorDeleteArticle(${a.id})" style="background:#b91c1c;color:#fff;border:none;font-family:'Lato',sans-serif;font-size:10px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;padding:5px 10px;cursor:pointer;border-radius:2px;" title="Delete this article">&#128465; Delete</button>
         </div>
       </div>`;
-    }).join('');
-  } catch(e) {
-    loadEl.style.display = 'none';
-    listEl.innerHTML = '<div class="review-empty">Could not load articles.</div>';
-  }
+    }).join('') + (hasMore ? `<div style="text-align:center;padding:16px 0;"><button onclick="showMorePublishedArticles()" style="background:var(--navy);color:#fff;border:2px solid var(--navy);font-family:'Lato',sans-serif;font-size:11px;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;padding:10px 18px;cursor:pointer;">Show 10 more</button></div>` : '');
+}
+
+function showMorePublishedArticles() {
+  _publishedEditorPage++;
+  renderPublishedArticlesPage();
 }
 
 function editorEditArticle(id) {
@@ -5028,6 +5193,8 @@ function editorEditArticle(id) {
   const au = document.getElementById('up-author'); if (au) au.value = a.author || '';
   const c = document.getElementById('up-category'); if (c) c.value = a.category || '';
   const ex = document.getElementById('up-excerpt'); if (ex) ex.value = a.excerpt || '';
+  setPlaceSelectorsFromString('up', a.place || '');
+  setUploadMode('media');
   pendingFile = null;
   const df = document.getElementById('drop-filename');
   if (df) df.textContent = a.file_url ? 'Current file attached (drop to replace)' : 'Drop a file to attach';
@@ -6068,6 +6235,38 @@ const GEO_DATA = {
     'South Australia': ['Adelaide','Mount Gambier','Whyalla','Murray Bridge'],
     'Tasmania': ['Hobart','Launceston','Devonport','Burnie'],
   },
+  'United Arab Emirates': {
+    'Abu Dhabi': ['Abu Dhabi','Al Ain','Madinat Zayed'],
+    'Dubai': ['Dubai','Jebel Ali','Hatta'],
+    'Sharjah': ['Sharjah','Khor Fakkan','Kalba'],
+  },
+  'Singapore': { 'Singapore': ['Singapore'] },
+  'Germany': {
+    'Bavaria': ['Munich','Nuremberg','Augsburg'],
+    'Berlin': ['Berlin'],
+    'Hesse': ['Frankfurt','Wiesbaden','Darmstadt'],
+    'North Rhine-Westphalia': ['Cologne','Dusseldorf','Dortmund'],
+  },
+  'France': {
+    'Ile-de-France': ['Paris','Versailles','Saint-Denis'],
+    'Auvergne-Rhone-Alpes': ['Lyon','Grenoble','Saint-Etienne'],
+    'Provence-Alpes-Cote d Azur': ['Marseille','Nice','Toulon'],
+  },
+  'Japan': {
+    'Tokyo': ['Tokyo'],
+    'Osaka': ['Osaka','Sakai'],
+    'Kanagawa': ['Yokohama','Kawasaki'],
+  },
+  'China': {
+    'Beijing': ['Beijing'],
+    'Shanghai': ['Shanghai'],
+    'Guangdong': ['Guangzhou','Shenzhen','Dongguan'],
+  },
+  'South Africa': {
+    'Gauteng': ['Johannesburg','Pretoria'],
+    'Western Cape': ['Cape Town','Stellenbosch'],
+    'KwaZulu-Natal': ['Durban','Pietermaritzburg'],
+  },
   'Other': { 'Other': ['Other'] }
 };
 
@@ -6118,6 +6317,69 @@ function updatePlaceString() {
 // ═══════════════════════════════════════════════════════
 // ── LIVE ARTICLE PREVIEW WORKFLOW ──
 // ═══════════════════════════════════════════════════════
+function populateCountriesFor(prefix) {
+  const sel = document.getElementById(prefix + '-country'); if (!sel) return;
+  sel.innerHTML = '<option value="">Select Country</option>';
+  Object.keys(GEO_DATA).sort((a,b) => a === 'India' ? -1 : b === 'India' ? 1 : a.localeCompare(b)).forEach(c => {
+    const opt = document.createElement('option'); opt.value = c; opt.textContent = c; sel.appendChild(opt);
+  });
+}
+function populateStatesFor(prefix) {
+  const country = document.getElementById(prefix + '-country')?.value || '';
+  const stateSel = document.getElementById(prefix + '-state');
+  const citySel = document.getElementById(prefix + '-city');
+  if (!stateSel || !citySel) return;
+  stateSel.innerHTML = '<option value="">Select State</option>';
+  citySel.innerHTML = '<option value="">Select City</option>';
+  const placeEl = document.getElementById(prefix + '-place'); if (placeEl) placeEl.value = '';
+  if (!country || !GEO_DATA[country]) return;
+  Object.keys(GEO_DATA[country]).sort().forEach(s => {
+    const opt = document.createElement('option'); opt.value = s; opt.textContent = s; stateSel.appendChild(opt);
+  });
+  updatePlaceStringFor(prefix);
+}
+function populateCitiesFor(prefix) {
+  const country = document.getElementById(prefix + '-country')?.value || '';
+  const state = document.getElementById(prefix + '-state')?.value || '';
+  const citySel = document.getElementById(prefix + '-city');
+  if (!citySel) return;
+  citySel.innerHTML = '<option value="">Select City</option>';
+  if (!country || !state || !GEO_DATA[country] || !GEO_DATA[country][state]) return;
+  GEO_DATA[country][state].sort().forEach(c => {
+    const opt = document.createElement('option'); opt.value = c; opt.textContent = c; citySel.appendChild(opt);
+  });
+  updatePlaceStringFor(prefix);
+}
+function updatePlaceStringFor(prefix) {
+  const country = document.getElementById(prefix + '-country')?.value || '';
+  const state = document.getElementById(prefix + '-state')?.value || '';
+  const city = document.getElementById(prefix + '-city')?.value || '';
+  const placeEl = document.getElementById(prefix + '-place');
+  if (placeEl) placeEl.value = [city, state, country].filter(Boolean).join(', ');
+}
+function setPlaceSelectorsFromString(prefix, place) {
+  populateCountriesFor(prefix);
+  const parts = (place || '').split(',').map(p => p.trim()).filter(Boolean);
+  const country = parts.length ? parts[parts.length - 1] : '';
+  const state = parts.length > 1 ? parts[parts.length - 2] : '';
+  const city = parts.length > 2 ? parts.slice(0, -2).join(', ') : '';
+  const cEl = document.getElementById(prefix + '-country');
+  const sEl = document.getElementById(prefix + '-state');
+  const cityEl = document.getElementById(prefix + '-city');
+  const pEl = document.getElementById(prefix + '-place');
+  if (cEl && country) cEl.value = country;
+  populateStatesFor(prefix);
+  if (sEl && state) sEl.value = state;
+  populateCitiesFor(prefix);
+  if (cityEl && city) cityEl.value = city;
+  if (pEl) pEl.value = place || [city, state, country].filter(Boolean).join(', ');
+}
+populateCountries = function(){ populateCountriesFor('sub'); };
+populateStates = function(){ populateStatesFor('sub'); };
+populateCities = function(){ populateCitiesFor('sub'); };
+updatePlaceString = function(){ updatePlaceStringFor('sub'); };
+setTimeout(() => ['sub','up','rd'].forEach(populateCountriesFor), 700);
+
 let _previewDataUrl = null;
 let _previewDebounceTimer = null;
 
@@ -6460,7 +6722,7 @@ async function generateArticleImage(articleData) {
       ctx.fillRect(0, authorBottom - 2, W, 2);
       const AUTHOR_DIVIDER_X = 48 + PHOTO_SIZE + 24;
       ctx.fillStyle = GOLD;
-      ctx.fillRect(AUTHOR_DIVIDER_X, authorTop + 18, 5, authorBottom - authorTop - 36);
+      ctx.fillRect(AUTHOR_DIVIDER_X, AUTHOR_Y, 5, PHOTO_SIZE);
       if (articleData.authorPhotoUrl) {
         const photoImg = new Image();
         photoImg.crossOrigin = 'anonymous';
