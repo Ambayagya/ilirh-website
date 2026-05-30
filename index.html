@@ -1487,24 +1487,6 @@ body.dark-mode .editor-tab.active { color:#c8d8ea; }
   z-index:2;
 }
 #preview-generating.hidden { display:none; }
-
-/* ── EDITOR PANEL — article image preview buffer ── */
-#up-docx-preview-canvas-wrap {
-  width:100%; border:2px solid var(--border);
-  background:#ffffff; position:relative;
-  min-height:120px; display:flex; align-items:center; justify-content:center;
-  overflow:hidden;
-}
-#up-docx-preview-canvas-wrap img {
-  width:100%; height:auto; display:block; cursor:zoom-in;
-}
-#up-preview-generating {
-  position:absolute; inset:0; background:rgba(255,255,255,0.92);
-  display:flex; flex-direction:column; align-items:center; justify-content:center;
-  gap:10px; font-family:'Lato',sans-serif; font-size:12px; color:var(--text-muted);
-  z-index:2;
-}
-#up-preview-generating.hidden { display:none; }
 .preview-action-row {
   display:flex; gap:12px; margin-top:16px;
   flex-wrap:wrap;
@@ -1933,13 +1915,7 @@ body.dark-mode .editor-tab.active { color:#c8d8ea; }
     </div>
     <div class="rd-full-preview-wrap" id="up-docx-preview-wrap" style="display:none;">
       <p style="font-family:'Lato',sans-serif;font-size:10px;font-weight:700;letter-spacing:0.14em;text-transform:uppercase;color:var(--text-muted);margin-bottom:8px;">Generated article image preview</p>
-      <div id="up-docx-preview-canvas-wrap">
-        <div id="up-preview-generating">
-          <div class="spinner"></div>
-          <span>Generating article image…</span>
-        </div>
-        <img id="up-docx-preview-img" src="" alt="Generated article image preview" style="display:none;" onclick="openLightbox(this.src,[this.src],0)">
-      </div>
+      <img id="up-docx-preview-img" src="" alt="Generated article image preview" onclick="openLightbox(this.src,[this.src],0)">
     </div>
 
     <!-- Silent Publish -->
@@ -2286,14 +2262,16 @@ body.dark-mode .editor-tab.active { color:#c8d8ea; }
       </div>
     </div>
 
-    <div class="review-file-preview" id="rd-file-preview">
-      <p>Article Template Preview (full image)</p>
-      <div id="rd-file-content"></div>
-    </div>
-
     <div class="rd-full-preview-wrap" id="rd-full-preview-wrap" style="display:none;">
       <p style="font-family:'Lato',sans-serif;font-size:10px;font-weight:700;letter-spacing:0.14em;text-transform:uppercase;color:var(--text-muted);margin-bottom:8px;">Full template preview</p>
       <img id="rd-full-preview-img" src="" alt="Full article template preview" onclick="rdOpenFullPreviewLightbox()">
+      <div style="margin-top:10px;">
+        <button type="button" id="rd-open-fullsize-btn" onclick="rdOpenFullPreviewLightbox()"
+          style="background:var(--navy);color:var(--gold-light);border:1px solid var(--gold);font-family:'Lato',sans-serif;font-size:10px;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;padding:8px 16px;cursor:pointer;display:inline-flex;align-items:center;gap:7px;transition:background 0.2s;">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><polyline points="15 3 21 3 21 9"/><polyline points="9 21 3 21 3 15"/><line x1="21" y1="3" x2="14" y2="10"/><line x1="3" y1="21" x2="10" y2="14"/></svg>
+          Open Full-Size Image
+        </button>
+      </div>
     </div>
 
     <div class="rd-docx-actions">
@@ -3031,8 +3009,7 @@ function closeUpload() {
   const upDocx = document.getElementById('up-docx-file'); if (upDocx) upDocx.value = '';
   const upDocxFn = document.getElementById('up-docx-filename'); if (upDocxFn) upDocxFn.textContent = '';
   const upPrevWrap = document.getElementById('up-docx-preview-wrap'); if (upPrevWrap) upPrevWrap.style.display = 'none';
-  const upPrevImg = document.getElementById('up-docx-preview-img'); if (upPrevImg) { upPrevImg.src = ''; upPrevImg.style.display = 'none'; }
-  const upPrevGen = document.getElementById('up-preview-generating'); if (upPrevGen) upPrevGen.classList.remove('hidden');
+  const upPrevImg = document.getElementById('up-docx-preview-img'); if (upPrevImg) upPrevImg.src = '';
   const upPlace = document.getElementById('up-place'); if (upPlace) upPlace.value = '';
   ['up-country','up-state','up-city'].forEach(id => { const el = document.getElementById(id); if (el) el.value = ''; });
   document.getElementById('up-silent').checked = false;
@@ -3094,34 +3071,20 @@ async function handleUpDocxSelect(input) {
 async function refreshUpDocxPreview() {
   const wrap = document.getElementById('up-docx-preview-wrap');
   const img = document.getElementById('up-docx-preview-img');
-  const genBuf = document.getElementById('up-preview-generating');
   if (!_upDocxArrayBuffer || !wrap || !img) return;
   const title = (document.getElementById('up-title')?.value || '').trim() || 'Untitled';
   const author = (document.getElementById('up-author')?.value || '').trim() || 'Author';
   const category = document.getElementById('up-category')?.value || 'Research';
   const place = document.getElementById('up-place')?.value || '';
-  // Show the wrap and the generating buffer
   wrap.style.display = 'block';
-  img.style.display = 'none';
   img.removeAttribute('src');
-  if (genBuf) genBuf.classList.remove('hidden');
-  try {
-    const dataUrl = await generateArticleImage({
-      title, author, place, htmlBody: _upArticleBodyHtml,
-      authorPhotoUrl: null, category, occupation: '',
-      docxArrayBuffer: _upDocxArrayBuffer
-    });
-    _upDocxPreviewDataUrl = dataUrl;
-    img.src = dataUrl;
-    img.style.display = 'block';
-    if (genBuf) genBuf.classList.add('hidden');
-  } catch(e) {
-    if (genBuf) genBuf.classList.add('hidden');
-    img.style.display = 'none';
-    _upDocxPreviewDataUrl = null;
-    const errEl = document.getElementById('up-error');
-    if (errEl) errEl.textContent = '✗ ' + (e.message || 'Image generation failed');
-  }
+  const dataUrl = await generateArticleImage({
+    title, author, place, htmlBody: _upArticleBodyHtml,
+    authorPhotoUrl: null, category, occupation: '',
+    docxArrayBuffer: _upDocxArrayBuffer
+  });
+  _upDocxPreviewDataUrl = dataUrl;
+  img.src = dataUrl;
 }
 
 function handleFileSelect(input) {
@@ -4819,21 +4782,17 @@ function openReviewDetail(id) {
   }
 
   // File preview (full template image)
-  const fc = document.getElementById('rd-file-content');
   const fullPrev = document.getElementById('rd-full-preview-wrap');
   const fullPrevImg = document.getElementById('rd-full-preview-img');
   const dlBtn = document.getElementById('rd-download-docx-btn');
   if (dlBtn) dlBtn.style.display = s.article_docx_url ? 'inline-block' : 'inline-block';
   if (s.file_url && (s.file_type || '').startsWith('image/')) {
     const bust = esc(s.file_url) + '?t=' + Date.now();
-    fc.innerHTML = `<img src="${bust}" alt="Article template preview" style="max-width:100%;max-height:320px;object-fit:contain;display:block;border:1px solid var(--border-light);cursor:zoom-in;" onclick="openLightbox('${esc(s.file_url)}',['${esc(s.file_url)}'],0)">
-      <a href="${esc(s.file_url)}" target="_blank" rel="noopener" style="display:inline-block;margin-top:8px;font-family:'Lato',sans-serif;font-size:11px;color:var(--navy-light);font-weight:700;">&#8599; Open full-size image</a>`;
     if (fullPrev && fullPrevImg) {
       fullPrev.style.display = 'block';
-      fullPrevImg.src = s.file_url;
+      fullPrevImg.src = bust;
     }
   } else {
-    fc.innerHTML = '<em style="font-family:Garamond,serif;color:var(--text-muted);font-size:14px;">No preview image yet — edit body and click Regenerate Article Image</em>';
     if (fullPrev) fullPrev.style.display = 'none';
   }
   _rdPendingDocxFile = null;
@@ -4967,33 +4926,147 @@ function rdRteExec(cmd, val) {
   const ed = document.getElementById('rd-article-body');
   if (!ed) return;
   ed.focus();
-  // Alignment: scope to selection using same logic as rteExec
+
+  const sel = window.getSelection();
+  const hasSelection = sel && !sel.isCollapsed && sel.rangeCount > 0 && ed.contains(sel.getRangeAt(0).commonAncestorContainer);
+
+  // ── ALIGNMENT: wrap selection in inline-block span ──
   if (RTE_ALIGN_MAP && RTE_ALIGN_MAP[cmd]) {
     const alignVal = RTE_ALIGN_MAP[cmd];
-    const sel = window.getSelection();
-    if (sel && !sel.isCollapsed && sel.rangeCount > 0) {
+    if (hasSelection) {
       const range = sel.getRangeAt(0);
-      if (ed.contains(range.commonAncestorContainer)) {
-        const existing = range.commonAncestorContainer.parentElement;
-        if (existing && existing.dataset && existing.dataset.rteAlign) {
-          existing.style.textAlign = alignVal;
-          existing.dataset.rteAlign = alignVal;
-          return;
-        }
-        const span = document.createElement('span');
-        span.style.cssText = `display:inline-block; width:100%; text-align:${alignVal};`;
-        span.dataset.rteAlign = alignVal;
-        try { range.surroundContents(span); }
-        catch(e) { const frag = range.extractContents(); span.appendChild(frag); range.insertNode(span); }
-        const newRange = document.createRange();
-        newRange.selectNodeContents(span);
-        sel.removeAllRanges(); sel.addRange(newRange);
+      const existing = range.commonAncestorContainer.nodeType === 1
+        ? range.commonAncestorContainer
+        : range.commonAncestorContainer.parentElement;
+      if (existing && existing.dataset && existing.dataset.rteAlign) {
+        existing.style.textAlign = alignVal;
+        existing.dataset.rteAlign = alignVal;
         return;
       }
+      const span = document.createElement('span');
+      span.style.cssText = `display:inline-block; width:100%; text-align:${alignVal};`;
+      span.dataset.rteAlign = alignVal;
+      try { range.surroundContents(span); }
+      catch(e) { const frag = range.extractContents(); span.appendChild(frag); range.insertNode(span); }
+      const newRange = document.createRange();
+      newRange.selectNodeContents(span);
+      sel.removeAllRanges(); sel.addRange(newRange);
+    } else {
+      document.execCommand(cmd, false, null);
     }
-    document.execCommand(cmd, false, null);
     return;
   }
+
+  // ── INLINE STYLES: bold, italic, underline — wrap selection in styled span if selected ──
+  if (cmd === 'bold' || cmd === 'italic' || cmd === 'underline') {
+    if (hasSelection) {
+      const range = sel.getRangeAt(0);
+      const styleMap = { bold: ['fontWeight','bold'], italic: ['fontStyle','italic'], underline: ['textDecoration','underline'] };
+      const [prop, styleVal] = styleMap[cmd];
+      // Check if selection is already wrapped — toggle off if so
+      const anc = range.commonAncestorContainer.nodeType === 1
+        ? range.commonAncestorContainer
+        : range.commonAncestorContainer.parentElement;
+      if (anc && anc.dataset && anc.dataset['rteInline'] === cmd) {
+        // Unwrap
+        const parent = anc.parentNode;
+        while (anc.firstChild) parent.insertBefore(anc.firstChild, anc);
+        parent.removeChild(anc);
+        return;
+      }
+      const span = document.createElement('span');
+      span.style[prop] = styleVal;
+      span.dataset['rteInline'] = cmd;
+      try { range.surroundContents(span); }
+      catch(e) { const frag = range.extractContents(); span.appendChild(frag); range.insertNode(span); }
+      const newRange = document.createRange();
+      newRange.selectNodeContents(span);
+      sel.removeAllRanges(); sel.addRange(newRange);
+    } else {
+      document.execCommand(cmd, false, null);
+    }
+    return;
+  }
+
+  // ── HEADING / BLOCKQUOTE: wrap selected content in block element ──
+  if (cmd === 'formatBlock') {
+    const tag = (val || 'P').toUpperCase();
+    if (hasSelection) {
+      const range = sel.getRangeAt(0);
+      const frag = range.extractContents();
+      const block = document.createElement(tag);
+      block.appendChild(frag);
+      range.insertNode(block);
+      // Move cursor inside the new block
+      const newRange = document.createRange();
+      newRange.selectNodeContents(block);
+      sel.removeAllRanges(); sel.addRange(newRange);
+    } else {
+      document.execCommand('formatBlock', false, tag);
+    }
+    return;
+  }
+
+  // ── LISTS: wrap selected lines in a list ──
+  if (cmd === 'insertUnorderedList' || cmd === 'insertOrderedList') {
+    if (hasSelection) {
+      const range = sel.getRangeAt(0);
+      const frag = range.extractContents();
+      const listTag = cmd === 'insertUnorderedList' ? 'UL' : 'OL';
+      const list = document.createElement(listTag);
+      // Split fragment text into lines and create list items
+      const tmp = document.createElement('div');
+      tmp.appendChild(frag);
+      const text = tmp.innerText || tmp.textContent || '';
+      const lines = text.split('\n').map(l => l.trim()).filter(l => l.length > 0);
+      if (lines.length > 0) {
+        lines.forEach(line => {
+          const li = document.createElement('li');
+          li.textContent = line;
+          list.appendChild(li);
+        });
+      } else {
+        // Fallback: wrap all fragment content in single li
+        const li = document.createElement('li');
+        li.appendChild(tmp.firstChild || document.createTextNode(''));
+        list.appendChild(li);
+      }
+      range.insertNode(list);
+      const newRange = document.createRange();
+      newRange.selectNodeContents(list);
+      sel.removeAllRanges(); sel.addRange(newRange);
+    } else {
+      document.execCommand(cmd, false, null);
+    }
+    return;
+  }
+
+  // ── REMOVE FORMAT: strip our custom spans from selection ──
+  if (cmd === 'removeFormat') {
+    if (hasSelection) {
+      const range = sel.getRangeAt(0);
+      const frag = range.cloneContents();
+      // Unwrap all rteInline and rteAlign spans in fragment
+      frag.querySelectorAll('span[data-rte-inline], span[data-rte-align]').forEach(s => {
+        const parent = s.parentNode;
+        while (s.firstChild) parent.insertBefore(s.firstChild, s);
+        parent.removeChild(s);
+      });
+      // Also check direct ancestor
+      const anc = range.commonAncestorContainer.nodeType === 1
+        ? range.commonAncestorContainer
+        : range.commonAncestorContainer.parentElement;
+      if (anc && (anc.dataset['rteInline'] || anc.dataset['rteAlign'])) {
+        anc.removeAttribute('style');
+        delete anc.dataset['rteInline'];
+        delete anc.dataset['rteAlign'];
+      }
+    }
+    document.execCommand('removeFormat', false, null);
+    return;
+  }
+
+  // ── FALLBACK ──
   document.execCommand(cmd, false, val || null);
 }
 
@@ -5002,7 +5075,6 @@ async function rdRegenerateImage() {
   const btn = document.getElementById('rd-regen-btn');
   const statusEl = document.getElementById('rd-regen-status');
   const errEl = document.getElementById('rd-error');
-  const fc = document.getElementById('rd-file-content');
 
   btn.disabled = true;
   statusEl.textContent = 'Generating image…';
@@ -5051,13 +5123,11 @@ async function rdRegenerateImage() {
     _activeSubmission.article_body = articleHtml;
 
     const bust = esc(newUrl) + '?t=' + Date.now();
-    fc.innerHTML = `<img src="${bust}" alt="Article template preview" style="max-width:100%;max-height:320px;object-fit:contain;display:block;border:1px solid var(--border-light);cursor:zoom-in;" onclick="openLightbox('${esc(newUrl)}',['${esc(newUrl)}'],0)">
-      <a href="${esc(newUrl)}" target="_blank" rel="noopener" style="display:inline-block;margin-top:8px;font-family:'Lato',sans-serif;font-size:11px;color:var(--navy-light);font-weight:700;">&#8599; Open full-size image</a>`;
     const fullPrev = document.getElementById('rd-full-preview-wrap');
     const fullPrevImg = document.getElementById('rd-full-preview-img');
     if (fullPrev && fullPrevImg) {
       fullPrev.style.display = 'block';
-      fullPrevImg.src = newUrl + '?t=' + Date.now();
+      fullPrevImg.src = bust;
     }
 
     statusEl.textContent = '✓ Image replaced successfully';
