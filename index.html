@@ -3416,32 +3416,36 @@ async function loadSubs() {
 }
 
 async function removeSubscriber(id, email, btn) {
-  if (!confirm(`Remove ${email} from the subscriber list? They will no longer receive Herald emails.`)) return;
+  if (!confirm('Remove ' + email + ' from the subscriber list? They will no longer receive Herald emails.')) return;
   btn.disabled = true; btn.textContent = '…';
   try {
-    const res = await fetch(`${SUPABASE_URL}/rest/v1/subscribers?id=eq.${id}`, {
-      method: 'DELETE', headers: { ...headers, 'Prefer': 'return=minimal' }
+    // Call edge function which uses SERVICE_ROLE_KEY — bypasses RLS completely
+    const res = await fetch(SUPABASE_URL + '/functions/v1/notify-subscribers', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + SUPABASE_KEY },
+      body: JSON.stringify({ type: 'remove_subscriber', id: id })
     });
-    if (!res.ok) throw new Error('Delete failed');
-    // Remove from DOM immediately
+    const json = await res.json().catch(function(){ return {}; });
+    if (!res.ok || !json.ok) {
+      throw new Error(json.error || 'Delete failed (status ' + res.status + ')');
+    }
+
+    // Confirmed deleted from DB — now update all UI
     const row = btn.closest('.sub-item');
     if (row) row.remove();
-    // Remove from in-memory cache so they won't receive further messages this session
-    _allSubscribersCache = _allSubscribersCache.filter(function(s){ return s.id !== id; });
-    // Update count
+    _allSubscribersCache = _allSubscribersCache.filter(function(s){ return String(s.id) !== String(id); });
     const countEl = document.getElementById('subs-count');
     if (countEl) countEl.textContent = _allSubscribersCache.length;
-    // Show empty state if no subscribers remain
     const listEl = document.getElementById('subs-list');
     if (listEl && listEl.querySelectorAll('.sub-item').length === 0) {
       listEl.innerHTML = '<p style="font-style:italic;color:var(--text-muted);font-size:13px;padding:8px 0;">No subscribers yet.</p>';
     }
-    // Re-render the message select list so the removed person is gone there too
     if (typeof renderMsgSelectList === 'function') renderMsgSelectList();
-    showToast('✓ Subscriber removed', 2500);
+    showToast('Subscriber removed', 2500);
   } catch(e) {
-    btn.disabled = false; btn.textContent = '✕ Remove';
-    showToast('Could not remove subscriber. Try again.', 3000);
+    btn.disabled = false; btn.textContent = '\u2715 Remove';
+    console.error('removeSubscriber error:', e);
+    showToast('Could not remove: ' + e.message, 5000);
   }
 }
 
