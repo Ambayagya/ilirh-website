@@ -1,0 +1,25 @@
+name: Generate static article pages
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '*/5 * * * *'
+
+permissions:
+  contents: write
+
+jobs:
+  generate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Generate article pages
+        run: node scripts/generate-static-articles.js
+      - name: Commit generated pages
+        uses: stefanzweifel/git-auto-commit-action@v5
+        with:
+          commit_message: 'Generate static article pages'
+          file_pattern: 'articles/** article/** sitemap.xml robots.txt 404.html .nojekyll'
