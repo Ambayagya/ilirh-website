@@ -5067,8 +5067,8 @@ const ARTICLE_BODY_CAPTURE_W = TEMPLATE_W;
 
 function getAuthorBlockEndY(authorY, photoSize) {
   const photoBottom = authorY + photoSize;
-  const textBottom = authorY + 230;  // name(66)+occupation(132)+place(192)+padding
-  return Math.max(photoBottom, textBottom) + 20;
+  const textBottom = authorY + 246;
+  return Math.max(photoBottom, textBottom) + 28;
 }
 
 function computeArticleBodyStartY(articleData, W) {
@@ -5080,7 +5080,7 @@ function computeArticleBodyStartY(articleData, W) {
   if (titleLines.length > 4) titleLines = titleLines.slice(0, 4);
   const titleBottomY = TITLE_Y_START + Math.min(titleLines.length, 4) * 90 + 20;
   const AUTHOR_Y = titleBottomY + 44;
-  const PHOTO_SIZE = 210;
+  const PHOTO_SIZE = 250;
   return getAuthorBlockEndY(AUTHOR_Y, PHOTO_SIZE);
 }
 
@@ -5579,7 +5579,7 @@ async function captureWordDocPageForTemplate(arrayBuffer) {
   if (shot.width === TEMPLATE_W && shot.height === A4_BODY_H) {
     _docxCaptureCacheKey = cacheKey;
     _docxCaptureCacheCanvas = shot;
-    _docxCaptureCacheTrim = detectTopGreySeparatorHeight(shot);
+    _docxCaptureCacheTrim = 0;
     return shot;
   }
   var out = document.createElement('canvas');
@@ -5588,13 +5588,11 @@ async function captureWordDocPageForTemplate(arrayBuffer) {
   var octx = out.getContext('2d');
   octx.fillStyle = '#ffffff';
   octx.fillRect(0, 0, TEMPLATE_W, A4_BODY_H);
-  const dx = Math.floor((TEMPLATE_W - shot.width) / 2);
-  const dy = Math.floor((A4_BODY_H - shot.height) / 2);
   octx.drawImage(shot, 0, 0, shot.width, shot.height,
-                 dx, dy, shot.width, shot.height);
+                 0, 0, TEMPLATE_W, A4_BODY_H);
   _docxCaptureCacheKey = cacheKey;
   _docxCaptureCacheCanvas = out;
-  _docxCaptureCacheTrim = detectTopGreySeparatorHeight(out);
+  _docxCaptureCacheTrim = 0;
   return out;
 }
 
@@ -5620,15 +5618,8 @@ async function drawArticleBodyOnTemplate(ctx, bodyStartY, htmlBody, layout) {
   if (!docxBuf) throw new Error('Word document required for article body rendering.');
   // shot is already TEMPLATE_W × A4_BODY_H — place directly into the body slot
   const shot = await captureWordDocPageForTemplate(docxBuf);
-  const topTrim = _docxCaptureCacheCanvas === shot ? _docxCaptureCacheTrim : detectTopGreySeparatorHeight(shot);
-  if (topTrim > 0) {
-    ctx.drawImage(shot, 0, topTrim, TEMPLATE_W, A4_BODY_H - topTrim,
-                  0, bodyStartY, TEMPLATE_W, A4_BODY_H - topTrim);
-    return A4_BODY_H - topTrim;
-  } else {
-    ctx.drawImage(shot, 0, bodyStartY, TEMPLATE_W, A4_BODY_H);
-    return A4_BODY_H;
-  }
+  ctx.drawImage(shot, 0, bodyStartY, TEMPLATE_W, A4_BODY_H);
+  return A4_BODY_H;
 }
 
 function detectTopGreySeparatorHeight(canvas) {
@@ -6312,12 +6303,14 @@ async function generateArticleImage(articleData) {
       }
 
       // ── "ILIRH" — bold accent word right after logo ──
-      const TEXT_Y = 126;   // vertical baseline, roughly centred in 200px bar
+      const BAR_CENTER_Y = 100;
       ctx.textAlign = 'left';
       ctx.fillStyle = GOLD;
       ctx.font = 'bold 82px Georgia, serif';
       const ilirh = 'ILIRH';
       const ILIRH_X = LOGO_X + LOGO_SIZE + 36;
+      const ilirhMetrics = ctx.measureText(ilirh);
+      const TEXT_Y = BAR_CENTER_Y + ((ilirhMetrics.actualBoundingBoxAscent || 62) - (ilirhMetrics.actualBoundingBoxDescent || 16)) / 2;
       ctx.fillText(ilirh, ILIRH_X, TEXT_Y);
       const ilirhW = ctx.measureText(ilirh).width;
 
@@ -6344,8 +6337,8 @@ async function generateArticleImage(articleData) {
         nameFontSize -= 1;
         ctx.font = `600 ${nameFontSize}px Georgia, serif`;
       }
-      // Vertically centre the single line in the bar (TEXT_Y is already the ILIRH baseline)
-      const nameBaseline = TEXT_Y + 4; // align baseline with ILIRH text
+      const nameMetrics = ctx.measureText(fullName);
+      const nameBaseline = BAR_CENTER_Y + ((nameMetrics.actualBoundingBoxAscent || nameFontSize * 0.74) - (nameMetrics.actualBoundingBoxDescent || nameFontSize * 0.22)) / 2;
       ctx.fillText(fullName, NAME_X, nameBaseline);
 
       ctx.textAlign = 'left';
@@ -6382,7 +6375,15 @@ async function generateArticleImage(articleData) {
 
       // ── Author block ──
       const AUTHOR_Y = titleBottomY + 44;
-      const PHOTO_SIZE = 210;
+      const PHOTO_SIZE = 250;
+      const authorBlockH = getAuthorBlockEndY(AUTHOR_Y, PHOTO_SIZE) - AUTHOR_Y - 12;
+      ctx.fillStyle = '#f8fafc';
+      ctx.fillRect(0, AUTHOR_Y - 24, W, authorBlockH + 48);
+      ctx.fillStyle = 'rgba(201,168,76,0.18)';
+      ctx.fillRect(0, AUTHOR_Y - 24, W, 2);
+      ctx.fillRect(0, AUTHOR_Y + authorBlockH + 22, W, 2);
+      ctx.fillStyle = GOLD;
+      ctx.fillRect(48, AUTHOR_Y - 24, 8, authorBlockH + 48);
       if (articleData.authorPhotoUrl) {
         const photoImg = new Image();
         photoImg.crossOrigin = 'anonymous';
@@ -6406,39 +6407,58 @@ async function generateArticleImage(articleData) {
       ctx.arc(48 + size / 2, y + size / 2, size / 2, 0, Math.PI * 2);
       ctx.closePath();
       ctx.clip();
-      try { ctx.drawImage(img, 48, y, size, size); } catch(e) {}
+      try {
+        const iw = img.naturalWidth || img.width || size;
+        const ih = img.naturalHeight || img.height || size;
+        const scale = Math.max(size / iw, size / ih);
+        const sw = size / scale;
+        const sh = size / scale;
+        const sx = Math.max(0, (iw - sw) / 2);
+        const sy = Math.max(0, (ih - sh) / 2);
+        ctx.drawImage(img, sx, sy, sw, sh, 48, y, size, size);
+      } catch(e) {}
       ctx.restore();
-      ctx.strokeStyle = GOLD; ctx.lineWidth = 5;
+      ctx.strokeStyle = '#ffffff'; ctx.lineWidth = 12;
       ctx.beginPath();
-      ctx.arc(48 + size / 2, y + size / 2, size / 2 + 2, 0, Math.PI * 2);
+      ctx.arc(48 + size / 2, y + size / 2, size / 2 + 4, 0, Math.PI * 2);
+      ctx.stroke();
+      ctx.strokeStyle = GOLD; ctx.lineWidth = 6;
+      ctx.beginPath();
+      ctx.arc(48 + size / 2, y + size / 2, size / 2 + 9, 0, Math.PI * 2);
       ctx.stroke();
     }
 
     function _drawAuthorPlaceholder(y, size) {
-      ctx.fillStyle = CREAM;
+      ctx.fillStyle = '#eef2f6';
       ctx.beginPath(); ctx.arc(48 + size / 2, y + size / 2, size / 2, 0, Math.PI * 2); ctx.fill();
-      ctx.strokeStyle = GOLD; ctx.lineWidth = 4;
+      ctx.strokeStyle = '#ffffff'; ctx.lineWidth = 12;
+      ctx.beginPath(); ctx.arc(48 + size / 2, y + size / 2, size / 2 + 4, 0, Math.PI * 2); ctx.stroke();
+      ctx.strokeStyle = GOLD; ctx.lineWidth = 6;
       ctx.beginPath(); ctx.arc(48 + size / 2, y + size / 2, size / 2, 0, Math.PI * 2); ctx.stroke();
       ctx.fillStyle = BORDER;
-      ctx.beginPath(); ctx.arc(48 + size / 2, y + size / 2 - 28, 30, 0, Math.PI * 2); ctx.fill();
-      ctx.beginPath(); ctx.arc(48 + size / 2, y + size / 2 + 55, 54, Math.PI, 0); ctx.fill();
+      ctx.beginPath(); ctx.arc(48 + size / 2, y + size / 2 - 34, 36, 0, Math.PI * 2); ctx.fill();
+      ctx.beginPath(); ctx.arc(48 + size / 2, y + size / 2 + 66, 66, Math.PI, 0); ctx.fill();
     }
 
     function _drawAuthorText(y, photoSize, cb) {
-      const textX = 48 + photoSize + 36;
+      const textX = 48 + photoSize + 48;
       const avW = W - textX - 48;
 
+      ctx.fillStyle = GOLD;
+      ctx.font = 'bold 28px Lato, Arial, sans-serif';
+      ctx.fillText('AUTHOR', textX, y + 30);
+
       ctx.fillStyle = NAVY;
-      ctx.font = 'bold 62px Georgia, serif';
-      wrapTextCanvas(ctx, articleData.author || 'Author', textX, y + 66, avW, 62, 1);
+      ctx.font = 'bold 70px Georgia, serif';
+      wrapTextCanvas(ctx, articleData.author || 'Author', textX, y + 100, avW, 70, 1);
 
       ctx.fillStyle = MUTED;
-      ctx.font = '42px Georgia, serif';
-      wrapTextCanvas(ctx, articleData.occupation || '', textX, y + 132, avW, 42, 1);
+      ctx.font = 'bold 46px Georgia, serif';
+      wrapTextCanvas(ctx, articleData.occupation || '', textX, y + 164, avW, 46, 1);
 
       ctx.fillStyle = GOLD;
-      ctx.font = 'italic 40px Georgia, serif';
-      wrapTextCanvas(ctx, articleData.place || '', textX, y + 192, avW, 40, 1);
+      ctx.font = 'bold italic 40px Georgia, serif';
+      wrapTextCanvas(ctx, articleData.place || '', textX, y + 224, avW, 40, 1);
 
       if (cb) cb();
     }
