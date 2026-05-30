@@ -5074,11 +5074,13 @@ function getAuthorBlockEndY(authorY, photoSize) {
 function computeArticleBodyStartY(articleData, W) {
   const measureCanvas = document.createElement('canvas');
   const ctx = measureCanvas.getContext('2d');
-  const TITLE_Y_START = 430;
-  ctx.font = 'bold 72px "Playfair Display", Georgia, serif';
-  let titleLines = wrapTextGetLines(ctx, articleData.title || 'Untitled', W - 96, 72);
+  const TITLE_PANEL_Y = 348;
+  const TITLE_PANEL_MIN_H = 300;
+  ctx.font = '900 76px "Playfair Display", Georgia, serif';
+  let titleLines = wrapTextGetLines(ctx, articleData.title || 'Untitled', W - 96, 76);
   if (titleLines.length > 4) titleLines = titleLines.slice(0, 4);
-  const titleBottomY = TITLE_Y_START + Math.min(titleLines.length, 4) * 90 + 20;
+  const titleBlockH = Math.min(titleLines.length, 4) * 94;
+  const titleBottomY = TITLE_PANEL_Y + Math.max(TITLE_PANEL_MIN_H, titleBlockH + 84);
   const AUTHOR_Y = titleBottomY + 44;
   const PHOTO_SIZE = 250;
   return getAuthorBlockEndY(AUTHOR_Y, PHOTO_SIZE);
@@ -5579,7 +5581,7 @@ async function captureWordDocPageForTemplate(arrayBuffer) {
   if (shot.width === TEMPLATE_W && shot.height === A4_BODY_H) {
     _docxCaptureCacheKey = cacheKey;
     _docxCaptureCacheCanvas = shot;
-    _docxCaptureCacheTrim = 0;
+    _docxCaptureCacheTrim = detectTopGreySeparatorHeight(shot);
     return shot;
   }
   var out = document.createElement('canvas');
@@ -5592,7 +5594,7 @@ async function captureWordDocPageForTemplate(arrayBuffer) {
                  0, 0, TEMPLATE_W, A4_BODY_H);
   _docxCaptureCacheKey = cacheKey;
   _docxCaptureCacheCanvas = out;
-  _docxCaptureCacheTrim = 0;
+  _docxCaptureCacheTrim = detectTopGreySeparatorHeight(out);
   return out;
 }
 
@@ -5618,7 +5620,15 @@ async function drawArticleBodyOnTemplate(ctx, bodyStartY, htmlBody, layout) {
   if (!docxBuf) throw new Error('Word document required for article body rendering.');
   // shot is already TEMPLATE_W × A4_BODY_H — place directly into the body slot
   const shot = await captureWordDocPageForTemplate(docxBuf);
-  ctx.drawImage(shot, 0, bodyStartY, TEMPLATE_W, A4_BODY_H);
+  const topTrim = _docxCaptureCacheCanvas === shot ? _docxCaptureCacheTrim : detectTopGreySeparatorHeight(shot);
+  ctx.fillStyle = '#ffffff';
+  ctx.fillRect(0, bodyStartY, TEMPLATE_W, A4_BODY_H);
+  if (topTrim > 0) {
+    ctx.drawImage(shot, 0, topTrim, TEMPLATE_W, A4_BODY_H - topTrim,
+                  0, bodyStartY, TEMPLATE_W, A4_BODY_H - topTrim);
+  } else {
+    ctx.drawImage(shot, 0, bodyStartY, TEMPLATE_W, A4_BODY_H);
+  }
   return A4_BODY_H;
 }
 
@@ -6361,13 +6371,17 @@ async function generateArticleImage(articleData) {
       ctx.letterSpacing = '';
 
       // ── Article title ──
-      const TITLE_X = 48, TITLE_Y_START = 430;
+      const TITLE_X = 48, TITLE_PANEL_Y = 348, TITLE_PANEL_MIN_H = 300;
       ctx.fillStyle = NAVY;
-      ctx.font = 'bold 72px "Playfair Display", Georgia, serif';
-      let titleLines = wrapTextGetLines(ctx, articleData.title || 'Untitled', W - 96, 72);
+      ctx.font = '900 76px "Playfair Display", Georgia, serif';
+      let titleLines = wrapTextGetLines(ctx, articleData.title || 'Untitled', W - 96, 76);
       if (titleLines.length > 4) { titleLines = titleLines.slice(0, 4); if (titleLines[3]) { titleLines[3] = titleLines[3].slice(0, -3) + '…'; } }
-      titleLines.forEach((line, i) => ctx.fillText(line, TITLE_X, TITLE_Y_START + i * 90));
-      const titleBottomY = TITLE_Y_START + Math.min(titleLines.length, 4) * 90 + 20;
+      const titleLineH = 94;
+      const titleBlockH = Math.min(titleLines.length, 4) * titleLineH;
+      const titlePanelH = Math.max(TITLE_PANEL_MIN_H, titleBlockH + 84);
+      const TITLE_Y_START = TITLE_PANEL_Y + Math.max(0, (titlePanelH - titleBlockH) / 2) + 58;
+      titleLines.forEach((line, i) => ctx.fillText(line, TITLE_X, TITLE_Y_START + i * titleLineH));
+      const titleBottomY = TITLE_PANEL_Y + titlePanelH;
 
       // ── Gold separator — full width ──
       ctx.fillStyle = GOLD;
