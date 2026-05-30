@@ -958,6 +958,10 @@ body.dark-mode .silent-row label { color:var(--text-secondary); }
   .edit-art-btn { display:none; margin-top:22px; background:var(--navy); color:#fff; border:none; font-family:'Lato',sans-serif; font-size:11px; font-weight:700; letter-spacing:0.1em; text-transform:uppercase; padding:9px 18px; cursor:pointer; transition:background 0.2s; }
   .edit-art-btn:hover { background:var(--navy-light); }
   .edit-art-btn:disabled { opacity:0.5; cursor:not-allowed; }
+  .modal-editor-actions { display:none; align-items:center; justify-content:space-between; gap:12px; padding-top:14px; margin-top:8px; border-top:1px solid var(--border-light); }
+  .modal-editor-actions.visible { display:flex; }
+  .modal-editor-actions .edit-art-btn, .modal-editor-actions .del-art-btn { margin-top:0; }
+  @media(max-width:520px){ .modal-editor-actions { flex-direction:column; align-items:stretch; } }
   .cat-show-more-btn { background:var(--navy); color:#c5d2e0; border:1px solid rgba(255,255,255,0.15); font-family:'Lato',sans-serif; font-size:11px; font-weight:700; letter-spacing:0.1em; text-transform:uppercase; padding:10px 24px; cursor:pointer; transition:background 0.2s,color 0.2s; border-radius:1px; }
   .cat-show-more-btn:hover { background:var(--gold); color:var(--navy); border-color:var(--gold); }
  
@@ -1890,6 +1894,8 @@ body.dark-mode .editor-tab.active { color:#c8d8ea; }
     <div style="display:flex;align-items:center;justify-content:space-between;padding-top:16px;margin-top:4px;border-top:1px solid var(--border-light);flex-wrap:wrap;gap:10px;">
       <div id="modal-like-wrap"></div>
       <div class="share-row" id="modal-share-row"></div>
+    </div>
+    <div class="modal-editor-actions" id="modal-editor-actions">
       <button class="edit-art-btn" id="edit-art-btn" onclick="editCurrentArticle()">&#9998; Edit This Article</button>
       <button class="del-art-btn" id="del-art-btn" onclick="deleteCurrentArticle()">&#128465; Delete This Article</button>
     </div>
@@ -2901,6 +2907,8 @@ async function openArticle(id, navDir, routeOptions) {
   if (db) db.style.display = isLoggedIn ? 'inline-block' : 'none';
   const eb = document.getElementById('edit-art-btn');
   if (eb) eb.style.display = isLoggedIn ? 'inline-block' : 'none';
+  const editorActions = document.getElementById('modal-editor-actions');
+  if (editorActions) editorActions.classList.toggle('visible', isLoggedIn);
   // Render like button in modal
   const likeWrap = document.getElementById('modal-like-wrap');
   if (likeWrap) likeWrap.innerHTML = likeHtml(a.id);
@@ -3047,6 +3055,8 @@ function closeModal() {
   if (db) { db.style.display='none'; db.disabled=false; db.textContent='🗑 Delete This Article'; }
   const eb = document.getElementById('edit-art-btn');
   if (eb) { eb.style.display='none'; eb.disabled=false; }
+  const editorActions = document.getElementById('modal-editor-actions');
+  if (editorActions) editorActions.classList.remove('visible');
   _openArticleId = null;
   pushHomeUrl();
 }
@@ -4918,7 +4928,7 @@ async function doSubmitArticle() {
         if (!retryRes.ok) throw new Error('Submission failed. Please try again.');
         const insertedRetry = await retryRes.json();
         const newSubRetry = Array.isArray(insertedRetry) ? insertedRetry[0] : insertedRetry;
-        autoSubscribeSubmitter(name, email);
+        await autoSubscribeSubmitter(name, email);
         notifyAdminNewSubmission(name, email, occupation, institution, title, category, abstract, newSubRetry?.id);
         pfC.style.width = '100%';
         btn.textContent = 'Saved ✓';
@@ -4940,7 +4950,7 @@ async function doSubmitArticle() {
         if (!fallbackRes.ok) throw new Error('Submission failed. Please try again.');
         const insertedFb = await fallbackRes.json();
         const newSubFb = Array.isArray(insertedFb) ? insertedFb[0] : insertedFb;
-        autoSubscribeSubmitter(name, email);
+        await autoSubscribeSubmitter(name, email);
         notifyAdminNewSubmission(name, email, occupation, institution, title, category, abstract, newSubFb?.id);
         pfC.style.width = '100%';
         btn.textContent = 'Saved ✓';
@@ -4952,7 +4962,7 @@ async function doSubmitArticle() {
     const newSub = Array.isArray(inserted) ? inserted[0] : inserted;
     pfC.style.width = '100%';
     btn.textContent = 'Saved ✓';
-    autoSubscribeSubmitter(name, email);
+    await autoSubscribeSubmitter(name, email);
     notifyAdminNewSubmission(name, email, occupation, institution, title, category, abstract, newSub?.id);
     setTimeout(() => showSuccessState(), 600);
 
@@ -4977,21 +4987,14 @@ function notifyAdminNewSubmission(name, email, occupation, institution, title, c
 async function autoSubscribeSubmitter(name, email) {
   if (!name || !email) return;
   try {
-    const res = await fetch(`${SUPABASE_URL}/rest/v1/subscribers`, {
+    const res = await fetch(`${SUPABASE_URL}/functions/v1/notify-subscribers`, {
       method: 'POST',
-      headers: { ...headers, 'Prefer': 'return=minimal' },
-      body: JSON.stringify({ name, email })
+      headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + SUPABASE_KEY },
+      body: JSON.stringify({ type: 'auto_subscribe_submitter', name, email })
     });
-    if (res.status === 201) {
-      // New subscriber — send welcome email
-      notifyAdminNewSubscriber(name, email);
-      fetch(`${SUPABASE_URL}/functions/v1/notify-subscribers`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + SUPABASE_KEY },
-        body: JSON.stringify({ type: 'welcome', name, email })
-      }).catch(e => console.warn('Welcome email error (auto-subscribe):', e));
-    }
-    // If 409 (already subscribed) — silently skip
+    if (!res.ok) throw new Error(await res.text().catch(() => 'Auto-subscribe failed'));
+    const out = await res.json().catch(() => null);
+    if (out && out.inserted) notifyAdminNewSubscriber(name, email);
   } catch(e) {
     console.warn('Auto-subscribe failed:', e);
   }
