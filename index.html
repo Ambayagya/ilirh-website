@@ -3024,7 +3024,9 @@ function closeUpload() {
   document.getElementById('progress-bar').style.display = 'none';
   document.getElementById('progress-fill').style.width = '0%';
 }
-function closeUploadOnBg(e) { if (e.target === document.getElementById('upload-overlay')) closeUpload(); }
+function closeUploadOnBg(e) {
+  // Keep editor work safe: backdrop clicks should not dismiss the panel.
+}
 function setUploadMode(mode) {
   _uploadMode = mode === 'docx' ? 'docx' : 'media';
   const mediaBtn = document.getElementById('up-mode-media');
