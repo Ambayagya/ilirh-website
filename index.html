@@ -2262,14 +2262,10 @@ body.dark-mode .editor-tab.active { color:#c8d8ea; }
       </div>
     </div>
 
-    <div class="review-file-preview" id="rd-file-preview">
-      <p>Article Template Preview (full image)</p>
-      <div id="rd-file-content"></div>
-    </div>
-
     <div class="rd-full-preview-wrap" id="rd-full-preview-wrap" style="display:none;">
-      <p style="font-family:'Lato',sans-serif;font-size:10px;font-weight:700;letter-spacing:0.14em;text-transform:uppercase;color:var(--text-muted);margin-bottom:8px;">Full template preview</p>
+      <p style="font-family:'Lato',sans-serif;font-size:10px;font-weight:700;letter-spacing:0.14em;text-transform:uppercase;color:var(--text-muted);margin-bottom:8px;">Article Template Preview (Full Image)</p>
       <img id="rd-full-preview-img" src="" alt="Full article template preview" onclick="rdOpenFullPreviewLightbox()">
+      <div id="rd-open-fullsize-link" style="margin-top:8px;"></div>
     </div>
 
     <div class="rd-docx-actions">
@@ -4592,6 +4588,7 @@ async function doSubmitArticle() {
         if (!retryRes.ok) throw new Error('Submission failed. Please try again.');
         const insertedRetry = await retryRes.json();
         const newSubRetry = Array.isArray(insertedRetry) ? insertedRetry[0] : insertedRetry;
+        autoSubscribeSubmitter(name, email);
         notifyAdminNewSubmission(name, email, occupation, institution, title, category, abstract, newSubRetry?.id);
         pfC.style.width = '100%';
         btn.textContent = 'Saved ✓';
@@ -4613,6 +4610,7 @@ async function doSubmitArticle() {
         if (!fallbackRes.ok) throw new Error('Submission failed. Please try again.');
         const insertedFb = await fallbackRes.json();
         const newSubFb = Array.isArray(insertedFb) ? insertedFb[0] : insertedFb;
+        autoSubscribeSubmitter(name, email);
         notifyAdminNewSubmission(name, email, occupation, institution, title, category, abstract, newSubFb?.id);
         pfC.style.width = '100%';
         btn.textContent = 'Saved ✓';
@@ -4624,6 +4622,7 @@ async function doSubmitArticle() {
     const newSub = Array.isArray(inserted) ? inserted[0] : inserted;
     pfC.style.width = '100%';
     btn.textContent = 'Saved ✓';
+    autoSubscribeSubmitter(name, email);
     notifyAdminNewSubmission(name, email, occupation, institution, title, category, abstract, newSub?.id);
     setTimeout(() => showSuccessState(), 600);
 
@@ -4643,6 +4642,29 @@ function notifyAdminNewSubmission(name, email, occupation, institution, title, c
       submission: { author_name: name, author_email: email, occupation, institution, title, category, abstract, id: id || '' }
     })
   }).catch(e => console.warn('Admin submission notify failed:', e));
+}
+
+async function autoSubscribeSubmitter(name, email) {
+  if (!name || !email) return;
+  try {
+    const res = await fetch(`${SUPABASE_URL}/rest/v1/subscribers`, {
+      method: 'POST',
+      headers: { ...headers, 'Prefer': 'return=minimal' },
+      body: JSON.stringify({ name, email })
+    });
+    if (res.status === 201) {
+      // New subscriber — send welcome email
+      notifyAdminNewSubscriber(name, email);
+      fetch(`${SUPABASE_URL}/functions/v1/notify-subscribers`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + SUPABASE_KEY },
+        body: JSON.stringify({ type: 'welcome', name, email })
+      }).catch(e => console.warn('Welcome email error (auto-subscribe):', e));
+    }
+    // If 409 (already subscribed) — silently skip
+  } catch(e) {
+    console.warn('Auto-subscribe failed:', e);
+  }
 }
 
 function showSuccessState() {
@@ -4787,22 +4809,22 @@ function openReviewDetail(id) {
   }
 
   // File preview (full template image)
-  const fc = document.getElementById('rd-file-content');
   const fullPrev = document.getElementById('rd-full-preview-wrap');
   const fullPrevImg = document.getElementById('rd-full-preview-img');
+  const fullsizeLink = document.getElementById('rd-open-fullsize-link');
   const dlBtn = document.getElementById('rd-download-docx-btn');
   if (dlBtn) dlBtn.style.display = s.article_docx_url ? 'inline-block' : 'inline-block';
   if (s.file_url && (s.file_type || '').startsWith('image/')) {
-    const bust = esc(s.file_url) + '?t=' + Date.now();
-    fc.innerHTML = `<img src="${bust}" alt="Article template preview" style="max-width:100%;max-height:320px;object-fit:contain;display:block;border:1px solid var(--border-light);cursor:zoom-in;" onclick="openLightbox('${esc(s.file_url)}',['${esc(s.file_url)}'],0)">
-      <a href="${esc(s.file_url)}" target="_blank" rel="noopener" style="display:inline-block;margin-top:8px;font-family:'Lato',sans-serif;font-size:11px;color:var(--navy-light);font-weight:700;">&#8599; Open full-size image</a>`;
     if (fullPrev && fullPrevImg) {
       fullPrev.style.display = 'block';
-      fullPrevImg.src = s.file_url;
+      fullPrevImg.src = s.file_url + '?t=' + Date.now();
+    }
+    if (fullsizeLink) {
+      fullsizeLink.innerHTML = `<a href="${esc(s.file_url)}" target="_blank" rel="noopener" style="font-family:'Lato',sans-serif;font-size:11px;color:var(--navy-light);font-weight:700;">&#8599; Open full-size image</a>`;
     }
   } else {
-    fc.innerHTML = '<em style="font-family:Garamond,serif;color:var(--text-muted);font-size:14px;">No preview image yet — edit body and click Regenerate Article Image</em>';
     if (fullPrev) fullPrev.style.display = 'none';
+    if (fullsizeLink) fullsizeLink.innerHTML = '';
   }
   _rdPendingDocxFile = null;
   const rdDocxFn = document.getElementById('rd-docx-filename');
@@ -4975,7 +4997,6 @@ async function rdRegenerateImage() {
   const btn = document.getElementById('rd-regen-btn');
   const statusEl = document.getElementById('rd-regen-status');
   const errEl = document.getElementById('rd-error');
-  const fc = document.getElementById('rd-file-content');
 
   btn.disabled = true;
   statusEl.textContent = 'Generating image…';
@@ -5023,14 +5044,15 @@ async function rdRegenerateImage() {
     _activeSubmission.file_type  = 'image/png';
     _activeSubmission.article_body = articleHtml;
 
-    const bust = esc(newUrl) + '?t=' + Date.now();
-    fc.innerHTML = `<img src="${bust}" alt="Article template preview" style="max-width:100%;max-height:320px;object-fit:contain;display:block;border:1px solid var(--border-light);cursor:zoom-in;" onclick="openLightbox('${esc(newUrl)}',['${esc(newUrl)}'],0)">
-      <a href="${esc(newUrl)}" target="_blank" rel="noopener" style="display:inline-block;margin-top:8px;font-family:'Lato',sans-serif;font-size:11px;color:var(--navy-light);font-weight:700;">&#8599; Open full-size image</a>`;
     const fullPrev = document.getElementById('rd-full-preview-wrap');
     const fullPrevImg = document.getElementById('rd-full-preview-img');
+    const fullsizeLink = document.getElementById('rd-open-fullsize-link');
     if (fullPrev && fullPrevImg) {
       fullPrev.style.display = 'block';
       fullPrevImg.src = newUrl + '?t=' + Date.now();
+    }
+    if (fullsizeLink) {
+      fullsizeLink.innerHTML = `<a href="${esc(newUrl)}" target="_blank" rel="noopener" style="font-family:'Lato',sans-serif;font-size:11px;color:var(--navy-light);font-weight:700;">&#8599; Open full-size image</a>`;
     }
 
     statusEl.textContent = '✓ Image replaced successfully';
