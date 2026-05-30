@@ -4469,18 +4469,19 @@ let _currentArticleTitle = '';
 function copyArticleLink() {
   const btn = document.getElementById('copy-link-btn');
   const url = _openArticleId ? articleUrl(_openArticleId) : SITE_URL + '/';
-
-  navigator.clipboard.writeText(url).then(() => {
+  const text = _currentArticleTitle
+    ? `${_currentArticleTitle} — ILIRH\n${url}`
+    : url;
+  navigator.clipboard.writeText(text).then(() => {
     btn.classList.add('copied');
+    btn.querySelector ? null : null;
     showToast('✓ Link copied to clipboard');
     setTimeout(() => btn.classList.remove('copied'), 2000);
   }).catch(() => {
+    // Fallback
     const ta = document.createElement('textarea');
-    ta.value = url;
-    ta.style.position = 'fixed';
-    ta.style.opacity = '0';
-    document.body.appendChild(ta);
-    ta.select();
+    ta.value = url; ta.style.position = 'fixed'; ta.style.opacity = '0';
+    document.body.appendChild(ta); ta.select();
     document.execCommand('copy');
     document.body.removeChild(ta);
     showToast('✓ Link copied');
