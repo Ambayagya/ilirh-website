@@ -764,7 +764,7 @@ body.dark-mode .share-btn:hover { border-color:#8fa8c0; color:#c8d8ea; }
 .spotlight-slide.spot-exit-left  { transform:translateX(-40px); opacity:0; pointer-events:none; }
 .spotlight-slide.spot-exit-right { transform:translateX(40px);  opacity:0; pointer-events:none; }
 .spotlight-slide-img { width:170px; height:170px; overflow:hidden; border:2px solid var(--gold); flex-shrink:0; cursor:pointer; border-radius:1px; }
-.spotlight-slide-img img { width:100%; height:100%; object-fit:cover; transition:transform 0.35s ease; }
+.spotlight-slide-img img { width:100%; height:100%; object-fit:cover; object-position:top center; transform-origin:top center; transition:transform 0.35s ease; }
 .spotlight-slide-img:hover img { transform:scale(1.04); }
 .spotlight-slide-body { flex:1; min-width:0; }
 .spotlight-badge { background:var(--gold); color:var(--navy); font-family:'Lato',sans-serif; font-size:9px; font-weight:700; letter-spacing:0.18em; text-transform:uppercase; padding:4px 10px; display:inline-block; margin-bottom:10px; }
@@ -790,7 +790,7 @@ body.dark-mode .share-btn:hover { border-color:#8fa8c0; color:#c8d8ea; }
 @media(max-width:600px) {
   .spotlight-slide { flex-direction:column; gap:14px; padding:10px 2px 4px; }
   .spotlight-slide-img { width:100%; height:190px; }
-  .spotlight-slide-img img { width:100%; height:100%; object-fit:cover; }
+  .spotlight-slide-img img { width:100%; height:100%; object-fit:cover; object-position:top center; transform-origin:top center; }
   .spotlight-paper-title { font-size:clamp(15px,4vw,20px); }
 }
  
@@ -1430,7 +1430,7 @@ body.dark-mode .editor-tab.active { color:#c8d8ea; }
 .sidebar-article:hover { background:rgba(10,22,40,0.03); }
 
 /* ── HERO IMAGE HOVER ── */
-.hero-main img { transition:opacity 0.45s ease, transform 0.4s ease; }
+.hero-main img { transition:opacity 0.45s ease, transform 0.4s ease; object-position:top center; transform-origin:top center; }
 .hero-main:hover img { transform:scale(1.02); }
 
 /* ── MODAL OPEN/CLOSE animation override for category filter ── */
@@ -2544,7 +2544,7 @@ function heroThumbHtml(article) {
   const imgSrc = article.article_image_url ||
     (article.file_url && article.file_type && article.file_type.startsWith('image/') ? article.file_url : null);
   if (imgSrc) {
-    return `<img src="${imgSrc}" alt="${esc(article.title)}" loading="lazy" decoding="async" style="width:100%;aspect-ratio:4/3;object-fit:cover;border:1px solid var(--border-light);margin-bottom:14px;display:block;opacity:0;transition:opacity 0.45s ease;cursor:zoom-in;" onload="this.style.opacity=1" onclick="openLightbox('${imgSrc}',['${imgSrc}'],0)" title="Click to enlarge">`;
+    return `<img src="${imgSrc}" alt="${esc(article.title)}" loading="lazy" decoding="async" style="width:100%;aspect-ratio:4/3;object-fit:cover;object-position:top center;border:1px solid var(--border-light);margin-bottom:14px;display:block;opacity:0;transition:opacity 0.45s ease;cursor:zoom-in;" onload="this.style.opacity=1" onclick="openLightbox('${imgSrc}',['${imgSrc}'],0)" title="Click to enlarge">`;
   }
   return `<div style="width:100%;aspect-ratio:4/3;background:var(--cream-dark);display:flex;align-items:center;justify-content:center;margin-bottom:14px;border:1px solid var(--border);opacity:0.4;">
     <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="#0a1628" stroke-width="1.2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14,2 14,8 20,8"/></svg>
