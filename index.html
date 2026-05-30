@@ -1106,39 +1106,55 @@ button:focus-visible, a:focus-visible, input:focus-visible {
 
 /* ── ILIRH PREMIUM SUBMIT BUTTON ── */
 .ilirh-submit-btn {
-  background: linear-gradient(135deg, var(--navy) 0%, var(--navy-light) 100%) !important;
-  color: var(--gold-light) !important;
-  border: 2px solid var(--gold) !important;
-  font-family: 'Cinzel', Georgia, serif !important;
-  font-size: 13px !important;
+  background: var(--navy) !important;
+  color: #fff !important;
+  border: none !important;
+  border-top: 3px solid var(--gold) !important;
+  font-family: 'Lato', sans-serif !important;
+  font-size: 11px !important;
   font-weight: 700 !important;
-  letter-spacing: 0.18em !important;
+  letter-spacing: 0.28em !important;
   text-transform: uppercase !important;
-  padding: 16px 32px !important;
+  padding: 18px 32px !important;
   cursor: pointer !important;
   width: 100% !important;
   position: relative !important;
   overflow: hidden !important;
-  transition: all 0.25s ease !important;
-  box-shadow: 0 4px 18px rgba(10,22,40,0.25) !important;
+  transition: background 0.3s ease, color 0.3s ease !important;
   margin-top: 14px !important;
-  display: flex; align-items: center; justify-content: center; gap: 6px;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  gap: 16px !important;
 }
+/* Right-side arrow accent */
+.ilirh-submit-btn::after {
+  content: '';
+  display: block;
+  width: 32px;
+  height: 1px;
+  background: var(--gold);
+  flex-shrink: 0;
+  transition: width 0.3s cubic-bezier(.77,0,.18,1);
+}
+.ilirh-submit-btn:hover::after { width: 56px; }
+/* Sweep fill */
 .ilirh-submit-btn::before {
   content: '';
   position: absolute; inset: 0;
-  background: linear-gradient(135deg, rgba(201,168,76,0.18) 0%, transparent 60%);
-  opacity: 0; transition: opacity 0.25s;
+  background: linear-gradient(90deg, var(--gold) 0%, #b8963e 100%);
+  transform: scaleX(0);
+  transform-origin: left center;
+  transition: transform 0.35s cubic-bezier(.77,0,.18,1);
+  z-index: 0;
 }
-.ilirh-submit-btn:hover::before { opacity: 1; }
+.ilirh-submit-btn:hover::before { transform: scaleX(1); }
 .ilirh-submit-btn:hover {
-  background: linear-gradient(135deg, var(--navy-light) 0%, #2a4a8e 100%) !important;
-  border-color: var(--gold-light) !important;
-  color: #fff !important;
-  box-shadow: 0 6px 28px rgba(10,22,40,0.38) !important;
-  transform: translateY(-1px) !important;
+  color: var(--navy) !important;
+  letter-spacing: 0.32em !important;
 }
-.ilirh-submit-btn:disabled { opacity: 0.55 !important; cursor: not-allowed !important; transform: none !important; }
+.ilirh-submit-btn > * { position: relative; z-index: 1; }
+.ilirh-submit-btn:disabled { opacity: 0.55 !important; cursor: not-allowed !important; }
 
 /* ── RICH TEXT EDITOR ── */
 .rich-editor-toolbar {
@@ -1419,33 +1435,50 @@ body.dark-mode .editor-tab.active { color:#c8d8ea; }
 
 /* ══ MASTHEAD SUBMIT CTA ══ */
 .masthead-submit-cta {
-  display:inline-flex; align-items:center; gap:5px;
-  font-family:'Lato',sans-serif; font-size:11px; font-weight:700;
-  letter-spacing:0.1em; text-transform:uppercase;
-  color:var(--navy); background:var(--gold);
-  border:none; padding:7px 16px 7px 12px; cursor:pointer;
-  position:relative; overflow:hidden; white-space:nowrap;
-  transition: background 0.22s ease, color 0.22s ease, box-shadow 0.22s ease, transform 0.18s ease;
-  box-shadow: 0 2px 10px rgba(184,150,62,0.28);
-  clip-path: polygon(0 0, calc(100% - 9px) 0, 100% 50%, calc(100% - 9px) 100%, 0 100%);
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  font-family: 'Lato', sans-serif;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--navy);
+  background: transparent;
+  border: none;
+  border-left: 3px solid var(--gold);
+  padding: 6px 14px 6px 12px;
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+  white-space: nowrap;
+  transition: color 0.28s ease, border-color 0.28s ease;
 }
-.masthead-submit-cta::before {
-  content:''; position:absolute; inset:0;
-  background:linear-gradient(90deg, rgba(255,255,255,0) 0%, rgba(255,255,255,0.22) 50%, rgba(255,255,255,0) 100%);
-  transform:translateX(-100%);
-  transition:transform 0.45s ease;
+/* Ink-fill from left */
+.masthead-submit-cta::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: var(--navy);
+  transform: scaleX(0);
+  transform-origin: left center;
+  transition: transform 0.3s cubic-bezier(.77,0,.18,1);
+  z-index: 0;
 }
-.masthead-submit-cta:hover::before { transform:translateX(100%); }
-.masthead-submit-cta:hover {
-  background:var(--navy); color:var(--gold-light);
-  box-shadow:0 4px 18px rgba(10,22,40,0.22);
-  transform:translateY(-1px);
+.masthead-submit-cta:hover::after { transform: scaleX(1); }
+.masthead-submit-cta:hover { color: var(--gold-light); border-color: var(--navy); }
+.masthead-submit-cta .cta-text,
+.masthead-submit-cta .cta-icon { position: relative; z-index: 1; }
+.masthead-submit-cta .cta-icon {
+  font-size: 13px;
+  line-height: 1;
+  transition: transform 0.28s ease;
 }
-.masthead-submit-cta:active { transform:translateY(0); }
-/* Hide emoji on very small screens to prevent wrapping */
+.masthead-submit-cta:hover .cta-icon { transform: translateX(2px) rotate(-5deg); }
+.masthead-submit-cta:active { opacity: 0.85; }
 @media (max-width:480px) {
   .masthead-submit-cta .cta-icon { display:none; }
-  .masthead-submit-cta { font-size:10px; padding:6px 14px 6px 10px; letter-spacing:0.07em; }
+  .masthead-submit-cta { font-size:10px; padding:5px 12px 5px 10px; letter-spacing:0.14em; }
 }
 
 /* ══ ARTICLE PREVIEW PANEL ══ */
@@ -1502,23 +1535,43 @@ body.dark-mode .editor-tab.active { color:#c8d8ea; }
 }
 .btn-preview-edit:hover { background:var(--navy); color:#fff; }
 .btn-preview-confirm {
-  flex:2; min-width:200px;
-  background:var(--navy); color:#fff;
-  border:2px solid var(--navy);
-  font-family:'Lato',sans-serif; font-size:12px; font-weight:700;
-  letter-spacing:0.12em; text-transform:uppercase;
-  padding:13px 24px; cursor:pointer;
-  transition:background 0.18s, box-shadow 0.18s;
-  display:flex; align-items:center; justify-content:center; gap:8px;
-  position:relative; overflow:hidden;
+  flex: 2; min-width: 200px;
+  background: var(--navy); color: #fff;
+  border: none;
+  border-top: 3px solid var(--gold);
+  font-family: 'Lato', sans-serif; font-size: 10.5px; font-weight: 700;
+  letter-spacing: 0.28em; text-transform: uppercase;
+  padding: 16px 28px; cursor: pointer;
+  position: relative; overflow: hidden;
+  display: flex; align-items: center; justify-content: space-between; gap: 16px;
+  transition: color 0.3s ease, letter-spacing 0.3s ease;
 }
+/* Gold sweep fill */
+.btn-preview-confirm::before {
+  content: '';
+  position: absolute; inset: 0;
+  background: linear-gradient(90deg, var(--gold) 0%, #b8963e 100%);
+  transform: scaleX(0);
+  transform-origin: left center;
+  transition: transform 0.35s cubic-bezier(.77,0,.18,1);
+  z-index: 0;
+}
+/* Expanding rule line on right */
 .btn-preview-confirm::after {
-  content:''; position:absolute;
-  bottom:0; left:0; right:0; height:3px;
-  background:var(--gold);
+  content: '';
+  display: block;
+  width: 28px; height: 1px;
+  background: var(--gold-light);
+  flex-shrink: 0;
+  transition: width 0.3s cubic-bezier(.77,0,.18,1), background 0.3s;
+  position: relative; z-index: 1;
 }
-.btn-preview-confirm:hover { background:var(--navy-light); box-shadow:0 4px 16px rgba(10,22,40,0.22); }
-.btn-preview-confirm:disabled { opacity:0.6; cursor:not-allowed; }
+.btn-preview-confirm:hover::before { transform: scaleX(1); }
+.btn-preview-confirm:hover::after { width: 48px; background: var(--navy); }
+.btn-preview-confirm:hover { color: var(--navy); letter-spacing: 0.32em; }
+.btn-preview-confirm > span,
+.btn-preview-confirm > svg { position: relative; z-index: 1; }
+.btn-preview-confirm:disabled { opacity: 0.6; cursor: not-allowed; }
 
 /* ══ MODAL RICH TEXT BODY ══ */
 .modal-rich-body { font-family:'EB Garamond',serif; font-size:18px; line-height:1.85; color:var(--text-secondary); margin-top:8px; }
@@ -1572,7 +1625,7 @@ body.dark-mode .editor-tab.active { color:#c8d8ea; }
     <hr class="masthead-rule-bot">
     <div class="masthead-meta">
       <span id="live-date-2"></span>
-      <button onclick="openSubmitArticle()" class="masthead-submit-cta"><span class="cta-icon">✍</span>&nbsp;Submit Your Article</button>
+      <button onclick="openSubmitArticle()" class="masthead-submit-cta"><span class="cta-icon">✍</span><span class="cta-text">Submit Your Article</span></button>
       <span>Vol. I &bull; Est. 2026</span>
     </div>
   </div>
@@ -2165,8 +2218,7 @@ body.dark-mode .editor-tab.active { color:#c8d8ea; }
         <div class="preview-action-row">
           <button type="button" class="btn-preview-edit" onclick="editArticleFromPreview()">← Edit Article</button>
           <button type="button" class="btn-preview-confirm" id="sub-submit-btn" onclick="doSubmitArticle()">
-            <span style="font-size:14px;">✍</span> Confirm &amp; Submit Article
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+            <span>✍&nbsp;&nbsp;Confirm &amp; Submit Article</span>
           </button>
         </div>
         <div class="submit-progress" id="sub-progress-confirm"><div class="submit-progress-fill" id="sub-progress-fill-confirm"></div></div>
@@ -2262,16 +2314,14 @@ body.dark-mode .editor-tab.active { color:#c8d8ea; }
       </div>
     </div>
 
+    <div class="review-file-preview" id="rd-file-preview">
+      <p>Article Template Preview (full image)</p>
+      <div id="rd-file-content"></div>
+    </div>
+
     <div class="rd-full-preview-wrap" id="rd-full-preview-wrap" style="display:none;">
       <p style="font-family:'Lato',sans-serif;font-size:10px;font-weight:700;letter-spacing:0.14em;text-transform:uppercase;color:var(--text-muted);margin-bottom:8px;">Full template preview</p>
       <img id="rd-full-preview-img" src="" alt="Full article template preview" onclick="rdOpenFullPreviewLightbox()">
-      <div style="margin-top:10px;">
-        <button type="button" id="rd-open-fullsize-btn" onclick="rdOpenFullPreviewLightbox()"
-          style="background:var(--navy);color:var(--gold-light);border:1px solid var(--gold);font-family:'Lato',sans-serif;font-size:10px;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;padding:8px 16px;cursor:pointer;display:inline-flex;align-items:center;gap:7px;transition:background 0.2s;">
-          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><polyline points="15 3 21 3 21 9"/><polyline points="9 21 3 21 3 15"/><line x1="21" y1="3" x2="14" y2="10"/><line x1="3" y1="21" x2="10" y2="14"/></svg>
-          Open Full-Size Image
-        </button>
-      </div>
     </div>
 
     <div class="rd-docx-actions">
@@ -4350,7 +4400,7 @@ function resetSubmitForm() {
   if(formBody) formBody.style.display = 'block';
 
   const confBtn = document.getElementById('sub-submit-btn');
-  if(confBtn) { confBtn.disabled = false; confBtn.innerHTML = '<span style="font-size:14px;">✍</span> Confirm &amp; Submit Article <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>'; }
+  if(confBtn) { confBtn.disabled = false; confBtn.innerHTML = '<span>✍&nbsp;&nbsp;Confirm &amp; Submit Article</span>'; }
   _subPendingFile = null;
   _previewDataUrl = null;
   clearSubmitDraft();
@@ -4625,7 +4675,7 @@ async function doSubmitArticle() {
   } catch(e) {
     errEl.textContent = e.message || 'Submission failed. Please try again.';
     progC.style.display = 'none';
-    btn.disabled = false; btn.innerHTML = '<span style="font-size:14px;">✍</span> Confirm &amp; Submit Article <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>';
+    btn.disabled = false; btn.innerHTML = '<span>✍&nbsp;&nbsp;Confirm &amp; Submit Article</span>';
   }
 }
 
@@ -4782,17 +4832,21 @@ function openReviewDetail(id) {
   }
 
   // File preview (full template image)
+  const fc = document.getElementById('rd-file-content');
   const fullPrev = document.getElementById('rd-full-preview-wrap');
   const fullPrevImg = document.getElementById('rd-full-preview-img');
   const dlBtn = document.getElementById('rd-download-docx-btn');
   if (dlBtn) dlBtn.style.display = s.article_docx_url ? 'inline-block' : 'inline-block';
   if (s.file_url && (s.file_type || '').startsWith('image/')) {
     const bust = esc(s.file_url) + '?t=' + Date.now();
+    fc.innerHTML = `<img src="${bust}" alt="Article template preview" style="max-width:100%;max-height:320px;object-fit:contain;display:block;border:1px solid var(--border-light);cursor:zoom-in;" onclick="openLightbox('${esc(s.file_url)}',['${esc(s.file_url)}'],0)">
+      <a href="${esc(s.file_url)}" target="_blank" rel="noopener" style="display:inline-block;margin-top:8px;font-family:'Lato',sans-serif;font-size:11px;color:var(--navy-light);font-weight:700;">&#8599; Open full-size image</a>`;
     if (fullPrev && fullPrevImg) {
       fullPrev.style.display = 'block';
-      fullPrevImg.src = bust;
+      fullPrevImg.src = s.file_url;
     }
   } else {
+    fc.innerHTML = '<em style="font-family:Garamond,serif;color:var(--text-muted);font-size:14px;">No preview image yet — edit body and click Regenerate Article Image</em>';
     if (fullPrev) fullPrev.style.display = 'none';
   }
   _rdPendingDocxFile = null;
@@ -4926,147 +4980,33 @@ function rdRteExec(cmd, val) {
   const ed = document.getElementById('rd-article-body');
   if (!ed) return;
   ed.focus();
-
-  const sel = window.getSelection();
-  const hasSelection = sel && !sel.isCollapsed && sel.rangeCount > 0 && ed.contains(sel.getRangeAt(0).commonAncestorContainer);
-
-  // ── ALIGNMENT: wrap selection in inline-block span ──
+  // Alignment: scope to selection using same logic as rteExec
   if (RTE_ALIGN_MAP && RTE_ALIGN_MAP[cmd]) {
     const alignVal = RTE_ALIGN_MAP[cmd];
-    if (hasSelection) {
+    const sel = window.getSelection();
+    if (sel && !sel.isCollapsed && sel.rangeCount > 0) {
       const range = sel.getRangeAt(0);
-      const existing = range.commonAncestorContainer.nodeType === 1
-        ? range.commonAncestorContainer
-        : range.commonAncestorContainer.parentElement;
-      if (existing && existing.dataset && existing.dataset.rteAlign) {
-        existing.style.textAlign = alignVal;
-        existing.dataset.rteAlign = alignVal;
+      if (ed.contains(range.commonAncestorContainer)) {
+        const existing = range.commonAncestorContainer.parentElement;
+        if (existing && existing.dataset && existing.dataset.rteAlign) {
+          existing.style.textAlign = alignVal;
+          existing.dataset.rteAlign = alignVal;
+          return;
+        }
+        const span = document.createElement('span');
+        span.style.cssText = `display:inline-block; width:100%; text-align:${alignVal};`;
+        span.dataset.rteAlign = alignVal;
+        try { range.surroundContents(span); }
+        catch(e) { const frag = range.extractContents(); span.appendChild(frag); range.insertNode(span); }
+        const newRange = document.createRange();
+        newRange.selectNodeContents(span);
+        sel.removeAllRanges(); sel.addRange(newRange);
         return;
       }
-      const span = document.createElement('span');
-      span.style.cssText = `display:inline-block; width:100%; text-align:${alignVal};`;
-      span.dataset.rteAlign = alignVal;
-      try { range.surroundContents(span); }
-      catch(e) { const frag = range.extractContents(); span.appendChild(frag); range.insertNode(span); }
-      const newRange = document.createRange();
-      newRange.selectNodeContents(span);
-      sel.removeAllRanges(); sel.addRange(newRange);
-    } else {
-      document.execCommand(cmd, false, null);
     }
+    document.execCommand(cmd, false, null);
     return;
   }
-
-  // ── INLINE STYLES: bold, italic, underline — wrap selection in styled span if selected ──
-  if (cmd === 'bold' || cmd === 'italic' || cmd === 'underline') {
-    if (hasSelection) {
-      const range = sel.getRangeAt(0);
-      const styleMap = { bold: ['fontWeight','bold'], italic: ['fontStyle','italic'], underline: ['textDecoration','underline'] };
-      const [prop, styleVal] = styleMap[cmd];
-      // Check if selection is already wrapped — toggle off if so
-      const anc = range.commonAncestorContainer.nodeType === 1
-        ? range.commonAncestorContainer
-        : range.commonAncestorContainer.parentElement;
-      if (anc && anc.dataset && anc.dataset['rteInline'] === cmd) {
-        // Unwrap
-        const parent = anc.parentNode;
-        while (anc.firstChild) parent.insertBefore(anc.firstChild, anc);
-        parent.removeChild(anc);
-        return;
-      }
-      const span = document.createElement('span');
-      span.style[prop] = styleVal;
-      span.dataset['rteInline'] = cmd;
-      try { range.surroundContents(span); }
-      catch(e) { const frag = range.extractContents(); span.appendChild(frag); range.insertNode(span); }
-      const newRange = document.createRange();
-      newRange.selectNodeContents(span);
-      sel.removeAllRanges(); sel.addRange(newRange);
-    } else {
-      document.execCommand(cmd, false, null);
-    }
-    return;
-  }
-
-  // ── HEADING / BLOCKQUOTE: wrap selected content in block element ──
-  if (cmd === 'formatBlock') {
-    const tag = (val || 'P').toUpperCase();
-    if (hasSelection) {
-      const range = sel.getRangeAt(0);
-      const frag = range.extractContents();
-      const block = document.createElement(tag);
-      block.appendChild(frag);
-      range.insertNode(block);
-      // Move cursor inside the new block
-      const newRange = document.createRange();
-      newRange.selectNodeContents(block);
-      sel.removeAllRanges(); sel.addRange(newRange);
-    } else {
-      document.execCommand('formatBlock', false, tag);
-    }
-    return;
-  }
-
-  // ── LISTS: wrap selected lines in a list ──
-  if (cmd === 'insertUnorderedList' || cmd === 'insertOrderedList') {
-    if (hasSelection) {
-      const range = sel.getRangeAt(0);
-      const frag = range.extractContents();
-      const listTag = cmd === 'insertUnorderedList' ? 'UL' : 'OL';
-      const list = document.createElement(listTag);
-      // Split fragment text into lines and create list items
-      const tmp = document.createElement('div');
-      tmp.appendChild(frag);
-      const text = tmp.innerText || tmp.textContent || '';
-      const lines = text.split('\n').map(l => l.trim()).filter(l => l.length > 0);
-      if (lines.length > 0) {
-        lines.forEach(line => {
-          const li = document.createElement('li');
-          li.textContent = line;
-          list.appendChild(li);
-        });
-      } else {
-        // Fallback: wrap all fragment content in single li
-        const li = document.createElement('li');
-        li.appendChild(tmp.firstChild || document.createTextNode(''));
-        list.appendChild(li);
-      }
-      range.insertNode(list);
-      const newRange = document.createRange();
-      newRange.selectNodeContents(list);
-      sel.removeAllRanges(); sel.addRange(newRange);
-    } else {
-      document.execCommand(cmd, false, null);
-    }
-    return;
-  }
-
-  // ── REMOVE FORMAT: strip our custom spans from selection ──
-  if (cmd === 'removeFormat') {
-    if (hasSelection) {
-      const range = sel.getRangeAt(0);
-      const frag = range.cloneContents();
-      // Unwrap all rteInline and rteAlign spans in fragment
-      frag.querySelectorAll('span[data-rte-inline], span[data-rte-align]').forEach(s => {
-        const parent = s.parentNode;
-        while (s.firstChild) parent.insertBefore(s.firstChild, s);
-        parent.removeChild(s);
-      });
-      // Also check direct ancestor
-      const anc = range.commonAncestorContainer.nodeType === 1
-        ? range.commonAncestorContainer
-        : range.commonAncestorContainer.parentElement;
-      if (anc && (anc.dataset['rteInline'] || anc.dataset['rteAlign'])) {
-        anc.removeAttribute('style');
-        delete anc.dataset['rteInline'];
-        delete anc.dataset['rteAlign'];
-      }
-    }
-    document.execCommand('removeFormat', false, null);
-    return;
-  }
-
-  // ── FALLBACK ──
   document.execCommand(cmd, false, val || null);
 }
 
@@ -5075,6 +5015,7 @@ async function rdRegenerateImage() {
   const btn = document.getElementById('rd-regen-btn');
   const statusEl = document.getElementById('rd-regen-status');
   const errEl = document.getElementById('rd-error');
+  const fc = document.getElementById('rd-file-content');
 
   btn.disabled = true;
   statusEl.textContent = 'Generating image…';
@@ -5123,11 +5064,13 @@ async function rdRegenerateImage() {
     _activeSubmission.article_body = articleHtml;
 
     const bust = esc(newUrl) + '?t=' + Date.now();
+    fc.innerHTML = `<img src="${bust}" alt="Article template preview" style="max-width:100%;max-height:320px;object-fit:contain;display:block;border:1px solid var(--border-light);cursor:zoom-in;" onclick="openLightbox('${esc(newUrl)}',['${esc(newUrl)}'],0)">
+      <a href="${esc(newUrl)}" target="_blank" rel="noopener" style="display:inline-block;margin-top:8px;font-family:'Lato',sans-serif;font-size:11px;color:var(--navy-light);font-weight:700;">&#8599; Open full-size image</a>`;
     const fullPrev = document.getElementById('rd-full-preview-wrap');
     const fullPrevImg = document.getElementById('rd-full-preview-img');
     if (fullPrev && fullPrevImg) {
       fullPrev.style.display = 'block';
-      fullPrevImg.src = bust;
+      fullPrevImg.src = newUrl + '?t=' + Date.now();
     }
 
     statusEl.textContent = '✓ Image replaced successfully';
