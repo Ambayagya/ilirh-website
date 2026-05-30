@@ -5509,16 +5509,34 @@ function getAuthorBlockEndY(authorY, photoSize) {
 }
 
 function computeArticleBodyStartY(articleData, W) {
+  // Must mirror the exact same auto-scaling logic used when drawing the title
   const measureCanvas = document.createElement('canvas');
   const ctx = measureCanvas.getContext('2d');
-  const TITLE_PANEL_Y = 348;
-  const TITLE_PANEL_MIN_H = 300;
+  const TITLE_PANEL_Y  = 348;
+  const TITLE_MAX_W    = W - 96;
+  const TITLE_MAX_LINES = 6;
+  const TITLE_SIZE_MAX  = 88;
+  const TITLE_SIZE_MIN  = 36;
+  const TITLE_PAD_TOP   = 56;
+  const TITLE_PAD_BOT   = 60;
+  const TITLE_LEAD      = 1.22;
   setCanvasTracking(ctx, '0px');
-  ctx.font = 'bold 74px Georgia, "Times New Roman", serif';
-  let titleLines = wrapTextGetLines(ctx, articleData.title || 'Untitled', W - 96, 74);
-  if (titleLines.length > 4) titleLines = titleLines.slice(0, 4);
-  const titleBlockH = Math.min(titleLines.length, 4) * 94;
-  const titleBottomY = TITLE_PANEL_Y + Math.max(TITLE_PANEL_MIN_H, titleBlockH + 84);
+  let titleFontSize = TITLE_SIZE_MAX;
+  let titleLines = [];
+  while (titleFontSize >= TITLE_SIZE_MIN) {
+    ctx.font = 'bold ' + titleFontSize + 'px Georgia, "Times New Roman", serif';
+    const wrapped = wrapTextGetLines(ctx, articleData.title || 'Untitled', TITLE_MAX_W, titleFontSize);
+    if (wrapped.length <= TITLE_MAX_LINES) { titleLines = wrapped; break; }
+    titleFontSize -= 2;
+  }
+  if (!titleLines.length) {
+    titleFontSize = TITLE_SIZE_MIN;
+    ctx.font = 'bold ' + titleFontSize + 'px Georgia, "Times New Roman", serif';
+    titleLines = wrapTextGetLines(ctx, articleData.title || 'Untitled', TITLE_MAX_W, titleFontSize);
+  }
+  const titleLineH  = Math.round(titleFontSize * TITLE_LEAD);
+  const titlePanelH = titleLines.length * titleLineH + TITLE_PAD_TOP + TITLE_PAD_BOT;
+  const titleBottomY = TITLE_PANEL_Y + titlePanelH;
   const AUTHOR_Y = titleBottomY + 29;
   const PHOTO_SIZE = 250;
   return getAuthorBlockEndY(AUTHOR_Y, PHOTO_SIZE);
@@ -6966,25 +6984,60 @@ async function generateArticleImage(articleData) {
       });
       setCanvasTracking(ctx, '0px');
 
-      // ── Article title ──
-      const TITLE_X = 48, TITLE_PANEL_Y = 348, TITLE_PANEL_MIN_H = 300;
-      const titleGrad = ctx.createLinearGradient(0, TITLE_PANEL_Y, 0, TITLE_PANEL_Y + TITLE_PANEL_MIN_H);
+      // ── Article title — auto-scaling, full title always shown ──
+      const TITLE_X = 48, TITLE_PANEL_Y = 348;
+      const TITLE_MAX_W = W - 96;
+      const TITLE_MAX_LINES = 6;      // allow up to 6 lines before shrinking font
+      const TITLE_SIZE_MAX = 88;      // start large — looks like a real headline
+      const TITLE_SIZE_MIN = 36;      // never go below this
+      const TITLE_PAD_TOP  = 56;      // space above first line
+      const TITLE_PAD_BOT  = 60;      // space below last line
+      const TITLE_LEAD     = 1.22;    // line-height multiplier
+
+      // Find the largest font size where all words fit within TITLE_MAX_LINES lines
+      let titleFontSize = TITLE_SIZE_MAX;
+      let titleLines = [];
+      while (titleFontSize >= TITLE_SIZE_MIN) {
+        ctx.font = 'bold ' + titleFontSize + 'px Georgia, "Times New Roman", serif';
+        const wrapped = wrapTextGetLines(ctx, articleData.title || 'Untitled', TITLE_MAX_W, titleFontSize);
+        if (wrapped.length <= TITLE_MAX_LINES) { titleLines = wrapped; break; }
+        titleFontSize -= 2;
+      }
+      // Fallback: use minimum size, allow as many lines as needed
+      if (!titleLines.length) {
+        titleFontSize = TITLE_SIZE_MIN;
+        ctx.font = 'bold ' + titleFontSize + 'px Georgia, "Times New Roman", serif';
+        titleLines = wrapTextGetLines(ctx, articleData.title || 'Untitled', TITLE_MAX_W, titleFontSize);
+      }
+
+      const titleLineH  = Math.round(titleFontSize * TITLE_LEAD);
+      const titleBlockH = titleLines.length * titleLineH;
+      const titlePanelH = titleBlockH + TITLE_PAD_TOP + TITLE_PAD_BOT;
+
+      // Panel background
+      const titleGrad = ctx.createLinearGradient(0, TITLE_PANEL_Y, 0, TITLE_PANEL_Y + titlePanelH);
       titleGrad.addColorStop(0, '#ffffff');
-      titleGrad.addColorStop(1, '#fbfaf6');
+      titleGrad.addColorStop(1, '#f8f5ef');
       ctx.fillStyle = titleGrad;
-      ctx.fillRect(0, TITLE_PANEL_Y, W, TITLE_PANEL_MIN_H + 220);
-      ctx.fillStyle = 'rgba(201,168,76,0.32)';
-      ctx.fillRect(48, TITLE_PANEL_Y + 32, W - 96, 2);
+      ctx.fillRect(0, TITLE_PANEL_Y, W, titlePanelH);
+
+      // Thin gold rule above title text
+      ctx.fillStyle = 'rgba(201,168,76,0.5)';
+      ctx.fillRect(48, TITLE_PANEL_Y + 28, W - 96, 2);
+
+      // Draw title
       ctx.fillStyle = NAVY;
+      setCanvasTracking(ctx, '-0.5px');
+      const TITLE_Y_START = TITLE_PANEL_Y + TITLE_PAD_TOP + titleFontSize;
+      titleLines.forEach(function(line, i) {
+        ctx.fillText(line, TITLE_X, TITLE_Y_START + i * titleLineH);
+      });
       setCanvasTracking(ctx, '0px');
-      ctx.font = 'bold 74px Georgia, "Times New Roman", serif';
-      let titleLines = wrapTextGetLines(ctx, articleData.title || 'Untitled', W - 96, 74);
-      if (titleLines.length > 4) { titleLines = titleLines.slice(0, 4); if (titleLines[3]) { titleLines[3] = titleLines[3].slice(0, -3) + '…'; } }
-      const titleLineH = 94;
-      const titleBlockH = Math.min(titleLines.length, 4) * titleLineH;
-      const titlePanelH = Math.max(TITLE_PANEL_MIN_H, titleBlockH + 84);
-      const TITLE_Y_START = TITLE_PANEL_Y + Math.max(0, (titlePanelH - titleBlockH) / 2) + 58;
-      titleLines.forEach((line, i) => ctx.fillText(line, TITLE_X, TITLE_Y_START + i * titleLineH));
+
+      // Thin gold rule below title text
+      ctx.fillStyle = 'rgba(201,168,76,0.5)';
+      ctx.fillRect(48, TITLE_PANEL_Y + titlePanelH - 20, W - 96, 2);
+
       const titleBottomY = TITLE_PANEL_Y + titlePanelH;
 
       // ── Gold separator — full width ──
