@@ -5362,8 +5362,7 @@ async function deleteSubmission() {
         author_email:  sub.author_email  || '',
         article_title: sub.article_title || '',
         category:      sub.category      || '',
-        occupation:    sub.occupation    || '',
-        institution:   sub.institution   || '',
+        submitted_at:  sub.created_at    || '',
       })
     }).catch(e => console.warn('Rejection email error:', e));
 
@@ -5831,10 +5830,10 @@ async function parseWordDocumentFile(file, opts) {
   const buf = await file.arrayBuffer();
   const { count: pageCount, isA4 } = await countDocxPages(buf);
   if (!isA4) {
-    throw new Error('Wrong page size. Only A4 (210 × 297 mm) documents are accepted. In Microsoft Word: go to Layout → Size → A4, then re-upload.');
+    throw new Error('❌ Wrong page size. Only A4 (210 × 297 mm) documents are accepted. In Microsoft Word: go to Layout → Size → A4, then re-upload.');
   }
   if (pageCount > 1) {
-    throw new Error('Your document has ' + pageCount + ' pages. Only a single-page A4 document is accepted. Please reduce your content to fit one page and re-upload.');
+    throw new Error('❌ Your document has ' + pageCount + ' pages. Only a single-page A4 document is accepted. Please reduce your content to fit one page and re-upload.');
   }
 
   const wrapper = await ensureDocxLiveRender(buf);
