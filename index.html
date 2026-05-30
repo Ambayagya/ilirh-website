@@ -5086,7 +5086,7 @@ function computeArticleBodyStartY(articleData, W) {
   if (titleLines.length > 4) titleLines = titleLines.slice(0, 4);
   const titleBlockH = Math.min(titleLines.length, 4) * 94;
   const titleBottomY = TITLE_PANEL_Y + Math.max(TITLE_PANEL_MIN_H, titleBlockH + 84);
-  const AUTHOR_Y = titleBottomY + 44;
+  const AUTHOR_Y = titleBottomY + 29;
   const PHOTO_SIZE = 250;
   return getAuthorBlockEndY(AUTHOR_Y, PHOTO_SIZE);
 }
@@ -6126,7 +6126,7 @@ function validateForImageGeneration() {
   const title    = (document.getElementById('sub-title').value || '').trim();
   const category = document.getElementById('sub-category').value;
   const articleHtml = getArticleHtmlBody();
-  return !!(name && title && category && articleHtml.trim());
+  return !!(name && title && category && articleHtml.trim() && _subDocxArrayBuffer);
 }
 
 function validatePreviewForm(errElOverride) {
@@ -6171,7 +6171,10 @@ function hideArticleImagePreview() {
 
 async function tryAutoShowArticleImage() {
   const articleHtml = getArticleHtmlBody();
-  if (!articleHtml.trim()) {
+  if (!articleHtml.trim() || !_subDocxArrayBuffer) {
+    if (articleHtml.trim() && !_subDocxArrayBuffer) {
+      setSubDocxStatus('Upload your Word article to generate the publication image.', false);
+    }
     hideArticleImagePreview();
     return;
   }
@@ -6195,6 +6198,11 @@ async function showArticlePreview() {
 async function _doGeneratePreview() {
   const prevGen = document.getElementById('preview-generating');
   const prevImg = document.getElementById('article-preview-img');
+  if (!_subDocxArrayBuffer) {
+    hideArticleImagePreview();
+    setSubDocxStatus('Upload your Word article to generate the publication image.', false);
+    return;
+  }
 
   prevGen.classList.remove('hidden');
   prevImg.style.display = 'none';
@@ -6270,6 +6278,10 @@ function openPreviewLightbox() {
 
 function schedulePreviewRefreshOrShow() {
   const prevSec = document.getElementById('sub-preview-section');
+  if (!_subDocxArrayBuffer) {
+    hideArticleImagePreview();
+    return;
+  }
   if (prevSec && prevSec.style.display !== 'none') {
     schedulePreviewRefresh();
   } else if (getArticleHtmlBody().trim() && validateForImageGeneration()) {
@@ -6407,6 +6419,13 @@ async function generateArticleImage(articleData) {
 
       // ── Article title ──
       const TITLE_X = 48, TITLE_PANEL_Y = 348, TITLE_PANEL_MIN_H = 300;
+      const titleGrad = ctx.createLinearGradient(0, TITLE_PANEL_Y, 0, TITLE_PANEL_Y + TITLE_PANEL_MIN_H);
+      titleGrad.addColorStop(0, '#ffffff');
+      titleGrad.addColorStop(1, '#fbfaf6');
+      ctx.fillStyle = titleGrad;
+      ctx.fillRect(0, TITLE_PANEL_Y, W, TITLE_PANEL_MIN_H + 220);
+      ctx.fillStyle = 'rgba(201,168,76,0.32)';
+      ctx.fillRect(48, TITLE_PANEL_Y + 32, W - 96, 2);
       ctx.fillStyle = NAVY;
       setCanvasTracking(ctx, '0px');
       ctx.font = 'bold 74px Georgia, "Times New Roman", serif';
@@ -6420,21 +6439,28 @@ async function generateArticleImage(articleData) {
       const titleBottomY = TITLE_PANEL_Y + titlePanelH;
 
       // ── Gold separator — full width ──
+      ctx.fillStyle = 'rgba(10,22,40,0.08)';
+      ctx.fillRect(0, titleBottomY - 2, W, 2);
       ctx.fillStyle = GOLD;
       ctx.fillRect(0, titleBottomY, W, 5);
 
       // ── Author block ──
-      const AUTHOR_Y = titleBottomY + 44;
+      const AUTHOR_Y = titleBottomY + 29;
       const PHOTO_SIZE = 250;
       const authorBlockH = getAuthorBlockEndY(AUTHOR_Y, PHOTO_SIZE) - AUTHOR_Y - 12;
-      ctx.fillStyle = '#f8fafc';
-      ctx.fillRect(0, AUTHOR_Y - 24, W, authorBlockH + 48);
+      const authorTop = titleBottomY + 5;
+      const authorBottom = AUTHOR_Y + authorBlockH + 24;
+      const authorGrad = ctx.createLinearGradient(0, authorTop, 0, authorBottom);
+      authorGrad.addColorStop(0, '#f9fbfd');
+      authorGrad.addColorStop(1, '#eef3f7');
+      ctx.fillStyle = authorGrad;
+      ctx.fillRect(0, authorTop, W, authorBottom - authorTop);
       ctx.fillStyle = 'rgba(201,168,76,0.18)';
-      ctx.fillRect(0, AUTHOR_Y - 24, W, 2);
-      ctx.fillRect(0, AUTHOR_Y + authorBlockH + 22, W, 2);
+      ctx.fillRect(0, authorTop, W, 2);
+      ctx.fillRect(0, authorBottom - 2, W, 2);
       const AUTHOR_DIVIDER_X = 48 + PHOTO_SIZE + 24;
       ctx.fillStyle = GOLD;
-      ctx.fillRect(AUTHOR_DIVIDER_X, AUTHOR_Y - 18, 6, authorBlockH + 36);
+      ctx.fillRect(AUTHOR_DIVIDER_X, authorTop + 18, 5, authorBottom - authorTop - 36);
       if (articleData.authorPhotoUrl) {
         const photoImg = new Image();
         photoImg.crossOrigin = 'anonymous';
