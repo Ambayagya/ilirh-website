@@ -3436,6 +3436,8 @@ async function removeSubscriber(id, email, btn) {
     if (listEl && listEl.querySelectorAll('.sub-item').length === 0) {
       listEl.innerHTML = '<p style="font-style:italic;color:var(--text-muted);font-size:13px;padding:8px 0;">No subscribers yet.</p>';
     }
+    // Re-render the message select list so the removed person is gone there too
+    if (typeof renderMsgSelectList === 'function') renderMsgSelectList();
     showToast('✓ Subscriber removed', 2500);
   } catch(e) {
     btn.disabled = false; btn.textContent = '✕ Remove';
@@ -3446,18 +3448,27 @@ async function removeSubscriber(id, email, btn) {
 // ── MESSAGE SUBSCRIBERS ──
 let _msgMode = 'all';
 
+function renderMsgSelectList() {
+  const listEl = document.getElementById('msg-select-list');
+  if (!listEl) return;
+  listEl.innerHTML = _allSubscribersCache.length === 0
+    ? '<p style="padding:10px 14px;font-family:Lato,sans-serif;font-size:12px;color:var(--text-muted);">No subscribers found.</p>'
+    : _allSubscribersCache.map(s => `<div class="msg-select-item">
+        <input type="checkbox" id="msgchk-${s.id}" value="${s.id}" data-name="${esc(s.name)}" data-email="${esc(s.email)}">
+        <label for="msgchk-${s.id}">${esc(s.name)} &mdash; <span style="font-size:13px;color:var(--text-muted)">${esc(s.email)}</span></label>
+      </div>`).join('');
+}
+
 function openMsgSubscribers() {
+  // Always fetch fresh from DB so we have the latest list, then update shared cache
   fetch(`${SUPABASE_URL}/rest/v1/subscribers?order=created_at.desc`, { headers })
     .then(r => r.json()).then(data => {
       _allSubscribersCache = Array.isArray(data) ? data : [];
-      const listEl = document.getElementById('msg-select-list');
-      listEl.innerHTML = _allSubscribersCache.length === 0
-        ? '<p style="padding:10px 14px;font-family:Lato,sans-serif;font-size:12px;color:var(--text-muted);">No subscribers found.</p>'
-        : _allSubscribersCache.map(s => `<div class="msg-select-item">
-            <input type="checkbox" id="msgchk-${s.id}" value="${s.id}" data-name="${esc(s.name)}" data-email="${esc(s.email)}">
-            <label for="msgchk-${s.id}">${esc(s.name)} &mdash; <span style="font-size:13px;color:var(--text-muted)">${esc(s.email)}</span></label>
-          </div>`).join('');
-    }).catch(() => {});
+      // Also sync the subscribers panel count if it's open
+      const countEl = document.getElementById('subs-count');
+      if (countEl) countEl.textContent = _allSubscribersCache.length;
+      renderMsgSelectList();
+    }).catch(() => { renderMsgSelectList(); });
   _msgMode = 'all';
   document.getElementById('msg-mode-all').classList.add('selected');
   document.getElementById('msg-mode-select').classList.remove('selected');
