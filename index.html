@@ -5065,6 +5065,10 @@ const A4_BODY_H = Math.round(A4_PAGE_H_NATIVE * DOCX_TO_TEMPLATE_SCALE);  // 351
 const TEMPLATE_FOOTER_H = 184;
 const ARTICLE_BODY_CAPTURE_W = TEMPLATE_W;
 
+function setCanvasTracking(ctx, value) {
+  if ('letterSpacing' in ctx) ctx.letterSpacing = value || '0px';
+}
+
 function getAuthorBlockEndY(authorY, photoSize) {
   const photoBottom = authorY + photoSize;
   const textBottom = authorY + 246;
@@ -5076,8 +5080,9 @@ function computeArticleBodyStartY(articleData, W) {
   const ctx = measureCanvas.getContext('2d');
   const TITLE_PANEL_Y = 348;
   const TITLE_PANEL_MIN_H = 300;
-  ctx.font = '900 76px "Playfair Display", Georgia, serif';
-  let titleLines = wrapTextGetLines(ctx, articleData.title || 'Untitled', W - 96, 76);
+  setCanvasTracking(ctx, '0px');
+  ctx.font = 'bold 74px Georgia, "Times New Roman", serif';
+  let titleLines = wrapTextGetLines(ctx, articleData.title || 'Untitled', W - 96, 74);
   if (titleLines.length > 4) titleLines = titleLines.slice(0, 4);
   const titleBlockH = Math.min(titleLines.length, 4) * 94;
   const titleBottomY = TITLE_PANEL_Y + Math.max(TITLE_PANEL_MIN_H, titleBlockH + 84);
@@ -5621,15 +5626,13 @@ async function drawArticleBodyOnTemplate(ctx, bodyStartY, htmlBody, layout) {
   // shot is already TEMPLATE_W × A4_BODY_H — place directly into the body slot
   const shot = await captureWordDocPageForTemplate(docxBuf);
   const topTrim = _docxCaptureCacheCanvas === shot ? _docxCaptureCacheTrim : detectTopGreySeparatorHeight(shot);
+  const bottomTrim = detectBottomWhiteBandHeight(shot, topTrim);
+  const sourceH = Math.max(1, A4_BODY_H - topTrim - bottomTrim);
   ctx.fillStyle = '#ffffff';
   ctx.fillRect(0, bodyStartY, TEMPLATE_W, A4_BODY_H);
-  if (topTrim > 0) {
-    ctx.drawImage(shot, 0, topTrim, TEMPLATE_W, A4_BODY_H - topTrim,
-                  0, bodyStartY, TEMPLATE_W, A4_BODY_H - topTrim);
-  } else {
-    ctx.drawImage(shot, 0, bodyStartY, TEMPLATE_W, A4_BODY_H);
-  }
-  return A4_BODY_H;
+  ctx.drawImage(shot, 0, topTrim, TEMPLATE_W, sourceH,
+                0, bodyStartY, TEMPLATE_W, sourceH);
+  return sourceH;
 }
 
 function detectTopGreySeparatorHeight(canvas) {
@@ -5650,6 +5653,38 @@ function detectTopGreySeparatorHeight(canvas) {
     else if (trim > 0) break;
   }
   return trim >= 8 ? trim : 0;
+}
+
+function detectBottomWhiteBandHeight(canvas, topTrim) {
+  const maxScan = Math.min(360, canvas.height - (topTrim || 0) - 80);
+  if (maxScan <= 0) return 0;
+  const ctx = canvas.getContext('2d');
+  const sampleStep = Math.max(1, Math.floor(canvas.width / 80));
+  const data = ctx.getImageData(0, canvas.height - maxScan, canvas.width, maxScan).data;
+  let trim = 0;
+  for (let yy = maxScan - 1; yy >= 0; yy--) {
+    let whiteish = 0, sampled = 0;
+    for (let x = 0; x < canvas.width; x += sampleStep) {
+      const i = (yy * canvas.width + x) * 4;
+      const r = data[i], g = data[i + 1], b = data[i + 2];
+      if (r > 238 && g > 238 && b > 238) whiteish++;
+      sampled++;
+    }
+    if (sampled && whiteish / sampled > 0.9) trim++;
+    else break;
+  }
+  if (trim < 24 || trim >= maxScan) return 0;
+
+  const probeY = Math.max(0, canvas.height - trim - 12);
+  const probe = ctx.getImageData(0, probeY, canvas.width, 1).data;
+  let nonWhite = 0, sampled = 0;
+  for (let x = 0; x < canvas.width; x += sampleStep) {
+    const i = x * 4;
+    const r = probe[i], g = probe[i + 1], b = probe[i + 2];
+    if (r < 230 || g < 230 || b < 230) nonWhite++;
+    sampled++;
+  }
+  return sampled && nonWhite / sampled > 0.45 ? trim : 0;
 }
 
 function setSubDocxStatus(msg, isErr) {
@@ -6361,20 +6396,21 @@ async function generateArticleImage(articleData) {
       ctx.fillRect(0, 248, W, 76);
       ctx.fillStyle = GOLD;
       ctx.font = 'bold 28px Georgia, serif';
-      ctx.letterSpacing = '6px';
+      setCanvasTracking(ctx, '6px');
       const catMaxWidth = W - 96;
       const catLines = wrapTextGetLines(ctx, catText, catMaxWidth, 28);
       const catBaseY = 298;
       catLines.slice(0, 2).forEach((line, i) => {
         ctx.fillText(line, 48, catBaseY + i * 36);
       });
-      ctx.letterSpacing = '';
+      setCanvasTracking(ctx, '0px');
 
       // ── Article title ──
       const TITLE_X = 48, TITLE_PANEL_Y = 348, TITLE_PANEL_MIN_H = 300;
       ctx.fillStyle = NAVY;
-      ctx.font = '900 76px "Playfair Display", Georgia, serif';
-      let titleLines = wrapTextGetLines(ctx, articleData.title || 'Untitled', W - 96, 76);
+      setCanvasTracking(ctx, '0px');
+      ctx.font = 'bold 74px Georgia, "Times New Roman", serif';
+      let titleLines = wrapTextGetLines(ctx, articleData.title || 'Untitled', W - 96, 74);
       if (titleLines.length > 4) { titleLines = titleLines.slice(0, 4); if (titleLines[3]) { titleLines[3] = titleLines[3].slice(0, -3) + '…'; } }
       const titleLineH = 94;
       const titleBlockH = Math.min(titleLines.length, 4) * titleLineH;
@@ -6396,8 +6432,9 @@ async function generateArticleImage(articleData) {
       ctx.fillStyle = 'rgba(201,168,76,0.18)';
       ctx.fillRect(0, AUTHOR_Y - 24, W, 2);
       ctx.fillRect(0, AUTHOR_Y + authorBlockH + 22, W, 2);
+      const AUTHOR_DIVIDER_X = 48 + PHOTO_SIZE + 24;
       ctx.fillStyle = GOLD;
-      ctx.fillRect(48, AUTHOR_Y - 24, 8, authorBlockH + 48);
+      ctx.fillRect(AUTHOR_DIVIDER_X, AUTHOR_Y - 18, 6, authorBlockH + 36);
       if (articleData.authorPhotoUrl) {
         const photoImg = new Image();
         photoImg.crossOrigin = 'anonymous';
@@ -6455,24 +6492,25 @@ async function generateArticleImage(articleData) {
     }
 
     function _drawAuthorText(y, photoSize, cb) {
-      const textX = 48 + photoSize + 48;
+      const textX = 48 + photoSize + 58;
       const avW = W - textX - 48;
 
+      setCanvasTracking(ctx, '0px');
       ctx.fillStyle = GOLD;
       ctx.font = 'bold 28px Lato, Arial, sans-serif';
       ctx.fillText('AUTHOR', textX, y + 30);
 
       ctx.fillStyle = NAVY;
-      ctx.font = 'bold 70px Georgia, serif';
-      wrapTextCanvas(ctx, articleData.author || 'Author', textX, y + 100, avW, 70, 1);
+      ctx.font = 'bold 64px Georgia, "Times New Roman", serif';
+      wrapTextCanvas(ctx, articleData.author || 'Author', textX, y + 96, avW, 64, 1);
 
       ctx.fillStyle = MUTED;
-      ctx.font = 'bold 46px Georgia, serif';
-      wrapTextCanvas(ctx, articleData.occupation || '', textX, y + 164, avW, 46, 1);
+      ctx.font = 'bold 42px Georgia, "Times New Roman", serif';
+      wrapTextCanvas(ctx, articleData.occupation || '', textX, y + 158, avW, 42, 1);
 
       ctx.fillStyle = GOLD;
-      ctx.font = 'bold italic 40px Georgia, serif';
-      wrapTextCanvas(ctx, articleData.place || '', textX, y + 224, avW, 40, 1);
+      ctx.font = 'bold italic 38px Georgia, "Times New Roman", serif';
+      wrapTextCanvas(ctx, articleData.place || '', textX, y + 216, avW, 38, 1);
 
       if (cb) cb();
     }
