@@ -147,13 +147,22 @@ async function writeFallbackPage(template) {
   await fs.writeFile(path.join(ROOT, '404.html'), template);
 }
 
+async function resetGeneratedDir(dir) {
+  const resolved = path.resolve(dir);
+  if (!resolved.startsWith(ROOT + path.sep)) {
+    throw new Error(`Refusing to clean outside repository: ${resolved}`);
+  }
+  await fs.rm(resolved, { recursive: true, force: true });
+  await fs.mkdir(resolved, { recursive: true });
+}
+
 async function main() {
   const template = await fs.readFile(path.join(ROOT, 'index.html'), 'utf8');
   const articles = await fetchArticles(template);
   const articleRoot = path.join(ROOT, 'articles');
   const legacyArticleRoot = path.join(ROOT, 'article');
-  await fs.mkdir(articleRoot, { recursive: true });
-  await fs.mkdir(legacyArticleRoot, { recursive: true });
+  await resetGeneratedDir(articleRoot);
+  await resetGeneratedDir(legacyArticleRoot);
 
   for (const article of articles) {
     const pageHtml = applyArticleMetadata(template, article);
