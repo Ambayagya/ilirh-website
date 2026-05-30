@@ -1913,6 +1913,10 @@ body.dark-mode .editor-tab.active { color:#c8d8ea; }
         <div class="drop-filename" id="up-docx-filename"></div>
       </div>
     </div>
+    <div class="rd-full-preview-wrap" id="up-docx-preview-wrap" style="display:none;">
+      <p style="font-family:'Lato',sans-serif;font-size:10px;font-weight:700;letter-spacing:0.14em;text-transform:uppercase;color:var(--text-muted);margin-bottom:8px;">Generated article image preview</p>
+      <img id="up-docx-preview-img" src="" alt="Generated article image preview" onclick="openLightbox(this.src,[this.src],0)">
+    </div>
 
     <!-- Silent Publish -->
     <div class="silent-row" onclick="document.getElementById('up-silent').click()">
@@ -2964,6 +2968,7 @@ let _uploadMode = 'media';
 let _upDocxFile = null;
 let _upDocxArrayBuffer = null;
 let _upArticleBodyHtml = '';
+let _upDocxPreviewDataUrl = null;
 let _editArticleId = null;
 let _editArticleExistingFileUrl = null;
 let _editArticleExistingFileType = null;
@@ -2982,6 +2987,7 @@ function closeUpload() {
   _upDocxFile = null;
   _upDocxArrayBuffer = null;
   _upArticleBodyHtml = '';
+  _upDocxPreviewDataUrl = null;
   setUploadMode('media');
   _editArticleId = null;
   _editArticleExistingFileUrl = null;
@@ -3000,6 +3006,8 @@ function closeUpload() {
   document.getElementById('up-file').value = '';
   const upDocx = document.getElementById('up-docx-file'); if (upDocx) upDocx.value = '';
   const upDocxFn = document.getElementById('up-docx-filename'); if (upDocxFn) upDocxFn.textContent = '';
+  const upPrevWrap = document.getElementById('up-docx-preview-wrap'); if (upPrevWrap) upPrevWrap.style.display = 'none';
+  const upPrevImg = document.getElementById('up-docx-preview-img'); if (upPrevImg) upPrevImg.src = '';
   const upPlace = document.getElementById('up-place'); if (upPlace) upPlace.value = '';
   ['up-country','up-state','up-city'].forEach(id => { const el = document.getElementById(id); if (el) el.value = ''; });
   document.getElementById('up-silent').checked = false;
@@ -3027,6 +3035,8 @@ function setUploadMode(mode) {
   if (docxBtn) docxBtn.classList.toggle('selected', _uploadMode === 'docx');
   if (mediaRow) mediaRow.style.display = _uploadMode === 'media' ? 'block' : 'none';
   if (docxRow) docxRow.style.display = _uploadMode === 'docx' ? 'block' : 'none';
+  const prevWrap = document.getElementById('up-docx-preview-wrap');
+  if (prevWrap) prevWrap.style.display = (_uploadMode === 'docx' && _upDocxPreviewDataUrl) ? 'block' : 'none';
 }
 
 async function handleUpDocxSelect(input) {
@@ -3042,14 +3052,37 @@ async function handleUpDocxSelect(input) {
     _upDocxArrayBuffer = _subDocxArrayBuffer ? _subDocxArrayBuffer.slice(0) : null;
     _upArticleBodyHtml = html;
     if (fn) fn.textContent = '✓ ' + file.name + ' (' + (file.size / 1024 / 1024).toFixed(2) + ' MB)';
+    await refreshUpDocxPreview();
   } catch (e) {
     _upDocxFile = null;
     _upDocxArrayBuffer = null;
     _upArticleBodyHtml = '';
+    _upDocxPreviewDataUrl = null;
     input.value = '';
+    const wrap = document.getElementById('up-docx-preview-wrap'); if (wrap) wrap.style.display = 'none';
     if (fn) fn.textContent = '✗ ' + (e.message || 'Could not read document');
   }
 }
+
+async function refreshUpDocxPreview() {
+  const wrap = document.getElementById('up-docx-preview-wrap');
+  const img = document.getElementById('up-docx-preview-img');
+  if (!_upDocxArrayBuffer || !wrap || !img) return;
+  const title = (document.getElementById('up-title')?.value || '').trim() || 'Untitled';
+  const author = (document.getElementById('up-author')?.value || '').trim() || 'Author';
+  const category = document.getElementById('up-category')?.value || 'Research';
+  const place = document.getElementById('up-place')?.value || '';
+  wrap.style.display = 'block';
+  img.removeAttribute('src');
+  const dataUrl = await generateArticleImage({
+    title, author, place, htmlBody: _upArticleBodyHtml,
+    authorPhotoUrl: null, category, occupation: '',
+    docxArrayBuffer: _upDocxArrayBuffer
+  });
+  _upDocxPreviewDataUrl = dataUrl;
+  img.src = dataUrl;
+}
+
 function handleFileSelect(input) {
   const file = input.files[0];
   if (!file) return;
@@ -5129,7 +5162,7 @@ async function deleteSubmission() {
 // ═══════════════════════════════════════════════════════
 let _publishedEditorArticles = [];
 let _publishedEditorPage = 0;
-const _PUBLISHED_EDITOR_PAGE_SIZE = 10;
+const _PUBLISHED_EDITOR_PAGE_SIZE = 5;
 
 async function loadPublishedArticles() {
   const listEl = document.getElementById('published-list');
@@ -5171,7 +5204,7 @@ function renderPublishedArticlesPage() {
           <button onclick="event.stopPropagation();editorDeleteArticle(${a.id})" style="background:#b91c1c;color:#fff;border:none;font-family:'Lato',sans-serif;font-size:10px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;padding:5px 10px;cursor:pointer;border-radius:2px;" title="Delete this article">&#128465; Delete</button>
         </div>
       </div>`;
-    }).join('') + (hasMore ? `<div style="text-align:center;padding:16px 0;"><button onclick="showMorePublishedArticles()" style="background:var(--navy);color:#fff;border:2px solid var(--navy);font-family:'Lato',sans-serif;font-size:11px;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;padding:10px 18px;cursor:pointer;">Show 10 more</button></div>` : '');
+    }).join('') + (hasMore ? `<div style="text-align:center;padding:16px 0;"><button onclick="showMorePublishedArticles()" style="background:var(--navy);color:#fff;border:2px solid var(--navy);font-family:'Lato',sans-serif;font-size:11px;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;padding:10px 18px;cursor:pointer;">Show 5 more</button></div>` : '');
 }
 
 function showMorePublishedArticles() {
@@ -6273,7 +6306,13 @@ const GEO_DATA = {
 function populateCountries() {
   const sel = document.getElementById('sub-country'); if (!sel) return;
   sel.innerHTML = '<option value="">— Select Country —</option>';
-  Object.keys(GEO_DATA).sort((a,b) => a === 'India' ? -1 : b === 'India' ? 1 : a.localeCompare(b)).forEach(c => {
+  Object.keys(GEO_DATA).sort((a,b) => {
+    if (a === 'Other') return 1;
+    if (b === 'Other') return -1;
+    if (a === 'India') return -1;
+    if (b === 'India') return 1;
+    return a.localeCompare(b);
+  }).forEach(c => {
     const opt = document.createElement('option'); opt.value = c; opt.textContent = c;
     sel.appendChild(opt);
   });
@@ -6320,7 +6359,13 @@ function updatePlaceString() {
 function populateCountriesFor(prefix) {
   const sel = document.getElementById(prefix + '-country'); if (!sel) return;
   sel.innerHTML = '<option value="">Select Country</option>';
-  Object.keys(GEO_DATA).sort((a,b) => a === 'India' ? -1 : b === 'India' ? 1 : a.localeCompare(b)).forEach(c => {
+  Object.keys(GEO_DATA).sort((a,b) => {
+    if (a === 'Other') return 1;
+    if (b === 'Other') return -1;
+    if (a === 'India') return -1;
+    if (b === 'India') return 1;
+    return a.localeCompare(b);
+  }).forEach(c => {
     const opt = document.createElement('option'); opt.value = c; opt.textContent = c; sel.appendChild(opt);
   });
 }
