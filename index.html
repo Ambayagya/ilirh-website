@@ -1106,55 +1106,39 @@ button:focus-visible, a:focus-visible, input:focus-visible {
 
 /* ── ILIRH PREMIUM SUBMIT BUTTON ── */
 .ilirh-submit-btn {
-  background: var(--navy) !important;
-  color: #fff !important;
-  border: none !important;
-  border-top: 3px solid var(--gold) !important;
-  font-family: 'Lato', sans-serif !important;
-  font-size: 11px !important;
+  background: linear-gradient(135deg, var(--navy) 0%, var(--navy-light) 100%) !important;
+  color: var(--gold-light) !important;
+  border: 2px solid var(--gold) !important;
+  font-family: 'Cinzel', Georgia, serif !important;
+  font-size: 13px !important;
   font-weight: 700 !important;
-  letter-spacing: 0.28em !important;
+  letter-spacing: 0.18em !important;
   text-transform: uppercase !important;
-  padding: 18px 32px !important;
+  padding: 16px 32px !important;
   cursor: pointer !important;
   width: 100% !important;
   position: relative !important;
   overflow: hidden !important;
-  transition: background 0.3s ease, color 0.3s ease !important;
+  transition: all 0.25s ease !important;
+  box-shadow: 0 4px 18px rgba(10,22,40,0.25) !important;
   margin-top: 14px !important;
-  display: flex !important;
-  align-items: center !important;
-  justify-content: space-between !important;
-  gap: 16px !important;
+  display: flex; align-items: center; justify-content: center; gap: 6px;
 }
-/* Right-side arrow accent */
-.ilirh-submit-btn::after {
-  content: '';
-  display: block;
-  width: 32px;
-  height: 1px;
-  background: var(--gold);
-  flex-shrink: 0;
-  transition: width 0.3s cubic-bezier(.77,0,.18,1);
-}
-.ilirh-submit-btn:hover::after { width: 56px; }
-/* Sweep fill */
 .ilirh-submit-btn::before {
   content: '';
   position: absolute; inset: 0;
-  background: linear-gradient(90deg, var(--gold) 0%, #b8963e 100%);
-  transform: scaleX(0);
-  transform-origin: left center;
-  transition: transform 0.35s cubic-bezier(.77,0,.18,1);
-  z-index: 0;
+  background: linear-gradient(135deg, rgba(201,168,76,0.18) 0%, transparent 60%);
+  opacity: 0; transition: opacity 0.25s;
 }
-.ilirh-submit-btn:hover::before { transform: scaleX(1); }
+.ilirh-submit-btn:hover::before { opacity: 1; }
 .ilirh-submit-btn:hover {
-  color: var(--navy) !important;
-  letter-spacing: 0.32em !important;
+  background: linear-gradient(135deg, var(--navy-light) 0%, #2a4a8e 100%) !important;
+  border-color: var(--gold-light) !important;
+  color: #fff !important;
+  box-shadow: 0 6px 28px rgba(10,22,40,0.38) !important;
+  transform: translateY(-1px) !important;
 }
-.ilirh-submit-btn > * { position: relative; z-index: 1; }
-.ilirh-submit-btn:disabled { opacity: 0.55 !important; cursor: not-allowed !important; }
+.ilirh-submit-btn:disabled { opacity: 0.55 !important; cursor: not-allowed !important; transform: none !important; }
 
 /* ── RICH TEXT EDITOR ── */
 .rich-editor-toolbar {
@@ -1435,50 +1419,32 @@ body.dark-mode .editor-tab.active { color:#c8d8ea; }
 
 /* ══ MASTHEAD SUBMIT CTA ══ */
 .masthead-submit-cta {
-  display: inline-flex;
-  align-items: center;
-  gap: 10px;
-  font-family: 'Lato', sans-serif;
-  font-size: 10px;
-  font-weight: 700;
-  letter-spacing: 0.22em;
-  text-transform: uppercase;
-  color: var(--navy);
-  background: transparent;
-  border: none;
-  border-left: 3px solid var(--gold);
-  padding: 6px 14px 6px 12px;
-  cursor: pointer;
-  position: relative;
-  overflow: hidden;
-  white-space: nowrap;
-  transition: color 0.28s ease, border-color 0.28s ease;
+  display:inline-flex; align-items:center; gap:5px;
+  font-family:'Lato',sans-serif; font-size:11px; font-weight:700;
+  letter-spacing:0.1em; text-transform:uppercase;
+  color:var(--gold-light); background:var(--navy);
+  border:none; padding:7px 16px 7px 12px; cursor:pointer;
+  position:relative; overflow:hidden; white-space:nowrap;
+  box-shadow:0 4px 18px rgba(10,22,40,0.22);
+  clip-path: polygon(0 0, calc(100% - 9px) 0, 100% 50%, calc(100% - 9px) 100%, 0 100%);
+  transition: box-shadow 0.22s ease, letter-spacing 0.22s ease;
 }
-/* Ink-fill from left */
-.masthead-submit-cta::after {
-  content: '';
-  position: absolute;
-  inset: 0;
-  background: var(--navy);
-  transform: scaleX(0);
-  transform-origin: left center;
-  transition: transform 0.3s cubic-bezier(.77,0,.18,1);
-  z-index: 0;
+/* Gold shimmer sweep on hover */
+.masthead-submit-cta::before {
+  content:''; position:absolute; inset:0;
+  background:linear-gradient(105deg, transparent 30%, rgba(212,175,106,0.22) 50%, transparent 70%);
+  transform:translateX(-100%) skewX(-12deg);
+  transition:transform 0.52s ease;
 }
-.masthead-submit-cta:hover::after { transform: scaleX(1); }
-.masthead-submit-cta:hover { color: var(--gold-light); border-color: var(--navy); }
-.masthead-submit-cta .cta-text,
-.masthead-submit-cta .cta-icon { position: relative; z-index: 1; }
-.masthead-submit-cta .cta-icon {
-  font-size: 13px;
-  line-height: 1;
-  transition: transform 0.28s ease;
+.masthead-submit-cta:hover::before { transform:translateX(200%) skewX(-12deg); }
+.masthead-submit-cta:hover {
+  letter-spacing:0.16em;
+  box-shadow:0 6px 24px rgba(10,22,40,0.38);
 }
-.masthead-submit-cta:hover .cta-icon { transform: translateX(2px) rotate(-5deg); }
-.masthead-submit-cta:active { opacity: 0.85; }
+.masthead-submit-cta:active { opacity:0.88; }
 @media (max-width:480px) {
   .masthead-submit-cta .cta-icon { display:none; }
-  .masthead-submit-cta { font-size:10px; padding:5px 12px 5px 10px; letter-spacing:0.14em; }
+  .masthead-submit-cta { font-size:10px; padding:6px 14px 6px 10px; letter-spacing:0.07em; }
 }
 
 /* ══ ARTICLE PREVIEW PANEL ══ */
@@ -1535,43 +1501,38 @@ body.dark-mode .editor-tab.active { color:#c8d8ea; }
 }
 .btn-preview-edit:hover { background:var(--navy); color:#fff; }
 .btn-preview-confirm {
-  flex: 2; min-width: 200px;
-  background: var(--navy); color: #fff;
-  border: none;
-  border-top: 3px solid var(--gold);
-  font-family: 'Lato', sans-serif; font-size: 10.5px; font-weight: 700;
-  letter-spacing: 0.28em; text-transform: uppercase;
-  padding: 16px 28px; cursor: pointer;
-  position: relative; overflow: hidden;
-  display: flex; align-items: center; justify-content: space-between; gap: 16px;
-  transition: color 0.3s ease, letter-spacing 0.3s ease;
+  flex:2; min-width:200px;
+  background:var(--navy-light); color:#fff;
+  border:2px solid var(--navy-light);
+  font-family:'Lato',sans-serif; font-size:12px; font-weight:700;
+  letter-spacing:0.12em; text-transform:uppercase;
+  padding:13px 24px; cursor:pointer;
+  display:flex; align-items:center; justify-content:center; gap:8px;
+  position:relative; overflow:hidden;
+  box-shadow:0 4px 16px rgba(10,22,40,0.22);
+  transition: letter-spacing 0.22s ease, box-shadow 0.22s ease;
 }
-/* Gold sweep fill */
-.btn-preview-confirm::before {
-  content: '';
-  position: absolute; inset: 0;
-  background: linear-gradient(90deg, var(--gold) 0%, #b8963e 100%);
-  transform: scaleX(0);
-  transform-origin: left center;
-  transition: transform 0.35s cubic-bezier(.77,0,.18,1);
-  z-index: 0;
-}
-/* Expanding rule line on right */
+/* Gold bottom rule — always visible */
 .btn-preview-confirm::after {
-  content: '';
-  display: block;
-  width: 28px; height: 1px;
-  background: var(--gold-light);
-  flex-shrink: 0;
-  transition: width 0.3s cubic-bezier(.77,0,.18,1), background 0.3s;
-  position: relative; z-index: 1;
+  content:''; position:absolute;
+  bottom:0; left:0; right:0; height:3px;
+  background:var(--gold);
 }
-.btn-preview-confirm:hover::before { transform: scaleX(1); }
-.btn-preview-confirm:hover::after { width: 48px; background: var(--navy); }
-.btn-preview-confirm:hover { color: var(--navy); letter-spacing: 0.32em; }
-.btn-preview-confirm > span,
-.btn-preview-confirm > svg { position: relative; z-index: 1; }
-.btn-preview-confirm:disabled { opacity: 0.6; cursor: not-allowed; }
+/* Diagonal shimmer on hover */
+.btn-preview-confirm::before {
+  content:''; position:absolute; inset:0;
+  background:linear-gradient(105deg, transparent 30%, rgba(212,175,106,0.18) 50%, transparent 70%);
+  transform:translateX(-100%) skewX(-12deg);
+  transition:transform 0.52s ease;
+  z-index:0;
+}
+.btn-preview-confirm:hover::before { transform:translateX(220%) skewX(-12deg); }
+.btn-preview-confirm:hover {
+  letter-spacing:0.18em;
+  box-shadow:0 6px 24px rgba(10,22,40,0.34);
+}
+.btn-preview-confirm > * { position:relative; z-index:1; }
+.btn-preview-confirm:disabled { opacity:0.6; cursor:not-allowed; }
 
 /* ══ MODAL RICH TEXT BODY ══ */
 .modal-rich-body { font-family:'EB Garamond',serif; font-size:18px; line-height:1.85; color:var(--text-secondary); margin-top:8px; }
@@ -1625,7 +1586,7 @@ body.dark-mode .editor-tab.active { color:#c8d8ea; }
     <hr class="masthead-rule-bot">
     <div class="masthead-meta">
       <span id="live-date-2"></span>
-      <button onclick="openSubmitArticle()" class="masthead-submit-cta"><span class="cta-icon">✍</span><span class="cta-text">Submit Your Article</span></button>
+      <button onclick="openSubmitArticle()" class="masthead-submit-cta"><span class="cta-icon">✍</span>&nbsp;Submit Your Article</button>
       <span>Vol. I &bull; Est. 2026</span>
     </div>
   </div>
@@ -2218,7 +2179,8 @@ body.dark-mode .editor-tab.active { color:#c8d8ea; }
         <div class="preview-action-row">
           <button type="button" class="btn-preview-edit" onclick="editArticleFromPreview()">← Edit Article</button>
           <button type="button" class="btn-preview-confirm" id="sub-submit-btn" onclick="doSubmitArticle()">
-            <span>✍&nbsp;&nbsp;Confirm &amp; Submit Article</span>
+            <span style="font-size:14px;">✍</span> Confirm &amp; Submit Article
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
           </button>
         </div>
         <div class="submit-progress" id="sub-progress-confirm"><div class="submit-progress-fill" id="sub-progress-fill-confirm"></div></div>
@@ -4400,7 +4362,7 @@ function resetSubmitForm() {
   if(formBody) formBody.style.display = 'block';
 
   const confBtn = document.getElementById('sub-submit-btn');
-  if(confBtn) { confBtn.disabled = false; confBtn.innerHTML = '<span>✍&nbsp;&nbsp;Confirm &amp; Submit Article</span>'; }
+  if(confBtn) { confBtn.disabled = false; confBtn.innerHTML = '<span style="font-size:14px;">✍</span> Confirm &amp; Submit Article <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>'; }
   _subPendingFile = null;
   _previewDataUrl = null;
   clearSubmitDraft();
@@ -4675,7 +4637,7 @@ async function doSubmitArticle() {
   } catch(e) {
     errEl.textContent = e.message || 'Submission failed. Please try again.';
     progC.style.display = 'none';
-    btn.disabled = false; btn.innerHTML = '<span>✍&nbsp;&nbsp;Confirm &amp; Submit Article</span>';
+    btn.disabled = false; btn.innerHTML = '<span style="font-size:14px;">✍</span> Confirm &amp; Submit Article <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>';
   }
 }
 
