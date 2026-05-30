@@ -4472,7 +4472,7 @@ function copyArticleLink() {
   const text = _currentArticleTitle
     ? `${_currentArticleTitle} — ILIRH\n${url}`
     : url;
-  navigator.clipboard.writeText(text).then(() => {
+  navigator.clipboard.writeText(url).then(() => {
     btn.classList.add('copied');
     btn.querySelector ? null : null;
     showToast('✓ Link copied to clipboard');
