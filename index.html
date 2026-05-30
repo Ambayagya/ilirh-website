@@ -6942,11 +6942,20 @@ async function generateArticleImage(articleData) {
 
       // ── No divider line below gold bar — pure white gap ──
 
-      // ── Category badge — full width ──
+      // ── Category badge — full width, colour per category ──
       const catText = (articleData.category || 'RESEARCH').toUpperCase();
-      ctx.fillStyle = NAVY;
+      const CAT_PALETTE = {
+        'LAW':          { bg: '#0f2d5e', text: '#d4af6a' },   // deep navy blue — authority, justice
+        'EDUCATION':    { bg: '#1a4731', text: '#a8d8a8' },   // forest green — growth, knowledge
+        'VEDIC SCIENCE':{ bg: '#5c2d00', text: '#f0c97a' },   // deep saffron/amber — heritage, wisdom
+        'POLITICAL':    { bg: '#6b1515', text: '#f0a8a8' },   // deep crimson — power, politics
+        'GEN-Z DESK':   { bg: '#1e1060', text: '#c4b5fd' },   // deep indigo/violet — youth, digital
+      };
+      const catKey = catText.trim();
+      const catColors = CAT_PALETTE[catKey] || { bg: NAVY, text: GOLD };
+      ctx.fillStyle = catColors.bg;
       ctx.fillRect(0, 248, W, 76);
-      ctx.fillStyle = GOLD;
+      ctx.fillStyle = catColors.text;
       ctx.font = 'bold 28px Georgia, serif';
       setCanvasTracking(ctx, '6px');
       const catMaxWidth = W - 96;
