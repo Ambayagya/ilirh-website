@@ -817,6 +817,37 @@ body.dark-mode .share-btn:hover { border-color:#8fa8c0; color:#c8d8ea; }
 .subs-panel.open { display:block; }
 .subs-panel h4 { font-family:'Lato',sans-serif; font-size:11px; font-weight:700; letter-spacing:0.1em; text-transform:uppercase; color:var(--text-secondary); margin-bottom:10px; }
 .sub-item { font-family:'EB Garamond',serif; font-size:14px; color:var(--text-secondary); padding:5px 0; border-bottom:1px solid var(--border-light); display:flex; justify-content:space-between; align-items:center; }
+.sub-remove-btn { background:none; border:1px solid #b91c1c; color:#b91c1c; font-family:'Lato',sans-serif; font-size:9px; font-weight:700; letter-spacing:0.08em; text-transform:uppercase; padding:3px 8px; cursor:pointer; border-radius:1px; flex-shrink:0; transition:background 0.18s,color 0.18s; }
+.sub-remove-btn:hover { background:#b91c1c; color:#fff; }
+
+/* ── MESSAGE SUBSCRIBERS MODAL ── */
+.msg-sub-overlay { display:none; position:fixed; inset:0; background:rgba(5,12,24,0.88); z-index:1200; align-items:center; justify-content:center; padding:16px; }
+.msg-sub-overlay.open { display:flex; }
+.msg-sub-box { background:var(--offwhite); max-width:560px; width:100%; padding:36px 40px 40px; border-top:4px solid var(--gold); position:relative; animation:modalSlideIn 0.28s cubic-bezier(.22,1,.36,1) both; max-height:90vh; overflow-y:auto; }
+@media(max-width:600px){ .msg-sub-box { padding:22px 18px 28px; } }
+.msg-sub-title { font-family:'Playfair Display',serif; font-size:20px; font-weight:700; color:var(--navy); margin-bottom:4px; }
+.msg-sub-sub { font-family:'Lato',sans-serif; font-size:11px; color:var(--text-muted); margin-bottom:20px; }
+.msg-sub-row { margin-bottom:14px; }
+.msg-sub-row label { display:block; font-family:'Lato',sans-serif; font-size:10px; font-weight:700; letter-spacing:0.12em; text-transform:uppercase; color:var(--text-secondary); margin-bottom:6px; }
+.msg-sub-row input, .msg-sub-row textarea { width:100%; padding:9px 12px; border:1px solid var(--border); background:#fff; font-family:'EB Garamond',serif; font-size:15px; color:var(--text-primary); outline:none; transition:border-color 0.2s; }
+.msg-sub-row input:focus, .msg-sub-row textarea:focus { border-color:var(--navy); }
+.msg-sub-row textarea { height:140px; resize:vertical; }
+.msg-mode-row { display:flex; gap:8px; margin-bottom:18px; }
+.msg-mode-btn { flex:1; padding:9px 10px; border:1px solid var(--border); background:#fff; font-family:'Lato',sans-serif; font-size:10px; font-weight:700; letter-spacing:0.1em; text-transform:uppercase; color:var(--text-secondary); cursor:pointer; transition:all 0.18s; text-align:center; }
+.msg-mode-btn.selected { background:var(--navy); color:#fff; border-color:var(--navy); }
+.msg-mode-btn:hover:not(.selected) { border-color:var(--navy); color:var(--navy); }
+.msg-select-list { border:1px solid var(--border); background:#fff; max-height:160px; overflow-y:auto; padding:6px 0; margin-bottom:14px; display:none; }
+.msg-select-list.visible { display:block; }
+.msg-select-item { display:flex; align-items:center; gap:8px; padding:6px 12px; cursor:pointer; transition:background 0.15s; }
+.msg-select-item:hover { background:var(--cream); }
+.msg-select-item input[type=checkbox] { width:14px; height:14px; accent-color:var(--navy); flex-shrink:0; cursor:pointer; }
+.msg-select-item label { font-family:'EB Garamond',serif; font-size:14px; color:var(--text-secondary); cursor:pointer; flex:1; }
+.msg-send-btn { background:var(--navy); color:var(--gold-light); border:1px solid var(--gold); font-family:'Lato',sans-serif; font-size:11px; font-weight:700; letter-spacing:0.14em; text-transform:uppercase; padding:12px 28px; cursor:pointer; width:100%; transition:background 0.2s; margin-top:4px; }
+.msg-send-btn:hover { background:var(--navy-light); }
+.msg-send-btn:disabled { opacity:0.5; cursor:not-allowed; }
+.msg-status { font-family:'Lato',sans-serif; font-size:12px; margin-top:10px; min-height:16px; color:var(--text-muted); }
+.msg-status.ok { color:#27500a; }
+.msg-status.err { color:#a32d2d; }
  
   /* Hamburger: hidden on desktop, shown on mobile via media query */
   .hamburger { display:none; background:none; border:none; color:#c5d2e0; font-size:26px; cursor:pointer; padding:8px 14px; line-height:1; flex-shrink:0; }
@@ -1931,7 +1962,10 @@ body.dark-mode .editor-tab.active { color:#c8d8ea; }
     <button class="btn-primary" id="publish-btn" onclick="publishArticle()">Publish to Herald</button>
     <button class="btn-cancel" onclick="closeUpload()">Cancel</button>
     <p id="up-error" style="color:#a32d2d;font-family:'Lato',sans-serif;font-size:12px;margin-top:10px;"></p>
-    <span class="subs-toggle" onclick="toggleSubs()">&#128100; View Subscribers</span>
+    <div style="display:flex;gap:10px;margin-top:18px;flex-wrap:wrap;">
+      <span class="subs-toggle" style="margin-top:0;flex:1;min-width:120px;text-align:center;" onclick="toggleSubs()">&#128100; View Subscribers</span>
+      <button onclick="openMsgSubscribers()" style="flex:1;min-width:140px;background:var(--navy);color:var(--gold-light);border:1px solid var(--gold);font-family:'Lato',sans-serif;font-size:10px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;padding:7px 14px;cursor:pointer;transition:background 0.2s;">&#9993; Message Subscribers</button>
+    </div>
     <div class="subs-panel" id="subs-panel">
       <h4>Subscribers (<span id="subs-count">0</span>)</h4>
       <div id="subs-list"></div>
@@ -3360,15 +3394,121 @@ function toggleSubs() {
   panel.classList.toggle('open');
   if (panel.classList.contains('open')) loadSubs();
 }
+let _allSubscribersCache = [];
+
 async function loadSubs() {
   try {
     const res = await fetch(`${SUPABASE_URL}/rest/v1/subscribers?order=created_at.desc`, { headers });
     const data = await res.json();
-    document.getElementById('subs-count').textContent = data.length;
-    document.getElementById('subs-list').innerHTML = data.length === 0
+    _allSubscribersCache = Array.isArray(data) ? data : [];
+    document.getElementById('subs-count').textContent = _allSubscribersCache.length;
+    document.getElementById('subs-list').innerHTML = _allSubscribersCache.length === 0
       ? '<p style="font-style:italic;color:var(--text-muted);font-size:13px;padding:8px 0;">No subscribers yet.</p>'
-      : data.map(s => `<div class="sub-item"><span><strong>${esc(s.name)}</strong> &mdash; ${esc(s.email)}</span></div>`).join('');
+      : _allSubscribersCache.map(s => `<div class="sub-item">
+          <span><strong>${esc(s.name)}</strong> &mdash; <span style="font-size:13px;">${esc(s.email)}</span></span>
+          <button class="sub-remove-btn" onclick="removeSubscriber(${s.id}, '${esc(s.email).replace(/'/g,'')}', this)" title="Remove subscriber">&#10005; Remove</button>
+        </div>`).join('');
   } catch(e) { console.error(e); }
+}
+
+async function removeSubscriber(id, email, btn) {
+  if (!confirm(`Remove ${email} from the subscriber list? They will no longer receive Herald emails.`)) return;
+  btn.disabled = true; btn.textContent = '…';
+  try {
+    const res = await fetch(`${SUPABASE_URL}/rest/v1/subscribers?id=eq.${id}`, {
+      method: 'DELETE', headers: { ...headers, 'Prefer': 'return=minimal' }
+    });
+    if (!res.ok) throw new Error('Delete failed');
+    showToast('✓ Subscriber removed', 2500);
+    loadSubs();
+  } catch(e) {
+    btn.disabled = false; btn.textContent = '✕ Remove';
+    showToast('Could not remove subscriber. Try again.', 3000);
+  }
+}
+
+// ── MESSAGE SUBSCRIBERS ──
+let _msgMode = 'all';
+
+function openMsgSubscribers() {
+  fetch(`${SUPABASE_URL}/rest/v1/subscribers?order=created_at.desc`, { headers })
+    .then(r => r.json()).then(data => {
+      _allSubscribersCache = Array.isArray(data) ? data : [];
+      const listEl = document.getElementById('msg-select-list');
+      listEl.innerHTML = _allSubscribersCache.length === 0
+        ? '<p style="padding:10px 14px;font-family:Lato,sans-serif;font-size:12px;color:var(--text-muted);">No subscribers found.</p>'
+        : _allSubscribersCache.map(s => `<div class="msg-select-item">
+            <input type="checkbox" id="msgchk-${s.id}" value="${s.id}" data-name="${esc(s.name)}" data-email="${esc(s.email)}">
+            <label for="msgchk-${s.id}">${esc(s.name)} &mdash; <span style="font-size:13px;color:var(--text-muted)">${esc(s.email)}</span></label>
+          </div>`).join('');
+    }).catch(() => {});
+  _msgMode = 'all';
+  document.getElementById('msg-mode-all').classList.add('selected');
+  document.getElementById('msg-mode-select').classList.remove('selected');
+  document.getElementById('msg-select-list').classList.remove('visible');
+  document.getElementById('msg-subject').value = '';
+  document.getElementById('msg-body').value = '';
+  document.getElementById('msg-status').textContent = '';
+  document.getElementById('msg-status').className = 'msg-status';
+  const sendBtn = document.getElementById('msg-send-btn');
+  sendBtn.disabled = false;
+  sendBtn.textContent = '\u25b6 Send Message';
+  document.getElementById('msg-sub-overlay').classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+
+function closeMsgSubscribers() {
+  document.getElementById('msg-sub-overlay').classList.remove('open');
+  document.body.style.overflow = '';
+}
+function closeMsgSubOnBg(e) {
+  if (e.target === document.getElementById('msg-sub-overlay')) closeMsgSubscribers();
+}
+
+function setMsgMode(mode) {
+  _msgMode = mode;
+  document.getElementById('msg-mode-all').classList.toggle('selected', mode === 'all');
+  document.getElementById('msg-mode-select').classList.toggle('selected', mode === 'select');
+  document.getElementById('msg-select-list').classList.toggle('visible', mode === 'select');
+}
+
+async function doSendMsgSubscribers() {
+  const subject = (document.getElementById('msg-subject').value || '').trim();
+  const msgBody = (document.getElementById('msg-body').value    || '').trim();
+  const statusEl = document.getElementById('msg-status');
+  statusEl.className = 'msg-status';
+  if (!subject) { statusEl.textContent = 'Please enter an email subject.'; statusEl.className = 'msg-status err'; return; }
+  if (!msgBody) { statusEl.textContent = 'Please enter a message body.';   statusEl.className = 'msg-status err'; return; }
+
+  let recipients = null;
+  if (_msgMode === 'select') {
+    const checked = [...document.querySelectorAll('#msg-select-list input[type=checkbox]:checked')];
+    if (!checked.length) { statusEl.textContent = 'Please select at least one subscriber.'; statusEl.className = 'msg-status err'; return; }
+    recipients = checked.map(cb => ({ name: cb.dataset.name, email: cb.dataset.email }));
+  }
+
+  const btn = document.getElementById('msg-send-btn');
+  btn.disabled = true; btn.textContent = 'Sending\u2026';
+  statusEl.textContent = '';
+
+  try {
+    const res = await fetch(`${SUPABASE_URL}/functions/v1/notify-subscribers`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + SUPABASE_KEY },
+      body: JSON.stringify({ type: 'message_subscribers', subject, message: msgBody, recipients: recipients || [] })
+    });
+    const result = await res.json().catch(() => ({}));
+    if (!res.ok) throw new Error(result.error || 'Send failed');
+    const count = result.sent != null ? result.sent : (recipients ? recipients.length : _allSubscribersCache.length);
+    statusEl.textContent = `\u2713 Message sent to ${count} subscriber${count !== 1 ? 's' : ''} successfully.`;
+    statusEl.className = 'msg-status ok';
+    btn.textContent = '\u2713 Sent';
+    showToast(`\u2713 Message sent to ${count} subscriber${count !== 1 ? 's' : ''}`, 3500);
+  } catch(e) {
+    statusEl.textContent = 'Error: ' + (e.message || 'Could not send. Please try again.');
+    statusEl.className = 'msg-status err';
+    btn.disabled = false; btn.textContent = '\u25b6 Send Message';
+  }
 }
  
 // ── ABOUT ──
@@ -5176,15 +5316,31 @@ async function publishFromReview() {
 
 async function deleteSubmission() {
   if (!_activeSubmission) return;
-  if (!confirm('Delete this submission permanently? This cannot be undone.')) return;
+  if (!confirm('Delete this submission? The author will receive a formal email notifying them their article was not accepted. This cannot be undone.')) return;
   const btn = document.getElementById('rd-delete-btn');
   btn.disabled = true; btn.textContent = 'Deleting…';
   try {
-    const res = await fetch(`${SUPABASE_URL}/rest/v1/article_submissions?id=eq.${_activeSubmission.id}`, {
+    // Send rejection notification email BEFORE deleting
+    const sub = _activeSubmission;
+    fetch(`${SUPABASE_URL}/functions/v1/notify-subscribers`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + SUPABASE_KEY },
+      body: JSON.stringify({
+        type: 'submission_rejected',
+        author_name:   sub.author_name   || '',
+        author_email:  sub.author_email  || '',
+        article_title: sub.article_title || '',
+        category:      sub.category      || '',
+        occupation:    sub.occupation    || '',
+        institution:   sub.institution   || '',
+      })
+    }).catch(e => console.warn('Rejection email error:', e));
+
+    const res = await fetch(`${SUPABASE_URL}/rest/v1/article_submissions?id=eq.${sub.id}`, {
       method: 'DELETE', headers: { ...headers, 'Prefer': 'return=minimal' }
     });
     if (!res.ok) throw new Error('Delete failed');
-    showToast('✓ Submission deleted', 2500);
+    showToast('✓ Submission deleted & author notified by email', 3000);
     closeReviewDetail();
     loadSubmissions();
   } catch(e) {
@@ -7359,6 +7515,30 @@ closeUpload = function() {
   </div>
   <button id="lbx-nav-next" class="hidden" onclick="lbxNext()">&#8250;</button>
   <div class="lbx-hint" id="lbx-hint">Scroll or pinch to zoom &nbsp;·&nbsp; Drag to pan</div>
+</div>
+
+<!-- MESSAGE SUBSCRIBERS MODAL -->
+<div class="msg-sub-overlay" id="msg-sub-overlay" onclick="closeMsgSubOnBg(event)">
+  <div class="msg-sub-box">
+    <button class="modal-close" onclick="closeMsgSubscribers()">&times;</button>
+    <div class="msg-sub-title">Message Subscribers</div>
+    <p class="msg-sub-sub">Compose a message and send it to all subscribers or selected ones via email.</p>
+    <div class="msg-mode-row">
+      <button class="msg-mode-btn selected" id="msg-mode-all" onclick="setMsgMode('all')">&#9993; All Subscribers</button>
+      <button class="msg-mode-btn" id="msg-mode-select" onclick="setMsgMode('select')">&#9745; Selected Only</button>
+    </div>
+    <div class="msg-select-list" id="msg-select-list"></div>
+    <div class="msg-sub-row">
+      <label>Email Subject *</label>
+      <input type="text" id="msg-subject" placeholder="Subject line for the email…">
+    </div>
+    <div class="msg-sub-row">
+      <label>Message Body *</label>
+      <textarea id="msg-body" placeholder="Write your message here. Use plain paragraphs — it will be rendered in the Herald email template."></textarea>
+    </div>
+    <button class="msg-send-btn" id="msg-send-btn" onclick="doSendMsgSubscribers()">&#9654; Send Message</button>
+    <p class="msg-status" id="msg-status"></p>
+  </div>
 </div>
 
 <div id="sub-docx-live-preview" aria-hidden="true"></div>
