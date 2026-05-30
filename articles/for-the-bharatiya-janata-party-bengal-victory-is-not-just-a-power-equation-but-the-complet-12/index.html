@@ -11,7 +11,7 @@
 <meta http-equiv="X-Content-Type-Options" content="nosniff">
 <meta http-equiv="Referrer-Policy" content="strict-origin-when-cross-origin">
 <meta http-equiv="Permissions-Policy" content="camera=(), microphone=(), geolocation=()">
-<meta http-equiv="Content-Security-Policy" content="default-src 'self' https://mhznyfilbpvyaxeofcgn.supabase.co https://fonts.googleapis.com https://fonts.gstatic.com; script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; img-src 'self' https://mhznyfilbpvyaxeofcgn.supabase.co data: blob:; frame-src https://mhznyfilbpvyaxeofcgn.supabase.co; connect-src 'self' https://mhznyfilbpvyaxeofcgn.supabase.co https://api.resend.com https://cdn.jsdelivr.net;">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self' https://mhznyfilbpvyaxeofcgn.supabase.co https://fonts.googleapis.com https://fonts.gstatic.com; script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net https://cdnjs.cloudflare.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; img-src 'self' https://mhznyfilbpvyaxeofcgn.supabase.co data: blob:; frame-src https://mhznyfilbpvyaxeofcgn.supabase.co; connect-src 'self' https://mhznyfilbpvyaxeofcgn.supabase.co https://api.resend.com https://cdn.jsdelivr.net https://cdnjs.cloudflare.com; worker-src 'self' blob: https://cdnjs.cloudflare.com;">
 <base href="/">
 <title>For the Bharatiya Janata Party, Bengal Victory is Not Just a Power Equation, But the Completion of an Ideological Circle - ILIRH</title>
 <meta name="description" content="This political and strategic commentary analyzes the profound significance of a potential BJP victory in West Bengal as an emotional liberation from an...">
@@ -2443,6 +2443,20 @@ const SITE_URL = 'https://www.ilirh.in';
 // Password hashed (SHA-256) — not readable from source code
 const PW_HASH='76c96b53edfc33cfeec0c416f0e1a99d8b50ae646d5f5c65ca851fa30a04fe72';
 async function verifyPassword(p){const b=new TextEncoder().encode(p);const h=await crypto.subtle.digest('SHA-256',b);return Array.from(new Uint8Array(h)).map(x=>x.toString(16).padStart(2,'0')).join('')===PW_HASH;}
+async function verifyEditorPassword(pass) {
+  try {
+    const res = await fetch(`${SUPABASE_URL}/functions/v1/notify-subscribers`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + SUPABASE_KEY },
+      body: JSON.stringify({ type: 'verify_editor_password', password: pass })
+    });
+    const out = await res.json().catch(() => null);
+    if (res.ok && out && out.configured) return !!out.ok;
+  } catch(e) {
+    console.warn('Server-side editor verification unavailable:', e.message);
+  }
+  return verifyPassword(pass);
+}
 let isLoggedIn = false;
 let articles = [];
 let currentCat = 'all';
@@ -2505,6 +2519,14 @@ function pushArticleUrl(id, replace) {
 function pushHomeUrl() {
   if (window.location.pathname === '/' && !window.location.search && !window.location.hash) return;
   history.pushState({}, '', '/');
+}
+
+function requestStaticArticleRefresh(reason) {
+  fetch(`${SUPABASE_URL}/functions/v1/notify-subscribers`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + SUPABASE_KEY },
+    body: JSON.stringify({ type: 'refresh_static_pages', reason: reason || 'article_updated' })
+  }).catch(e => console.warn('Static article page refresh unavailable:', e.message));
 }
  
 const headers = {
@@ -2852,7 +2874,7 @@ async function openArticle(id, navDir, routeOptions) {
     inner += `<img class="modal-img" src="${a.file_url}" alt="${esc(a.title)}" style="cursor:zoom-in;margin-top:20px;-webkit-tap-highlight-color:transparent;" onclick="openLightbox('${a.file_url}',['${a.file_url}'],0)">`;
   } else if (a.article_body) {
     // Fallback: render rich text body directly when no generated image is present
-    inner = `<div class="modal-rich-body">${a.article_body}</div>`;
+    inner = `<div class="modal-rich-body">${sanitizeStoredHtml(a.article_body)}</div>`;
     if (a.file_url && a.file_type && a.file_type.startsWith('image/')) {
       inner += `<img class="modal-img" src="${a.file_url}" alt="${esc(a.title)}" style="cursor:zoom-in;margin-top:20px;" onclick="openLightbox('${a.file_url}',['${a.file_url}'],0)">`;
     }
@@ -2979,6 +3001,7 @@ async function deleteCurrentArticle() {
     localStorage.setItem('ilirh-likes', JSON.stringify(myLikes));
 
     closeModal();
+    requestStaticArticleRefresh('article_deleted');
     await fetchArticles(true);
     showToast('✓ Article deleted successfully', 3000);
   } catch(e) {
@@ -3046,7 +3069,7 @@ function closeLogin() {
 function closeLoginOnBg(e) { if (e.target === document.getElementById('login-overlay')) closeLogin(); }
 async function doLogin() {
   const pass = document.getElementById('login-pass').value;
-  const ok = await verifyPassword(pass);
+  const ok = await verifyEditorPassword(pass);
   if (ok) {
     isLoggedIn = true; closeLogin(); openUpload();
   } else {
@@ -3374,6 +3397,7 @@ async function publishArticle() {
         }).catch(e => console.warn('Author certificate email failed:', e));
       }
     }
+    requestStaticArticleRefresh(_editArticleId ? 'article_updated' : 'article_published');
  
     await fetchArticles(true);
     const wasEdit = !!_editArticleId;
@@ -3647,6 +3671,26 @@ function closeAboutOnBg(e) { if (e.target === document.getElementById('about-ove
 function esc(s) {
   if (!s) return '';
   return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+function sanitizeStoredHtml(html) {
+  if (!html) return '';
+  try {
+    const doc = new DOMParser().parseFromString(String(html), 'text/html');
+    doc.querySelectorAll('script, object, embed, form, input, button, textarea, select').forEach(el => el.remove());
+    doc.body.querySelectorAll('*').forEach(el => {
+      [...el.attributes].forEach(attr => {
+        const name = attr.name.toLowerCase();
+        const value = String(attr.value || '').trim().toLowerCase();
+        if (name.startsWith('on') || value.startsWith('javascript:')) {
+          el.removeAttribute(attr.name);
+        }
+      });
+    });
+    return doc.body.innerHTML;
+  } catch(e) {
+    return '';
+  }
 }
  
  
@@ -4512,7 +4556,7 @@ function cycleModalFontSize() {
   showToast('Text size: ' + _fontLabels[_fontSizeIdx]);
 }
  
-// ── SHARE BUTTONS (native share API + WhatsApp + Twitter/X) ──
+// ── SHARE BUTTONS (native share API + WhatsApp + Facebook + LinkedIn + Twitter/X) ──
 function buildShareRow(title, url) {
   const encoded = encodeURIComponent(title + ' — ILIRH');
   const encodedUrl = encodeURIComponent(url);
@@ -4530,6 +4574,14 @@ function buildShareRow(title, url) {
   html += `<a class="share-btn" href="https://twitter.com/intent/tweet?text=${encoded}&url=${encodedUrl}" target="_blank" rel="noopener">
     <svg width="10" height="10" viewBox="0 0 24 24" fill="currentColor" stroke="none"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
     X / Twitter
+  </a>`;
+  html += `<a class="share-btn" href="https://www.facebook.com/sharer/sharer.php?u=${encodedUrl}" target="_blank" rel="noopener">
+    <svg width="10" height="10" viewBox="0 0 24 24" fill="currentColor" stroke="none"><path d="M22.675 0h-21.35C.593 0 0 .593 0 1.326v21.348C0 23.407.593 24 1.326 24h11.495v-9.294H9.692v-3.622h3.129V8.413c0-3.1 1.894-4.788 4.659-4.788 1.325 0 2.464.099 2.795.143v3.24l-1.918.001c-1.504 0-1.795.715-1.795 1.763v2.312h3.587l-.467 3.622h-3.12V24h6.116C23.407 24 24 23.407 24 22.674V1.326C24 .593 23.407 0 22.675 0z"/></svg>
+    Facebook
+  </a>`;
+  html += `<a class="share-btn" href="https://www.linkedin.com/sharing/share-offsite/?url=${encodedUrl}" target="_blank" rel="noopener">
+    <svg width="10" height="10" viewBox="0 0 24 24" fill="currentColor" stroke="none"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 0 1-2.063-2.065 2.064 2.064 0 1 1 2.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg>
+    LinkedIn
   </a>`;
   return html;
 }
@@ -5440,6 +5492,7 @@ async function publishFromReview() {
       }).catch(e => console.warn('Certificate email failed:', e));
     }
 
+    requestStaticArticleRefresh('review_article_published');
     pub.textContent = '✓ Published!'; pub.disabled = true;
     showToast(silent ? '✓ Published silently — certificate sent to author' : '✓ Article published & certificate sent to author', 3500);
     closeReviewDetail();
@@ -5571,6 +5624,7 @@ async function editorDeleteArticle(id) {
     await fetch(`${SUPABASE_URL}/rest/v1/certificates?article_id=eq.${id}`, { method:'DELETE', headers }).catch(()=>{});
     const res = await fetch(`${SUPABASE_URL}/rest/v1/articles?id=eq.${id}`, { method:'DELETE', headers:{ ...headers, 'Prefer':'return=minimal' } });
     if (!res.ok) throw new Error('Delete failed');
+    requestStaticArticleRefresh('article_deleted');
     showToast('✓ Article deleted', 2500);
     loadPublishedArticles();
     fetchArticles(true);
