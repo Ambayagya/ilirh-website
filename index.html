@@ -1422,26 +1422,27 @@ body.dark-mode .editor-tab.active { color:#c8d8ea; }
   display:inline-flex; align-items:center; gap:5px;
   font-family:'Lato',sans-serif; font-size:11px; font-weight:700;
   letter-spacing:0.1em; text-transform:uppercase;
-  color:var(--gold-light); background:var(--navy);
+  color:var(--navy); background:var(--gold);
   border:none; padding:7px 16px 7px 12px; cursor:pointer;
   position:relative; overflow:hidden; white-space:nowrap;
-  box-shadow:0 4px 18px rgba(10,22,40,0.22);
-  clip-path: polygon(0 0, calc(100% - 9px) 0, 100% 50%, calc(100% - 9px) 100%, 0 100%);
-  transition: box-shadow 0.22s ease, letter-spacing 0.22s ease;
+  transition: background 0.22s ease, color 0.22s ease, box-shadow 0.22s ease, transform 0.18s ease;
+  box-shadow: 0 2px 10px rgba(184,150,62,0.28);
+  clip-path: none;
 }
-/* Gold shimmer sweep on hover */
 .masthead-submit-cta::before {
   content:''; position:absolute; inset:0;
-  background:linear-gradient(105deg, transparent 30%, rgba(212,175,106,0.22) 50%, transparent 70%);
-  transform:translateX(-100%) skewX(-12deg);
-  transition:transform 0.52s ease;
+  background:linear-gradient(90deg, rgba(255,255,255,0) 0%, rgba(255,255,255,0.22) 50%, rgba(255,255,255,0) 100%);
+  transform:translateX(-100%);
+  transition:transform 0.45s ease;
 }
-.masthead-submit-cta:hover::before { transform:translateX(200%) skewX(-12deg); }
+.masthead-submit-cta:hover::before { transform:translateX(100%); }
 .masthead-submit-cta:hover {
-  letter-spacing:0.16em;
-  box-shadow:0 6px 24px rgba(10,22,40,0.38);
+  background:var(--navy); color:var(--gold-light);
+  box-shadow:0 4px 18px rgba(10,22,40,0.22);
+  transform:translateY(-1px);
 }
-.masthead-submit-cta:active { opacity:0.88; }
+.masthead-submit-cta:active { transform:translateY(0); }
+/* Hide emoji on very small screens to prevent wrapping */
 @media (max-width:480px) {
   .masthead-submit-cta .cta-icon { display:none; }
   .masthead-submit-cta { font-size:10px; padding:6px 14px 6px 10px; letter-spacing:0.07em; }
@@ -1502,36 +1503,21 @@ body.dark-mode .editor-tab.active { color:#c8d8ea; }
 .btn-preview-edit:hover { background:var(--navy); color:#fff; }
 .btn-preview-confirm {
   flex:2; min-width:200px;
-  background:var(--navy-light); color:#fff;
-  border:2px solid var(--navy-light);
+  background:var(--navy); color:#fff;
+  border:2px solid var(--navy);
   font-family:'Lato',sans-serif; font-size:12px; font-weight:700;
   letter-spacing:0.12em; text-transform:uppercase;
   padding:13px 24px; cursor:pointer;
+  transition:background 0.18s, box-shadow 0.18s;
   display:flex; align-items:center; justify-content:center; gap:8px;
   position:relative; overflow:hidden;
-  box-shadow:0 4px 16px rgba(10,22,40,0.22);
-  transition: letter-spacing 0.22s ease, box-shadow 0.22s ease;
 }
-/* Gold bottom rule — always visible */
 .btn-preview-confirm::after {
   content:''; position:absolute;
   bottom:0; left:0; right:0; height:3px;
   background:var(--gold);
 }
-/* Diagonal shimmer on hover */
-.btn-preview-confirm::before {
-  content:''; position:absolute; inset:0;
-  background:linear-gradient(105deg, transparent 30%, rgba(212,175,106,0.18) 50%, transparent 70%);
-  transform:translateX(-100%) skewX(-12deg);
-  transition:transform 0.52s ease;
-  z-index:0;
-}
-.btn-preview-confirm:hover::before { transform:translateX(220%) skewX(-12deg); }
-.btn-preview-confirm:hover {
-  letter-spacing:0.18em;
-  box-shadow:0 6px 24px rgba(10,22,40,0.34);
-}
-.btn-preview-confirm > * { position:relative; z-index:1; }
+.btn-preview-confirm:hover { background:var(--navy-light); box-shadow:0 4px 16px rgba(10,22,40,0.22); }
 .btn-preview-confirm:disabled { opacity:0.6; cursor:not-allowed; }
 
 /* ══ MODAL RICH TEXT BODY ══ */
