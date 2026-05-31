@@ -7944,6 +7944,65 @@ function lockDocxPageForCapture(root) {
   return page;
 }
 
+function buildCleanDocxCaptureTarget(liveEl) {
+  const sourceWrapper = liveEl.querySelector('.docx-wrapper') || liveEl;
+  const host = document.createElement('div');
+  host.setAttribute('aria-hidden', 'true');
+  host.style.position = 'fixed';
+  host.style.left = '0';
+  host.style.top = '0';
+  host.style.width = A4_PAGE_W_NATIVE + 'px';
+  host.style.height = A4_PAGE_H_NATIVE + 'px';
+  host.style.overflow = 'hidden';
+  host.style.background = '#ffffff';
+  host.style.opacity = '1';
+  host.style.visibility = 'visible';
+  host.style.pointerEvents = 'none';
+  host.style.zIndex = '-10000';
+
+  const clone = sourceWrapper.cloneNode(true);
+  host.appendChild(clone);
+  document.body.appendChild(host);
+
+  host.querySelectorAll('.docx-wrapper, .docx-page').forEach(function(el) {
+    el.style.boxShadow = 'none';
+    el.style.border = 'none';
+    el.style.margin = '0';
+    el.style.padding = '0';
+    el.style.background = '#ffffff';
+    el.style.width = A4_PAGE_W_NATIVE + 'px';
+    el.style.maxWidth = A4_PAGE_W_NATIVE + 'px';
+    el.style.overflow = 'visible';
+  });
+  host.querySelectorAll('section.docx').forEach(function(el) {
+    el.style.boxShadow = 'none';
+    el.style.border = 'none';
+    el.style.margin = '0';
+    el.style.background = '#ffffff';
+    el.style.width = A4_PAGE_W_NATIVE + 'px';
+    el.style.minHeight = A4_PAGE_H_NATIVE + 'px';
+    el.style.height = A4_PAGE_H_NATIVE + 'px';
+    el.style.maxWidth = A4_PAGE_W_NATIVE + 'px';
+    el.style.overflow = 'hidden';
+  });
+
+  const target = host.querySelector('section.docx') || host.querySelector('.docx-page') || clone;
+  target.style.background = '#ffffff';
+  target.style.boxShadow = 'none';
+  target.style.border = 'none';
+  target.style.margin = '0';
+  target.style.width = A4_PAGE_W_NATIVE + 'px';
+  target.style.height = A4_PAGE_H_NATIVE + 'px';
+  target.style.minHeight = A4_PAGE_H_NATIVE + 'px';
+  target.style.overflow = 'hidden';
+  target.querySelectorAll('img').forEach(function(img) {
+    img.style.opacity = '1';
+    img.style.visibility = 'visible';
+    img.crossOrigin = 'anonymous';
+  });
+  return { host, target };
+}
+
 async function renderDocxToContainer(arrayBuffer, container) {
   if (typeof docx === 'undefined' || !docx.renderAsync) {
     throw new Error('Word preview library failed to load. Please refresh the page.');
@@ -8086,9 +8145,11 @@ async function captureWordDocPageForTemplate(arrayBuffer) {
     })();
   });
 
-  // ── 3. Strip docx-preview chrome before capture ─────────────────────────
+  // ── 3. Strip docx-preview chrome, then clone only the clean A4 page ──────
   const captureEl = lockDocxPageForCapture(liveEl) || liveEl;
   await waitForImagesIn(captureEl);
+  const cleanCapture = buildCleanDocxCaptureTarget(liveEl);
+  await waitForImagesIn(cleanCapture.target);
 
   // ── 4. Move into document coordinate space (html2canvas needs this) ─────
   const savedPosition = liveEl.style.position;
@@ -8098,21 +8159,12 @@ async function captureWordDocPageForTemplate(arrayBuffer) {
   const savedOpacity  = liveEl.style.opacity;
   const savedOverflow = liveEl.style.overflow;
   const savedVisibility = liveEl.style.visibility;
-  const savedCaptureWidth = captureEl.style.width;
-  const savedCaptureHeight = captureEl.style.height;
-  const savedCaptureMinHeight = captureEl.style.minHeight;
-  const savedCaptureOverflow = captureEl.style.overflow;
-
   liveEl.style.position = 'absolute';
   liveEl.style.left     = '0px';
   liveEl.style.top      = '0px';
   liveEl.style.zIndex   = '-1';
   liveEl.style.opacity  = '1';
   liveEl.style.visibility = 'visible';
-  captureEl.style.width = A4_PAGE_W_NATIVE + 'px';
-  captureEl.style.height = A4_PAGE_H_NATIVE + 'px';
-  captureEl.style.minHeight = A4_PAGE_H_NATIVE + 'px';
-  captureEl.style.overflow = 'hidden';
 
   // Two rAF so browser reflows before capture
   await new Promise(r => requestAnimationFrame(() => requestAnimationFrame(r)));
@@ -8120,7 +8172,7 @@ async function captureWordDocPageForTemplate(arrayBuffer) {
   // ── 5. Capture at scale=3.125 → output = 2481 × 3509 px ────────────────
   var shot;
   try {
-    shot = await html2canvas(captureEl, {
+    shot = await html2canvas(cleanCapture.target, {
       backgroundColor: '#ffffff',
       scale:           DOCX_TO_TEMPLATE_SCALE,   // 300/96 ≈ 3.125
       useCORS:         true,
@@ -8129,7 +8181,7 @@ async function captureWordDocPageForTemplate(arrayBuffer) {
       removeContainer: true,
       logging:         false,
       scrollX:         0,
-      scrollY:         -window.scrollY,
+      scrollY:         0,
       width:           A4_PAGE_W_NATIVE,          // 794
       height:          A4_PAGE_H_NATIVE,          // 1123
       windowWidth:     A4_PAGE_W_NATIVE + 40,
@@ -8151,24 +8203,7 @@ async function captureWordDocPageForTemplate(arrayBuffer) {
         cloneEl.style.boxShadow  = 'none';
         cloneEl.style.border     = 'none';
         cloneEl.style.background = '#ffffff';
-        // Strip chrome in clone too
-        cloneEl.querySelectorAll('.docx-wrapper, .docx-page').forEach(function(el) {
-          el.style.boxShadow  = 'none';
-          el.style.border     = 'none';
-          el.style.margin     = '0';
-          el.style.padding    = '0';
-          el.style.background = '#ffffff';
-        });
-        cloneEl.querySelectorAll('section.docx').forEach(function(el) {
-          el.style.boxShadow  = 'none';
-          el.style.border     = 'none';
-          el.style.margin     = '0';
-          el.style.background = '#ffffff';
-          el.style.width      = A4_PAGE_W_NATIVE + 'px';
-          el.style.minHeight  = A4_PAGE_H_NATIVE + 'px';
-          el.style.height     = A4_PAGE_H_NATIVE + 'px';
-          el.style.overflow   = 'hidden';
-        });
+        cloneEl.style.padding = cloneEl.style.padding || '';
         // Unclip parent chain
         var parent = cloneEl.parentElement;
         while (parent) {
@@ -8186,6 +8221,7 @@ async function captureWordDocPageForTemplate(arrayBuffer) {
       }
     });
   } finally {
+    if (cleanCapture && cleanCapture.host) cleanCapture.host.remove();
     liveEl.style.position = savedPosition;
     liveEl.style.left     = savedLeft;
     liveEl.style.top      = savedTop;
@@ -8194,10 +8230,6 @@ async function captureWordDocPageForTemplate(arrayBuffer) {
     liveEl.style.visibility = savedVisibility;
     liveEl.style.overflow = savedOverflow || 'visible';
     liveEl.style.height   = '';
-    captureEl.style.width = savedCaptureWidth;
-    captureEl.style.height = savedCaptureHeight;
-    captureEl.style.minHeight = savedCaptureMinHeight;
-    captureEl.style.overflow = savedCaptureOverflow;
   }
 
   if (!shot || shot.width < 10 || shot.height < 10) {
@@ -8214,7 +8246,6 @@ async function captureWordDocPageForTemplate(arrayBuffer) {
   // which matches TEMPLATE_W × A4_BODY_H exactly (both = 300 DPI A4).
   // If rounding gives ±1 px, stretch-fill to eliminate any grey bars.
   if (shot.width === TEMPLATE_W && shot.height === A4_BODY_H) {
-    removeDocxPreviewChromePixels(shot);
     _docxCaptureCacheKey = cacheKey;
     _docxCaptureCacheCanvas = shot;
     _docxCaptureCacheTrim = detectTopGreySeparatorHeight(shot);
@@ -8228,7 +8259,6 @@ async function captureWordDocPageForTemplate(arrayBuffer) {
   octx.fillRect(0, 0, TEMPLATE_W, A4_BODY_H);
   octx.drawImage(shot, 0, 0, shot.width, shot.height,
                  0, 0, TEMPLATE_W, A4_BODY_H);
-  removeDocxPreviewChromePixels(out);
   _docxCaptureCacheKey = cacheKey;
   _docxCaptureCacheCanvas = out;
   _docxCaptureCacheTrim = detectTopGreySeparatorHeight(out);
