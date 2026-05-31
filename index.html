@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 <head>
 <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
@@ -104,7 +104,7 @@ body { background:var(--offwhite); color:var(--text-primary); font-family:'EB Ga
 /* btn-icon-lock is ALWAYS hidden by default */
 .btn-upload-nav .btn-icon-lock { display:none; }
  
-/* Mobile nav compact mode — triggered on scroll when ILIRH logo appears */
+/* Mobile nav compact mode â€” triggered on scroll when ILIRH logo appears */
 @media (max-width:768px) {
   /* Compact (scrolled): show "Subscribe" only, hide "Join & Subscribe" */
   #main-nav.nav-compact .btn-join-nav .btn-label-full { display:none; }
@@ -305,7 +305,7 @@ footer { background:var(--navy); color:#8fa4bf; padding:36px 32px 20px; margin-t
  
 .lightbox-close:hover { color: #d4af6a; }
  
-/* ── DEEP ZOOM LIGHTBOX UPGRADE ── */
+/* â”€â”€ DEEP ZOOM LIGHTBOX UPGRADE â”€â”€ */
 #image-lightbox { display:none; position:fixed; inset:0; z-index:2000; background:rgba(5,12,24,0.97); overflow:hidden; }
 #image-lightbox.open { display:flex; align-items:center; justify-content:center; }
 .lbx-toolbar { position:absolute; top:0; left:0; right:0; display:flex; align-items:center; justify-content:space-between; padding:14px 20px; background:linear-gradient(rgba(5,12,24,0.9),transparent); z-index:10; }
@@ -328,7 +328,7 @@ footer { background:var(--navy); color:#8fa4bf; padding:36px 32px 20px; margin-t
 #lbx-nav-prev.hidden, #lbx-nav-next.hidden { display:none; }
 #lbx-counter { color:#8fa4bf; font-family:'Lato',sans-serif; font-size:12px; letter-spacing:0.1em; }
  
-/* ── INLINE ARTICLE IMAGE (text-wrap) ── */
+/* â”€â”€ INLINE ARTICLE IMAGE (text-wrap) â”€â”€ */
 .rte-inline-img-wrap {
   float: left;
   margin: 4px 18px 10px 0;
@@ -368,7 +368,7 @@ footer { background:var(--navy); color:#8fa4bf; padding:36px 32px 20px; margin-t
   white-space: normal;
 }
 .rte-inline-img-wrap .rte-img-caption:empty:before {
-  content: 'Add caption…';
+  content: 'Add captionâ€¦';
   color: var(--text-muted);
   opacity: 0.5;
 }
@@ -384,7 +384,7 @@ body.reading-mode .hero-main { border-right:none; padding-right:0; max-width:740
 body.reading-mode #main-content { padding-top:24px; }
 body.reading-mode #main-nav .nav-links a:not([data-cat="about"]):not([data-cat="support"]) { pointer-events:none; opacity:0.4; }
  
-/* ── DARK MODE — comprehensive ── */
+/* â”€â”€ DARK MODE â€” comprehensive â”€â”€ */
 body.dark-mode {
   --offwhite: #0d1624; --cream: #111e2e; --cream-dark: #0a1520;
   --text-primary: #d8e2ee; --text-secondary: #9fb3c8; --text-muted: #607a94;
@@ -410,7 +410,7 @@ body.dark-mode .ticker-bar { background:var(--cream-dark); border-bottom-color:v
 body.dark-mode .ticker-label { background:#1c3560; color:#c8d8ea; }
 body.dark-mode .ticker-text { color:var(--text-secondary); }
  
-/* Nav — already dark, keep gold accent readable */
+/* Nav â€” already dark, keep gold accent readable */
 body.dark-mode #main-nav { background:#050e1a; border-bottom-color:var(--gold); }
 body.dark-mode .nav-links a { color:#8fa8c0; }
 body.dark-mode .nav-links a:hover, body.dark-mode .nav-links a.active { color:var(--gold-light); }
@@ -559,7 +559,7 @@ body.dark-mode .skeleton { background:linear-gradient(90deg,var(--cream-dark) 25
 .mode-btn:hover { background:var(--navy-light); color:#fff; border-color:var(--gold); }
 .mode-btn.active { background:var(--gold); color:var(--navy); border-color:var(--gold); }
  
-/* ── BACK TO TOP ── */
+/* â”€â”€ BACK TO TOP â”€â”€ */
 #back-to-top {
   position:fixed; bottom:24px; left:20px; z-index:900;
   background:var(--navy); border:1px solid rgba(255,255,255,0.15);
@@ -574,13 +574,13 @@ body.dark-mode .skeleton { background:linear-gradient(90deg,var(--cream-dark) 25
 #back-to-top.visible.ui-idle { opacity:0; pointer-events:none; }
 #back-to-top:hover { background:var(--navy-light); border-color:var(--gold); color:#fff; }
  
-/* ── ARTICLE COUNT BADGE on category headers ── */
+/* â”€â”€ ARTICLE COUNT BADGE on category headers â”€â”€ */
 .cat-count { display:inline-flex; align-items:center; justify-content:center;
   background:var(--navy); color:#c5d2e0; font-family:'Lato',sans-serif;
   font-size:10px; font-weight:700; letter-spacing:0.05em;
   min-width:22px; height:18px; padding:0 6px; border-radius:9px; margin-left:8px; vertical-align:middle; }
  
-/* ── PROGRESS BAR (reading progress at top) ── */
+/* â”€â”€ PROGRESS BAR (reading progress at top) â”€â”€ */
 #read-progress-bar {
   position:fixed; top:0; left:0; height:2px; width:0%; z-index:9999;
   background:linear-gradient(90deg, var(--gold), var(--gold-light));
@@ -588,7 +588,7 @@ body.dark-mode .skeleton { background:linear-gradient(90deg,var(--cream-dark) 25
   pointer-events:none;
 }
  
-/* ── MODAL TOOLBAR (copy link, print, font size) ── */
+/* â”€â”€ MODAL TOOLBAR (copy link, print, font size) â”€â”€ */
 .modal-toolbar {
   display:flex; align-items:center; gap:8px; padding:10px 0 14px;
   border-bottom:1px solid var(--border-light); margin-bottom:18px; flex-wrap:wrap;
@@ -606,7 +606,7 @@ body.dark-mode .skeleton { background:linear-gradient(90deg,var(--cream-dark) 25
   letter-spacing:0.06em; margin-left:auto; display:flex; align-items:center; gap:4px; }
 .modal-read-time svg { opacity:0.6; }
  
-/* ── KEYBOARD SHORTCUT HINT (shown once) ── */
+/* â”€â”€ KEYBOARD SHORTCUT HINT (shown once) â”€â”€ */
 #kbd-hint {
   position:fixed; bottom:80px; left:50%; transform:translateX(-50%) translateY(10px);
   background:rgba(10,22,40,0.88); color:#c5d2e0; font-family:'Lato',sans-serif;
@@ -616,11 +616,11 @@ body.dark-mode .skeleton { background:linear-gradient(90deg,var(--cream-dark) 25
 }
 #kbd-hint.visible { opacity:1; transform:translateX(-50%) translateY(0); }
  
-/* ── FONT SIZE CONTROL ── */
+/* â”€â”€ FONT SIZE CONTROL â”€â”€ */
 .modal-content.text-sm { font-size:15px; }
 .modal-content.text-lg { font-size:20px; }
  
-/* ── TOAST NOTIFICATION ── */
+/* â”€â”€ TOAST NOTIFICATION â”€â”€ */
 #toast {
   position:fixed; bottom:76px; left:50%; transform:translateX(-50%) translateY(10px);
   background:var(--navy); color:#f0ebe1; font-family:'Lato',sans-serif;
@@ -631,7 +631,7 @@ body.dark-mode .skeleton { background:linear-gradient(90deg,var(--cream-dark) 25
 }
 #toast.show { opacity:1; transform:translateX(-50%) translateY(0); }
  
-/* ── SHARE ROW in modal ── */
+/* â”€â”€ SHARE ROW in modal â”€â”€ */
 .share-row { display:flex; gap:7px; align-items:center; flex-wrap:wrap; }
 .share-btn {
   display:inline-flex; align-items:center; gap:5px;
@@ -643,7 +643,7 @@ body.dark-mode .skeleton { background:linear-gradient(90deg,var(--cream-dark) 25
 }
 .share-btn:hover { border-color:var(--navy); color:var(--navy); }
  
-/* ── CATEGORY COLOR DOTS ── */
+/* â”€â”€ CATEGORY COLOR DOTS â”€â”€ */
 .cat-dot { display:inline-block; width:7px; height:7px; border-radius:50%; margin-right:5px; vertical-align:middle; flex-shrink:0; }
 .cat-dot-Law { background:#1e3a6e; }
 .cat-dot-Education { background:#2e6b3e; }
@@ -660,18 +660,18 @@ body.dark-mode .cat-count { background:#1c3560; }
 body.dark-mode .share-btn { border-color:var(--border); color:var(--text-muted); }
 body.dark-mode .share-btn:hover { border-color:#8fa8c0; color:#c8d8ea; }
  
-/* ── SKELETON LOADING (fast perceived load) ── */
+/* â”€â”€ SKELETON LOADING (fast perceived load) â”€â”€ */
 .skeleton { background:linear-gradient(90deg,var(--cream-dark) 25%,var(--cream) 50%,var(--cream-dark) 75%); background-size:200% 100%; animation:shimmer 1.4s infinite; border-radius:2px; }
 @keyframes shimmer { 0%{background-position:200% 0} 100%{background-position:-200% 0} }
  
-/* ── SEARCH ICON BUTTON in nav ── */
+/* â”€â”€ SEARCH ICON BUTTON in nav â”€â”€ */
 #search-wrap { position:relative; display:flex; align-items:center; }
 #search-toggle-btn { background:none; border:none; color:#c5d2e0; font-size:0; cursor:pointer; padding:8px 10px; line-height:1; transition:color 0.2s; flex-shrink:0; display:flex; align-items:center; }
 #search-toggle-btn svg { display:block; transition:stroke 0.2s; }
 #search-toggle-btn:hover { color:var(--gold-light); }
 #search-toggle-btn:hover svg { stroke:var(--gold-light); }
  
-/* ── SEARCH POPUP OVERLAY ── */
+/* â”€â”€ SEARCH POPUP OVERLAY â”€â”€ */
 #search-overlay {
   display:none; position:fixed; inset:0; z-index:2200;
   background:rgba(5,12,24,0.88);
@@ -725,7 +725,7 @@ body.dark-mode .share-btn:hover { border-color:#8fa8c0; color:#c8d8ea; }
 .search-no-results { padding:16px; font-family:'Lato',sans-serif; font-size:13px; color:#5a7090; text-align:center; font-style:italic; }
 #search-popup-hint { padding:10px 16px 12px; font-family:'Lato',sans-serif; font-size:10.5px; color:#3a5070; letter-spacing:0.06em; }
  
-/* ── LIKE BUTTON ── */
+/* â”€â”€ LIKE BUTTON â”€â”€ */
 .article-actions { display:flex; align-items:center; gap:12px; margin-top:10px; }
 .like-btn { background:none; border:1px solid var(--border); color:var(--text-muted); font-family:'Lato',sans-serif; font-size:11px; letter-spacing:0.05em; padding:5px 12px; cursor:pointer; transition:all 0.2s; display:inline-flex; align-items:center; gap:5px; border-radius:2px; }
 .like-btn:hover { border-color:var(--gold); color:var(--gold); background:rgba(184,150,62,0.06); }
@@ -735,8 +735,8 @@ body.dark-mode .share-btn:hover { border-color:#8fa8c0; color:#c8d8ea; }
 .like-btn .like-count { font-weight:700; font-size:12px; min-width:10px; text-align:center; transition:color 0.2s; }
 .like-btn .like-label { font-size:10px; letter-spacing:0.08em; text-transform:uppercase; opacity:0.75; }
  
-/* ── SUBSCRIBE POP ── */
-/* Subscribe pop — full overlay, centered on all screens */
+/* â”€â”€ SUBSCRIBE POP â”€â”€ */
+/* Subscribe pop â€” full overlay, centered on all screens */
 #subscribe-pop-overlay { display:none; position:fixed; inset:0; z-index:1200; background:rgba(5,12,24,0.72); align-items:center; justify-content:center; padding:16px; }
 #subscribe-pop-overlay.visible { display:flex; }
 #subscribe-pop { background:var(--offwhite); border-top:4px solid var(--gold); box-shadow:0 16px 64px rgba(0,0,0,0.45); padding:32px 36px 28px; max-width:440px; width:100%; position:relative; opacity:0; transform:translateY(18px) scale(0.97); transition:transform 0.35s cubic-bezier(.22,1,.36,1), opacity 0.35s ease; }
@@ -754,7 +754,7 @@ body.dark-mode .share-btn:hover { border-color:#8fa8c0; color:#c8d8ea; }
 .pop-row button { background:var(--navy); color:#fff; border:none; font-family:'Lato',sans-serif; font-size:11px; font-weight:700; letter-spacing:0.1em; text-transform:uppercase; padding:0 16px; cursor:pointer; transition:background 0.2s; white-space:nowrap; }
 .pop-row button:hover { background:var(--navy-light); }
  
-/* ── EDITORS SPOTLIGHT CAROUSEL ── */
+/* â”€â”€ EDITORS SPOTLIGHT CAROUSEL â”€â”€ */
 #spotlight-section { margin-bottom:36px; padding-bottom:28px; border-bottom:2px solid var(--border); }
 .spotlight-header { display:flex; align-items:center; justify-content:space-between; margin-bottom:16px; border-bottom:2px solid var(--gold); padding-bottom:8px; }
 .spotlight-kicker { font-family:'Lato',sans-serif; font-size:10px; font-weight:700; letter-spacing:0.2em; text-transform:uppercase; color:var(--gold); }
@@ -807,7 +807,7 @@ body.dark-mode .share-btn:hover { border-color:#8fa8c0; color:#c8d8ea; }
   .spotlight-paper-title { font-size:clamp(15px,4vw,20px); }
 }
  
-/* ── HOVER FOOTNOTE ── */
+/* â”€â”€ HOVER FOOTNOTE â”€â”€ */
 .fn-ref { color:var(--navy-light); text-decoration:none; font-size:0.75em; vertical-align:super; cursor:pointer; position:relative; }
 .fn-popup { display:none; position:absolute; bottom:calc(100% + 6px); left:50%; transform:translateX(-50%); background:var(--navy); color:#c5d2e0; font-family:'EB Garamond',serif; font-size:14px; line-height:1.5; padding:10px 14px; border:1px solid var(--gold); width:260px; z-index:800; pointer-events:none; box-shadow:0 4px 20px rgba(0,0,0,0.4); }
 .fn-popup::after { content:''; position:absolute; top:100%; left:50%; transform:translateX(-50%); border:6px solid transparent; border-top-color:var(--gold); }
@@ -844,7 +844,7 @@ body.dark-mode .share-btn:hover { border-color:#8fa8c0; color:#c8d8ea; }
 .sub-remove-btn { background:none; border:1px solid #b91c1c; color:#b91c1c; font-family:'Lato',sans-serif; font-size:9px; font-weight:700; letter-spacing:0.08em; text-transform:uppercase; padding:3px 8px; cursor:pointer; border-radius:1px; flex-shrink:0; transition:background 0.18s,color 0.18s; }
 .sub-remove-btn:hover { background:#b91c1c; color:#fff; }
 
-/* ── MESSAGE SUBSCRIBERS MODAL ── */
+/* â”€â”€ MESSAGE SUBSCRIBERS MODAL â”€â”€ */
 .msg-sub-overlay { display:none; position:fixed; inset:0; background:rgba(5,12,24,0.88); z-index:1200; align-items:center; justify-content:center; padding:16px; }
 .msg-sub-overlay.open { display:flex; }
 .msg-sub-box { background:var(--offwhite); max-width:560px; width:100%; padding:36px 40px 40px; border-top:4px solid var(--gold); position:relative; animation:modalSlideIn 0.28s cubic-bezier(.22,1,.36,1) both; max-height:90vh; overflow-y:auto; }
@@ -912,7 +912,7 @@ body.dark-mode .share-btn:hover { border-color:#8fa8c0; color:#c8d8ea; }
   .articles-row { grid-template-columns:1fr 1fr; }
   }
  
-  /* ── POLICY MODAL ── */
+  /* â”€â”€ POLICY MODAL â”€â”€ */
   .policy-overlay { display:none; position:fixed; inset:0; background:rgba(5,12,24,0.85); z-index:1002; overflow-y:auto; padding:32px 16px; }
   .policy-overlay.open { display:flex; justify-content:center; align-items:flex-start; }
   .policy-box { background:var(--offwhite); max-width:780px; width:100%; padding:48px 52px 52px; position:relative; margin:0 auto; border-top:4px solid var(--gold); }
@@ -930,7 +930,7 @@ body.dark-mode .share-btn:hover { border-color:#8fa8c0; color:#c8d8ea; }
   .contact-email a:hover { color:var(--gold); text-decoration:underline; }
  
  
-  /* ── AUTHOR OWNERSHIP TOGGLE ── */
+  /* â”€â”€ AUTHOR OWNERSHIP TOGGLE â”€â”€ */
 .author-ownership { display:flex; gap:10px; margin-bottom:16px; }
 .ownership-btn { flex:1; padding:9px 12px; border:1px solid var(--border); background:#fff; font-family:'Lato',sans-serif; font-size:11px; font-weight:700; letter-spacing:0.1em; text-transform:uppercase; color:var(--text-muted); cursor:pointer; transition:all 0.18s; text-align:center; }
 .ownership-btn.selected { background:var(--navy); color:#fff; border-color:var(--navy); }
@@ -942,7 +942,7 @@ body.dark-mode .share-btn:hover { border-color:#8fa8c0; color:#c8d8ea; }
 body.dark-mode .ownership-btn { background:#0a1520; color:var(--text-muted); border-color:var(--border); }
 body.dark-mode .ownership-btn.selected { background:#1c3560; color:#c8d8ea; border-color:#1c3560; }
  
-/* ── SILENT PUBLISH CHECKBOX ── */
+/* â”€â”€ SILENT PUBLISH CHECKBOX â”€â”€ */
 .silent-row { display:flex; align-items:center; gap:9px; margin-bottom:16px; padding:10px 13px; background:var(--cream); border:1px solid var(--border-light); cursor:pointer; user-select:none; }
 .silent-row input[type=checkbox] { width:15px; height:15px; accent-color:var(--navy); cursor:pointer; flex-shrink:0; }
 .silent-row label { font-family:'Lato',sans-serif; font-size:11px; font-weight:700; letter-spacing:0.1em; text-transform:uppercase; color:var(--text-secondary); cursor:pointer; }
@@ -967,14 +967,14 @@ body.dark-mode .silent-row label { color:var(--text-secondary); }
  
   @media (min-width:769px) { .nav-links { display:flex !important; overflow-x:auto; } .hamburger { display:none !important; } /* desktop */ }
  
-/* ── PERFORMANCE & UX UPGRADES ── */
+/* â”€â”€ PERFORMANCE & UX UPGRADES â”€â”€ */
  
 /* GPU layers for sticky/fixed elements */
 #main-nav { will-change: transform; transform: translateZ(0); }
 #mode-bar { will-change: transform; }
 #subscribe-pop { will-change: transform, opacity; }
  
-/* Paint containment for card grids — prevents layout/style recalculations */
+/* Paint containment for card grids â€” prevents layout/style recalculations */
 .articles-row { contain: layout style; }
 .category-section { contain: layout; }
 .hero-section { contain: layout; }
@@ -994,7 +994,7 @@ body.dark-mode .silent-row label { color:var(--text-secondary); }
   transform: scale(1);
 }
  
-/* Article card — polished hover with GPU-composited lift */
+/* Article card â€” polished hover with GPU-composited lift */
 .article-card {
   cursor: pointer;
   transition: transform 0.22s cubic-bezier(.25,.46,.45,.94), box-shadow 0.22s ease;
@@ -1045,7 +1045,7 @@ body.dark-mode .silent-row label { color:var(--text-secondary); }
 /* Nav links transition */
 .nav-links a { transition: color 0.18s, border-color 0.18s; }
  
-/* Scroll-fade-in for sections — via IntersectionObserver in JS */
+/* Scroll-fade-in for sections â€” via IntersectionObserver in JS */
 .reveal-on-scroll {
   opacity: 0;
   transform: translateY(14px);
@@ -1078,7 +1078,7 @@ button:focus-visible, a:focus-visible, input:focus-visible {
   outline-offset: 2px;
 }
  
-/* ── DEV CREDIT BAR ── */
+/* â”€â”€ DEV CREDIT BAR â”€â”€ */
 .dev-credit {
   background:#050e1a;
   color:#2e4a62;
@@ -1104,7 +1104,7 @@ button:focus-visible, a:focus-visible, input:focus-visible {
   letter-spacing:clamp(0.1em, 0.5vw, 0.32em);
 }
  
-/* ── TOUCH SWIPE INDICATOR on modal ── */
+/* â”€â”€ TOUCH SWIPE INDICATOR on modal â”€â”€ */
 .modal-swipe-hint {
   display:none;
   text-align:center;
@@ -1135,7 +1135,7 @@ button:focus-visible, a:focus-visible, input:focus-visible {
   .reveal-on-scroll { opacity: 1 !important; }
 }
 
-/* ── SUBMIT ARTICLE PUBLIC OVERLAY ── */
+/* â”€â”€ SUBMIT ARTICLE PUBLIC OVERLAY â”€â”€ */
 .submit-overlay { display:none; position:fixed; inset:0; background:rgba(5,12,24,0.88); z-index:1050; overflow-y:auto; padding:28px 16px; }
 .submit-overlay.open { display:flex; justify-content:center; align-items:flex-start; }
 .submit-box { background:var(--offwhite); max-width:680px; width:100%; padding:36px 44px 44px; position:relative; margin:0 auto; border-top:4px solid var(--gold); animation:modalSlideIn 0.32s cubic-bezier(.22,1,.36,1) both; }
@@ -1164,7 +1164,7 @@ button:focus-visible, a:focus-visible, input:focus-visible {
 .submit-btn-primary:hover { background:var(--navy-light); }
 .submit-btn-primary:disabled { opacity:0.55; cursor:not-allowed; }
 
-/* ── ILIRH PREMIUM SUBMIT BUTTON ── */
+/* â”€â”€ ILIRH PREMIUM SUBMIT BUTTON â”€â”€ */
 .ilirh-submit-btn {
   background: linear-gradient(135deg, var(--navy) 0%, var(--navy-light) 100%) !important;
   color: var(--gold-light) !important;
@@ -1200,7 +1200,7 @@ button:focus-visible, a:focus-visible, input:focus-visible {
 }
 .ilirh-submit-btn:disabled { opacity: 0.55 !important; cursor: not-allowed !important; transform: none !important; }
 
-/* ── RICH TEXT EDITOR ── */
+/* â”€â”€ RICH TEXT EDITOR â”€â”€ */
 .rich-editor-toolbar {
   display: flex; flex-wrap: wrap; gap: 3px; padding: 8px 10px;
   background: var(--cream-dark); border: 1px solid var(--border); border-bottom: none;
@@ -1239,7 +1239,7 @@ body.dark-mode .rich-editor-area { background: #0a1520; color: #c8d8ea; border-c
 body.dark-mode .rich-editor-toolbar { background: #0d1624; border-color: var(--border); }
 body.dark-mode .rte-btn { background: #0a1520; color: #c8d8ea; border-color: var(--border); }
 body.dark-mode .rte-word-counter { background: #0d1624; border-color: var(--border); }
-/* ── WORD DOCUMENT UPLOAD (article body) ── */
+/* â”€â”€ WORD DOCUMENT UPLOAD (article body) â”€â”€ */
 .submit-docx-hint {
   font-family: 'EB Garamond', serif; font-size: 14px; color: var(--text-secondary);
   line-height: 1.55; margin-bottom: 12px;
@@ -1301,7 +1301,7 @@ body.dark-mode .rte-word-counter { background: #0d1624; border-color: var(--bord
   background: #ffffff; overflow: visible;
 }
 #sub-docx-live-preview {
-  /* Off-screen but FULLY laid out — browser must compute width/height */
+  /* Off-screen but FULLY laid out â€” browser must compute width/height */
   position: fixed;
   left: -9999px;
   top: 0;
@@ -1345,7 +1345,7 @@ body.dark-mode .rte-word-counter { background: #0d1624; border-color: var(--bord
 .submit-progress { width:100%; background:var(--cream-dark); height:5px; margin-top:10px; display:none; }
 .submit-progress-fill { height:100%; background:var(--navy); width:0%; transition:width 0.4s; }
 
-/* ── EDITOR TABS (upload panel) ── */
+/* â”€â”€ EDITOR TABS (upload panel) â”€â”€ */
 .editor-tabs { display:flex; border-bottom:2px solid var(--navy); margin-bottom:22px; }
 .editor-tab { flex:1; padding:10px 16px; font-family:'Lato',sans-serif; font-size:11px; font-weight:700; letter-spacing:0.12em; text-transform:uppercase; color:var(--text-muted); border:none; background:none; cursor:pointer; border-bottom:3px solid transparent; margin-bottom:-2px; transition:color 0.2s,border-color 0.2s; text-align:center; }
 .editor-tab.active { color:var(--navy); border-bottom-color:var(--gold); }
@@ -1353,7 +1353,7 @@ body.dark-mode .rte-word-counter { background: #0d1624; border-color: var(--bord
 .editor-panel { display:none; }
 .editor-panel.active { display:block; }
 
-/* ── REVIEW SUBMISSIONS PANEL ── */
+/* â”€â”€ REVIEW SUBMISSIONS PANEL â”€â”€ */
 .review-empty { text-align:center; padding:40px 20px; color:var(--text-muted); font-family:'EB Garamond',serif; font-style:italic; font-size:15px; border:1px dashed var(--border); }
 .review-item { border:1px solid var(--border); padding:16px 18px; margin-bottom:14px; cursor:pointer; transition:border-color 0.2s,background 0.2s; position:relative; }
 .review-item:hover { border-color:var(--navy); background:var(--cream); }
@@ -1362,7 +1362,7 @@ body.dark-mode .rte-word-counter { background: #0d1624; border-color: var(--bord
 .review-item-meta { font-family:'Lato',sans-serif; font-size:11px; color:var(--text-muted); }
 .review-item-new { position:absolute; top:10px; right:12px; background:var(--navy); color:#c9a84c; font-family:'Lato',sans-serif; font-size:9px; font-weight:700; letter-spacing:0.12em; text-transform:uppercase; padding:3px 8px; border-radius:2px; }
 
-/* ── REVIEW DETAIL MODAL (within editor) ── */
+/* â”€â”€ REVIEW DETAIL MODAL (within editor) â”€â”€ */
 .review-detail-overlay { display:none; position:fixed; inset:0; background:rgba(5,12,24,0.9); z-index:1100; overflow-y:auto; padding:24px 16px; }
 .review-detail-overlay.open { display:flex; justify-content:center; align-items:flex-start; }
 .review-detail-box { background:var(--offwhite); max-width:780px; width:100%; padding:32px 40px 44px; position:relative; margin:0 auto; border-top:4px solid var(--navy); animation:modalSlideIn 0.28s cubic-bezier(.22,1,.36,1) both; }
@@ -1418,7 +1418,7 @@ body.dark-mode .review-undertaking-display { background:var(--cream-dark); borde
 body.dark-mode .editor-tab { color:var(--text-muted); }
 body.dark-mode .editor-tab.active { color:#c8d8ea; }
 
-/* ── PREMIUM CARD ENHANCEMENTS ── */
+/* â”€â”€ PREMIUM CARD ENHANCEMENTS â”€â”€ */
 .article-card {
   cursor:pointer;
   transition:transform 0.22s cubic-bezier(.22,1,.36,1), box-shadow 0.22s ease;
@@ -1438,7 +1438,7 @@ body.dark-mode .editor-tab.active { color:#c8d8ea; }
 .card-thumb-wrap img.loaded { opacity:1; }
 .article-card:hover .card-thumb-wrap img.loaded { transform:scale(1.04); }
 
-/* ── SIDEBAR ARTICLE HOVER ── */
+/* â”€â”€ SIDEBAR ARTICLE HOVER â”€â”€ */
 .sidebar-article {
   transition:background 0.18s ease;
   border-radius:1px;
@@ -1446,14 +1446,14 @@ body.dark-mode .editor-tab.active { color:#c8d8ea; }
 }
 .sidebar-article:hover { background:rgba(10,22,40,0.03); }
 
-/* ── HERO IMAGE HOVER ── */
+/* â”€â”€ HERO IMAGE HOVER â”€â”€ */
 .hero-main img { transition:opacity 0.45s ease, transform 0.4s ease; object-position:top center; transform-origin:top center; }
 .hero-main:hover img { transform:scale(1.02); }
 
-/* ── MODAL OPEN/CLOSE animation override for category filter ── */
+/* â”€â”€ MODAL OPEN/CLOSE animation override for category filter â”€â”€ */
 #hero-section { transition:opacity 0.25s ease; }
 
-/* ── MODAL NAV PREV/NEXT ARROWS ── */
+/* â”€â”€ MODAL NAV PREV/NEXT ARROWS â”€â”€ */
 .modal-nav-row {
   display:flex; justify-content:space-between; align-items:center;
   padding:10px 0 2px; gap:8px;
@@ -1471,14 +1471,14 @@ body.dark-mode .editor-tab.active { color:#c8d8ea; }
 }
 
 
-/* ── CARD THUMB CLICK CURSOR (images & PDFs) ── */
+/* â”€â”€ CARD THUMB CLICK CURSOR (images & PDFs) â”€â”€ */
 .card-thumb-wrap { cursor:pointer; }
 .card-thumb-placeholder { cursor:pointer; }
 
-/* ── HERO IMAGE CURSOR ── */
+/* â”€â”€ HERO IMAGE CURSOR â”€â”€ */
 .hero-main img { cursor:pointer; }
 
-/* ══ MASTHEAD SUBMIT CTA ══ */
+/* â•â• MASTHEAD SUBMIT CTA â•â• */
 .masthead-submit-cta {
   display:inline-flex; align-items:center; gap:5px;
   font-family:'Lato',sans-serif; font-size:11px; font-weight:700;
@@ -1509,7 +1509,7 @@ body.dark-mode .editor-tab.active { color:#c8d8ea; }
   .masthead-submit-cta { font-size:10px; padding:6px 14px; letter-spacing:0.07em; }
 }
 
-/* ══ ARTICLE PREVIEW PANEL ══ */
+/* â•â• ARTICLE PREVIEW PANEL â•â• */
 #sub-preview-section {
   display:none;
   margin-top:18px;
@@ -1581,7 +1581,7 @@ body.dark-mode .editor-tab.active { color:#c8d8ea; }
 .btn-preview-confirm:hover { background:var(--navy-light); box-shadow:0 4px 16px rgba(10,22,40,0.22); }
 .btn-preview-confirm:disabled { opacity:0.6; cursor:not-allowed; }
 
-/* ══ MODAL RICH TEXT BODY ══ */
+/* â•â• MODAL RICH TEXT BODY â•â• */
 .modal-rich-body { font-family:'EB Garamond',serif; font-size:18px; line-height:1.85; color:var(--text-secondary); margin-top:8px; }
 .modal-rich-body h2 { font-family:'Playfair Display',serif; font-size:22px; font-weight:700; color:var(--navy); margin:20px 0 10px; border-bottom:1px solid var(--border-light); padding-bottom:6px; }
 .modal-rich-body h3 { font-family:'Playfair Display',serif; font-size:18px; font-weight:700; color:var(--navy); margin:16px 0 8px; }
@@ -1600,7 +1600,7 @@ body.dark-mode .editor-tab.active { color:#c8d8ea; }
   <img src="images/ilirh-website-logo.jpg" alt="ILIR Herald" style="width:100%;height:auto;display:block;">
 </div>
 <style>
-/* ── MASTHEAD LOGO ── */
+/* â”€â”€ MASTHEAD LOGO â”€â”€ */
 .masthead-logo-wrap {
   display:flex; align-items:center; justify-content:center; gap:18px; margin-bottom:10px; flex-wrap:wrap;
 }
@@ -1613,7 +1613,7 @@ body.dark-mode .editor-tab.active { color:#c8d8ea; }
  
 <!-- TOP BAR -->
 <div class="topbar">
-  <span id="live-date">Loading…</span>
+  <span id="live-date">Loadingâ€¦</span>
   <span>Founded by Advocate Dr. Ajay Singh Rathore</span>
   <span>Rajasthan &bull; India</span>
 </div>
@@ -1633,7 +1633,7 @@ body.dark-mode .editor-tab.active { color:#c8d8ea; }
     <hr class="masthead-rule-bot">
     <div class="masthead-meta">
       <span id="live-date-2"></span>
-      <button onclick="openSubmitArticle()" class="masthead-submit-cta"><span class="cta-icon">✍</span>&nbsp;Submit Your Article</button>
+      <button onclick="openSubmitArticle()" class="masthead-submit-cta"><span class="cta-icon">âœ</span>&nbsp;Submit Your Article</button>
       <span>Vol. I &bull; Est. 2026</span>
     </div>
   </div>
@@ -1721,8 +1721,8 @@ body.dark-mode .editor-tab.active { color:#c8d8ea; }
  
 <!-- READING & DARK MODE TOGGLES -->
 <div id="mode-bar">
-  <button class="mode-btn" id="dark-btn" onclick="toggleDark()" title="Dark Mode">🌙 Dark</button>
-  <button class="mode-btn" id="read-btn" onclick="toggleReadMode()" title="Reading Mode">📖 Read</button>
+  <button class="mode-btn" id="dark-btn" onclick="toggleDark()" title="Dark Mode">ðŸŒ™ Dark</button>
+  <button class="mode-btn" id="read-btn" onclick="toggleReadMode()" title="Reading Mode">ðŸ“– Read</button>
 </div>
  
 <!-- SUBSCRIBE POP -->
@@ -1749,7 +1749,7 @@ body.dark-mode .editor-tab.active { color:#c8d8ea; }
     <div class="footer-top">
       <div>
         <div class="footer-brand">ILIRH</div>
-        <p class="footer-desc">The International Legal Inteligencia Research Herald, India is a scholarly publication platform dedicated to legal research, jurisprudence, vedic science, education, cultural discourse, and political commentary — founded and curated by Advocate Dr. Ajay Singh Rathore.</p>
+        <p class="footer-desc">The International Legal Inteligencia Research Herald, India is a scholarly publication platform dedicated to legal research, jurisprudence, vedic science, education, cultural discourse, and political commentary â€” founded and curated by Advocate Dr. Ajay Singh Rathore.</p>
       </div>
       <div class="footer-col">
         <h4>Categories</h4>
@@ -1773,7 +1773,7 @@ body.dark-mode .editor-tab.active { color:#c8d8ea; }
       <p style="display:flex;align-items:center;gap:18px;flex-wrap:wrap;justify-content:flex-end;">
         <span id="visitor-count-display" style="display:inline-flex;align-items:center;gap:6px;font-family:'Lato',sans-serif;font-size:11px;color:#7a90a8;letter-spacing:0.06em;">
           <span style="font-size:13px;">&#128100;</span>
-          <span>Visitors: <strong id="visitor-count-num" style="color:#b5c8da;">—</strong></span>
+          <span>Visitors: <strong id="visitor-count-num" style="color:#b5c8da;">â€”</strong></span>
         </span>
         <span style="color:#3a4e60;">|</span>
         <span>All rights reserved.</span>
@@ -1918,8 +1918,8 @@ body.dark-mode .editor-tab.active { color:#c8d8ea; }
 
     <!-- PUBLISH TAB -->
     <div class="editor-panel active" id="panel-publish">
-    <p class="upload-sub">Upload a PDF/image directly, or upload a Word document to generate a premium article image before publishing.</p>
-    <div class="form-row"><label>Article Title *</label><input type="text" id="up-title" placeholder="Enter the full article title…"></div>
+    <p class="upload-sub">Upload an image directly, or upload a one-page A4 Word/PDF document to generate a premium article image before publishing.</p>
+    <div class="form-row"><label>Article Title *</label><input type="text" id="up-title" placeholder="Enter the full article titleâ€¦"></div>
  
     <!-- Author Ownership -->
     <div class="form-row">
@@ -1939,11 +1939,11 @@ body.dark-mode .editor-tab.active { color:#c8d8ea; }
  
     <div class="form-row"><label>Category *</label>
       <select id="up-category">
-        <option value="">— Select Category —</option>
+        <option value="">â€” Select Category â€”</option>
         <option>Law</option><option>Education</option><option>Vedic Science</option><option>Political</option><option>Gen-Z Desk</option>
       </select>
     </div>
-    <div class="form-row"><label>Brief Description / Abstract</label><textarea id="up-excerpt" placeholder="A short summary (2–3 sentences)…"></textarea></div>
+    <div class="form-row"><label>Brief Description / Abstract</label><textarea id="up-excerpt" placeholder="A short summary (2â€“3 sentences)â€¦"></textarea></div>
     <div class="submit-2col">
       <div class="form-row"><label>Country</label><select id="up-country" onchange="populateStatesFor('up')"><option value="">Select Country</option></select></div>
       <div class="form-row"><label>State / Province</label><select id="up-state" onchange="populateCitiesFor('up')"><option value="">Select State</option></select></div>
@@ -1955,25 +1955,36 @@ body.dark-mode .editor-tab.active { color:#c8d8ea; }
     <div class="form-row">
       <label>Upload Type *</label>
       <div class="upload-mode-row">
-        <button type="button" class="upload-mode-btn selected" id="up-mode-media" onclick="setUploadMode('media')">&#10003; PDF / Image</button>
-        <button type="button" class="upload-mode-btn" id="up-mode-docx" onclick="setUploadMode('docx')">&#10003; Word DOCX</button>
+        <button type="button" class="upload-mode-btn selected" id="up-mode-media" onclick="setUploadMode('media')">&#10003; Image</button>
+        <button type="button" class="upload-mode-btn" id="up-mode-docx" onclick="setUploadMode('docx')">&#10003; Word / PDF A4</button>
       </div>
     </div>
-    <div class="form-row" id="up-media-row"><label>Upload File (PDF or Image) *</label>
+    <div class="form-row" id="up-media-row"><label>Upload Image *</label>
       <div class="drop-zone" id="drop-zone">
-        <input type="file" id="up-file" accept=".pdf,image/*" onchange="handleFileSelect(this)">
-        <div style="font-size:32px;margin-bottom:8px;opacity:0.4;">📄</div>
-        <div>Drag &amp; drop a PDF or image, or click to browse</div>
+        <input type="file" id="up-file" accept="image/*" onchange="handleFileSelect(this)">
+        <div style="font-size:32px;margin-bottom:8px;opacity:0.4;">ðŸ“„</div>
+        <div>Drag &amp; drop an image, or click to browse</div>
         <div class="drop-filename" id="drop-filename"></div>
       </div>
     </div>
  
-    <div class="form-row" id="up-docx-row" style="display:none;"><label>Upload Word Article (.docx) *</label>
+    <div class="form-row" id="up-docx-row" style="display:none;"><label>Upload A4 Article Document *</label>
       <div class="drop-zone" id="up-docx-zone" onclick="document.getElementById('up-docx-file').click()">
-        <input type="file" id="up-docx-file" accept=".docx,application/vnd.openxmlformats-officedocument.wordprocessingml.document" style="display:none;" onchange="handleUpDocxSelect(this)">
+        <input type="file" id="up-docx-file" accept=".docx,.pdf,application/vnd.openxmlformats-officedocument.wordprocessingml.document,application/pdf" style="display:none;" onchange="handleUpDocxSelect(this)">
         <div style="font-size:32px;margin-bottom:8px;opacity:0.4;">&#128196;</div>
-        <div>Upload a single-page A4 Word document to generate the article image</div>
+        <div>Upload a single-page A4 Word or PDF document to generate the article image</div>
         <div class="drop-filename" id="up-docx-filename"></div>
+      </div>
+      <div style="display:flex;align-items:flex-start;gap:18px;margin:14px 0 0;">
+        <div id="up-photo-preview" style="width:72px;height:72px;border:2px solid var(--border);background:var(--cream);border-radius:50%;overflow:hidden;flex-shrink:0;display:flex;align-items:center;justify-content:center;">
+          <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="var(--border)" stroke-width="1.5"><circle cx="12" cy="8" r="4"/><path d="M6 20v-2a6 6 0 0 1 12 0v2"/></svg>
+        </div>
+        <div class="drop-zone" style="flex:1;padding:12px;margin:0;" onclick="document.getElementById('up-photo-file').click()">
+          <input type="file" id="up-photo-file" accept="image/*" style="display:none;" onchange="handleUpPhotoSelect(this)">
+          <div style="font-size:11px;font-weight:700;color:var(--text-secondary);margin-bottom:3px;">Upload author photo</div>
+          <div style="font-size:10px;color:var(--text-muted);">JPG, PNG &nbsp;&bull;&nbsp; Max 2 MB &nbsp;&bull;&nbsp; optional</div>
+          <div class="drop-filename" id="up-photo-filename"></div>
+        </div>
       </div>
     </div>
     <div class="rd-full-preview-wrap" id="up-docx-preview-wrap" style="display:none;">
@@ -2008,7 +2019,7 @@ body.dark-mode .editor-tab.active { color:#c8d8ea; }
     <div class="editor-panel" id="panel-review">
       <p class="upload-sub">Articles submitted by contributors awaiting your editorial review. Click any submission to view details, edit, and publish.</p>
       <div id="review-loading" style="text-align:center;padding:28px;color:var(--text-muted);font-family:'Lato',sans-serif;font-size:12px;display:none;">
-        <div class="spinner" style="margin:0 auto 10px;"></div> Loading submissions…
+        <div class="spinner" style="margin:0 auto 10px;"></div> Loading submissionsâ€¦
       </div>
       <div id="review-list"></div>
     </div><!-- end panel-review -->
@@ -2017,7 +2028,7 @@ body.dark-mode .editor-tab.active { color:#c8d8ea; }
     <div class="editor-panel" id="panel-published">
       <p class="upload-sub">All articles currently published on the Herald. Click any article to delete it if needed.</p>
       <div id="published-loading" style="text-align:center;padding:28px;color:var(--text-muted);font-family:'Lato',sans-serif;font-size:12px;display:none;">
-        <div class="spinner" style="margin:0 auto 10px;"></div> Loading published articles…
+        <div class="spinner" style="margin:0 auto 10px;"></div> Loading published articlesâ€¦
       </div>
       <div id="published-list"></div>
     </div><!-- end panel-published -->
@@ -2029,16 +2040,16 @@ body.dark-mode .editor-tab.active { color:#c8d8ea; }
 <div class="submit-overlay" id="submit-overlay">
   <div class="submit-box" id="submit-box">
     <button class="modal-close" onclick="closeSubmitArticle()">&times;</button>
-    <span class="submit-herald-badge">ILIRH — The International Legal Inteligencia Research Herald, India</span>
+    <span class="submit-herald-badge">ILIRH â€” The International Legal Inteligencia Research Herald, India</span>
     <h2 class="submit-title">Submit Your Article</h2>
     <p class="submit-sub">Submit your original research, analysis, or scholarship for review. Upon acceptance by the Editor-in-Chief, your article will be published and you will receive a Certificate of Publication.</p>
 
     <!-- Certificate info banner -->
     <div style="display:flex;gap:14px;align-items:flex-start;background:var(--cream);border:1px solid var(--border);border-left:4px solid var(--gold);padding:16px 18px;margin-bottom:20px;">
-      <div style="font-size:26px;line-height:1;flex-shrink:0;margin-top:2px;">🏅</div>
+      <div style="font-size:26px;line-height:1;flex-shrink:0;margin-top:2px;">ðŸ…</div>
       <div>
         <p style="font-family:'Lato',sans-serif;font-size:10.5px;font-weight:700;letter-spacing:0.18em;text-transform:uppercase;color:var(--gold);margin-bottom:5px;">Certificate of Publication</p>
-        <p style="font-family:'EB Garamond',serif;font-size:14.5px;color:var(--text-secondary);line-height:1.65;margin:0;">Upon editorial review and approval, accepted articles are formally published on the Herald. The author then receives a <strong style="color:var(--navy);">Certificate of Publication</strong> — a signed, numbered PDF document issued by the Editor-in-Chief — delivered directly to their email address as confirmation of their scholarly contribution.</p>
+        <p style="font-family:'EB Garamond',serif;font-size:14.5px;color:var(--text-secondary);line-height:1.65;margin:0;">Upon editorial review and approval, accepted articles are formally published on the Herald. The author then receives a <strong style="color:var(--navy);">Certificate of Publication</strong> â€” a signed, numbered PDF document issued by the Editor-in-Chief â€” delivered directly to their email address as confirmation of their scholarly contribution.</p>
       </div>
     </div>
 
@@ -2066,7 +2077,7 @@ body.dark-mode .editor-tab.active { color:#c8d8ea; }
         <div class="submit-form-row">
           <label>Occupation / Designation *</label>
           <select id="sub-occupation">
-            <option value="">— Select Occupation —</option>
+            <option value="">â€” Select Occupation â€”</option>
             <optgroup label="Legal Professionals">
               <option>Advocate / Lawyer</option>
               <option>Senior Advocate</option>
@@ -2111,7 +2122,7 @@ body.dark-mode .editor-tab.active { color:#c8d8ea; }
         </div>
         <div class="submit-form-row">
           <label>Institution / Affiliation</label>
-          <input type="text" id="sub-institution" placeholder="University, Court, Organisation…">
+          <input type="text" id="sub-institution" placeholder="University, Court, Organisationâ€¦">
         </div>
       </div>
       <div class="submit-form-row">
@@ -2130,7 +2141,7 @@ body.dark-mode .editor-tab.active { color:#c8d8ea; }
         <div class="submit-form-row">
           <label>Category *</label>
           <select id="sub-category">
-            <option value="">— Select Category —</option>
+            <option value="">â€” Select Category â€”</option>
             <option>Law</option>
             <option>Education</option>
             <option>Vedic Science</option>
@@ -2145,7 +2156,7 @@ body.dark-mode .editor-tab.active { color:#c8d8ea; }
       </div>
       <div class="submit-form-row">
         <label>Abstract / Brief Description *</label>
-        <textarea id="sub-abstract" placeholder="A brief summary of your article (3–5 sentences)…" style="height:90px;"></textarea>
+        <textarea id="sub-abstract" placeholder="A brief summary of your article (3â€“5 sentences)â€¦" style="height:90px;"></textarea>
       </div>
 
       <hr class="submit-rule">
@@ -2155,13 +2166,13 @@ body.dark-mode .editor-tab.active { color:#c8d8ea; }
         <div class="submit-form-row">
           <label>Country *</label>
           <select id="sub-country" onchange="populateStates()">
-            <option value="">— Select Country —</option>
+            <option value="">â€” Select Country â€”</option>
           </select>
         </div>
         <div class="submit-form-row">
           <label>State / Province</label>
           <select id="sub-state" onchange="populateCities()">
-            <option value="">— Select State —</option>
+            <option value="">â€” Select State â€”</option>
           </select>
         </div>
       </div>
@@ -2169,7 +2180,7 @@ body.dark-mode .editor-tab.active { color:#c8d8ea; }
         <div class="submit-form-row">
           <label>City</label>
           <select id="sub-city" onchange="updatePlaceString()">
-            <option value="">— Select City —</option>
+            <option value="">â€” Select City â€”</option>
           </select>
         </div>
         <div class="submit-form-row">
@@ -2180,7 +2191,7 @@ body.dark-mode .editor-tab.active { color:#c8d8ea; }
 
       <hr class="submit-rule">
       <!-- Author Photo -->
-      <div class="submit-section-title">Author Photo <span style="font-weight:400;text-transform:none;letter-spacing:0;font-family:'EB Garamond',serif;font-size:12px;color:var(--text-muted);">(optional — appears on article image)</span></div>
+      <div class="submit-section-title">Author Photo <span style="font-weight:400;text-transform:none;letter-spacing:0;font-family:'EB Garamond',serif;font-size:12px;color:var(--text-muted);">(optional â€” appears on article image)</span></div>
       <div style="display:flex;align-items:flex-start;gap:18px;margin-bottom:14px;">
         <div id="sub-photo-preview" style="width:80px;height:80px;border:2px solid var(--border);background:var(--cream);border-radius:50%;overflow:hidden;flex-shrink:0;display:flex;align-items:center;justify-content:center;">
           <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="var(--border)" stroke-width="1.5"><circle cx="12" cy="8" r="4"/><path d="M6 20v-2a6 6 0 0 1 12 0v2"/></svg>
@@ -2197,12 +2208,12 @@ body.dark-mode .editor-tab.active { color:#c8d8ea; }
 
       <hr class="submit-rule">
       <div class="submit-section-title">Write Your Article *</div>
-      <p class="submit-docx-hint">Write and format your full article in Microsoft Word on a single <strong>A4 page</strong>, then upload the finished <strong>.docx</strong> file here (max 4&nbsp;MB). Your article must fit exactly on one A4 page — it will be placed between the author block and footer without resizing.</p>
+      <p class="submit-docx-hint">Write and format your full article on a single <strong>A4 page</strong>, then upload the finished <strong>Word (.docx)</strong> or <strong>PDF</strong> file here (max 4&nbsp;MB). The page will be placed as-is between the author block and footer.</p>
       <div class="submit-docx-zone" id="sub-docx-zone" onclick="document.getElementById('sub-docx-file').click()">
-        <input type="file" id="sub-docx-file" accept=".docx,application/vnd.openxmlformats-officedocument.wordprocessingml.document" style="display:none;" onchange="handleSubDocxSelect(this)">
+        <input type="file" id="sub-docx-file" accept=".docx,.pdf,application/vnd.openxmlformats-officedocument.wordprocessingml.document,application/pdf" style="display:none;" onchange="handleSubDocxSelect(this)">
         <div style="font-size:28px;margin-bottom:6px;opacity:0.45;">&#128196;</div>
-        <div style="font-size:11px;font-weight:700;color:var(--text-secondary);margin-bottom:3px;">Upload your Word article (.docx)</div>
-        <div style="font-size:10px;color:var(--text-muted);">A4 single page &nbsp;&bull;&nbsp; .docx &nbsp;&bull;&nbsp; Max 4 MB</div>
+        <div style="font-size:11px;font-weight:700;color:var(--text-secondary);margin-bottom:3px;">Upload your article document</div>
+        <div style="font-size:10px;color:var(--text-muted);">A4 single page &nbsp;&bull;&nbsp; .docx or PDF &nbsp;&bull;&nbsp; Max 4 MB</div>
         <div class="submit-docx-filename" id="sub-docx-filename"></div>
       </div>
       <div class="submit-docx-status" id="sub-docx-status"></div>
@@ -2219,7 +2230,7 @@ body.dark-mode .editor-tab.active { color:#c8d8ea; }
         <div id="article-preview-canvas-wrap" onclick="openPreviewLightbox()" title="Click to enlarge">
           <div id="preview-generating">
             <div class="spinner"></div>
-            <span>Generating article image…</span>
+            <span>Generating article imageâ€¦</span>
           </div>
           <img id="article-preview-img" src="" alt="Article Preview" style="display:none;">
         </div>
@@ -2229,9 +2240,9 @@ body.dark-mode .editor-tab.active { color:#c8d8ea; }
           <p><strong>Declaration of Originality:</strong> I hereby solemnly declare that the article submitted is my own original work, has not been published elsewhere, does not infringe any intellectual property right, and that I am the sole/joint author with full authority to submit this work to the International Legal Inteligencia Research Herald, India. I understand that any misrepresentation may result in immediate rejection or retraction.</p>
         </div>
         <div class="preview-action-row">
-          <button type="button" class="btn-preview-edit" onclick="editArticleFromPreview()">← Edit Article</button>
+          <button type="button" class="btn-preview-edit" onclick="editArticleFromPreview()">â† Edit Article</button>
           <button type="button" class="btn-preview-confirm" id="sub-submit-btn" onclick="doSubmitArticle()">
-            <span style="font-size:14px;">✍</span> Confirm &amp; Submit Article
+            <span style="font-size:14px;">âœ</span> Confirm &amp; Submit Article
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
           </button>
         </div>
@@ -2252,7 +2263,7 @@ body.dark-mode .editor-tab.active { color:#c8d8ea; }
 <div class="review-detail-overlay" id="review-detail-overlay" onclick="closeReviewDetailOnBg(event)">
   <div class="review-detail-box">
     <button class="modal-close" onclick="closeReviewDetail()">&times;</button>
-    <div class="review-detail-kicker">Submitted Article — Editorial Review</div>
+    <div class="review-detail-kicker">Submitted Article â€” Editorial Review</div>
     <h2 class="review-detail-title" id="rd-title-display">Article Review</h2>
     <hr style="border:none;border-top:1px solid var(--border);margin-bottom:20px;">
 
@@ -2345,7 +2356,7 @@ body.dark-mode .editor-tab.active { color:#c8d8ea; }
 
     <!-- Rich article body editor (minor text edits) -->
     <div style="margin:16px 0 4px;">
-      <div style="font-family:'Lato',sans-serif;font-size:10px;font-weight:700;letter-spacing:0.14em;text-transform:uppercase;color:var(--text-muted);margin-bottom:6px;">Article Body — minor edits <span style="font-weight:400;text-transform:none;letter-spacing:0;font-family:'EB Garamond',serif;font-size:12px;color:var(--text-muted);">(text, spacing, highlight, justify — then regenerate image)</span></div>
+      <div style="font-family:'Lato',sans-serif;font-size:10px;font-weight:700;letter-spacing:0.14em;text-transform:uppercase;color:var(--text-muted);margin-bottom:6px;">Article Body â€” minor edits <span style="font-weight:400;text-transform:none;letter-spacing:0;font-family:'EB Garamond',serif;font-size:12px;color:var(--text-muted);">(text, spacing, highlight, justify â€” then regenerate image)</span></div>
       <div class="rich-editor-toolbar" id="rd-toolbar" style="border-bottom:1px solid var(--border-light);">
         <button type="button" class="rte-btn rte-btn-sm" onclick="rdRteExec('undo')" title="Undo (Ctrl+Z)">
           <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 14 4 9 9 4"/><path d="M20 20v-7a4 4 0 0 0-4-4H4"/></svg>
@@ -2386,12 +2397,12 @@ body.dark-mode .editor-tab.active { color:#c8d8ea; }
 
     <div class="review-replace-drop" id="rd-replace-drop" style="display:none;">
       <input type="file" id="rd-new-file" accept=".pdf,image/*" onchange="handleRdFileSelect(this)">
-      <span style="font-size:13px;">&#128257; Replace file — drag &amp; drop or click to browse</span>
+      <span style="font-size:13px;">&#128257; Replace file â€” drag &amp; drop or click to browse</span>
       <div style="font-family:'Lato',sans-serif;font-size:10px;margin-top:4px;color:var(--text-muted);" id="rd-new-filename"></div>
     </div>
 
     <div class="review-undertaking-display">
-      <span style="color:var(--navy);font-weight:700;">&#10003; Undertaking Signed</span> — Author has declared this is their original work and is fully authorised to submit it for publication.
+      <span style="color:var(--navy);font-weight:700;">&#10003; Undertaking Signed</span> â€” Author has declared this is their original work and is fully authorised to submit it for publication.
     </div>
 
     <!-- Silent Publish option -->
@@ -2420,7 +2431,7 @@ body.dark-mode .editor-tab.active { color:#c8d8ea; }
     <button class="modal-close" onclick="closeLogin()" style="position:absolute;top:12px;right:16px;">&times;</button>
     <h3>Editor Login</h3>
     <p>Enter your password to access the publishing panel.</p>
-    <input type="password" id="login-pass" placeholder="••••••••" onkeydown="if(event.key==='Enter')doLogin()">
+    <input type="password" id="login-pass" placeholder="â€¢â€¢â€¢â€¢â€¢â€¢â€¢â€¢" onkeydown="if(event.key==='Enter')doLogin()">
     <p class="login-err" id="login-err"></p>
     <button class="btn-primary" onclick="doLogin()">Enter Herald</button>
   </div>
@@ -2445,7 +2456,7 @@ body.dark-mode .editor-tab.active { color:#c8d8ea; }
 const SUPABASE_URL = 'https://mhznyfilbpvyaxeofcgn.supabase.co';
 const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im1oem55ZmlsYnB2eWF4ZW9mY2duIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzkzNzM5NTgsImV4cCI6MjA5NDk0OTk1OH0.HMnfCpOC5XMmhrr5bg4Ov8SZLC8LsAHCPZdj0-7QJCw';
 const SITE_URL = 'https://www.ilirh.in';
-// Password hashed (SHA-256) — not readable from source code
+// Password hashed (SHA-256) â€” not readable from source code
 const PW_HASH='76c96b53edfc33cfeec0c416f0e1a99d8b50ae646d5f5c65ca851fa30a04fe72';
 async function verifyPassword(p){const b=new TextEncoder().encode(p);const h=await crypto.subtle.digest('SHA-256',b);return Array.from(new Uint8Array(h)).map(x=>x.toString(16).padStart(2,'0')).join('')===PW_HASH;}
 async function verifyEditorPassword(pass) {
@@ -2540,7 +2551,7 @@ const headers = {
   'Authorization': 'Bearer ' + SUPABASE_KEY
 };
  
-// ── DATE ──
+// â”€â”€ DATE â”€â”€
 function setDate() {
   const d = new Date();
   const opts = { weekday:'long', year:'numeric', month:'long', day:'numeric' };
@@ -2552,7 +2563,7 @@ function setDate() {
 }
 setDate();
  
-// ── STICKY NAV (throttled via rAF) ──
+// â”€â”€ STICKY NAV (throttled via rAF) â”€â”€
 let _rafNavPending = false;
 function handleNavScroll() {
   if (_rafNavPending) return;
@@ -2570,7 +2581,7 @@ function handleNavScroll() {
 }
 window.addEventListener('scroll', handleNavScroll, { passive: true });
  
-// ── FETCH ARTICLES FROM SUPABASE ──
+// â”€â”€ FETCH ARTICLES FROM SUPABASE â”€â”€
 // Cache fetched articles to avoid redundant requests
 let _lastFetchTime = 0;
 const _FETCH_CACHE_MS = 30000; // 30s
@@ -2605,7 +2616,7 @@ async function fetchArticles(force = false) {
   }
 }
  
-// ── RENDER ──
+// â”€â”€ RENDER â”€â”€
 function render() {
   updateTicker();
   renderHero();
@@ -2693,7 +2704,7 @@ function renderHero() {
           <div class="sidebar-cat">${a.category}</div>
           <div class="sidebar-headline">${esc(a.title)}</div>
           <div class="sidebar-meta">By ${esc(a.author)} &bull; ${formatDate(a.created_at)}</div>
-        </div>`).join('') || '<p style="font-style:italic;color:var(--text-muted);font-size:14px;">More articles coming soon…</p>'}
+        </div>`).join('') || '<p style="font-style:italic;color:var(--text-muted);font-size:14px;">More articles coming soonâ€¦</p>'}
     </div>`;
 }
  
@@ -2768,7 +2779,7 @@ function renderCategories() {
   }, { rootMargin: '200px 0px' });
   wrap.querySelectorAll('.card-thumb-wrap img[data-src]').forEach(img => imgObserver.observe(img));
 
-  // Scroll-reveal only in "all categories" view — avoids blank-on-viewAll bug
+  // Scroll-reveal only in "all categories" view â€” avoids blank-on-viewAll bug
   if (!isSingleCat) {
     const secObserver = new IntersectionObserver((entries, obs) => {
       entries.forEach(e => {
@@ -2820,7 +2831,7 @@ function showMoreCat(cat) {
   }, 80);
 }
  
-// ── FILTER ──
+// â”€â”€ FILTER â”€â”€
 function filterCat(cat) {
   // When returning to all, reset any viewAllCat expanded state
   if (cat === 'all') { Object.keys(_catShowAll).forEach(k => delete _catShowAll[k]); }
@@ -2855,7 +2866,7 @@ function filterCatAndScroll(cat) {
   }));
 }
  
-// ── OPEN ARTICLE ──
+// â”€â”€ OPEN ARTICLE â”€â”€
 async function openArticle(id, navDir, routeOptions) {
   const a = articles.find(x => x.id === id);
   if (!a) return;
@@ -2960,7 +2971,7 @@ async function deleteCurrentArticle() {
   if (!isLoggedIn || !_openArticleId) return;
   if (!confirm('Permanently delete this article? This cannot be undone.')) return;
   const btn = document.getElementById('del-art-btn');
-  btn.disabled = true; btn.textContent = 'Deleting…';
+  btn.disabled = true; btn.textContent = 'Deletingâ€¦';
   try {
     // Find the article to get its file_url for storage deletion
     const article = articles.find(a => a.id === _openArticleId);
@@ -3010,11 +3021,11 @@ async function deleteCurrentArticle() {
     closeModal();
     requestStaticArticleRefresh('article_deleted');
     await fetchArticles(true);
-    showToast('✓ Article deleted successfully', 3000);
+    showToast('âœ“ Article deleted successfully', 3000);
   } catch(e) {
     console.error('Delete error:', e);
-    showToast('✗ Could not delete: ' + e.message, 4000);
-    btn.disabled = false; btn.textContent = '🗑 Delete This Article';
+    showToast('âœ— Could not delete: ' + e.message, 4000);
+    btn.disabled = false; btn.textContent = 'ðŸ—‘ Delete This Article';
   }
 }
 
@@ -3052,7 +3063,7 @@ function closeModal() {
   document.body.style.overflow = '';
   document.getElementById('modal-content').innerHTML = '';
   const db = document.getElementById('del-art-btn');
-  if (db) { db.style.display='none'; db.disabled=false; db.textContent='🗑 Delete This Article'; }
+  if (db) { db.style.display='none'; db.disabled=false; db.textContent='ðŸ—‘ Delete This Article'; }
   const eb = document.getElementById('edit-art-btn');
   if (eb) { eb.style.display='none'; eb.disabled=false; }
   const editorActions = document.getElementById('modal-editor-actions');
@@ -3062,7 +3073,7 @@ function closeModal() {
 }
 function closeModalOnBg(e) { if (e.target === document.getElementById('article-modal')) closeModal(); }
  
-// ── AUTH ──
+// â”€â”€ AUTH â”€â”€
 function openEditorLogin() {
   if (isLoggedIn) { openUpload(); return; }
   document.getElementById('login-overlay').classList.add('open');
@@ -3088,7 +3099,7 @@ async function doLogin() {
   }
 }
  
-// ── AUTHOR OWNERSHIP ──
+// â”€â”€ AUTHOR OWNERSHIP â”€â”€
 let _authorOwnership = 'myself'; // 'myself' | 'other' | 'genz'
 function setOwnership(type) {
   _authorOwnership = type;
@@ -3129,13 +3140,16 @@ function setOwnership(type) {
   }
 }
  
-// ── UPLOAD ──
+// â”€â”€ UPLOAD â”€â”€
 let pendingFile = null;
 let _uploadMode = 'media';
 let _upDocxFile = null;
 let _upDocxArrayBuffer = null;
+let _upPdfArrayBuffer = null;
+let _upArticleDocKind = '';
 let _upArticleBodyHtml = '';
 let _upDocxPreviewDataUrl = null;
+let _upAuthorPhotoData = null;
 let _editArticleId = null;
 let _editArticleExistingFileUrl = null;
 let _editArticleExistingFileType = null;
@@ -3153,8 +3167,11 @@ function closeUpload() {
   pendingFile = null;
   _upDocxFile = null;
   _upDocxArrayBuffer = null;
+  _upPdfArrayBuffer = null;
+  _upArticleDocKind = '';
   _upArticleBodyHtml = '';
   _upDocxPreviewDataUrl = null;
+  _upAuthorPhotoData = null;
   setUploadMode('media');
   _editArticleId = null;
   _editArticleExistingFileUrl = null;
@@ -3173,6 +3190,10 @@ function closeUpload() {
   document.getElementById('up-file').value = '';
   const upDocx = document.getElementById('up-docx-file'); if (upDocx) upDocx.value = '';
   const upDocxFn = document.getElementById('up-docx-filename'); if (upDocxFn) upDocxFn.textContent = '';
+  const upPhotoFile = document.getElementById('up-photo-file'); if (upPhotoFile) upPhotoFile.value = '';
+  const upPhotoFn = document.getElementById('up-photo-filename'); if (upPhotoFn) upPhotoFn.textContent = '';
+  const upPhotoPreview = document.getElementById('up-photo-preview');
+  if (upPhotoPreview) upPhotoPreview.innerHTML = '<svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="var(--border)" stroke-width="1.5"><circle cx="12" cy="8" r="4"/><path d="M6 20v-2a6 6 0 0 1 12 0v2"/></svg>';
   const upPrevWrap = document.getElementById('up-docx-preview-wrap'); if (upPrevWrap) upPrevWrap.style.display = 'none';
   const upPrevImg = document.getElementById('up-docx-preview-img'); if (upPrevImg) upPrevImg.src = '';
   const upPlace = document.getElementById('up-place'); if (upPlace) upPlace.value = '';
@@ -3215,28 +3236,35 @@ async function handleUpDocxSelect(input) {
   if (!file) return;
   if (errEl) errEl.textContent = '';
   try {
-    if (fn) fn.textContent = 'Processing Word document...';
-    const html = await parseWordDocumentFile(file);
+    if (fn) fn.textContent = 'Processing article document...';
+    _subDocxArrayBuffer = null;
+    _subPdfArrayBuffer = null;
+    _subArticleDocKind = '';
+    const html = await parseArticleDocumentFile(file);
     _upDocxFile = file;
+    _upArticleDocKind = _subArticleDocKind || (isPdfFile(file) ? 'pdf' : 'docx');
     _upDocxArrayBuffer = _subDocxArrayBuffer ? _subDocxArrayBuffer.slice(0) : null;
+    _upPdfArrayBuffer = _subPdfArrayBuffer ? _subPdfArrayBuffer.slice(0) : null;
     _upArticleBodyHtml = html;
-    if (fn) fn.textContent = '✓ ' + file.name + ' (' + (file.size / 1024 / 1024).toFixed(2) + ' MB)';
+    if (fn) fn.textContent = 'âœ“ ' + file.name + ' (' + (file.size / 1024 / 1024).toFixed(2) + ' MB)';
     await refreshUpDocxPreview();
   } catch (e) {
     _upDocxFile = null;
     _upDocxArrayBuffer = null;
+    _upPdfArrayBuffer = null;
+    _upArticleDocKind = '';
     _upArticleBodyHtml = '';
     _upDocxPreviewDataUrl = null;
     input.value = '';
     const wrap = document.getElementById('up-docx-preview-wrap'); if (wrap) wrap.style.display = 'none';
-    if (fn) fn.textContent = '✗ ' + (e.message || 'Could not read document');
+    if (fn) fn.textContent = 'âœ— ' + (e.message || 'Could not read document');
   }
 }
 
 async function refreshUpDocxPreview() {
   const wrap = document.getElementById('up-docx-preview-wrap');
   const img = document.getElementById('up-docx-preview-img');
-  if (!_upDocxArrayBuffer || !wrap || !img) return;
+  if ((!_upDocxArrayBuffer && !_upPdfArrayBuffer) || !wrap || !img) return;
   const title = (document.getElementById('up-title')?.value || '').trim() || 'Untitled';
   const author = (document.getElementById('up-author')?.value || '').trim() || 'Author';
   const category = document.getElementById('up-category')?.value || 'Research';
@@ -3245,19 +3273,50 @@ async function refreshUpDocxPreview() {
   img.removeAttribute('src');
   const dataUrl = await generateArticleImage({
     title, author, place, htmlBody: _upArticleBodyHtml,
-    authorPhotoUrl: null, category, occupation: '',
-    docxArrayBuffer: _upDocxArrayBuffer
+    authorPhotoUrl: _upAuthorPhotoData, category, occupation: '',
+    docxArrayBuffer: _upDocxArrayBuffer,
+    pdfArrayBuffer: _upPdfArrayBuffer
   });
   _upDocxPreviewDataUrl = dataUrl;
   img.src = dataUrl;
 }
 
+function handleUpPhotoSelect(input) {
+  const file = input.files && input.files[0];
+  const fn = document.getElementById('up-photo-filename');
+  if (!file) return;
+  if (file.size > 2 * 1024 * 1024) {
+    if (fn) fn.textContent = 'Too large - max 2 MB';
+    input.value = '';
+    return;
+  }
+  const reader = new FileReader();
+  reader.onload = e => {
+    _upAuthorPhotoData = e.target.result;
+    const preview = document.getElementById('up-photo-preview');
+    if (preview) preview.innerHTML = `<img src="${_upAuthorPhotoData}" style="width:100%;height:100%;object-fit:cover;">`;
+    if (fn) fn.textContent = file.name;
+    if (_uploadMode === 'docx' && (_upDocxArrayBuffer || _upPdfArrayBuffer)) refreshUpDocxPreview().catch(err => {
+      const errEl = document.getElementById('up-error');
+      if (errEl) errEl.textContent = err.message || 'Could not refresh preview.';
+    });
+  };
+  reader.readAsDataURL(file);
+}
+
 function handleFileSelect(input) {
   const file = input.files[0];
   if (!file) return;
+  if (!file.type || !file.type.startsWith('image/')) {
+    document.getElementById('drop-filename').textContent = 'Please upload an image file.';
+    document.getElementById('up-error').textContent = 'PDF files now belong in the Word / PDF A4 option.';
+    input.value = '';
+    pendingFile = null;
+    return;
+  }
   const MAX = 3 * 1024 * 1024; // 3 MB
   if (file.size > MAX) {
-    document.getElementById('drop-filename').textContent = '✗ Too large — max 3 MB';
+    document.getElementById('drop-filename').textContent = 'âœ— Too large â€” max 3 MB';
     document.getElementById('up-error').textContent = 'File is ' + (file.size/1024/1024).toFixed(1) + ' MB. Maximum allowed is 3 MB.';
     input.value = '';
     pendingFile = null;
@@ -3265,7 +3324,7 @@ function handleFileSelect(input) {
   }
   pendingFile = file;
   document.getElementById('up-error').textContent = '';
-  document.getElementById('drop-filename').textContent = '✓ ' + file.name + ' (' + (file.size/1024/1024).toFixed(2) + ' MB)';
+  document.getElementById('drop-filename').textContent = 'âœ“ ' + file.name + ' (' + (file.size/1024/1024).toFixed(2) + ' MB)';
 }
 const dz = document.getElementById('drop-zone');
 dz.addEventListener('dragover', e => { e.preventDefault(); dz.classList.add('dragover'); });
@@ -3274,14 +3333,20 @@ dz.addEventListener('drop', e => {
   e.preventDefault(); dz.classList.remove('dragover');
   const file = e.dataTransfer.files[0];
   if (!file) return;
+  if (!file.type || !file.type.startsWith('image/')) {
+    document.getElementById('drop-filename').textContent = 'Please upload an image file.';
+    document.getElementById('up-error').textContent = 'PDF files now belong in the Word / PDF A4 option.';
+    pendingFile = null;
+    return;
+  }
   if (file.size > 3 * 1024 * 1024) {
-    document.getElementById('drop-filename').textContent = '✗ Too large (max 3 MB)';
+    document.getElementById('drop-filename').textContent = 'âœ— Too large (max 3 MB)';
     document.getElementById('up-error').textContent = 'File is ' + (file.size/1024/1024).toFixed(1) + ' MB. Max allowed is 3 MB.';
     return;
   }
   pendingFile = file;
   document.getElementById('up-error').textContent = '';
-  document.getElementById('drop-filename').textContent = '✓ ' + file.name + ' (' + (file.size/1024/1024).toFixed(2) + ' MB)';
+  document.getElementById('drop-filename').textContent = 'âœ“ ' + file.name + ' (' + (file.size/1024/1024).toFixed(2) + ' MB)';
 });
  
 async function publishArticle() {
@@ -3297,15 +3362,15 @@ async function publishArticle() {
   if (!title)  { errEl.textContent = 'Please enter an article title.'; return; }
   if (!author) { errEl.textContent = 'Please enter an author name.'; return; }
   if (!cat)    { errEl.textContent = 'Please select a category.'; return; }
-  if (_uploadMode === 'media' && !_editArticleId && !pendingFile) { errEl.textContent = 'Please upload a PDF or image file.'; return; }
-  if (_uploadMode === 'docx' && !_upDocxArrayBuffer) { errEl.textContent = 'Please upload a Word (.docx) article file.'; return; }
+  if (_uploadMode === 'media' && !_editArticleId && !pendingFile) { errEl.textContent = 'Please upload an image file.'; return; }
+  if (_uploadMode === 'docx' && !_upDocxArrayBuffer && !_upPdfArrayBuffer) { errEl.textContent = 'Please upload a one-page A4 Word or PDF article file.'; return; }
   if (pendingFile && pendingFile.size > 3*1024*1024) { errEl.textContent = 'File exceeds 3 MB limit.'; return; }
   if ((_authorOwnership === 'other' || _authorOwnership === 'genz') && authorEmail && !authorEmail.includes('@')) {
     errEl.textContent = 'Please enter a valid author email.'; return;
   }
  
   const btn = document.getElementById('publish-btn');
-  btn.disabled = true; btn.textContent = 'Uploading…';
+  btn.disabled = true; btn.textContent = 'Uploadingâ€¦';
   document.getElementById('progress-bar').style.display = 'block';
   document.getElementById('progress-fill').style.width = '20%';
  
@@ -3314,12 +3379,13 @@ async function publishArticle() {
     let file_url = _editArticleExistingFileUrl || null;
     let file_type = _editArticleExistingFileType || null;
     let article_image_url = _editArticleExistingImageUrl || null;
-    if (_uploadMode === 'docx' && _upDocxArrayBuffer) {
+    if (_uploadMode === 'docx' && (_upDocxArrayBuffer || _upPdfArrayBuffer)) {
       btn.textContent = 'Generating article image...';
       const dataUrl = await generateArticleImage({
         title, author, place, htmlBody: _upArticleBodyHtml,
-        authorPhotoUrl: null, category: cat, occupation: '',
-        docxArrayBuffer: _upDocxArrayBuffer
+        authorPhotoUrl: _upAuthorPhotoData, category: cat, occupation: '',
+        docxArrayBuffer: _upDocxArrayBuffer,
+        pdfArrayBuffer: _upPdfArrayBuffer
       });
       article_image_url = await uploadArticleImageToSupabase(dataUrl);
       file_url = article_image_url;
@@ -3350,11 +3416,11 @@ async function publishArticle() {
     let thumb_url = null;
     if (_uploadMode === 'media' && pendingFile && pendingFile.type === 'application/pdf') {
       try {
-        btn.textContent = 'Generating thumbnail…';
+        btn.textContent = 'Generating thumbnailâ€¦';
         await loadPdfJs();
         const thumbDataUrl = await generatePdfThumbnail(pendingFile);
         if (thumbDataUrl) {
-          btn.textContent = 'Uploading thumbnail…';
+          btn.textContent = 'Uploading thumbnailâ€¦';
           thumb_url = await uploadArticleImageToSupabase(thumbDataUrl);
         }
       } catch(thumbErr) { console.warn('PDF thumbnail failed (non-critical):', thumbErr); }
@@ -3412,8 +3478,8 @@ async function publishArticle() {
     const wasEdit = !!_editArticleId;
     showToast(
       wasEdit
-        ? '✓ Article updated successfully'
-        : (silent ? '✓ Published silently (no subscriber emails sent)' : '✓ Published & subscribers notified'),
+        ? 'âœ“ Article updated successfully'
+        : (silent ? 'âœ“ Published silently (no subscriber emails sent)' : 'âœ“ Published & subscribers notified'),
       3200
     );
     closeUpload();
@@ -3427,7 +3493,7 @@ async function publishArticle() {
   }
 }
  
-// ── JOIN / SUBSCRIBE ──
+// â”€â”€ JOIN / SUBSCRIBE â”€â”€
 function openJoin() {
   document.getElementById('join-overlay').classList.add('open');
   document.getElementById('join-success').style.display = 'none';
@@ -3437,7 +3503,7 @@ function openJoin() {
 }
 function closeJoin() { document.getElementById('join-overlay').classList.remove('open'); document.body.style.overflow = ''; }
  
-// ── ADMIN EMAIL NOTIFICATION on new subscriber ──
+// â”€â”€ ADMIN EMAIL NOTIFICATION on new subscriber â”€â”€
 async function notifyAdminNewSubscriber(name, email) {
   const subscribedAt = new Date().toLocaleString('en-IN', {
     weekday: 'long', year: 'numeric', month: 'long', day: 'numeric',
@@ -3459,7 +3525,7 @@ async function notifyAdminNewSubscriber(name, email) {
     console.warn('Admin notification failed:', e);
   }
 }
-// ── CLIENT-SIDE RATE LIMITING ──
+// â”€â”€ CLIENT-SIDE RATE LIMITING â”€â”€
 const _rateLimits = {};
 function rateLimitCheck(key, limitMs) {
   const now = Date.now();
@@ -3470,7 +3536,7 @@ function rateLimitCheck(key, limitMs) {
   return true;
 }
 
-// ── INPUT SANITIZATION ──
+// â”€â”€ INPUT SANITIZATION â”€â”€
 function sanitizeInput(str, maxLen) {
   if (!str) return '';
   return String(str).slice(0, maxLen || 500)
@@ -3519,7 +3585,7 @@ async function doJoin() {
   }
 }
  
-// ── SUBSCRIBERS PANEL ──
+// â”€â”€ SUBSCRIBERS PANEL â”€â”€
 function toggleSubs() {
   const panel = document.getElementById('subs-panel');
   panel.classList.toggle('open');
@@ -3546,9 +3612,9 @@ async function loadSubs() {
 
 async function removeSubscriber(id, email, btn) {
   if (!confirm('Remove ' + email + ' from the subscriber list? They will no longer receive Herald emails.')) return;
-  btn.disabled = true; btn.textContent = '…';
+  btn.disabled = true; btn.textContent = 'â€¦';
   try {
-    // Call edge function which uses SERVICE_ROLE_KEY — bypasses RLS completely
+    // Call edge function which uses SERVICE_ROLE_KEY â€” bypasses RLS completely
     const res = await fetch(SUPABASE_URL + '/functions/v1/notify-subscribers', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + SUPABASE_KEY },
@@ -3559,7 +3625,7 @@ async function removeSubscriber(id, email, btn) {
       throw new Error(json.error || 'Delete failed (status ' + res.status + ')');
     }
 
-    // Confirmed deleted from DB — now update all UI
+    // Confirmed deleted from DB â€” now update all UI
     const row = btn.closest('.sub-item');
     if (row) row.remove();
     _allSubscribersCache = _allSubscribersCache.filter(function(s){ return String(s.id) !== String(id); });
@@ -3578,7 +3644,7 @@ async function removeSubscriber(id, email, btn) {
   }
 }
 
-// ── MESSAGE SUBSCRIBERS ──
+// â”€â”€ MESSAGE SUBSCRIBERS â”€â”€
 let _msgMode = 'all';
 
 function renderMsgSelectList() {
@@ -3671,12 +3737,12 @@ async function doSendMsgSubscribers() {
   }
 }
  
-// ── ABOUT ──
+// â”€â”€ ABOUT â”€â”€
 function openAbout() { document.getElementById('about-overlay').classList.add('open'); document.body.style.overflow = 'hidden'; }
 function closeAbout() { document.getElementById('about-overlay').classList.remove('open'); document.body.style.overflow = ''; }
 function closeAboutOnBg(e) { if (e.target === document.getElementById('about-overlay')) closeAbout(); }
  
-// ── ESC ──
+// â”€â”€ ESC â”€â”€
 function esc(s) {
   if (!s) return '';
   return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
@@ -3703,7 +3769,7 @@ function sanitizeStoredHtml(html) {
 }
  
  
-// ── POLICY / CONTACT MODAL ──
+// â”€â”€ POLICY / CONTACT MODAL â”€â”€
 const policyContent = {
   contributor: {
     kicker: 'Contributor Guidelines',
@@ -3720,11 +3786,11 @@ const policyContent = {
       </ul>
       <h3>Submission Categories</h3>
       <ul>
-        <li><strong>Law</strong> — Case commentaries, legal analysis, constitutional matters, judgments</li>
-        <li><strong>Education</strong> — Legal education, pedagogy, academic research</li>
-        <li><strong>Vedic Science</strong> — Ancient Indian jurisprudence, Vedic knowledge systems</li>
-        <li><strong>Gen-Z Desk</strong> — Youth perspectives, Gen-Z legal awareness, student scholarship</li>
-        <li><strong>Political</strong> — Political analysis, governance, policy commentary</li>
+        <li><strong>Law</strong> â€” Case commentaries, legal analysis, constitutional matters, judgments</li>
+        <li><strong>Education</strong> â€” Legal education, pedagogy, academic research</li>
+        <li><strong>Vedic Science</strong> â€” Ancient Indian jurisprudence, Vedic knowledge systems</li>
+        <li><strong>Gen-Z Desk</strong> â€” Youth perspectives, Gen-Z legal awareness, student scholarship</li>
+        <li><strong>Political</strong> â€” Political analysis, governance, policy commentary</li>
       </ul>
       <h3>Submission Format</h3>
       <ul>
@@ -3737,7 +3803,7 @@ const policyContent = {
       <h3>Editorial Review</h3>
       <p>All submissions are reviewed by the Editor-in-Chief. Accepted articles are published at the sole discretion of the editorial board. The Herald reserves the right to edit submissions for clarity, length, and style while preserving the author's original argument.</p>
       <h3>How to Submit</h3>
-      <p>Send your article to: <strong>adv.dr.ajaysinghrathore777@gmail.com</strong> with the subject line: <em>"Article Submission — [Category] — [Your Name]"</em></p>
+      <p>Send your article to: <strong>adv.dr.ajaysinghrathore777@gmail.com</strong> with the subject line: <em>"Article Submission â€” [Category] â€” [Your Name]"</em></p>
     `
   },
   editorial: {
@@ -3765,15 +3831,15 @@ const policyContent = {
     kicker: 'Contact Us',
     title: 'Get in Touch',
     body: `
-      <p>We welcome inquiries from readers, contributors, legal professionals, academicians, and institutions. Whether you have a submission, a question, or a collaboration proposal — we are happy to hear from you.</p>
+      <p>We welcome inquiries from readers, contributors, legal professionals, academicians, and institutions. Whether you have a submission, a question, or a collaboration proposal â€” we are happy to hear from you.</p>
       <div class="contact-block">
         <p style="font-family:'Lato',sans-serif;font-size:11px;font-weight:700;letter-spacing:0.15em;text-transform:uppercase;color:var(--text-muted);margin-bottom:4px;">Editor-in-Chief</p>
         <p style="font-family:'Cinzel',serif;font-size:17px;font-weight:700;color:var(--navy);margin-bottom:4px;">Advocate Dr. Ajay Singh Rathore</p>
-        <p style="font-family:'EB Garamond',serif;font-size:15px;color:var(--text-secondary);margin-bottom:12px;">Legal Author &nbsp;&bull;&nbsp; Legal Researcher, India<br>Rajasthan High Court, Jaipur<br>Distinguished Member — International Council of Jurists, London, UK</p>
+        <p style="font-family:'EB Garamond',serif;font-size:15px;color:var(--text-secondary);margin-bottom:12px;">Legal Author &nbsp;&bull;&nbsp; Legal Researcher, India<br>Rajasthan High Court, Jaipur<br>Distinguished Member â€” International Council of Jurists, London, UK</p>
         <p style="font-family:'Lato',sans-serif;font-size:11px;font-weight:700;letter-spacing:0.15em;text-transform:uppercase;color:var(--text-muted);margin-bottom:6px;">Email</p>
         <div class="contact-email"><a href="mailto:adv.dr.ajaysinghrathore777@gmail.com">adv.dr.ajaysinghrathore777@gmail.com</a></div>
       </div>
-      <p style="margin-top:20px;">For article submissions, please email with the subject line: <em>"Article Submission — [Category] — [Your Name]"</em></p>
+      <p style="margin-top:20px;">For article submissions, please email with the subject line: <em>"Article Submission â€” [Category] â€” [Your Name]"</em></p>
       <p>For general enquiries, feedback, or partnership proposals, please write to the email above and we will respond at the earliest.</p>
       <div style="margin-top:24px;padding-top:20px;border-top:1px solid var(--border);">
         <p style="font-family:'Lato',sans-serif;font-size:11px;font-weight:700;letter-spacing:0.15em;text-transform:uppercase;color:var(--text-muted);margin-bottom:14px;">Follow Us on Social Media</p>
@@ -3805,13 +3871,13 @@ const policyContent = {
     title: 'Support Us',
     body: `
       <p style="font-family:'EB Garamond',serif;font-size:17px;line-height:1.8;color:var(--text-secondary);margin-bottom:20px;padding:16px 20px;background:var(--cream);border-left:4px solid var(--gold);font-style:italic;">This platform is independently operated and supported voluntarily by readers and well-wishers.</p>
-      <p>Your generous support helps keep The International Legal Inteligencia Research Herald freely accessible to all — students, legal professionals, researchers, and citizens alike. Every contribution, however modest, makes a real difference.</p>
+      <p>Your generous support helps keep The International Legal Inteligencia Research Herald freely accessible to all â€” students, legal professionals, researchers, and citizens alike. Every contribution, however modest, makes a real difference.</p>
  
       <div class="about-section-head" style="font-family:'Playfair Display',serif;font-size:18px;font-weight:700;color:var(--navy);margin:28px 0 12px;padding-bottom:6px;border-bottom:1px solid var(--border);">PayPal</div>
       <div class="contact-block" style="background:var(--cream);border:1px solid var(--border);padding:20px 24px;margin-bottom:20px;">
         <p style="font-family:'Lato',sans-serif;font-size:11px;font-weight:700;letter-spacing:0.15em;text-transform:uppercase;color:var(--text-muted);margin-bottom:8px;">Send via PayPal</p>
         <p style="font-family:'Cinzel',serif;font-size:16px;font-weight:700;color:var(--navy);margin-bottom:8px;"><a href="https://paypal.me/advdrajay777" target="_blank" style="color:var(--navy-light);text-decoration:none;">paypal.me/advdrajay777</a></p>
-        <a href="https://paypal.me/advdrajay777" target="_blank" style="display:inline-block;margin-top:6px;background:#003087;color:#fff;font-family:'Lato',sans-serif;font-size:12px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;padding:9px 20px;text-decoration:none;">Donate via PayPal →</a>
+        <a href="https://paypal.me/advdrajay777" target="_blank" style="display:inline-block;margin-top:6px;background:#003087;color:#fff;font-family:'Lato',sans-serif;font-size:12px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;padding:9px 20px;text-decoration:none;">Donate via PayPal â†’</a>
       </div>
  
       <div class="about-section-head" style="font-family:'Playfair Display',serif;font-size:18px;font-weight:700;color:var(--navy);margin:28px 0 12px;padding-bottom:6px;border-bottom:1px solid var(--border);">UPI Payment</div>
@@ -3819,7 +3885,7 @@ const policyContent = {
         <div style="flex:1;min-width:180px;">
           <p style="font-family:'Lato',sans-serif;font-size:11px;font-weight:700;letter-spacing:0.15em;text-transform:uppercase;color:var(--text-muted);margin-bottom:6px;">UPI ID</p>
           <p style="font-family:'Cinzel',serif;font-size:16px;font-weight:700;color:var(--navy);margin-bottom:4px;">ajaysinghrathore@ptyes</p>
-          <p style="font-family:'EB Garamond',serif;font-size:14px;color:var(--text-secondary);">Use any UPI app — GPay, PhonePe, Paytm, BHIM — to send your contribution.</p>
+          <p style="font-family:'EB Garamond',serif;font-size:14px;color:var(--text-secondary);">Use any UPI app â€” GPay, PhonePe, Paytm, BHIM â€” to send your contribution.</p>
         </div>
         <div style="flex-shrink:0;text-align:center;">
           <img src="images/donateonqrcode.jpeg" alt="UPI QR Code" style="width:160px;height:160px;object-fit:contain;border:2px solid var(--border);background:#fff;padding:6px;display:block;">
@@ -3835,7 +3901,7 @@ const policyContent = {
           <tr style="border-bottom:1px solid var(--border-light);"><td style="padding:7px 0;color:var(--text-muted);font-family:'Lato',sans-serif;font-size:11px;letter-spacing:0.1em;text-transform:uppercase;padding-right:16px;">Bank</td><td style="padding:7px 0;color:var(--text-secondary);">Union Bank of India</td></tr>
           <tr style="border-bottom:1px solid var(--border-light);"><td style="padding:7px 0;color:var(--text-muted);font-family:'Lato',sans-serif;font-size:11px;letter-spacing:0.1em;text-transform:uppercase;padding-right:16px;">Account No.</td><td style="padding:7px 0;color:var(--navy);font-weight:600;letter-spacing:0.05em;">177310100127979</td></tr>
           <tr style="border-bottom:1px solid var(--border-light);"><td style="padding:7px 0;color:var(--text-muted);font-family:'Lato',sans-serif;font-size:11px;letter-spacing:0.1em;text-transform:uppercase;padding-right:16px;">IFSC Code</td><td style="padding:7px 0;color:var(--text-secondary);">UBIN0817732</td></tr>
-          <tr style="border-bottom:1px solid var(--border-light);"><td style="padding:7px 0;color:var(--text-muted);font-family:'Lato',sans-serif;font-size:11px;letter-spacing:0.1em;text-transform:uppercase;padding-right:16px;">Branch</td><td style="padding:7px 0;color:var(--text-secondary);">Sirsi Road Branch, Jaipur, Rajasthan – 302034</td></tr>
+          <tr style="border-bottom:1px solid var(--border-light);"><td style="padding:7px 0;color:var(--text-muted);font-family:'Lato',sans-serif;font-size:11px;letter-spacing:0.1em;text-transform:uppercase;padding-right:16px;">Branch</td><td style="padding:7px 0;color:var(--text-secondary);">Sirsi Road Branch, Jaipur, Rajasthan â€“ 302034</td></tr>
           <tr><td style="padding:7px 0;color:var(--text-muted);font-family:'Lato',sans-serif;font-size:11px;letter-spacing:0.1em;text-transform:uppercase;padding-right:16px;">SWIFT / BIC</td><td style="padding:7px 0;color:var(--text-secondary);">UBININBBXXX</td></tr>
         </table>
       </div>
@@ -3859,7 +3925,7 @@ function closePolicy() {
 }
 function closePolicyOnBg(e) { if (e.target === document.getElementById('policy-overlay')) closePolicy(); }
  
-// ── HAMBURGER NAV ──
+// â”€â”€ HAMBURGER NAV â”€â”€
 function toggleNav() {
   document.getElementById('nav-links').classList.toggle('mob-open');
 }
@@ -3876,7 +3942,7 @@ document.addEventListener('click', function(e) {
   }
 });
  
-// ── VISITOR COUNTER ──
+// â”€â”€ VISITOR COUNTER â”€â”€
 // Counts total unique visitors by session. Only increments once per browser session.
 async function trackAndShowVisitors() {
   try {
@@ -3904,7 +3970,7 @@ async function trackAndShowVisitors() {
 }
 trackAndShowVisitors();
  
-// ── INIT ──
+// â”€â”€ INIT â”€â”€
 try {
   fetchArticles();
 } catch (e) {
@@ -3923,7 +3989,7 @@ window.addEventListener('popstate', () => {
   }
 });
  
-// ── SEARCH POPUP OVERLAY ──
+// â”€â”€ SEARCH POPUP OVERLAY â”€â”€
 function toggleSearch() {
   const overlay = document.getElementById('search-overlay');
   const isOpen = overlay.classList.toggle('open');
@@ -3970,28 +4036,28 @@ function searchArticles(q) {
   dd.classList.add('open');
 }
 function closeSearch() { document.getElementById('search-dropdown').classList.remove('open'); }
-// ── DARK MODE ──
+// â”€â”€ DARK MODE â”€â”€
 function toggleDark() {
   document.body.classList.toggle('dark-mode');
   const btn = document.getElementById('dark-btn');
   btn.classList.toggle('active', document.body.classList.contains('dark-mode'));
-  btn.textContent = document.body.classList.contains('dark-mode') ? '☀️ Light' : '🌙 Dark';
+  btn.textContent = document.body.classList.contains('dark-mode') ? 'â˜€ï¸ Light' : 'ðŸŒ™ Dark';
   localStorage.setItem('ilirh-dark', document.body.classList.contains('dark-mode') ? '1' : '0');
 }
 function toggleReadMode() {
   document.body.classList.toggle('reading-mode');
   const btn = document.getElementById('read-btn');
   btn.classList.toggle('active', document.body.classList.contains('reading-mode'));
-  btn.textContent = document.body.classList.contains('reading-mode') ? '✕ Exit Read' : '📖 Read';
+  btn.textContent = document.body.classList.contains('reading-mode') ? 'âœ• Exit Read' : 'ðŸ“– Read';
 }
 // Restore dark mode preference
 if (localStorage.getItem('ilirh-dark') === '1') {
   document.body.classList.add('dark-mode');
   document.getElementById('dark-btn').classList.add('active');
-  document.getElementById('dark-btn').textContent = '☀️ Light';
+  document.getElementById('dark-btn').textContent = 'â˜€ï¸ Light';
 }
  
-// ── SUBSCRIBE POP (delayed 9s, once per session) ──
+// â”€â”€ SUBSCRIBE POP (delayed 9s, once per session) â”€â”€
 let popShown = sessionStorage.getItem('ilirh-pop');
 if (!popShown) {
   setTimeout(() => {
@@ -4029,9 +4095,9 @@ async function doPopSubscribe() {
     });
     msg.style.color = 'var(--gold)';
     if (res.status === 409) {
-      msg.textContent = '✓ You are already subscribed!';
+      msg.textContent = 'âœ“ You are already subscribed!';
     } else {
-      msg.textContent = '✓ Subscribed! Welcome aboard.';
+      msg.textContent = 'âœ“ Subscribed! Welcome aboard.';
       notifyAdminNewSubscriber(name, email);
     }
     document.getElementById('pop-name').value  = '';
@@ -4040,8 +4106,8 @@ async function doPopSubscribe() {
   } catch(e) { msg.style.color='#a32d2d'; msg.textContent = 'Could not subscribe. Please try again.'; }
 }
  
-// ── LIKE BUTTONS (shared counts via Supabase) ──
-// Global map: articleId → { count, userLiked }
+// â”€â”€ LIKE BUTTONS (shared counts via Supabase) â”€â”€
+// Global map: articleId â†’ { count, userLiked }
 let likesCache = {};
  
 // Fetch all like counts from Supabase on load
@@ -4137,13 +4203,13 @@ function likeHtml(articleId) {
   const liked = data.userLiked;
   const count = data.count;
   return `<button class="like-btn${liked ? ' liked' : ''}" data-article-id="${articleId}" onclick="event.stopPropagation();toggleLike(${articleId},this)" title="${liked ? 'Remove like' : 'Like this article'}">
-    <span class="like-icon">👍</span>
+    <span class="like-icon">ðŸ‘</span>
     <span class="like-count">${count}</span>
     <span class="like-label">likes</span>
   </button>`;
 }
  
-// ── EDITORS SPOTLIGHT ──
+// â”€â”€ EDITORS SPOTLIGHT â”€â”€
 function renderSpotlight() {
   const wrap = document.getElementById('spotlight-section');
   if (!articles.length) return;
@@ -4242,7 +4308,7 @@ function goSpot(i) {
 function prevSpot() { goSpot(Math.max(0, window._spotIdx - 1)); }
 function nextSpot() { goSpot(Math.min(window._spotMax||0, window._spotIdx + 1)); }
  
-// ── DEEP ZOOM LIGHTBOX ──
+// â”€â”€ DEEP ZOOM LIGHTBOX â”€â”€
 let _lbxScale = 1, _lbxX = 0, _lbxY = 0;
 let _lbxDragging = false, _lbxLastX = 0, _lbxLastY = 0;
 let _lbxPinchDist = null, _lbxPinchMidX = 0, _lbxPinchMidY = 0;
@@ -4367,11 +4433,11 @@ document.addEventListener('keydown', e => {
   if (e.key==='0') lbxReset();
 });
  
-// Legacy compat — keep old function names pointing to new engine
+// Legacy compat â€” keep old function names pointing to new engine
 function openLightboxFromImg(el) { openLightbox(el.src, [el.src], 0); }
 function toggleZoom(e) { e.stopPropagation(); _lbxScale===1 ? lbxZoomIn() : lbxReset(); }
  
-// ── TOAST ──
+// â”€â”€ TOAST â”€â”€
 function showToast(msg, duration) {
   const t = document.getElementById('toast');
   t.textContent = msg;
@@ -4379,7 +4445,7 @@ function showToast(msg, duration) {
   setTimeout(() => t.classList.remove('show'), duration || 2600);
 }
  
-// ── BACK TO TOP ──
+// â”€â”€ BACK TO TOP â”€â”€
 (function() {
   const btn = document.getElementById('back-to-top');
   let _btPending = false;
@@ -4393,7 +4459,7 @@ function showToast(msg, duration) {
   }, { passive: true });
 })();
  
-// ── IDLE FADE: mode-bar & back-to-top fade out after 3s of stillness ──
+// â”€â”€ IDLE FADE: mode-bar & back-to-top fade out after 3s of stillness â”€â”€
 (function() {
   const modeBar  = document.getElementById('mode-bar');
   const backTop  = document.getElementById('back-to-top');
@@ -4434,7 +4500,7 @@ function showToast(msg, duration) {
   }, { passive: true });
 })();
  
-// ── KEYBOARD SHORTCUT: "/" to open search ──
+// â”€â”€ KEYBOARD SHORTCUT: "/" to open search â”€â”€
 (function() {
   // Show hint once, briefly
   let hinted = false;
@@ -4464,18 +4530,15 @@ function showToast(msg, duration) {
   });
 })();
  
-// ── COPY ARTICLE LINK ──
+// â”€â”€ COPY ARTICLE LINK â”€â”€
 let _currentArticleTitle = '';
 function copyArticleLink() {
   const btn = document.getElementById('copy-link-btn');
   const url = _openArticleId ? articleUrl(_openArticleId) : SITE_URL + '/';
-  const text = _currentArticleTitle
-    ? `${_currentArticleTitle} — ILIRH\n${url}`
-    : url;
-  navigator.clipboard.writeText(text).then(() => {
+  navigator.clipboard.writeText(url).then(() => {
     btn.classList.add('copied');
     btn.querySelector ? null : null;
-    showToast('✓ Link copied to clipboard');
+    showToast('âœ“ Link copied to clipboard');
     setTimeout(() => btn.classList.remove('copied'), 2000);
   }).catch(() => {
     // Fallback
@@ -4484,21 +4547,21 @@ function copyArticleLink() {
     document.body.appendChild(ta); ta.select();
     document.execCommand('copy');
     document.body.removeChild(ta);
-    showToast('✓ Link copied');
+    showToast('âœ“ Link copied');
   });
 }
  
-// ── PRINT ARTICLE ──
+// â”€â”€ PRINT ARTICLE â”€â”€
 function printArticle() {
   const title = document.getElementById('modal-title').textContent;
   const byline = document.getElementById('modal-byline').innerHTML;
   const content = document.getElementById('modal-content').innerHTML;
   const cat = document.getElementById('modal-cat').textContent;
   // Remove iframes from print content (PDFs don't print well in iframe)
-  const printContent = content.replace(/<iframe[^>]*>.*?<\/iframe>/gi, '<p style="color:#666;font-style:italic;">[PDF attachment — open the article online to view the full document]</p>');
+  const printContent = content.replace(/<iframe[^>]*>.*?<\/iframe>/gi, '<p style="color:#666;font-style:italic;">[PDF attachment â€” open the article online to view the full document]</p>');
 
   // Build the full HTML for the print document
-  const htmlContent = `<!DOCTYPE html><html><head><meta charset="UTF-8"><title>${title} — ILIRH</title>
+  const htmlContent = `<!DOCTYPE html><html><head><meta charset="UTF-8"><title>${title} â€” ILIRH</title>
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=EB+Garamond:ital,wght@0,400;1,400&family=Lato:wght@400;700&display=swap" rel="stylesheet">
     <style>
       body{font-family:'EB Garamond',Georgia,serif;font-size:16px;line-height:1.8;max-width:680px;margin:40px auto;padding:0 24px;color:#111;}
@@ -4517,7 +4580,7 @@ function printArticle() {
     <div class="brand">The International Legal Inteligencia Research Herald, India &nbsp;&bull;&nbsp; ilirh.in</div>
   </body></html>`;
 
-  // ── No-popup approach: inject a hidden iframe into the current page ──
+  // â”€â”€ No-popup approach: inject a hidden iframe into the current page â”€â”€
   // Remove any previous print iframe
   const old = document.getElementById('_print_iframe');
   if (old) old.remove();
@@ -4540,19 +4603,19 @@ function printArticle() {
           win.document.write(htmlContent);
           win.document.close();
         } else {
-          showToast('✗ Print failed. Please allow popups for this site.', 5000);
+          showToast('âœ— Print failed. Please allow popups for this site.', 5000);
         }
       }
     }, 800);
   };
 
-  // Write content into the iframe — no popup needed
+  // Write content into the iframe â€” no popup needed
   iframe.contentDocument.open();
   iframe.contentDocument.write(htmlContent);
   iframe.contentDocument.close();
 }
  
-// ── FONT SIZE CYCLE in modal ──
+// â”€â”€ FONT SIZE CYCLE in modal â”€â”€
 const _fontSizes = ['', 'text-sm', 'text-lg'];
 let _fontSizeIdx = 0;
 const _fontLabels = ['Default', 'Small', 'Large'];
@@ -4565,9 +4628,9 @@ function cycleModalFontSize() {
   showToast('Text size: ' + _fontLabels[_fontSizeIdx]);
 }
  
-// ── SHARE BUTTONS (native share API + WhatsApp + Facebook + LinkedIn + Twitter/X) ──
+// â”€â”€ SHARE BUTTONS (native share API + WhatsApp + Facebook + LinkedIn + Twitter/X) â”€â”€
 function buildShareRow(title, url) {
-  const encoded = encodeURIComponent(title + ' — ILIRH');
+  const encoded = encodeURIComponent(title + ' â€” ILIRH');
   const encodedUrl = encodeURIComponent(url);
   let html = '';
   if (navigator.share) {
@@ -4596,12 +4659,12 @@ function buildShareRow(title, url) {
 }
 function nativeShare(title, url) {
   if (navigator.share) {
-    navigator.share({ title: title + ' — ILIRH', url: url }).catch(() => {});
+    navigator.share({ title: title + ' â€” ILIRH', url: url }).catch(() => {});
   }
 }
  
-// ── ARTICLE NAV: no swipe-to-navigate; use < > buttons instead ──
-// (Touch swipe removed — use modal nav buttons for prev/next article)
+// â”€â”€ ARTICLE NAV: no swipe-to-navigate; use < > buttons instead â”€â”€
+// (Touch swipe removed â€” use modal nav buttons for prev/next article)
  
 const _origOpenArticle = openArticle;
 openArticle = async function(id, navDir, routeOptions) {
@@ -4621,15 +4684,15 @@ openArticle = async function(id, navDir, routeOptions) {
   _fontSizes.forEach(c => { if(c) mc.classList.remove(c); });
 };
  
-// ── CATEGORY COLOR DOTS ──
+// â”€â”€ CATEGORY COLOR DOTS â”€â”€
 const _catColors = {
   'Law': '#1e3a6e', 'Education': '#2e6b3e',
   'Vedic Science': '#8a5c00', 'Gen-Z Desk': '#1a6e4a', 'Political': '#a32d2d'
 };
 
-// ═══════════════════════════════════════════════════════
-// ── SUBMIT ARTICLE (PUBLIC) ──
-// ═══════════════════════════════════════════════════════
+// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+// â”€â”€ SUBMIT ARTICLE (PUBLIC) â”€â”€
+// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
 let _subPendingFile = null;
 
 function openSubmitArticle() {
@@ -4654,8 +4717,8 @@ function resetSubmitForm() {
     const el = document.getElementById(id); if(el) el.value = '';
   });
   const placeEl = document.getElementById('sub-place'); if(placeEl) placeEl.value = '';
-  const stateSel = document.getElementById('sub-state'); if(stateSel) stateSel.innerHTML = '<option value="">— Select State —</option>';
-  const citySel = document.getElementById('sub-city'); if(citySel) citySel.innerHTML = '<option value="">— Select City —</option>';
+  const stateSel = document.getElementById('sub-state'); if(stateSel) stateSel.innerHTML = '<option value="">â€” Select State â€”</option>';
+  const citySel = document.getElementById('sub-city'); if(citySel) citySel.innerHTML = '<option value="">â€” Select City â€”</option>';
   const ck = document.getElementById('sub-undertaking'); if(ck) ck.checked = false;
   const fn = document.getElementById('sub-drop-filename'); if(fn) fn.textContent = '';
   const photoFn = document.getElementById('sub-photo-filename'); if(photoFn) photoFn.textContent = '';
@@ -4665,7 +4728,7 @@ function resetSubmitForm() {
   const fi = document.getElementById('sub-file'); if(fi) fi.value = '';
   const photoFi = document.getElementById('sub-photo-file'); if(photoFi) photoFi.value = '';
   const editor = document.getElementById('sub-editor'); if(editor) { editor.innerHTML = ''; }
-  _subWordDocFile = null; _subArticleBodyHtml = ''; _subDocxArrayBuffer = null;
+  _subWordDocFile = null; _subArticleDocFile = null; _subArticleDocKind = ''; _subArticleBodyHtml = ''; _subDocxArrayBuffer = null; _subPdfArrayBuffer = null;
   clearDocxLivePreview();
   const docxFi = document.getElementById('sub-docx-file'); if(docxFi) docxFi.value = '';
   const docxFn = document.getElementById('sub-docx-filename'); if(docxFn) docxFn.textContent = '';
@@ -4691,13 +4754,13 @@ function resetSubmitForm() {
   if(formBody) formBody.style.display = 'block';
 
   const confBtn = document.getElementById('sub-submit-btn');
-  if(confBtn) { confBtn.disabled = false; confBtn.innerHTML = '<span style="font-size:14px;">✍</span> Confirm &amp; Submit Article <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>'; }
+  if(confBtn) { confBtn.disabled = false; confBtn.innerHTML = '<span style="font-size:14px;">âœ</span> Confirm &amp; Submit Article <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>'; }
   _subPendingFile = null;
   _previewDataUrl = null;
   clearSubmitDraft();
 }
 
-// ── SUBMISSION DRAFT (per-session restore) ──
+// â”€â”€ SUBMISSION DRAFT (per-session restore) â”€â”€
 const _SUB_DRAFT_KEY = 'ilirh-submission-draft-v1';
 let _subDraftSaveTimer = null;
 function _getSubmitDraft() {
@@ -4732,7 +4795,7 @@ function saveSubmitDraft() {
         place: (document.getElementById('sub-place')?.value || ''),
         undertaking: !!document.getElementById('sub-undertaking')?.checked,
         articleHtml: getArticleHtmlBody(),
-        hasDocx: !!_subWordDocFile,
+        hasDocx: !!_subArticleDocFile,
       },
       previewOpen: document.getElementById('sub-preview-section')?.style?.display !== 'none'
     };
@@ -4764,9 +4827,9 @@ function restoreSubmitDraft() {
   const ck = document.getElementById('sub-undertaking'); if (ck) ck.checked = !!f.undertaking;
   if (typeof f.articleHtml === 'string' && f.articleHtml) syncHiddenArticleEditor(f.articleHtml);
   if (typeof updateWordCount === 'function') updateWordCount();
-  if (f.hasDocx) setSubDocxStatus('Draft restored — re-upload your .docx if the file was not saved', false);
+  if (f.hasDocx) setSubDocxStatus('Draft restored - re-upload your Word/PDF article if the file was not saved', false);
   if (d.previewOpen) setTimeout(() => { try { tryAutoShowArticleImage(); } catch {} }, 150);
-  if (typeof showToast === 'function') showToast('✓ Draft restored', 1800);
+  if (typeof showToast === 'function') showToast('âœ“ Draft restored', 1800);
 }
 
 // Wire autosave
@@ -4801,13 +4864,13 @@ function handleSubFileSelect(input) {
   if (!file) return;
   const MAX = 3 * 1024 * 1024; // 3 MB
   if (file.size > MAX) {
-    fn.textContent = '✗ File too large — max 3 MB';
+    fn.textContent = 'âœ— File too large â€” max 3 MB';
     err.textContent = 'File size ' + (file.size/1024/1024).toFixed(1) + ' MB exceeds the 3 MB limit.';
     input.value = ''; _subPendingFile = null; return;
   }
   _subPendingFile = file;
   err.textContent = '';
-  fn.textContent = '✓ ' + file.name + ' (' + (file.size/1024/1024).toFixed(2) + ' MB)';
+  fn.textContent = 'âœ“ ' + file.name + ' (' + (file.size/1024/1024).toFixed(2) + ' MB)';
 }
 // Drag-and-drop for submit form
 (function(){
@@ -4819,10 +4882,10 @@ function handleSubFileSelect(input) {
     e.preventDefault(); dz.classList.remove('dragover');
     const file = e.dataTransfer.files[0]; if(!file) return;
     if (file.size > 3*1024*1024) {
-      document.getElementById('sub-drop-filename').textContent = '✗ Too large (max 3 MB)'; return;
+      document.getElementById('sub-drop-filename').textContent = 'âœ— Too large (max 3 MB)'; return;
     }
     _subPendingFile = file;
-    document.getElementById('sub-drop-filename').textContent = '✓ ' + file.name + ' (' + (file.size/1024/1024).toFixed(2) + ' MB)';
+    document.getElementById('sub-drop-filename').textContent = 'âœ“ ' + file.name + ' (' + (file.size/1024/1024).toFixed(2) + ' MB)';
   });
 })();
 
@@ -4832,7 +4895,7 @@ async function doSubmitArticle() {
   errEl.textContent = '';
   if (!validatePreviewForm(errEl)) return;
   if (!_previewDataUrl) {
-    errEl.textContent = 'Article image not ready. Please upload your A4 Word document and wait for the image to appear.';
+    errEl.textContent = 'Article image not ready. Please upload your A4 Word/PDF document and wait for the image to appear.';
     return;
   }
 
@@ -4850,7 +4913,7 @@ async function doSubmitArticle() {
   const undertaking = document.getElementById('sub-undertaking').checked;
 
   const btn = document.getElementById('sub-submit-btn');
-  btn.disabled = true; btn.textContent = 'Uploading article image…';
+  btn.disabled = true; btn.textContent = 'Uploading article imageâ€¦';
   const progC = document.getElementById('sub-progress-confirm'); progC.style.display = 'block';
   const pfC = document.getElementById('sub-progress-fill-confirm'); pfC.style.width = '10%';
 
@@ -4860,29 +4923,30 @@ async function doSubmitArticle() {
     const imageDataUrl = _previewDataUrl || await generateArticleImage({
       title, author: name, place, htmlBody: articleHtml,
       authorPhotoUrl: _subAuthorPhotoData, category, occupation,
-      docxArrayBuffer: _subDocxArrayBuffer
+      docxArrayBuffer: _subDocxArrayBuffer,
+      pdfArrayBuffer: _subPdfArrayBuffer
     });
     pfC.style.width = '30%';
-    btn.textContent = 'Uploading article image…';
+    btn.textContent = 'Uploading article imageâ€¦';
     articleImageUrl = await uploadArticleImageToSupabase(imageDataUrl);
     if (!articleImageUrl) {
-      throw new Error('Image upload failed. Please try again. If it keeps failing, open DevTools → Console and share the error text.');
+      throw new Error('Image upload failed. Please try again. If it keeps failing, open DevTools â†’ Console and share the error text.');
     }
 
     pfC.style.width = '50%';
-    btn.textContent = 'Uploading Word document…';
+    btn.textContent = 'Uploading source document...';
 
     let article_docx_url = null;
-    if (_subWordDocFile) {
+    if (_subArticleDocFile) {
       try {
-        article_docx_url = await uploadBinaryToArticlesBucket(_subWordDocFile, 'submissions/docx');
+        article_docx_url = await uploadBinaryToArticlesBucket(_subArticleDocFile, _subArticleDocKind === 'pdf' ? 'submissions/pdf' : 'submissions/docx');
       } catch (e) {
-        console.warn('DOCX upload failed:', e);
+        console.warn('Article document upload failed:', e);
       }
     }
 
     pfC.style.width = '55%';
-    btn.textContent = 'Submitting…';
+    btn.textContent = 'Submittingâ€¦';
 
     // 2. Also store author photo URL if uploaded
     let author_photo_url = null;
@@ -4931,7 +4995,7 @@ async function doSubmitArticle() {
         await autoSubscribeSubmitter(name, email);
         notifyAdminNewSubmission(name, email, occupation, institution, title, category, abstract, newSubRetry?.id);
         pfC.style.width = '100%';
-        btn.textContent = 'Saved ✓';
+        btn.textContent = 'Saved âœ“';
         setTimeout(() => showSuccessState(), 600);
         return;
       }
@@ -4953,7 +5017,7 @@ async function doSubmitArticle() {
         await autoSubscribeSubmitter(name, email);
         notifyAdminNewSubmission(name, email, occupation, institution, title, category, abstract, newSubFb?.id);
         pfC.style.width = '100%';
-        btn.textContent = 'Saved ✓';
+        btn.textContent = 'Saved âœ“';
         setTimeout(() => showSuccessState(), 600); return;
       }
       throw new Error('Submission failed. Please try again.');
@@ -4961,7 +5025,7 @@ async function doSubmitArticle() {
     const inserted = await insertRes.json();
     const newSub = Array.isArray(inserted) ? inserted[0] : inserted;
     pfC.style.width = '100%';
-    btn.textContent = 'Saved ✓';
+    btn.textContent = 'Saved âœ“';
     await autoSubscribeSubmitter(name, email);
     notifyAdminNewSubmission(name, email, occupation, institution, title, category, abstract, newSub?.id);
     setTimeout(() => showSuccessState(), 600);
@@ -4969,7 +5033,7 @@ async function doSubmitArticle() {
   } catch(e) {
     errEl.textContent = e.message || 'Submission failed. Please try again.';
     progC.style.display = 'none';
-    btn.disabled = false; btn.innerHTML = '<span style="font-size:14px;">✍</span> Confirm &amp; Submit Article <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>';
+    btn.disabled = false; btn.innerHTML = '<span style="font-size:14px;">âœ</span> Confirm &amp; Submit Article <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>';
   }
 }
 
@@ -5009,13 +5073,13 @@ function showSuccessState() {
   successEl.scrollIntoView({ behavior: 'smooth', block: 'center' });
   _subAuthorPhotoData = null;
   if (typeof showToast === 'function') {
-    showToast('✓ Submission received. We will email you after editorial review.', 3600);
+    showToast('âœ“ Submission received. We will email you after editorial review.', 3600);
   }
 }
 
-// ═══════════════════════════════════════════════════════
-// ── EDITOR TABS ──
-// ═══════════════════════════════════════════════════════
+// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+// â”€â”€ EDITOR TABS â”€â”€
+// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
 let _currentEditorTab = 'publish';
 
 function switchEditorTab(tab) {
@@ -5030,9 +5094,9 @@ function switchEditorTab(tab) {
   if (tab === 'published') loadPublishedArticles();
 }
 
-// ═══════════════════════════════════════════════════════
-// ── REVIEW SUBMISSIONS (EDITOR) ──
-// ═══════════════════════════════════════════════════════
+// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+// â”€â”€ REVIEW SUBMISSIONS (EDITOR) â”€â”€
+// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
 let _submissions = [];
 let _activeSubmission = null;
 let _rdNewFile = null;
@@ -5084,7 +5148,7 @@ function renderSubmissionPage(pendingItems) {
   listEl.innerHTML = slice.map(s => `
     <div class="review-item" onclick="openReviewDetail(${s.id})">
       <span class="review-item-new">&#9679; Pending Review</span>
-      <div class="review-item-cat">${esc(s.category || '')} &nbsp;·&nbsp; ${esc(s.occupation || '')}</div>
+      <div class="review-item-cat">${esc(s.category || '')} &nbsp;Â·&nbsp; ${esc(s.occupation || '')}</div>
       <div class="review-item-title">${esc(s.article_title || '')}</div>
       <div class="review-item-meta">
         By <strong>${esc(s.author_name || '')}</strong> &nbsp;&bull;&nbsp; ${esc(s.author_email || '')}
@@ -5123,7 +5187,7 @@ function openReviewDetail(id) {
   document.getElementById('rd-article-title').value= s.article_title || '';
   document.getElementById('rd-category').value     = s.category || 'Law';
   document.getElementById('rd-abstract').value     = s.abstract || '';
-  document.getElementById('rd-submitted-at').value = s.submitted_at ? formatDate(s.submitted_at) : '—';
+  document.getElementById('rd-submitted-at').value = s.submitted_at ? formatDate(s.submitted_at) : 'â€”';
   setPlaceSelectorsFromString('rd', s.place || '');
   const rdPhotoPrev = document.getElementById('rd-author-photo-preview');
   if (rdPhotoPrev) {
@@ -5170,10 +5234,10 @@ function openReviewDetail(id) {
   // Button state
   const pubBtn = document.getElementById('rd-publish-btn');
   if (s.status === 'published') {
-    pubBtn.textContent = '✓ Already Published';
+    pubBtn.textContent = 'âœ“ Already Published';
     pubBtn.disabled = true;
   } else {
-    pubBtn.textContent = '▶ Publish to Herald & Issue Certificate';
+    pubBtn.textContent = 'â–¶ Publish to Herald & Issue Certificate';
     pubBtn.disabled = false;
   }
 
@@ -5191,13 +5255,24 @@ function closeReviewDetailOnBg(e) {
   if (e.target === document.getElementById('review-detail-overlay')) closeReviewDetail();
 }
 
-function handleRdFileSelect(input) {
+async function handleRdFileSelect(input) {
   const file = input.files[0];
   const fn = document.getElementById('rd-new-filename');
   if (!file) return;
-  if (file.size > 3*1024*1024) { fn.textContent = '✗ Too large (max 3 MB)'; _rdNewFile = null; return; }
-  _rdNewFile = file;
-  fn.textContent = '✓ ' + file.name + ' (' + (file.size/1024/1024).toFixed(2) + ' MB) — will replace on save/publish';
+  try {
+    if (file.size > 3*1024*1024) throw new Error('Too large (max 3 MB)');
+    if (isPdfFile(file)) {
+      fn.textContent = 'Checking one-page A4 PDF...';
+      const ab = await file.arrayBuffer();
+      await validatePdfBufferIsSinglePageA4(ab);
+    }
+    _rdNewFile = file;
+    fn.textContent = 'âœ“ ' + file.name + ' (' + (file.size/1024/1024).toFixed(2) + ' MB) â€” will replace on save/publish';
+  } catch (e) {
+    input.value = '';
+    _rdNewFile = null;
+    fn.textContent = 'âœ— ' + (e.message || 'Invalid file');
+  }
 }
 
 function handleRdAuthorPhotoSelect(input) {
@@ -5219,7 +5294,7 @@ async function saveReviewEdits() {
   if (!_activeSubmission) return;
   const btn = document.getElementById('rd-save-btn');
   const errEl = document.getElementById('rd-error');
-  btn.disabled = true; btn.textContent = 'Saving…'; errEl.textContent = '';
+  btn.disabled = true; btn.textContent = 'Savingâ€¦'; errEl.textContent = '';
   try {
     let file_url = _activeSubmission.file_url;
     let file_type = _activeSubmission.file_type;
@@ -5276,13 +5351,13 @@ async function saveReviewEdits() {
       const rdDocxFn = document.getElementById('rd-docx-filename');
       if (rdDocxFn) rdDocxFn.textContent = 'Word file saved';
     }
-    showToast('✓ Edits saved successfully', 2800);
+    showToast('âœ“ Edits saved successfully', 2800);
     loadSubmissions(); // refresh list
   } catch(e) {
     errEl.textContent = e.message;
     console.error('Save edits error:', e);
   } finally {
-    btn.disabled = false; btn.textContent = '💾 Save Edits';
+    btn.disabled = false; btn.textContent = 'ðŸ’¾ Save Edits';
   }
 }
 
@@ -5290,7 +5365,7 @@ function rdRteExec(cmd, val) {
   const ed = document.getElementById('rd-article-body');
   if (!ed) return;
   ed.focus();
-  // Undo / Redo — no selection logic needed
+  // Undo / Redo â€” no selection logic needed
   if (cmd === 'undo' || cmd === 'redo') {
     document.execCommand(cmd, false, null);
     return;
@@ -5332,7 +5407,7 @@ async function rdRegenerateImage() {
   const errEl = document.getElementById('rd-error');
 
   btn.disabled = true;
-  statusEl.textContent = 'Generating image…';
+  statusEl.textContent = 'Generating imageâ€¦';
   statusEl.style.color = 'var(--text-muted)';
   errEl.textContent = '';
 
@@ -5348,7 +5423,7 @@ async function rdRegenerateImage() {
     const authorPhotoUrl = _rdAuthorPhotoData || _activeSubmission.author_photo_url || null;
 
     // Generate new image from current editor content
-    statusEl.textContent = 'Generating image…';
+    statusEl.textContent = 'Generating imageâ€¦';
     const dataUrl = await generateArticleImage({
       title, author, place, htmlBody: articleHtml,
       authorPhotoUrl, category, occupation,
@@ -5356,9 +5431,9 @@ async function rdRegenerateImage() {
     });
 
     // Upload to Supabase, replacing old file
-    statusEl.textContent = 'Uploading…';
+    statusEl.textContent = 'Uploadingâ€¦';
     const newUrl = await uploadArticleImageToSupabase(dataUrl);
-    if (!newUrl) throw new Error('Upload failed — check console for details');
+    if (!newUrl) throw new Error('Upload failed â€” check console for details');
 
     // Patch the submission record: update file_url + article_body
     const patchRes = await fetch(`${SUPABASE_URL}/rest/v1/article_submissions?id=eq.${_activeSubmission.id}`, {
@@ -5388,9 +5463,9 @@ async function rdRegenerateImage() {
       fullsizeLink.innerHTML = `<a href="${esc(newUrl)}" target="_blank" rel="noopener" style="font-family:'Lato',sans-serif;font-size:11px;color:var(--navy-light);font-weight:700;">&#8599; Open full-size image</a>`;
     }
 
-    statusEl.textContent = '✓ Image replaced successfully';
+    statusEl.textContent = 'âœ“ Image replaced successfully';
     statusEl.style.color = '#27500a';
-    showToast('✓ Article image regenerated & saved', 3000);
+    showToast('âœ“ Article image regenerated & saved', 3000);
     loadSubmissions();
 
   } catch(e) {
@@ -5407,14 +5482,14 @@ async function publishFromReview() {
   const errEl = document.getElementById('rd-error');
   const pub = document.getElementById('rd-publish-btn');
   const silent = document.getElementById('rd-silent') ? document.getElementById('rd-silent').checked : false;
-  pub.disabled = true; pub.textContent = 'Publishing…'; errEl.textContent = '';
+  pub.disabled = true; pub.textContent = 'Publishingâ€¦'; errEl.textContent = '';
 
   const rdEditor = document.getElementById('rd-article-body');
   if (rdEditor) _activeSubmission.article_body = rdEditor.innerHTML;
 
   if (!_activeSubmission.file_url || !(_activeSubmission.file_type || '').startsWith('image/')) {
     errEl.textContent = 'Generate the article image first (Regenerate Article Image), then publish.';
-    pub.disabled = false; pub.textContent = '▶ Publish to Herald & Issue Certificate';
+    pub.disabled = false; pub.textContent = 'â–¶ Publish to Herald & Issue Certificate';
     return;
   }
 
@@ -5427,7 +5502,7 @@ async function publishFromReview() {
 
   if (!authorName || !articleTitle || !cat) {
     errEl.textContent = 'Author name, article title, and category are required before publishing.';
-    pub.disabled = false; pub.textContent = '▶ Publish to Herald & Issue Certificate'; return;
+    pub.disabled = false; pub.textContent = 'â–¶ Publish to Herald & Issue Certificate'; return;
   }
 
   try {
@@ -5470,7 +5545,7 @@ async function publishFromReview() {
       body: JSON.stringify({ status: 'published', article_id: newArticle.id })
     });
 
-    // 3. Notify subscribers (new article) — unless silent publish
+    // 3. Notify subscribers (new article) â€” unless silent publish
     if (!silent) {
       fetch(`${SUPABASE_URL}/functions/v1/notify-subscribers`, {
         method: 'POST',
@@ -5495,15 +5570,15 @@ async function publishFromReview() {
     }
 
     requestStaticArticleRefresh('review_article_published');
-    pub.textContent = '✓ Published!'; pub.disabled = true;
-    showToast(silent ? '✓ Published silently — certificate sent to author' : '✓ Article published & certificate sent to author', 3500);
+    pub.textContent = 'âœ“ Published!'; pub.disabled = true;
+    showToast(silent ? 'âœ“ Published silently â€” certificate sent to author' : 'âœ“ Article published & certificate sent to author', 3500);
     closeReviewDetail();
     await fetchArticles(true);
     loadSubmissions();
 
   } catch(e) {
     errEl.textContent = e.message;
-    pub.disabled = false; pub.textContent = '▶ Publish to Herald & Issue Certificate';
+    pub.disabled = false; pub.textContent = 'â–¶ Publish to Herald & Issue Certificate';
     console.error('Publish from review error:', e);
   }
 }
@@ -5512,7 +5587,7 @@ async function deleteSubmission() {
   if (!_activeSubmission) return;
   if (!confirm('Delete this submission? The author will receive a formal email notifying them their article was not accepted. This cannot be undone.')) return;
   const btn = document.getElementById('rd-delete-btn');
-  btn.disabled = true; btn.textContent = 'Deleting…';
+  btn.disabled = true; btn.textContent = 'Deletingâ€¦';
   try {
     // Send rejection notification email BEFORE deleting
     const sub = _activeSubmission;
@@ -5533,18 +5608,18 @@ async function deleteSubmission() {
       method: 'DELETE', headers: { ...headers, 'Prefer': 'return=minimal' }
     });
     if (!res.ok) throw new Error('Delete failed');
-    showToast('✓ Submission deleted & author notified by email', 3000);
+    showToast('âœ“ Submission deleted & author notified by email', 3000);
     closeReviewDetail();
     loadSubmissions();
   } catch(e) {
     document.getElementById('rd-error').textContent = e.message;
-    btn.disabled = false; btn.textContent = '🗑 Delete';
+    btn.disabled = false; btn.textContent = 'ðŸ—‘ Delete';
   }
 }
 
-// ═══════════════════════════════════════════════════════
-// ── PUBLISHED ARTICLES TAB (editor) ──
-// ═══════════════════════════════════════════════════════
+// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+// â”€â”€ PUBLISHED ARTICLES TAB (editor) â”€â”€
+// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
 let _publishedEditorArticles = [];
 let _publishedEditorPage = 0;
 const _PUBLISHED_EDITOR_PAGE_SIZE = 5;
@@ -5580,7 +5655,7 @@ function renderPublishedArticlesPage() {
       <div class="review-item" style="display:flex;align-items:flex-start;gap:12px;">
         ${thumb ? `<img src="${esc(thumb)}" style="width:64px;height:48px;object-fit:cover;flex-shrink:0;border:1px solid var(--border-light);" loading="lazy">` : `<div style="width:64px;height:48px;background:var(--cream-dark);flex-shrink:0;display:flex;align-items:center;justify-content:center;border:1px solid var(--border-light);"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#0a1628" stroke-width="1.5"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14,2 14,8 20,8"/></svg></div>`}
         <div style="flex:1;min-width:0;">
-          <div class="review-item-cat">${esc(a.category||'')} &nbsp;·&nbsp; ${formatDate(a.created_at)}</div>
+          <div class="review-item-cat">${esc(a.category||'')} &nbsp;Â·&nbsp; ${formatDate(a.created_at)}</div>
           <div class="review-item-title" style="font-size:14px;">${esc(a.title||'')}</div>
           <div class="review-item-meta">By ${esc(a.author||'')}</div>
         </div>
@@ -5627,16 +5702,17 @@ async function editorDeleteArticle(id) {
     const res = await fetch(`${SUPABASE_URL}/rest/v1/articles?id=eq.${id}`, { method:'DELETE', headers:{ ...headers, 'Prefer':'return=minimal' } });
     if (!res.ok) throw new Error('Delete failed');
     requestStaticArticleRefresh('article_deleted');
-    showToast('✓ Article deleted', 2500);
+    showToast('âœ“ Article deleted', 2500);
     loadPublishedArticles();
     fetchArticles(true);
-  } catch(e) { showToast('✗ Could not delete: ' + e.message, 3500); }
+  } catch(e) { showToast('âœ— Could not delete: ' + e.message, 3500); }
 }
 
-// ═══════════════════════════════════════════════════════
-// ── WORD DOCUMENT ARTICLE BODY ──
-// ═══════════════════════════════════════════════════════
+// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+// â”€â”€ WORD DOCUMENT ARTICLE BODY â”€â”€
+// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
 const MAX_DOCX_BYTES = 4 * 1024 * 1024;
+const MAX_ARTICLE_DOC_BYTES = MAX_DOCX_BYTES;
 const ARTICLE_PAGE_BG = '#ffffff';
 /** Word/docx-preview renders at 96 DPI; template canvas is 300 DPI. */
 const DOCX_NATIVE_DPI = 96;
@@ -5644,9 +5720,9 @@ const TEMPLATE_DPI = 300;
 const DOCX_TO_TEMPLATE_SCALE = TEMPLATE_DPI / DOCX_NATIVE_DPI;
 const A4_PAGE_W_NATIVE = Math.round(210 / 25.4 * DOCX_NATIVE_DPI);   // 794 px at 96 dpi
 const A4_PAGE_H_NATIVE = Math.round(297 / 25.4 * DOCX_NATIVE_DPI);   // 1123 px at 96 dpi
-/** Canvas width = exact A4 breadth at 300 DPI — zero extra side margins */
+/** Canvas width = exact A4 breadth at 300 DPI â€” zero extra side margins */
 const TEMPLATE_W = Math.round(A4_PAGE_W_NATIVE * DOCX_TO_TEMPLATE_SCALE); // 2481 px
-/** Exact A4 page height at 300 DPI — body slot between author block and footer */
+/** Exact A4 page height at 300 DPI â€” body slot between author block and footer */
 const A4_BODY_H = Math.round(A4_PAGE_H_NATIVE * DOCX_TO_TEMPLATE_SCALE);  // 3510 px
 const TEMPLATE_FOOTER_H = 184;
 const ARTICLE_BODY_CAPTURE_W = TEMPLATE_W;
@@ -5706,26 +5782,26 @@ async function countDocxPages(arrayBuffer) {
   try {
     const zip = await JSZip.loadAsync(arrayBuffer);
 
-    // ── STRATEGY 1: docProps/app.xml <Pages> ──────────────────────────────
-    // Word writes the true page count here on every save — most reliable source.
+    // â”€â”€ STRATEGY 1: docProps/app.xml <Pages> â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+    // Word writes the true page count here on every save â€” most reliable source.
     let appPageCount = 0;
     try {
       const appXml = await zip.file('docProps/app.xml').async('string');
       const m = appXml.match(/<Pages>(\d+)<\/Pages>/);
       if (m) appPageCount = parseInt(m[1], 10);
-    } catch(e) { /* app.xml absent — fall through */ }
+    } catch(e) { /* app.xml absent â€” fall through */ }
 
-    // ── STRATEGY 2: document.xml break counting ───────────────────────────
+    // â”€â”€ STRATEGY 2: document.xml break counting â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
     const docXml = await zip.file('word/document.xml').async('string');
 
     // Explicit page breaks
     const pageBreaks = (docXml.match(/<w:br[^>]*w:type=["']page["'][^>]*\/?>/g) || []).length;
 
-    // Section breaks — only those that force a new page.
+    // Section breaks â€” only those that force a new page.
     // Rules:
-    //   • Exclude <w:sectPr> inside <w:tc> (table cells) — layout overrides, not page breaks.
-    //   • Exclude the LAST <w:sectPr> in the document — that is the document-level section.
-    //   • Exclude <w:sectPr> that contain w:type val="continuous" — column/layout breaks only.
+    //   â€¢ Exclude <w:sectPr> inside <w:tc> (table cells) â€” layout overrides, not page breaks.
+    //   â€¢ Exclude the LAST <w:sectPr> in the document â€” that is the document-level section.
+    //   â€¢ Exclude <w:sectPr> that contain w:type val="continuous" â€” column/layout breaks only.
     const xmlNoTC = docXml.replace(/<w:tc[\s>][\s\S]*?<\/w:tc>/g, '');
     const sectPrBlocks = xmlNoTC.match(/<w:sectPr[\s>][\s\S]*?<\/w:sectPr>/g) || [];
     const midSects = sectPrBlocks.slice(0, -1); // drop last (doc-level)
@@ -5738,8 +5814,8 @@ async function countDocxPages(arrayBuffer) {
     // app.xml is authoritative when present; XML heuristic can over-count.
     const count = appPageCount > 0 ? appPageCount : xmlCount;
 
-    // ── A4 PAGE SIZE CHECK ─────────────────────────────────────────────────
-    // Standard A4 in twips: 11906 × 16838.  Accept ±500 twips (~8.8 mm).
+    // â”€â”€ A4 PAGE SIZE CHECK â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+    // Standard A4 in twips: 11906 Ã— 16838.  Accept Â±500 twips (~8.8 mm).
     // Use the LAST <w:pgSz> in the doc (= document-level sectPr).
     // If no pgSz present, accept (don't block on ambiguity).
     let isA4 = true;
@@ -5865,8 +5941,11 @@ function normalizeDocxHtmlForTemplate(html) {
 }
 
 let _subWordDocFile = null;
+let _subArticleDocFile = null;
+let _subArticleDocKind = '';
 let _subArticleBodyHtml = '';
 let _subDocxArrayBuffer = null;
+let _subPdfArrayBuffer = null;
 let _rdDocxArrayBuffer = null;
 let _subDocxLiveReady = false;
 let _subDocxLiveBufferKey = '';
@@ -5887,6 +5966,12 @@ function isDocxFile(file) {
   if (!file) return false;
   const n = (file.name || '').toLowerCase();
   return n.endsWith('.docx') || file.type === 'application/vnd.openxmlformats-officedocument.wordprocessingml.document';
+}
+
+function isPdfFile(file) {
+  if (!file) return false;
+  const n = (file.name || '').toLowerCase();
+  return n.endsWith('.pdf') || file.type === 'application/pdf';
 }
 
 function getArticleHtmlBody() {
@@ -6005,17 +6090,17 @@ async function parseWordDocumentFile(file, opts) {
       const deadline = Date.now() + 10000;
       const poll = setInterval(() => {
         if (typeof docx !== 'undefined' && docx.renderAsync) { clearInterval(poll); resolve(); }
-        else if (Date.now() > deadline) { clearInterval(poll); reject(new Error('Word preview library not ready — please refresh the page and try again.')); }
+        else if (Date.now() > deadline) { clearInterval(poll); reject(new Error('Word preview library not ready â€” please refresh the page and try again.')); }
       }, 100);
     });
   }
   const buf = await file.arrayBuffer();
   const { count: pageCount, isA4 } = await countDocxPages(buf);
   if (!isA4) {
-    throw new Error('❌ Wrong page size. Only A4 (210 × 297 mm) documents are accepted. In Microsoft Word: go to Layout → Size → A4, then re-upload.');
+    throw new Error('âŒ Wrong page size. Only A4 (210 Ã— 297 mm) documents are accepted. In Microsoft Word: go to Layout â†’ Size â†’ A4, then re-upload.');
   }
   if (pageCount > 1) {
-    throw new Error('❌ Your document has ' + pageCount + ' pages. Only a single-page A4 document is accepted. Please reduce your content to fit one page and re-upload.');
+    throw new Error('âŒ Your document has ' + pageCount + ' pages. Only a single-page A4 document is accepted. Please reduce your content to fit one page and re-upload.');
   }
 
   const wrapper = await ensureDocxLiveRender(buf);
@@ -6029,14 +6114,60 @@ async function parseWordDocumentFile(file, opts) {
   return normalizeDocxHtmlForTemplate(extractDocxContentFromWrapper(wrapper));
 }
 
+async function parsePdfArticleFile(file) {
+  if (!isPdfFile(file)) throw new Error('Please upload a PDF or .docx article document.');
+  if (file.size > MAX_ARTICLE_DOC_BYTES) {
+    throw new Error('File exceeds 4 MB limit (' + (file.size / 1024 / 1024).toFixed(1) + ' MB).');
+  }
+  const buf = await file.arrayBuffer();
+  await validatePdfBufferIsSinglePageA4(buf);
+  _subPdfArrayBuffer = buf.slice(0);
+  return '<div class="article-docx-body" data-source="pdf">PDF article document loaded.</div>';
+}
+
+async function validatePdfBufferIsSinglePageA4(arrayBuffer) {
+  await loadPdfJs();
+  if (typeof pdfjsLib === 'undefined') {
+    throw new Error('PDF preview library failed to load. Please refresh the page and try again.');
+  }
+  const pdf = await pdfjsLib.getDocument({ data: arrayBuffer.slice(0) }).promise;
+  if (pdf.numPages !== 1) {
+    throw new Error('Only a single-page A4 PDF is accepted. This PDF has ' + pdf.numPages + ' pages.');
+  }
+  const page = await pdf.getPage(1);
+  const viewport = page.getViewport({ scale: 1 });
+  const ratio = viewport.width / viewport.height;
+  const a4Ratio = A4_PAGE_W_NATIVE / A4_PAGE_H_NATIVE;
+  if (Math.abs(ratio - a4Ratio) > 0.035) {
+    throw new Error('Wrong page size. Only A4 portrait PDFs are accepted.');
+  }
+  return true;
+}
+
+async function parseArticleDocumentFile(file) {
+  if (isDocxFile(file)) {
+    const html = await parseWordDocumentFile(file);
+    _subArticleDocKind = 'docx';
+    _subPdfArrayBuffer = null;
+    return html;
+  }
+  if (isPdfFile(file)) {
+    const html = await parsePdfArticleFile(file);
+    _subArticleDocKind = 'pdf';
+    _subDocxArrayBuffer = null;
+    return html;
+  }
+  throw new Error('Please upload a Word (.docx) or PDF article document.');
+}
+
 /**
- * Capture the Word document pixel-perfectly — exact A4 size, zero distortion.
+ * Capture the Word document pixel-perfectly â€” exact A4 size, zero distortion.
  *
  * Pipeline:
- *  1. Lock liveEl to EXACT A4 at 96 DPI  (794 × 1123 px).
+ *  1. Lock liveEl to EXACT A4 at 96 DPI  (794 Ã— 1123 px).
  *  2. Strip all docx-preview chrome (shadow, border, padding).
- *  3. html2canvas scale = 300/96 = 3.125  →  output is 2481 × 3509 px
- *     = TEMPLATE_W × A4_BODY_H.  No separate blit/scale step needed.
+ *  3. html2canvas scale = 300/96 = 3.125  â†’  output is 2481 Ã— 3509 px
+ *     = TEMPLATE_W Ã— A4_BODY_H.  No separate blit/scale step needed.
  *  4. Preserve every font, spacing, image exactly as Word rendered them.
  */
 async function captureWordDocPageForTemplate(arrayBuffer) {
@@ -6050,13 +6181,13 @@ async function captureWordDocPageForTemplate(arrayBuffer) {
   const liveEl = document.getElementById('sub-docx-live-preview');
   if (!liveEl) throw new Error('Word render host missing');
 
-  // ── 1. Lock to exact A4 at 96 DPI ──────────────────────────────────────
+  // â”€â”€ 1. Lock to exact A4 at 96 DPI â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
   liveEl.style.width     = A4_PAGE_W_NATIVE + 'px';   // 794 px
   liveEl.style.height    = A4_PAGE_H_NATIVE + 'px';   // 1123 px
   liveEl.style.minHeight = A4_PAGE_H_NATIVE + 'px';
   liveEl.style.overflow  = 'hidden';
 
-  // ── 2. Render docx ──────────────────────────────────────────────────────
+  // â”€â”€ 2. Render docx â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
   await ensureDocxLiveRender(arrayBuffer);
 
   // Wait until section.docx appears (up to 5 s)
@@ -6069,7 +6200,7 @@ async function captureWordDocPageForTemplate(arrayBuffer) {
     })();
   });
 
-  // ── 3. Strip docx-preview chrome before capture ─────────────────────────
+  // â”€â”€ 3. Strip docx-preview chrome before capture â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
   liveEl.querySelectorAll('.docx-wrapper, .docx-page').forEach(function(el) {
     el.style.boxShadow  = 'none';
     el.style.border     = 'none';
@@ -6084,7 +6215,7 @@ async function captureWordDocPageForTemplate(arrayBuffer) {
     el.style.background = '#ffffff';
   });
 
-  // ── 4. Move into document coordinate space (html2canvas needs this) ─────
+  // â”€â”€ 4. Move into document coordinate space (html2canvas needs this) â”€â”€â”€â”€â”€
   const savedPosition = liveEl.style.position;
   const savedLeft     = liveEl.style.left;
   const savedTop      = liveEl.style.top;
@@ -6103,12 +6234,12 @@ async function captureWordDocPageForTemplate(arrayBuffer) {
   // Two rAF so browser reflows before capture
   await new Promise(r => requestAnimationFrame(() => requestAnimationFrame(r)));
 
-  // ── 5. Capture at scale=3.125 → output = 2481 × 3509 px ────────────────
+  // â”€â”€ 5. Capture at scale=3.125 â†’ output = 2481 Ã— 3509 px â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
   var shot;
   try {
     shot = await html2canvas(liveEl, {
       backgroundColor: '#ffffff',
-      scale:           DOCX_TO_TEMPLATE_SCALE,   // 300/96 ≈ 3.125
+      scale:           DOCX_TO_TEMPLATE_SCALE,   // 300/96 â‰ˆ 3.125
       useCORS:         true,
       allowTaint:      true,
       imageTimeout:    0,
@@ -6183,10 +6314,10 @@ async function captureWordDocPageForTemplate(arrayBuffer) {
     throw new Error('Word page rendered blank. Please re-upload the document and try again.');
   }
 
-  // ── 6. Guarantee exact TEMPLATE_W × A4_BODY_H output ───────────────────
-  // html2canvas with scale=3.125 on 794×1123 produces 2481×3509 —
-  // which matches TEMPLATE_W × A4_BODY_H exactly (both = 300 DPI A4).
-  // If rounding gives ±1 px, stretch-fill to eliminate any grey bars.
+  // â”€â”€ 6. Guarantee exact TEMPLATE_W Ã— A4_BODY_H output â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+  // html2canvas with scale=3.125 on 794Ã—1123 produces 2481Ã—3509 â€”
+  // which matches TEMPLATE_W Ã— A4_BODY_H exactly (both = 300 DPI A4).
+  // If rounding gives Â±1 px, stretch-fill to eliminate any grey bars.
   if (shot.width === TEMPLATE_W && shot.height === A4_BODY_H) {
     _docxCaptureCacheKey = cacheKey;
     _docxCaptureCacheCanvas = shot;
@@ -6204,6 +6335,37 @@ async function captureWordDocPageForTemplate(arrayBuffer) {
   _docxCaptureCacheKey = cacheKey;
   _docxCaptureCacheCanvas = out;
   _docxCaptureCacheTrim = detectTopGreySeparatorHeight(out);
+  return out;
+}
+
+async function capturePdfPageForTemplate(arrayBuffer) {
+  if (!arrayBuffer) throw new Error('PDF document data missing');
+  await loadPdfJs();
+  if (typeof pdfjsLib === 'undefined') throw new Error('PDF preview library failed to load.');
+  const pdf = await pdfjsLib.getDocument({ data: arrayBuffer.slice(0) }).promise;
+  if (pdf.numPages !== 1) throw new Error('Only a single-page A4 PDF is accepted.');
+  const page = await pdf.getPage(1);
+  const baseViewport = page.getViewport({ scale: 1 });
+  const scale = Math.min(TEMPLATE_W / baseViewport.width, A4_BODY_H / baseViewport.height);
+  const viewport = page.getViewport({ scale });
+  const out = document.createElement('canvas');
+  out.width = TEMPLATE_W;
+  out.height = A4_BODY_H;
+  const ctx = out.getContext('2d');
+  ctx.fillStyle = '#ffffff';
+  ctx.fillRect(0, 0, out.width, out.height);
+
+  const pageCanvas = document.createElement('canvas');
+  pageCanvas.width = Math.round(viewport.width);
+  pageCanvas.height = Math.round(viewport.height);
+  const pageCtx = pageCanvas.getContext('2d');
+  pageCtx.fillStyle = '#ffffff';
+  pageCtx.fillRect(0, 0, pageCanvas.width, pageCanvas.height);
+  await page.render({ canvasContext: pageCtx, viewport }).promise;
+
+  const dx = Math.round((TEMPLATE_W - pageCanvas.width) / 2);
+  const dy = Math.round((A4_BODY_H - pageCanvas.height) / 2);
+  ctx.drawImage(pageCanvas, dx, dy);
   return out;
 }
 
@@ -6225,18 +6387,15 @@ function isCanvasMostlyBlank(canvas) {
 }
 
 async function drawArticleBodyOnTemplate(ctx, bodyStartY, htmlBody, layout) {
+  const pdfBuf = layout.pdfArrayBuffer || _subPdfArrayBuffer;
   const docxBuf = layout.docxArrayBuffer || _subDocxArrayBuffer || _rdDocxArrayBuffer;
-  if (!docxBuf) throw new Error('Word document required for article body rendering.');
-  // shot is already TEMPLATE_W × A4_BODY_H — place directly into the body slot
-  const shot = await captureWordDocPageForTemplate(docxBuf);
-  const topTrim = _docxCaptureCacheCanvas === shot ? _docxCaptureCacheTrim : detectTopGreySeparatorHeight(shot);
-  const bottomTrim = detectBottomWhiteBandHeight(shot, topTrim);
-  const sourceH = Math.max(1, A4_BODY_H - topTrim - bottomTrim);
+  if (!pdfBuf && !docxBuf) throw new Error('Word or PDF document required for article body rendering.');
+  const shot = pdfBuf ? await capturePdfPageForTemplate(pdfBuf) : await captureWordDocPageForTemplate(docxBuf);
   ctx.fillStyle = '#ffffff';
   ctx.fillRect(0, bodyStartY, TEMPLATE_W, A4_BODY_H);
-  ctx.drawImage(shot, 0, topTrim, TEMPLATE_W, sourceH,
-                0, bodyStartY, TEMPLATE_W, sourceH);
-  return sourceH;
+  ctx.drawImage(shot, 0, 0, shot.width, shot.height,
+                0, bodyStartY, TEMPLATE_W, A4_BODY_H);
+  return A4_BODY_H;
 }
 
 function detectTopGreySeparatorHeight(canvas) {
@@ -6305,28 +6464,32 @@ async function handleSubDocxSelect(input) {
   const errEl = document.getElementById('sub-error');
   if (!file) return;
   _subWordDocFile = null;
+  _subArticleDocFile = null;
+  _subArticleDocKind = '';
   syncHiddenArticleEditor('');
   _previewDataUrl = null;
   _subDocxArrayBuffer = null;
+  _subPdfArrayBuffer = null;
   clearDocxLivePreview();
   if (fnEl) fnEl.textContent = '';
   if (zone) zone.classList.remove('has-file');
   hideArticleImagePreview();
-  setSubDocxStatus('Processing Word document…', false);
+  setSubDocxStatus('Processing article document...', false);
   if (errEl) errEl.textContent = '';
   try {
-    const html = await parseWordDocumentFile(file);
-    _subWordDocFile = file;
+    const html = await parseArticleDocumentFile(file);
+    _subWordDocFile = isDocxFile(file) ? file : null;
+    _subArticleDocFile = file;
     syncHiddenArticleEditor(html);
-    if (fnEl) fnEl.textContent = '✓ ' + file.name + ' (' + (file.size / 1024 / 1024).toFixed(2) + ' MB)';
+    if (fnEl) fnEl.textContent = 'âœ“ ' + file.name + ' (' + (file.size / 1024 / 1024).toFixed(2) + ' MB)';
     if (zone) zone.classList.add('has-file');
-    setSubDocxStatus('✓ A4 article loaded.', false);
+    setSubDocxStatus('A4 article loaded.', false);
     scheduleSaveSubmitDraft();
     await tryAutoShowArticleImage();
   } catch (e) {
     input.value = '';
     if (errEl) errEl.textContent = '';
-    setSubDocxStatus('✗ ' + (e.message || 'Could not read document'), true);
+    setSubDocxStatus('âœ— ' + (e.message || 'Could not read document'), true);
   }
 }
 
@@ -6366,14 +6529,14 @@ async function handleRdDocxSelect(input) {
     const rdEditor = document.getElementById('rd-article-body');
     if (rdEditor) rdEditor.innerHTML = html;
     if (_activeSubmission) _activeSubmission.article_body = html;
-    if (fn) fn.textContent = '✓ ' + file.name + ' — click “Regenerate Article Image” then Save';
+    if (fn) fn.textContent = 'âœ“ ' + file.name + ' â€” click â€œRegenerate Article Imageâ€ then Save';
     if (errEl) errEl.textContent = '';
-    showToast('✓ Word document loaded — regenerate preview to apply', 3200);
+    showToast('âœ“ Word document loaded â€” regenerate preview to apply', 3200);
     await rdRegenerateImage();
   } catch (e) {
     input.value = '';
     _rdPendingDocxFile = null;
-    if (fn) fn.textContent = '✗ ' + (e.message || 'Invalid file');
+    if (fn) fn.textContent = 'âœ— ' + (e.message || 'Invalid file');
     if (errEl) errEl.textContent = e.message || 'Could not read Word document.';
   }
 }
@@ -6381,7 +6544,7 @@ async function handleRdDocxSelect(input) {
 function rdDownloadWordDoc() {
   const url = _activeSubmission && _activeSubmission.article_docx_url;
   if (!url) {
-    showToast('No Word file on record — ask author to resubmit or use minor edits below', 3200);
+    showToast('No Word file on record â€” ask author to resubmit or use minor edits below', 3200);
     return;
   }
   window.open(url, '_blank', 'noopener');
@@ -6393,11 +6556,11 @@ function rdOpenFullPreviewLightbox() {
   openLightbox(img.src, [img.src], 0);
 }
 
-// ═══════════════════════════════════════════════════════
-// ── RICH TEXT EDITOR ──
-// ═══════════════════════════════════════════════════════
+// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+// â”€â”€ RICH TEXT EDITOR â”€â”€
+// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
 const WORD_LIMIT = 900;
-// ── Alignment map for selection-scoped justify ──
+// â”€â”€ Alignment map for selection-scoped justify â”€â”€
 const RTE_ALIGN_MAP = {
   justifyLeft:   'left',
   justifyCenter: 'center',
@@ -6415,7 +6578,7 @@ function rteExec(cmd, val) {
     const alignVal = RTE_ALIGN_MAP[cmd];
     const sel = window.getSelection();
     if (sel && !sel.isCollapsed && sel.rangeCount > 0) {
-      // There is a real selection — wrap it in a display:inline-block span
+      // There is a real selection â€” wrap it in a display:inline-block span
       const range = sel.getRangeAt(0);
       // Check if selection is entirely inside sub-editor
       if (ed.contains(range.commonAncestorContainer)) {
@@ -6451,7 +6614,7 @@ function rteExec(cmd, val) {
         return;
       }
     }
-    // No selection or outside editor — fall through to execCommand (applies to whole block)
+    // No selection or outside editor â€” fall through to execCommand (applies to whole block)
     document.execCommand(cmd, false, null);
     updateWordCount();
     return;
@@ -6497,7 +6660,7 @@ function rteInsertLink() {
 function rteInsertImageTrigger() {
   const ed = document.getElementById('sub-editor');
   if (ed && ed.querySelectorAll('.rte-inline-img-wrap').length >= 2) {
-    showToast('✗ Maximum 2 images allowed per article', 2800);
+    showToast('âœ— Maximum 2 images allowed per article', 2800);
     return;
   }
   document.getElementById('rte-img-file').value = '';
@@ -6505,7 +6668,7 @@ function rteInsertImageTrigger() {
 }
 function rteInsertImageFromFile(input) {
   const file = input.files[0]; if (!file) return;
-  if (file.size > 1 * 1024 * 1024) { showToast('✗ Image too large — max 1 MB per image', 2800); return; }
+  if (file.size > 1 * 1024 * 1024) { showToast('âœ— Image too large â€” max 1 MB per image', 2800); return; }
   const reader = new FileReader();
   reader.onload = e => {
     const ed = document.getElementById('sub-editor');
@@ -6531,7 +6694,7 @@ function rteInsertImageFromFile(input) {
     removeBtn.className = 'rte-img-remove';
     removeBtn.type = 'button';
     removeBtn.title = 'Remove image';
-    removeBtn.textContent = '✕';
+    removeBtn.textContent = 'âœ•';
     removeBtn.onclick = function(ev) {
       ev.preventDefault(); ev.stopPropagation();
       wrap.parentNode && wrap.parentNode.removeChild(wrap);
@@ -6587,14 +6750,14 @@ function updateWordCount() {
   wire();
 })();
 
-// ═══════════════════════════════════════════════════════
-// ── AUTHOR PHOTO UPLOAD ──
-// ═══════════════════════════════════════════════════════
+// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+// â”€â”€ AUTHOR PHOTO UPLOAD â”€â”€
+// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
 let _subAuthorPhotoData = null; // base64 data URL
 function handleSubPhotoSelect(input) {
   const file = input.files[0]; if (!file) return;
   if (file.size > 2 * 1024 * 1024) {
-    document.getElementById('sub-photo-filename').textContent = '✗ Too large — max 2 MB';
+    document.getElementById('sub-photo-filename').textContent = 'âœ— Too large â€” max 2 MB';
     return;
   }
   const reader = new FileReader();
@@ -6603,14 +6766,14 @@ function handleSubPhotoSelect(input) {
     const preview = document.getElementById('sub-photo-preview');
     if (preview) preview.innerHTML = `<img src="${_subAuthorPhotoData}" style="width:80px;height:80px;object-fit:cover;border-radius:50%;">`;
     const fn = document.getElementById('sub-photo-filename');
-    if (fn) fn.textContent = '✓ ' + file.name;
+    if (fn) fn.textContent = 'âœ“ ' + file.name;
   };
   reader.readAsDataURL(file);
 }
 
-// ═══════════════════════════════════════════════════════
-// ── LOCATION SELECTOR ──
-// ═══════════════════════════════════════════════════════
+// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+// â”€â”€ LOCATION SELECTOR â”€â”€
+// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
 const GEO_DATA = {
   'India': {
     'Andhra Pradesh': ['Visakhapatnam','Vijayawada','Guntur','Nellore','Kurnool','Tirupati','Anantapur'],
@@ -6709,7 +6872,7 @@ const GEO_DATA = {
 
 function populateCountries() {
   const sel = document.getElementById('sub-country'); if (!sel) return;
-  sel.innerHTML = '<option value="">— Select Country —</option>';
+  sel.innerHTML = '<option value="">â€” Select Country â€”</option>';
   Object.keys(GEO_DATA).sort((a,b) => {
     if (a === 'Other') return 1;
     if (b === 'Other') return -1;
@@ -6725,8 +6888,8 @@ function populateStates() {
   const country = document.getElementById('sub-country').value;
   const stateSel = document.getElementById('sub-state');
   const citySel = document.getElementById('sub-city');
-  stateSel.innerHTML = '<option value="">— Select State —</option>';
-  citySel.innerHTML = '<option value="">— Select City —</option>';
+  stateSel.innerHTML = '<option value="">â€” Select State â€”</option>';
+  citySel.innerHTML = '<option value="">â€” Select City â€”</option>';
   document.getElementById('sub-place').value = '';
   if (!country || !GEO_DATA[country]) return;
   Object.keys(GEO_DATA[country]).sort().forEach(s => {
@@ -6739,7 +6902,7 @@ function populateCities() {
   const country = document.getElementById('sub-country').value;
   const state = document.getElementById('sub-state').value;
   const citySel = document.getElementById('sub-city');
-  citySel.innerHTML = '<option value="">— Select City —</option>';
+  citySel.innerHTML = '<option value="">â€” Select City â€”</option>';
   if (!country || !state || !GEO_DATA[country] || !GEO_DATA[country][state]) return;
   GEO_DATA[country][state].sort().forEach(c => {
     const opt = document.createElement('option'); opt.value = c; opt.textContent = c;
@@ -6757,9 +6920,9 @@ function updatePlaceString() {
 // Init countries on load
 (function() { const init = () => { if (document.getElementById('sub-country')) { populateCountries(); return; } setTimeout(init, 500); }; init(); })();
 
-// ═══════════════════════════════════════════════════════
-// ── LIVE ARTICLE PREVIEW WORKFLOW ──
-// ═══════════════════════════════════════════════════════
+// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+// â”€â”€ LIVE ARTICLE PREVIEW WORKFLOW â”€â”€
+// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
 function populateCountriesFor(prefix) {
   const sel = document.getElementById(prefix + '-country'); if (!sel) return;
   sel.innerHTML = '<option value="">Select Country</option>';
@@ -6837,7 +7000,7 @@ function validateForImageGeneration() {
   const title    = (document.getElementById('sub-title').value || '').trim();
   const category = document.getElementById('sub-category').value;
   const articleHtml = getArticleHtmlBody();
-  return !!(name && title && category && articleHtml.trim() && _subDocxArrayBuffer);
+  return !!(name && title && category && articleHtml.trim() && (_subDocxArrayBuffer || _subPdfArrayBuffer));
 }
 
 function validatePreviewForm(errElOverride) {
@@ -6857,12 +7020,12 @@ function validatePreviewForm(errElOverride) {
   if (!title)          { errEl.textContent = 'Please enter the article title.'; return false; }
   if (!category)       { errEl.textContent = 'Please select a category.'; return false; }
   if (!abstract)       { errEl.textContent = 'Please enter an abstract or brief description.'; return false; }
-  if (!_subWordDocFile && !articleHtml.trim()) {
-    errEl.textContent = 'Please upload your article as a Word (.docx) document.';
+  if (!_subArticleDocFile && !articleHtml.trim()) {
+    errEl.textContent = 'Please upload your article as a Word (.docx) or PDF document.';
     return false;
   }
   if (!articleHtml.trim()) {
-    errEl.textContent = 'Your Word document could not be processed. Please re-upload.';
+    errEl.textContent = 'Your article document could not be processed. Please re-upload.';
     return false;
   }
   if (!undertaking)    { errEl.textContent = 'Please confirm the declaration of originality.'; return false; }
@@ -6882,15 +7045,15 @@ function hideArticleImagePreview() {
 
 async function tryAutoShowArticleImage() {
   const articleHtml = getArticleHtmlBody();
-  if (!articleHtml.trim() || !_subDocxArrayBuffer) {
-    if (articleHtml.trim() && !_subDocxArrayBuffer) {
-      setSubDocxStatus('Upload your Word article to generate the publication image.', false);
+  if (!articleHtml.trim() || (!_subDocxArrayBuffer && !_subPdfArrayBuffer)) {
+    if (articleHtml.trim() && !_subDocxArrayBuffer && !_subPdfArrayBuffer) {
+      setSubDocxStatus('Upload your Word/PDF article to generate the publication image.', false);
     }
     hideArticleImagePreview();
     return;
   }
   if (!validateForImageGeneration()) {
-    setSubDocxStatus('✓ A4 article loaded — complete name, title & category above to see your article image.', false);
+    setSubDocxStatus('âœ“ A4 article loaded â€” complete name, title & category above to see your article image.', false);
     hideArticleImagePreview();
     return;
   }
@@ -6909,9 +7072,9 @@ async function showArticlePreview() {
 async function _doGeneratePreview() {
   const prevGen = document.getElementById('preview-generating');
   const prevImg = document.getElementById('article-preview-img');
-  if (!_subDocxArrayBuffer) {
+  if (!_subDocxArrayBuffer && !_subPdfArrayBuffer) {
     hideArticleImagePreview();
-    setSubDocxStatus('Upload your Word article to generate the publication image.', false);
+    setSubDocxStatus('Upload your Word/PDF article to generate the publication image.', false);
     return;
   }
 
@@ -6929,7 +7092,8 @@ async function _doGeneratePreview() {
     const dataUrl = await generateArticleImage({
       title, author: name, place, htmlBody: articleHtml,
       authorPhotoUrl: _subAuthorPhotoData, category, occupation: occ,
-      docxArrayBuffer: _subDocxArrayBuffer
+      docxArrayBuffer: _subDocxArrayBuffer,
+      pdfArrayBuffer: _subPdfArrayBuffer
     });
     _previewDataUrl = dataUrl;
     prevImg.src = dataUrl;
@@ -6941,7 +7105,7 @@ async function _doGeneratePreview() {
     _previewDataUrl = null;
     const errEl = document.getElementById('sub-error');
     if (errEl) errEl.textContent = '';
-    setSubDocxStatus('✗ ' + (e.message || 'Image generation failed'), true);
+    setSubDocxStatus('âœ— ' + (e.message || 'Image generation failed'), true);
     console.error('Preview generation error:', e);
   }
 }
@@ -6989,7 +7153,7 @@ function openPreviewLightbox() {
 
 function schedulePreviewRefreshOrShow() {
   const prevSec = document.getElementById('sub-preview-section');
-  if (!_subDocxArrayBuffer) {
+  if (!_subDocxArrayBuffer && !_subPdfArrayBuffer) {
     hideArticleImagePreview();
     return;
   }
@@ -7000,9 +7164,9 @@ function schedulePreviewRefreshOrShow() {
   }
 }
 
-// ═══════════════════════════════════════════════════════
-// ── ARTICLE IMAGE GENERATION (A4 canvas → Supabase upload) ──
-// ═══════════════════════════════════════════════════════
+// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+// â”€â”€ ARTICLE IMAGE GENERATION (A4 canvas â†’ Supabase upload) â”€â”€
+// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
 async function generateArticleImage(articleData) {
   // articleData: { title, author, place, htmlBody, authorPhotoUrl, category, occupation }
   return new Promise((resolve, reject) => {
@@ -7022,22 +7186,22 @@ async function generateArticleImage(articleData) {
     const BODY_C  = '#2c3e5a';
     const BORDER  = '#cfc9bc';
 
-    // ── Background (pure white) ──
+    // â”€â”€ Background (pure white) â”€â”€
     ctx.fillStyle = OFFWHITE;
     ctx.fillRect(0, 0, W, H);
 
-    // ── Header bar — taller to fit single-line layout ──
+    // â”€â”€ Header bar â€” taller to fit single-line layout â”€â”€
     ctx.fillStyle = NAVY;
     ctx.fillRect(0, 0, W, 200);
     ctx.fillStyle = GOLD;
     ctx.fillRect(0, 200, W, 14);
 
-    // ── Load logo from known site asset, then draw everything ──
+    // â”€â”€ Load logo from known site asset, then draw everything â”€â”€
     const logoImg = new Image();
     logoImg.crossOrigin = 'anonymous';
     logoImg.onload  = () => _drawPage(logoImg);
     logoImg.onerror = () => _drawPage(null);
-    // Use the android-chrome icon — most reliable site asset
+    // Use the android-chrome icon â€” most reliable site asset
     logoImg.src = '/android-chrome-192x192.png';
     // Fallback after 2s
     const logoTimeout = setTimeout(() => { if (!logoImg.complete) { logoImg.src = ''; _drawPage(null); } }, 2000);
@@ -7045,7 +7209,7 @@ async function generateArticleImage(articleData) {
     function _drawPage(logo) {
       clearTimeout(logoTimeout);
 
-      // ── Single-line header: [LOGO]  ILIRH  ·  FULL NAME ──
+      // â”€â”€ Single-line header: [LOGO]  ILIRH  Â·  FULL NAME â”€â”€
       // Logo: square, vertically centred in the navy bar
       const LOGO_SIZE = 140;
       const LOGO_X    = 48;
@@ -7070,7 +7234,7 @@ async function generateArticleImage(articleData) {
         ctx.fillText('I', LOGO_X, LOGO_Y + LOGO_SIZE * 0.78);
       }
 
-      // ── "ILIRH" — bold accent word right after logo ──
+      // â”€â”€ "ILIRH" â€” bold accent word right after logo â”€â”€
       const BAR_CENTER_Y = 100;
       ctx.textAlign = 'left';
       ctx.fillStyle = GOLD;
@@ -7082,7 +7246,7 @@ async function generateArticleImage(articleData) {
       ctx.fillText(ilirh, ILIRH_X, TEXT_Y);
       const ilirhW = ctx.measureText(ilirh).width;
 
-      // ── Thin vertical gold divider ──
+      // â”€â”€ Thin vertical gold divider â”€â”€
       const DIV_X = ILIRH_X + ilirhW + 32;
       ctx.strokeStyle = GOLD;
       ctx.lineWidth = 4;
@@ -7093,7 +7257,7 @@ async function generateArticleImage(articleData) {
       ctx.stroke();
       ctx.globalAlpha = 1;
 
-      // ── Full publication name — SINGLE LINE, auto-fit font size ──
+      // â”€â”€ Full publication name â€” SINGLE LINE, auto-fit font size â”€â”€
       const NAME_X = DIV_X + 32;
       const NAME_MAX_W = W - NAME_X - 48;
       ctx.fillStyle = '#e8d9b0';   // slightly softer gold for subtitle
@@ -7111,16 +7275,16 @@ async function generateArticleImage(articleData) {
 
       ctx.textAlign = 'left';
 
-      // ── No divider line below gold bar — pure white gap ──
+      // â”€â”€ No divider line below gold bar â€” pure white gap â”€â”€
 
-      // ── Category badge — full width, colour per category ──
+      // â”€â”€ Category badge â€” full width, colour per category â”€â”€
       const catText = (articleData.category || 'RESEARCH').toUpperCase();
       const CAT_PALETTE = {
-        'LAW':          { bg: '#0f2d5e', text: '#d4af6a' },   // deep navy blue — authority, justice
-        'EDUCATION':    { bg: '#1a4731', text: '#a8d8a8' },   // forest green — growth, knowledge
-        'VEDIC SCIENCE':{ bg: '#5c2d00', text: '#f0c97a' },   // deep saffron/amber — heritage, wisdom
-        'POLITICAL':    { bg: '#6b1515', text: '#f0a8a8' },   // deep crimson — power, politics
-        'GEN-Z DESK':   { bg: '#1e1060', text: '#c4b5fd' },   // deep indigo/violet — youth, digital
+        'LAW':          { bg: '#0f2d5e', text: '#d4af6a' },   // deep navy blue â€” authority, justice
+        'EDUCATION':    { bg: '#1a4731', text: '#a8d8a8' },   // forest green â€” growth, knowledge
+        'VEDIC SCIENCE':{ bg: '#5c2d00', text: '#f0c97a' },   // deep saffron/amber â€” heritage, wisdom
+        'POLITICAL':    { bg: '#6b1515', text: '#f0a8a8' },   // deep crimson â€” power, politics
+        'GEN-Z DESK':   { bg: '#1e1060', text: '#c4b5fd' },   // deep indigo/violet â€” youth, digital
       };
       const catKey = catText.trim();
       const catColors = CAT_PALETTE[catKey] || { bg: NAVY, text: GOLD };
@@ -7137,11 +7301,11 @@ async function generateArticleImage(articleData) {
       });
       setCanvasTracking(ctx, '0px');
 
-      // ── Article title — auto-scaling, full title always shown ──
+      // â”€â”€ Article title â€” auto-scaling, full title always shown â”€â”€
       const TITLE_X = 48, TITLE_PANEL_Y = 348;
       const TITLE_MAX_W = W - 96;
       const TITLE_MAX_LINES = 6;      // allow up to 6 lines before shrinking font
-      const TITLE_SIZE_MAX = 88;      // start large — looks like a real headline
+      const TITLE_SIZE_MAX = 88;      // start large â€” looks like a real headline
       const TITLE_SIZE_MIN = 36;      // never go below this
       const TITLE_PAD_TOP  = 56;      // space above first line
       const TITLE_PAD_BOT  = 60;      // space below last line
@@ -7193,13 +7357,13 @@ async function generateArticleImage(articleData) {
 
       const titleBottomY = TITLE_PANEL_Y + titlePanelH;
 
-      // ── Gold separator — full width ──
+      // â”€â”€ Gold separator â€” full width â”€â”€
       ctx.fillStyle = 'rgba(10,22,40,0.08)';
       ctx.fillRect(0, titleBottomY - 2, W, 2);
       ctx.fillStyle = GOLD;
       ctx.fillRect(0, titleBottomY, W, 5);
 
-      // ── Author block ──
+      // â”€â”€ Author block â”€â”€
       const AUTHOR_Y = titleBottomY + 29;
       const PHOTO_SIZE = 250;
       const authorBlockH = getAuthorBlockEndY(AUTHOR_Y, PHOTO_SIZE) - AUTHOR_Y - 12;
@@ -7305,13 +7469,14 @@ async function generateArticleImage(articleData) {
         ctx.fillStyle = GOLD;
         ctx.fillRect(0, bodyStartY, W, 8);
 
-        // Exact A4 body slot — pure white, starts after gold bar
+        // Exact A4 body slot â€” pure white, starts after gold bar
         ctx.fillStyle = '#ffffff';
         ctx.fillRect(0, bodyStartY + 8, W, A4_BODY_H);
 
         const drawnBodyH = await drawArticleBodyOnTemplate(ctx, bodyStartY + 8, htmlBody, {
           bodyMaxH: A4_BODY_H,
-          docxArrayBuffer: articleData.docxArrayBuffer || _subDocxArrayBuffer || _rdDocxArrayBuffer
+          docxArrayBuffer: articleData.docxArrayBuffer || _subDocxArrayBuffer || _rdDocxArrayBuffer,
+          pdfArrayBuffer: articleData.pdfArrayBuffer || _subPdfArrayBuffer
         });
         footerY = bodyStartY + 8 + drawnBodyH;
 
@@ -7333,7 +7498,7 @@ async function generateArticleImage(articleData) {
 
         ctx.fillStyle = '#7a90a8';
         ctx.font = '22px Georgia, serif';
-        ctx.fillText('ilirh.in  ·  Published ' + new Date().toLocaleDateString('en-IN', {day:'numeric',month:'long',year:'numeric'}), W / 2, footerY + 8 + 130);
+        ctx.fillText('ilirh.in  Â·  Published ' + new Date().toLocaleDateString('en-IN', {day:'numeric',month:'long',year:'numeric'}), W / 2, footerY + 8 + 130);
 
         ctx.textAlign = 'left';
         const finalH = footerY + TEMPLATE_FOOTER_H;
@@ -7460,7 +7625,7 @@ async function generateArticleImage(articleData) {
             if (y > MAX_Y) return;
             ctx.fillStyle = BODY_C;
             ctx.font = '38px Georgia, serif';
-            const bullet = tag === 'ol' ? `${idx + 1}.` : '•';
+            const bullet = tag === 'ol' ? `${idx + 1}.` : 'â€¢';
             ctx.fillText(bullet, LEFT, y);
             const liText = li.textContent.trim();
             const liLines = wrapTextGetLines(ctx, liText, CONTENT_W - 70, 38);
@@ -7514,7 +7679,7 @@ async function generateArticleImage(articleData) {
         }
         if (tag === 'br') { y += 28; return; }
 
-        // ── Inline image with text wrap (like MS Word) ──
+        // â”€â”€ Inline image with text wrap (like MS Word) â”€â”€
         if (tag === 'img' || (tag === 'span' && node.classList && node.classList.contains('rte-inline-img-wrap'))) {
           // Find the actual img element
           const imgEl = tag === 'img' ? node : node.querySelector('img');
@@ -7676,13 +7841,14 @@ async function uploadArticleImageToSupabase(dataUrl) {
   } catch(e) { console.warn('Article image upload failed:', e); return null; }
 }
 
-// ═══════════════════════════════════════════════════════
-// ── PDF THUMBNAIL GENERATION ──
-// ═══════════════════════════════════════════════════════
+// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+// â”€â”€ PDF THUMBNAIL GENERATION â”€â”€
+// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
 async function generatePdfThumbnail(pdfFile) {
   try {
     if (typeof pdfjsLib === 'undefined') return null;
     const ab = await pdfFile.arrayBuffer();
+    await validatePdfBufferIsSinglePageA4(ab);
     const pdf = await pdfjsLib.getDocument({ data: ab }).promise;
     const page = await pdf.getPage(1);
     const viewport = page.getViewport({ scale: 2.0 });
@@ -7737,11 +7903,11 @@ closeUpload = function() {
   <div id="search-popup-box">
     <div id="search-popup-inner">
       <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#c5d2e0" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-      <input type="text" id="search-input" placeholder="Search articles, authors, categories…" autocomplete="off" oninput="searchArticles(this.value)" aria-label="Search">
+      <input type="text" id="search-input" placeholder="Search articles, authors, categoriesâ€¦" autocomplete="off" oninput="searchArticles(this.value)" aria-label="Search">
       <button id="search-clear-btn" onclick="closeSearchWrap()" aria-label="Close search">&times;</button>
     </div>
     <div id="search-dropdown"></div>
-    <div id="search-popup-hint">Press <strong style="font-size:11px;background:rgba(255,255,255,0.1);padding:1px 6px;border-radius:3px;">Esc</strong> to close &nbsp;·&nbsp; <strong style="font-size:11px;background:rgba(255,255,255,0.1);padding:1px 6px;border-radius:3px;">/</strong> to open</div>
+    <div id="search-popup-hint">Press <strong style="font-size:11px;background:rgba(255,255,255,0.1);padding:1px 6px;border-radius:3px;">Esc</strong> to close &nbsp;Â·&nbsp; <strong style="font-size:11px;background:rgba(255,255,255,0.1);padding:1px 6px;border-radius:3px;">/</strong> to open</div>
   </div>
 </div>
  
@@ -7759,9 +7925,9 @@ closeUpload = function() {
   <div class="lbx-toolbar">
     <div id="lbx-counter" class="lbx-btns"></div>
     <div class="lbx-btns">
-      <button class="lbx-btn" id="lbx-zoom-in-btn" onclick="lbxZoomIn()">＋ Zoom In</button>
-      <button class="lbx-btn" id="lbx-zoom-out-btn" onclick="lbxZoomOut()">－ Zoom Out</button>
-      <button class="lbx-btn" id="lbx-reset-btn" onclick="lbxReset()">↺ Reset</button>
+      <button class="lbx-btn" id="lbx-zoom-in-btn" onclick="lbxZoomIn()">ï¼‹ Zoom In</button>
+      <button class="lbx-btn" id="lbx-zoom-out-btn" onclick="lbxZoomOut()">ï¼ Zoom Out</button>
+      <button class="lbx-btn" id="lbx-reset-btn" onclick="lbxReset()">â†º Reset</button>
     </div>
     <button class="lbx-close-btn" onclick="closeLightbox()" aria-label="Close">&times;</button>
   </div>
@@ -7770,7 +7936,7 @@ closeUpload = function() {
     <img id="lbx-img" alt="Article document" ondragstart="return false">
   </div>
   <button id="lbx-nav-next" class="hidden" onclick="lbxNext()">&#8250;</button>
-  <div class="lbx-hint" id="lbx-hint">Scroll or pinch to zoom &nbsp;·&nbsp; Drag to pan</div>
+  <div class="lbx-hint" id="lbx-hint">Scroll or pinch to zoom &nbsp;Â·&nbsp; Drag to pan</div>
 </div>
 
 <!-- MESSAGE SUBSCRIBERS MODAL -->
@@ -7786,11 +7952,11 @@ closeUpload = function() {
     <div class="msg-select-list" id="msg-select-list"></div>
     <div class="msg-sub-row">
       <label>Email Subject *</label>
-      <input type="text" id="msg-subject" placeholder="Subject line for the email…">
+      <input type="text" id="msg-subject" placeholder="Subject line for the emailâ€¦">
     </div>
     <div class="msg-sub-row">
       <label>Message Body *</label>
-      <textarea id="msg-body" placeholder="Write your message here. Use plain paragraphs — it will be rendered in the Herald email template."></textarea>
+      <textarea id="msg-body" placeholder="Write your message here. Use plain paragraphs â€” it will be rendered in the Herald email template."></textarea>
     </div>
     <button class="msg-send-btn" id="msg-send-btn" onclick="doSendMsgSubscribers()">&#9654; Send Message</button>
     <p class="msg-status" id="msg-status"></p>
