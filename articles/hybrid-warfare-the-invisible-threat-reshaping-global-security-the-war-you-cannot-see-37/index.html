@@ -210,8 +210,21 @@ footer { background:var(--navy); color:#8fa4bf; padding:36px 32px 20px; margin-t
 .modal-close { position:absolute; top:16px; right:20px; background:none; border:none; font-size:26px; cursor:pointer; color:var(--text-muted); line-height:1; }
 .modal-close:hover { color:var(--navy); }
 .modal-cat { font-family:'Lato',sans-serif; font-size:10.5px; font-weight:700; letter-spacing:0.2em; text-transform:uppercase; color:var(--gold); margin-bottom:10px; }
+.article-breadcrumb {
+  display:flex; align-items:center; flex-wrap:wrap; gap:7px; margin:0 0 12px;
+  font-family:'Lato',sans-serif; font-size:10.5px; font-weight:800; letter-spacing:0.08em;
+  text-transform:uppercase; color:#7a8795;
+}
+.article-breadcrumb button, .article-breadcrumb a {
+  border:none; background:none; padding:0; color:#18395f; font:inherit; cursor:pointer;
+  text-decoration:none; transition:color 0.18s;
+}
+.article-breadcrumb button:hover, .article-breadcrumb a:hover { color:#9b7a25; text-decoration:underline; }
+.article-breadcrumb-current { color:#7a8795; max-width:100%; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
 .modal-title { font-family:'Playfair Display',serif; font-size:clamp(22px,4vw,34px); font-weight:800; line-height:1.15; color:var(--navy); margin-bottom:14px; }
 .modal-byline { font-family:'Lato',sans-serif; font-size:12.5px; color:var(--text-muted); margin-bottom:24px; padding-bottom:18px; border-bottom:1px solid var(--border); }
+.modal-author-link { color:#18395f; font-weight:800; text-decoration:none; }
+.modal-author-link:hover { color:#9b7a25; text-decoration:underline; }
 .modal-content { font-family:'EB Garamond',serif; font-size:18px; line-height:1.8; color:var(--text-secondary); }
 .modal-file-frame { width:100%; height:85vh; border:1px solid var(--border); margin-top:20px; display:block; }
 .modal-img { width:100%; height:auto; max-height:none; object-fit:contain; margin-top:20px; border:1px solid var(--border); display:block; }
@@ -642,7 +655,7 @@ body.dark-mode .skeleton { background:linear-gradient(90deg,var(--cream-dark) 25
   transition:all 0.18s; border-radius:1px;
 }
 .share-btn:hover { border-color:var(--navy); color:var(--navy); }
-.modal-download-wrap { position:relative; display:inline-flex; }
+.modal-download-wrap { position:relative; display:inline-flex; margin-left:auto; order:20; }
 .modal-icon-btn {
   width:30px; height:30px; display:inline-flex; align-items:center; justify-content:center;
   padding:0; border:1px solid var(--border); background:none; color:var(--text-muted);
@@ -757,7 +770,7 @@ body.dark-mode .share-btn:hover { border-color:#8fa8c0; color:#c8d8ea; }
   background:rgba(255,255,255,0.62); font-size:17px; color:#2d4053;
 }
 .author-profile-stats {
-  display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:8px; margin-top:16px;
+  display:grid; grid-template-columns:repeat(5,minmax(0,1fr)); gap:8px; margin-top:16px;
 }
 .author-profile-stat {
   border:1px solid rgba(24,57,95,0.12); background:rgba(255,255,255,0.7); padding:10px 9px;
@@ -810,6 +823,18 @@ body.dark-mode .share-btn:hover { border-color:#8fa8c0; color:#c8d8ea; }
 .author-page-name { font-family:'Playfair Display',serif; font-size:34px; line-height:1.1; color:#10243a; font-weight:700; }
 .author-page-meta { margin-top:8px; color:#506173; font-size:13px; line-height:1.6; }
 .author-page-bio { margin-top:18px; font-family:'EB Garamond',serif; font-size:18px; line-height:1.7; color:#344557; }
+.author-page-stats {
+  margin-top:18px; display:grid; grid-template-columns:repeat(5,minmax(0,1fr)); gap:10px;
+}
+.author-page-stat {
+  border:1px solid rgba(24,57,95,0.12); background:rgba(255,255,255,0.72);
+  padding:12px 10px; text-align:center;
+}
+.author-page-stat strong { display:block; font-family:'Playfair Display',serif; font-size:24px; line-height:1; color:#10243a; }
+.author-page-stat span {
+  display:block; margin-top:6px; font-size:9px; font-weight:900; letter-spacing:0.12em;
+  text-transform:uppercase; color:#7a8795;
+}
 .author-page-list { margin-top:24px; border-top:1px solid #dbe3ea; padding-top:18px; }
 .author-page-list-title {
   font-family:'Cinzel',serif; color:#10243a; font-size:18px; letter-spacing:0.04em; margin-bottom:10px;
@@ -821,12 +846,20 @@ body.dark-mode .share-btn:hover { border-color:#8fa8c0; color:#c8d8ea; }
 .author-page-list a span { display:block; margin-top:3px; color:#7a8795; font-weight:400; font-size:11px; }
 .author-page-list a:hover { color:#9b7a25; }
 .related-articles-box {
-  margin: 24px 0 6px; padding: 18px 0 4px; border-top: 2px solid var(--border);
+  margin: 28px 0 8px; padding: 22px 0 6px; border-top: 2px solid var(--border);
   font-family:'Lato',sans-serif;
 }
+.article-end-kicker {
+  font-family:'Lato',sans-serif; font-size:10px; font-weight:900; letter-spacing:0.18em;
+  text-transform:uppercase; color:#9b7a25; margin-bottom:6px;
+}
 .related-title {
-  font-family:'Cinzel',serif; font-size:17px; color:var(--navy); letter-spacing:0.05em;
-  margin-bottom:12px;
+  font-family:'Playfair Display',serif; font-size:24px; color:var(--navy);
+  letter-spacing:0; margin-bottom:12px; line-height:1.15;
+}
+.article-end-note {
+  font-family:'EB Garamond',serif; color:#506173; font-size:16px; line-height:1.55;
+  margin:-4px 0 16px;
 }
 .related-grid { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:12px; }
 .related-card {
@@ -838,6 +871,42 @@ body.dark-mode .share-btn:hover { border-color:#8fa8c0; color:#c8d8ea; }
 .related-thumb img { width:100%; height:100%; object-fit:cover; object-position:top center; display:block; }
 .related-card-title { color:var(--navy); font-family:'Playfair Display',serif; font-size:14px; font-weight:700; line-height:1.25; }
 .related-card-meta { margin-top:4px; color:var(--text-muted); font-size:10px; letter-spacing:0.06em; text-transform:uppercase; }
+.article-explore-panel {
+  margin-top:18px; padding:18px; border:1px solid #d9e1e8; background:linear-gradient(135deg,#ffffff 0%,#f8fbff 60%,#f7f1df 100%);
+}
+.article-explore-title {
+  font-family:'Cinzel',serif; font-size:15px; color:#10243a; letter-spacing:0.05em; margin-bottom:10px;
+}
+.article-topic-row { display:flex; flex-wrap:wrap; gap:8px; margin-bottom:16px; }
+.article-topic-chip {
+  border:1px solid #c9a84c; background:#fff; color:#18395f; padding:8px 10px;
+  font-family:'Lato',sans-serif; font-size:10px; font-weight:900; letter-spacing:0.08em;
+  text-transform:uppercase; cursor:pointer;
+}
+.article-topic-chip:hover { background:#10243a; color:#fff; border-color:#10243a; }
+.article-reading-list { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:8px 16px; }
+.article-reading-list a {
+  display:block; color:#18395f; text-decoration:none; font-family:'Lato',sans-serif; font-size:13px;
+  font-weight:800; line-height:1.35; padding:9px 0; border-bottom:1px solid rgba(24,57,95,0.1);
+}
+.article-reading-list a:hover { color:#9b7a25; text-decoration:underline; }
+.article-reading-list span {
+  display:block; margin-top:3px; color:#7a8795; font-size:10px; font-weight:500; letter-spacing:0.06em;
+  text-transform:uppercase;
+}
+.article-cta-row {
+  margin-top:18px; display:flex; align-items:center; justify-content:space-between; gap:16px;
+  padding:16px 18px; border:1px solid #d6dce3; border-left:4px solid #c9a84c; background:#fff;
+}
+.article-cta-title { font-family:'Playfair Display',serif; color:#10243a; font-size:18px; font-weight:700; line-height:1.2; }
+.article-cta-copy { margin-top:4px; font-family:'EB Garamond',serif; color:#506173; font-size:14px; line-height:1.45; }
+.article-cta-actions { display:flex; gap:8px; flex-wrap:wrap; justify-content:flex-end; }
+.article-cta-btn {
+  border:1px solid #10243a; background:#10243a; color:#fff; padding:8px 11px; cursor:pointer;
+  font-family:'Lato',sans-serif; font-size:10px; font-weight:900; letter-spacing:0.09em; text-transform:uppercase;
+}
+.article-cta-btn.secondary { background:#fff; color:#18395f; border-color:#c9a84c; }
+.article-cta-btn:hover { transform:translateY(-1px); }
 .author-dashboard-section {
   display:none; margin: 0 0 38px; padding: 24px 22px; border:1px solid #d9e1e8;
   background:linear-gradient(135deg,#ffffff 0%,#f8fbff 58%,#f7f1df 100%);
@@ -896,8 +965,13 @@ body.dark-mode .share-btn:hover { border-color:#8fa8c0; color:#c8d8ea; }
 .live-trending-thumb img { width:100%; height:100%; object-fit:cover; object-position:top center; }
 .live-trending-title { font-family:'Playfair Display',serif; color:#10243a; font-size:14px; font-weight:700; line-height:1.25; }
 .live-trending-meta { margin-top:4px; font-family:'Lato',sans-serif; font-size:9.5px; color:#7a8795; text-transform:uppercase; letter-spacing:0.06em; }
-@media(max-width:560px){ .author-page-section { padding:24px 16px; } .author-page-hero { padding:22px; } .author-page-top { flex-direction:column; } .author-page-name { font-size:28px; } }
+@media(max-width:560px){ .author-page-section { padding:24px 16px; } .author-page-hero { padding:22px; } .author-page-top { flex-direction:column; } .author-page-name { font-size:28px; } .author-page-stats { grid-template-columns:repeat(2,minmax(0,1fr)); } }
 @media(max-width:560px){ .author-profile-top { flex-direction:column; } .author-profile-card { padding:18px; } }
+@media(max-width:620px){
+  .related-grid, .article-reading-list { grid-template-columns:1fr; }
+  .article-cta-row { flex-direction:column; align-items:flex-start; }
+  .article-cta-actions { width:100%; justify-content:flex-start; }
+}
 @media(max-width:700px) {
   .related-grid, .author-dashboard-grid, .author-rank-list { grid-template-columns:1fr; }
   .author-dashboard-header { display:block; }
@@ -1226,7 +1300,7 @@ img, iframe, canvas, video { max-width:100%; }
   .modal-img { width:100%; height:auto; }
   .share-row { width:100%; gap:6px; }
   .share-btn { flex:1 1 calc(50% - 6px); justify-content:center; min-height:34px; padding:7px 8px; }
-  .article-download-menu { right:auto; left:0; }
+  .article-download-menu { right:0; left:auto; }
   .author-profile-card { margin-top:22px; padding:20px 16px; }
   .author-profile-top { gap:14px; }
   .author-profile-photo { width:76px; height:76px; }
@@ -1649,10 +1723,13 @@ body.dark-mode .rte-word-counter { background: #0d1624; border-color: var(--bord
 #sub-docx-live-preview .docx-wrapper {
   background: #ffffff !important; box-shadow: none !important;
   margin: 0 !important; padding: 0 !important; border: none !important;
+  width: 794px !important; max-width: 794px !important;
 }
 #sub-docx-live-preview section.docx {
   background: #ffffff !important; box-shadow: none !important;
   margin: 0 !important; border: none !important;
+  width: 794px !important; min-height: 1123px !important; max-width: 794px !important;
+  overflow: hidden !important;
 }
 .article-body-capture-host .article-docx-body { box-sizing: border-box; }
 .rd-docx-actions { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; margin: 12px 0 16px; }
@@ -2203,6 +2280,7 @@ body.dark-mode .editor-tab.active { color:#c8d8ea; }
   <div class="modal-box">
     <button class="modal-close" onclick="closeModal()">&times;</button>
     <div class="modal-cat" id="modal-cat"></div>
+    <nav class="article-breadcrumb" id="modal-breadcrumb" aria-label="Article navigation"></nav>
     <h2 class="modal-title" id="modal-title"></h2>
     <div class="modal-byline" id="modal-byline"></div>
     <!-- Toolbar -->
@@ -2287,6 +2365,10 @@ body.dark-mode .editor-tab.active { color:#c8d8ea; }
       <label>Author's Email <span style="color:var(--gold);font-size:10px;letter-spacing:0.05em;">(for publication acknowledgement)</span></label>
       <input type="email" id="up-author-email" placeholder="author@example.com">
       <p style="font-family:'EB Garamond',serif;font-size:13px;color:var(--text-muted);font-style:italic;margin-top:5px;">The author will receive a premium certificate confirming their article has been published on ILIRH.</p>
+    </div>
+    <div class="form-row">
+      <label>Phone / WhatsApp</label>
+      <input type="tel" id="up-author-phone" placeholder="+91 XXXXX XXXXX">
     </div>
     <div class="submit-2col">
       <div class="form-row"><label>Occupation</label><input type="text" id="up-occupation" placeholder="Advocate, Researcher, Student…"></div>
@@ -3008,7 +3090,7 @@ async function fetchArticles(force = false) {
     articles = data || [];
     _lastFetchTime = Date.now();
     render();
-    fetchArticleStats().then(() => renderAuthorDashboard()).catch(() => {});
+    fetchArticleStats().then(() => refreshLiveMetricViews()).catch(() => {});
     if (parseAuthorSlugFromLocation()) {
       renderAuthorProfilePageFromRoute();
       return;
@@ -3363,6 +3445,16 @@ function filterCatAndScroll(cat) {
     }, 80);
   }));
 }
+
+function navigateArticleHome() {
+  closeModal();
+  filterCat('all');
+}
+
+function navigateArticleCategory(cat) {
+  closeModal();
+  filterCatAndScroll(cat);
+}
  
 // ── OPEN ARTICLE ──
 async function openArticle(id, navDir, routeOptions) {
@@ -3377,8 +3469,17 @@ async function openArticle(id, navDir, routeOptions) {
     pushArticleUrl(id, true);
   }
   document.getElementById('modal-cat').textContent = a.category;
+  const breadcrumb = document.getElementById('modal-breadcrumb');
+  if (breadcrumb) {
+    breadcrumb.innerHTML = `
+      <button type="button" onclick="navigateArticleHome()">Home</button>
+      <span>/</span>
+      <button type="button" onclick='navigateArticleCategory(${JSON.stringify(a.category || 'all')})'>${esc(a.category || 'Article')}</button>
+      <span>/</span>
+      <span class="article-breadcrumb-current">${esc(a.title || 'Article')}</span>`;
+  }
   document.getElementById('modal-title').textContent = a.title;
-  document.getElementById('modal-byline').innerHTML = `By <strong>${esc(a.author)}</strong> &bull; ${formatDate(a.created_at)}`;
+  document.getElementById('modal-byline').innerHTML = `By <a class="modal-author-link" href="${authorProfilePath(a.author)}" onclick="event.preventDefault();openAuthorProfileFromArticle(${Number(a.id)});">${esc(a.author)}</a> &bull; ${formatDate(a.created_at)}`;
   let inner = '';
   // If article has a rich text body and an associated image, show the short description
   // as plain text and the full article as an image, to match ILIRH publishing style.
@@ -3555,6 +3656,7 @@ function editCurrentArticle() {
   const t = document.getElementById('up-title'); if (t) t.value = a.title || '';
   const au = document.getElementById('up-author'); if (au) au.value = a.author || '';
   const ae = document.getElementById('up-author-email'); if (ae) ae.value = a.author_email || '';
+  const ph = document.getElementById('up-author-phone'); if (ph) ph.value = a.phone || a.author_phone || '';
   const occ = document.getElementById('up-occupation'); if (occ) occ.value = a.occupation || '';
   const inst = document.getElementById('up-institution'); if (inst) inst.value = a.institution || '';
   const bio = document.getElementById('up-author-bio'); if (bio) bio.value = a.author_bio || '';
@@ -3624,7 +3726,7 @@ function setOwnership(type) {
   const genzBtn = document.getElementById('own-genz');
   if (genzBtn) genzBtn.classList.toggle('selected', type === 'genz');
   const emailRow = document.getElementById('author-email-row');
-  emailRow.style.display = (type === 'other' || type === 'genz') ? 'block' : 'none';
+  emailRow.style.display = 'block';
   const catSel = document.getElementById('up-category');
   if (type === 'genz') {
     // GenZ: author name free, category locked to Gen-Z Desk
@@ -3641,6 +3743,9 @@ function setOwnership(type) {
     document.getElementById('up-author').value = 'Advocate Dr. Ajay Singh Rathore';
     document.getElementById('up-author').readOnly = true;
     document.getElementById('up-author').style.opacity = '0.6';
+    const emailEl = document.getElementById('up-author-email');
+    if (emailEl && !emailEl.value) emailEl.value = 'adv.dr.ajaysinghrathore777@gmail.com';
+    if (!_editArticleId && emailEl && emailEl.value) loadEditorAuthorProfileByEmail(emailEl.value, true);
     catSel.disabled = false;
     catSel.style.opacity = '1';
     catSel.title = '';
@@ -3702,6 +3807,7 @@ function closeUpload() {
   document.getElementById('up-author').readOnly = false;
   document.getElementById('up-author').style.opacity = '1';
   document.getElementById('up-author-email').value = '';
+  const upPhone = document.getElementById('up-author-phone'); if (upPhone) upPhone.value = '';
   const upOcc = document.getElementById('up-occupation'); if (upOcc) upOcc.value = '';
   const upInst = document.getElementById('up-institution'); if (upInst) upInst.value = '';
   const upBio = document.getElementById('up-author-bio'); if (upBio) upBio.value = '';
@@ -3719,7 +3825,7 @@ function closeUpload() {
   const upPlace = document.getElementById('up-place'); if (upPlace) upPlace.value = '';
   ['up-country','up-state','up-city'].forEach(id => { const el = document.getElementById(id); if (el) el.value = ''; });
   document.getElementById('up-silent').checked = false;
-  document.getElementById('author-email-row').style.display = 'none';
+  document.getElementById('author-email-row').style.display = 'block';
   _authorOwnership = 'myself';
   document.getElementById('own-myself').classList.add('selected');
   document.getElementById('own-other').classList.remove('selected');
@@ -3876,7 +3982,8 @@ async function publishArticle() {
   const excerpt  = sanitizeInput(document.getElementById('up-excerpt').value, 1000);
   const place    = (document.getElementById('up-place')?.value || '');
   const authorEmailRaw = document.getElementById('up-author-email') ? document.getElementById('up-author-email').value.trim() : '';
-  const authorEmail = (_authorOwnership === 'other' || _authorOwnership === 'genz' || _editArticleId) ? authorEmailRaw : '';
+  const authorEmail = authorEmailRaw;
+  const authorPhone = sanitizeInput(document.getElementById('up-author-phone') ? document.getElementById('up-author-phone').value : '', 30);
   const occupation = sanitizeInput(document.getElementById('up-occupation') ? document.getElementById('up-occupation').value : '', 150);
   const institution = sanitizeInput(document.getElementById('up-institution') ? document.getElementById('up-institution').value : '', 200);
   const authorBio = limitWords(sanitizeInput(document.getElementById('up-author-bio') ? document.getElementById('up-author-bio').value : '', 1200), 100);
@@ -3889,7 +3996,7 @@ async function publishArticle() {
   if (_uploadMode === 'media' && !_editArticleId && !pendingFile) { errEl.textContent = 'Please upload an image file.'; return; }
   if (_uploadMode === 'docx' && !_upDocxArrayBuffer && !_upPdfArrayBuffer) { errEl.textContent = 'Please upload a one-page A4 Word or PDF article file.'; return; }
   if (pendingFile && pendingFile.size > 3*1024*1024) { errEl.textContent = 'File exceeds 3 MB limit.'; return; }
-  if ((_authorOwnership === 'other' || _authorOwnership === 'genz') && authorEmail && !authorEmail.includes('@')) {
+  if (authorEmail && !validateEmail(authorEmail)) {
     errEl.textContent = 'Please enter a valid author email.'; return;
   }
   if (!updateUpBioCount()) { errEl.textContent = 'Author bio must be 100 words or fewer.'; return; }
@@ -3955,7 +4062,10 @@ async function publishArticle() {
 
     let upAuthorPhotoUrl = null;
     if (_upAuthorPhotoData) {
-      try { upAuthorPhotoUrl = await uploadArticleImageToSupabase(_upAuthorPhotoData); } catch(e) { console.warn('Author photo upload failed:', e); }
+      if (/^https?:\/\//i.test(String(_upAuthorPhotoData))) upAuthorPhotoUrl = _upAuthorPhotoData;
+      else {
+        try { upAuthorPhotoUrl = await uploadArticleImageToSupabase(_upAuthorPhotoData); } catch(e) { console.warn('Author photo upload failed:', e); }
+      }
     }
  
     // 3. Insert or update article record
@@ -4000,6 +4110,7 @@ async function publishArticle() {
           occupation,
           institution,
           bio: authorBio,
+          phone: authorPhone,
           photo_url: upAuthorPhotoUrl
         }, newArticle).catch(e => console.warn('Direct author profile save failed:', e));
       }
@@ -4795,6 +4906,33 @@ function getLikeData(articleId) {
   const id = String(articleId);
   return likesCache[id] || { count: 0, userLiked: false };
 }
+
+async function syncArticleLikeState(articleId, liked, fallbackCount) {
+  try {
+    const rpc = await fetch(`${SUPABASE_URL}/rest/v1/rpc/set_article_like`, {
+      method: 'POST',
+      headers,
+      body: JSON.stringify({
+        p_article_id: Number(articleId),
+        p_visitor_key: visitorKey(),
+        p_liked: !!liked
+      })
+    });
+    if (rpc.ok) {
+      const out = await rpc.json().catch(() => null);
+      const exact = Number(Array.isArray(out) ? (out[0] && (out[0].like_count || out[0].set_article_like)) : (out && out.like_count != null ? out.like_count : out));
+      if (Number.isFinite(exact)) return exact;
+    }
+  } catch(e) {
+    console.warn('Exact like sync unavailable:', e.message);
+  }
+  await fetch(`${SUPABASE_URL}/rest/v1/article_likes`, {
+    method: 'POST',
+    headers: { ...headers, 'Prefer': 'resolution=merge-duplicates' },
+    body: JSON.stringify({ article_id: parseInt(articleId), like_count: fallbackCount })
+  });
+  return fallbackCount;
+}
  
 async function toggleLike(id, el) {
   const key = String(id);
@@ -4818,14 +4956,13 @@ async function toggleLike(id, el) {
   document.querySelectorAll(`.like-btn[data-article-id="${key}"]`).forEach(btn => {
     if (btn !== el) renderLikeButton(btn, id);
   });
+  refreshLiveMetricViews();
  
   // Persist to Supabase (upsert like_count)
   try {
-    await fetch(`${SUPABASE_URL}/rest/v1/article_likes`, {
-      method: 'POST',
-      headers: { ...headers, 'Prefer': 'resolution=merge-duplicates' },
-      body: JSON.stringify({ article_id: parseInt(key), like_count: newCount })
-    });
+    const exactCount = await syncArticleLikeState(key, newLiked, newCount);
+    if (Number.isFinite(exactCount)) likesCache[key] = { ...likesCache[key], count: exactCount };
+    refreshAllLikeButtons();
   } catch(e) {
     console.warn('Like sync failed:', e.message);
   }
@@ -4843,7 +4980,21 @@ function refreshAllLikeButtons() {
   document.querySelectorAll('.like-btn[data-article-id]').forEach(btn => {
     renderLikeButton(btn, btn.dataset.articleId);
   });
+  refreshLiveMetricViews();
+}
+
+function refreshLiveMetricViews() {
+  renderLiveHome();
   renderAuthorDashboard();
+  if (_openArticleId) {
+    const article = (articles || []).find(a => Number(a.id) === Number(_openArticleId));
+    if (article && document.getElementById('modal-author-profile')) {
+      renderAuthorProfileBox(article).catch(e => console.warn('Author profile metric refresh failed:', e));
+    }
+  }
+  if (parseAuthorSlugFromLocation() && document.getElementById('author-page-section')?.classList.contains('open')) {
+    renderAuthorProfilePageFromRoute().catch(e => console.warn('Author page metric refresh failed:', e));
+  }
 }
  
 function likeHtml(articleId) {
@@ -5725,15 +5876,19 @@ function normalizeEmail(email) {
   return sanitizeInput(email || '', 220).toLowerCase();
 }
 
-function authorProfileSelect() {
-  return 'id,email,name,occupation,institution,bio,photo_url,published_article_count,article_ids,created_at,updated_at';
+function authorProfileSelect(includePhone) {
+  const cols = ['id','email','name','occupation','institution','bio'];
+  if (includePhone !== false) cols.push('phone');
+  cols.push('photo_url','published_article_count','article_ids','created_at','updated_at');
+  return cols.join(',');
 }
 
 async function fetchAuthorProfileByEmail(email) {
   const safeEmail = normalizeEmail(email);
   if (!safeEmail || !validateEmail(safeEmail)) return null;
   try {
-    const res = await fetch(`${SUPABASE_URL}/rest/v1/author_profiles?email=eq.${encodeURIComponent(safeEmail)}&select=${authorProfileSelect()}&limit=1`, { headers });
+    let res = await fetch(`${SUPABASE_URL}/rest/v1/author_profiles?email=eq.${encodeURIComponent(safeEmail)}&select=${authorProfileSelect()}&limit=1`, { headers });
+    if (!res.ok) res = await fetch(`${SUPABASE_URL}/rest/v1/author_profiles?email=eq.${encodeURIComponent(safeEmail)}&select=${authorProfileSelect(false)}&limit=1`, { headers });
     if (!res.ok) return null;
     const data = await res.json();
     return Array.isArray(data) && data.length ? data[0] : null;
@@ -5745,7 +5900,8 @@ async function fetchAuthorProfileByEmail(email) {
 
 async function fetchAllAuthorProfiles() {
   try {
-    const res = await fetch(`${SUPABASE_URL}/rest/v1/author_profiles?select=${authorProfileSelect()}&order=updated_at.desc&limit=1000`, { headers });
+    let res = await fetch(`${SUPABASE_URL}/rest/v1/author_profiles?select=${authorProfileSelect()}&order=updated_at.desc&limit=1000`, { headers });
+    if (!res.ok) res = await fetch(`${SUPABASE_URL}/rest/v1/author_profiles?select=${authorProfileSelect(false)}&order=updated_at.desc&limit=1000`, { headers });
     if (!res.ok) return [];
     const data = await res.json();
     return Array.isArray(data) ? data : [];
@@ -5769,7 +5925,8 @@ async function fetchAuthorProfileForArticle(article) {
   const name = sanitizeInput(article && article.author, 150);
   if (!name) return null;
   try {
-    const res = await fetch(`${SUPABASE_URL}/rest/v1/author_profiles?name=eq.${encodeURIComponent(name)}&select=${authorProfileSelect()}&limit=1`, { headers });
+    let res = await fetch(`${SUPABASE_URL}/rest/v1/author_profiles?name=eq.${encodeURIComponent(name)}&select=${authorProfileSelect()}&limit=1`, { headers });
+    if (!res.ok) res = await fetch(`${SUPABASE_URL}/rest/v1/author_profiles?name=eq.${encodeURIComponent(name)}&select=${authorProfileSelect(false)}&limit=1`, { headers });
     if (!res.ok) return null;
     const data = await res.json();
     return Array.isArray(data) && data.length ? data[0] : null;
@@ -5794,6 +5951,7 @@ async function loadSubmitterProfileByEmail() {
   setVal('sub-name', profile.name);
   setVal('sub-occupation', profile.occupation);
   setVal('sub-institution', profile.institution);
+  setVal('sub-phone', profile.phone);
   setVal('sub-bio', profile.bio);
   if (profile.photo_url) {
     _subAuthorPhotoData = profile.photo_url;
@@ -5807,19 +5965,53 @@ async function loadSubmitterProfileByEmail() {
   showToast('Author profile loaded', 2400);
 }
 
+async function loadEditorAuthorProfileByEmail(email, quiet) {
+  const safeEmail = normalizeEmail(email);
+  if (!validateEmail(safeEmail)) return;
+  const profile = await fetchAuthorProfileByEmail(safeEmail);
+  if (!profile || _editArticleId) return;
+  const setVal = (id, val) => {
+    const el = document.getElementById(id);
+    if (el && val && !el.value) el.value = val;
+  };
+  setVal('up-author', profile.name);
+  setVal('up-occupation', profile.occupation);
+  setVal('up-institution', profile.institution);
+  setVal('up-author-phone', profile.phone);
+  setVal('up-author-bio', profile.bio);
+  if (profile.photo_url && !_upAuthorPhotoData) {
+    _upAuthorPhotoData = profile.photo_url;
+    const preview = document.getElementById('up-photo-preview');
+    if (preview) preview.innerHTML = `<img src="${esc(profile.photo_url)}" style="width:80px;height:80px;object-fit:cover;border-radius:50%;">`;
+    const fn = document.getElementById('up-photo-filename');
+    if (fn) fn.textContent = 'Saved photo loaded';
+  }
+  updateUpBioCount();
+  if (!quiet) showToast('Author profile loaded', 2200);
+}
+
 async function upsertAuthorProfile(profile, article) {
   const email = normalizeEmail(profile && profile.email);
   if (!email || !validateEmail(email)) return null;
   const existing = await fetchAuthorProfileByEmail(email);
   const articleId = article && article.id ? Number(article.id) : null;
+  const profileName = sanitizeInput(profile.name, 150);
   const ids = Array.isArray(existing && existing.article_ids) ? existing.article_ids.slice() : [];
+  (articles || []).forEach(a => {
+    const sameAuthor = profileName && (
+      String(a.author || '').trim().toLowerCase() === profileName.toLowerCase() ||
+      authorSlugFromName(a.author || '') === authorSlugFromName(profileName)
+    );
+    if (sameAuthor && a.id && !ids.map(Number).includes(Number(a.id))) ids.push(Number(a.id));
+  });
   if (articleId && !ids.map(Number).includes(articleId)) ids.push(articleId);
   const payload = {
     email,
-    name: sanitizeInput(profile.name, 150),
+    name: profileName,
     occupation: sanitizeInput(profile.occupation, 150),
     institution: sanitizeInput(profile.institution, 200),
     bio: limitWords(sanitizeInput(profile.bio, 1200), 100),
+    phone: sanitizeInput(profile.phone, 30),
     photo_url: profile.photo_url || null,
     published_article_count: ids.length || (existing ? (existing.published_article_count || 0) : 0),
     article_ids: ids,
@@ -5835,7 +6027,21 @@ async function upsertAuthorProfile(profile, article) {
       body: JSON.stringify(payload)
     });
     if (!res.ok) {
-      console.warn('Author profile save skipped:', await res.text().catch(() => res.status));
+      const errText = await res.text().catch(() => String(res.status));
+      if (/phone/i.test(errText)) {
+        const legacyPayload = { ...payload };
+        delete legacyPayload.phone;
+        const retry = await fetch(url, {
+          method: existing ? 'PATCH' : 'POST',
+          headers: { ...headers, 'Prefer': 'return=representation' },
+          body: JSON.stringify(legacyPayload)
+        });
+        if (retry.ok) {
+          const retryData = await retry.json().catch(() => null);
+          return Array.isArray(retryData) ? retryData[0] : retryData;
+        }
+      }
+      console.warn('Author profile save skipped:', errText);
       return existing || null;
     }
     const data = await res.json().catch(() => null);
@@ -5873,20 +6079,46 @@ async function removeArticleFromAuthorProfile(article) {
 
 async function getAuthorArticles(profile, article) {
   const ids = Array.isArray(profile && profile.article_ids) ? profile.article_ids.filter(Boolean) : [];
+  const names = Array.from(new Set([
+    profile && profile.name,
+    article && article.author
+  ].filter(Boolean).map(v => String(v).trim()).filter(Boolean)));
+  const byId = new Map();
+  const addRows = rows => {
+    (Array.isArray(rows) ? rows : []).forEach(row => {
+      if (row && row.id != null) byId.set(String(row.id), row);
+    });
+  };
+  addRows((articles || []).filter(a => {
+    const idHit = ids.map(Number).filter(Boolean).includes(Number(a.id));
+    const nameHit = names.some(name => {
+      const articleAuthor = String(a.author || '').trim();
+      return articleAuthor.toLowerCase() === name.toLowerCase() ||
+        authorSlugFromName(articleAuthor) === authorSlugFromName(name);
+    });
+    return idHit || nameHit;
+  }));
   try {
-    let url = '';
+    const urls = [];
     if (ids.length) {
-      url = `${SUPABASE_URL}/rest/v1/articles?id=in.(${ids.map(Number).filter(Boolean).join(',')})&select=id,title,created_at,category&order=created_at.desc`;
-    } else if (article && article.author) {
-      url = `${SUPABASE_URL}/rest/v1/articles?author=eq.${encodeURIComponent(article.author)}&select=id,title,created_at,category&order=created_at.desc`;
+      const cleanIds = ids.map(Number).filter(Boolean);
+      if (cleanIds.length) urls.push(`${SUPABASE_URL}/rest/v1/articles?id=in.(${cleanIds.join(',')})&select=id,title,created_at,category,author&order=created_at.desc&limit=1000`);
     }
-    if (!url) return [];
-    const res = await fetch(url, { headers });
-    if (!res.ok) return [];
-    return await res.json();
+    names.forEach(name => {
+      urls.push(`${SUPABASE_URL}/rest/v1/articles?author=eq.${encodeURIComponent(name)}&select=id,title,created_at,category,author&order=created_at.desc&limit=1000`);
+    });
+    for (const url of Array.from(new Set(urls))) {
+      const res = await fetch(url, { headers });
+      if (res.ok) addRows(await res.json());
+    }
   } catch(e) {
-    return [];
+    console.warn('Author article list lookup skipped:', e.message);
   }
+  return Array.from(byId.values()).sort((a,b) => {
+    const bt = new Date(b.created_at || 0).getTime() || 0;
+    const at = new Date(a.created_at || 0).getTime() || 0;
+    return bt - at;
+  });
 }
 
 function relatedArticleScore(base, candidate) {
@@ -5906,20 +6138,32 @@ function relatedArticleScore(base, candidate) {
 function renderRelatedArticles(article) {
   const host = document.getElementById('modal-related-articles');
   if (!host || !article) return;
-  const related = (articles || [])
+  let related = (articles || [])
     .map(a => ({ article: a, score: relatedArticleScore(article, a) }))
     .filter(x => x.score > 0)
     .sort((a,b) => b.score - a.score)
-    .slice(0, 4)
+    .slice(0, 6)
     .map(x => x.article);
-  if (!related.length) {
-    host.innerHTML = '';
-    return;
+  if (related.length < 6) {
+    const seen = new Set(related.map(a => String(a.id)).concat(String(article.id)));
+    (articles || []).forEach(a => {
+      if (related.length >= 6) return;
+      if (!seen.has(String(a.id))) {
+        related.push(a);
+        seen.add(String(a.id));
+      }
+    });
   }
+  const moreReading = (articles || [])
+    .filter(a => Number(a.id) !== Number(article.id) && !related.some(r => Number(r.id) === Number(a.id)))
+    .slice(0, 8);
+  const topicCats = Array.from(new Set((articles || []).map(a => a.category).filter(Boolean))).slice(0, 6);
   host.innerHTML = `
     <div class="related-articles-box">
-      <div class="related-title">Related Articles</div>
-      <div class="related-grid">
+      <div class="article-end-kicker">Continue Exploring</div>
+      <div class="related-title">More from the Herald</div>
+      <div class="article-end-note">Keep reading connected research, nearby themes, and fresh work from across ILIRH.</div>
+      ${related.length ? `<div class="related-grid">
         ${related.map(a => {
           const img = articleImageSrc(a);
           return `<div class="related-card" onclick="openArticle(${Number(a.id)})">
@@ -5930,6 +6174,26 @@ function renderRelatedArticles(article) {
             </div>
           </div>`;
         }).join('')}
+      </div>` : ''}
+      <div class="article-explore-panel">
+        <div class="article-explore-title">Explore by Desk</div>
+        <div class="article-topic-row">
+          ${topicCats.map(cat => `<button type="button" class="article-topic-chip" onclick='navigateArticleCategory(${JSON.stringify(cat)})'>${esc(cat)}</button>`).join('')}
+        </div>
+        ${moreReading.length ? `<div class="article-explore-title">Latest Reading Queue</div>
+        <div class="article-reading-list">
+          ${moreReading.map(a => `<a href="${articlePath(a.id)}" onclick="event.preventDefault();openArticle(${Number(a.id)});">${esc(a.title)}<span>${esc(a.category || 'Article')} &bull; ${formatDate(a.created_at)}</span></a>`).join('')}
+        </div>` : ''}
+        <div class="article-cta-row">
+          <div>
+            <div class="article-cta-title">Stay with independent legal research.</div>
+            <div class="article-cta-copy">Subscribe for new scholarship, or support the Herald so more readers can access it freely.</div>
+          </div>
+          <div class="article-cta-actions">
+            <button type="button" class="article-cta-btn" onclick="closeModal();openJoin();">Subscribe</button>
+            <button type="button" class="article-cta-btn secondary" onclick="closeModal();openPolicy('support');">Support Us</button>
+          </div>
+        </div>
       </div>
     </div>`;
 }
@@ -6001,7 +6265,7 @@ async function logArticleEvent(articleId, eventType) {
     articleId
   );
   bumpArticleStatsCache(articleId, eventType, eventType === 'view' && !uniqueBefore);
-  renderAuthorDashboard();
+  refreshLiveMetricViews();
   try {
     const res = await fetch(`${SUPABASE_URL}/rest/v1/rpc/log_article_event`, {
       method: 'POST',
@@ -6013,6 +6277,7 @@ async function logArticleEvent(articleId, eventType) {
       })
     });
     if (!res.ok) console.warn('Article event log skipped:', await res.text().catch(() => res.status));
+    else fetchArticleStats().then(() => refreshLiveMetricViews()).catch(() => {});
   } catch(e) {
     console.warn('Article event log unavailable:', e.message);
   }
@@ -6067,38 +6332,65 @@ function renderAuthorDashboard() {
     if (host) { host.classList.remove('open'); host.innerHTML = ''; }
     return;
   }
-  const stats = authorStats();
-  if (!stats.length) return;
-  const topPublished = stats.slice().sort((a,b) => b.articles - a.articles || a.name.localeCompare(b.name))[0];
-  const topRead = stats.slice().sort((a,b) => (b.unique_readers || b.reads) - (a.unique_readers || a.reads) || b.reads - a.reads || b.likes - a.likes || b.articles - a.articles)[0];
-  const topLiked = stats.slice().sort((a,b) => b.likes - a.likes || b.articles - a.articles)[0];
-  const list = stats.slice().sort((a,b) => (b.likes + b.reads + b.downloads + b.shares + b.articles) - (a.likes + a.reads + a.downloads + a.shares + a.articles)).slice(0, 8);
+  const latest = articles[0];
+  const categoryRows = Array.from(articles.reduce((map, a) => {
+    const key = a.category || 'Research';
+    if (!map.has(key)) map.set(key, { name:key, articles:0, views:0, likes:0, downloads:0, shares:0 });
+    const row = map.get(key);
+    const activity = articleStatsFor(a.id);
+    row.articles += 1;
+    row.views += activity.views || 0;
+    row.downloads += activity.downloads || 0;
+    row.shares += activity.shares || 0;
+    row.likes += getLikeData(a.id).count || 0;
+    return map;
+  }, new Map()).values()).sort((a,b) => (b.views + b.likes + b.downloads + b.shares + b.articles) - (a.views + a.likes + a.downloads + a.shares + a.articles));
+  const activeDesk = categoryRows[0] || { name:'Research', articles:articles.length, views:0 };
+  const totals = articles.reduce((acc, a) => {
+    const s = articleStatsFor(a.id);
+    acc.views += s.views || 0;
+    acc.readers += s.unique_readers || 0;
+    acc.likes += getLikeData(a.id).count || 0;
+    acc.downloads += s.downloads || 0;
+    acc.shares += s.shares || 0;
+    return acc;
+  }, { views:0, readers:0, likes:0, downloads:0, shares:0 });
+  const explore = articles.slice().sort((a,b) => {
+    const sa = articleStatsFor(a.id);
+    const sb = articleStatsFor(b.id);
+    return ((sb.views || 0) + (getLikeData(b.id).count || 0) * 3 + (sb.shares || 0) * 4 + (sb.downloads || 0) * 2)
+      - ((sa.views || 0) + (getLikeData(a.id).count || 0) * 3 + (sa.shares || 0) * 4 + (sa.downloads || 0) * 2);
+  }).slice(0, 8);
   host.classList.add('open');
   host.innerHTML = `
     <div class="author-dashboard-header">
       <div>
-        <div class="author-dashboard-kicker">Author Rankings</div>
-        <div class="author-dashboard-title">Top authors and reader activity</div>
+        <div class="author-dashboard-kicker">Research Pathways</div>
+        <div class="author-dashboard-title">Smart ways to continue reading</div>
       </div>
-      <div style="font-family:'Lato',sans-serif;font-size:11px;color:#7a8795;">Live reader activity updates from Supabase as visitors read, share, and download.</div>
+      <div style="font-family:'Lato',sans-serif;font-size:11px;color:#7a8795;">A live guide built from recent publishing, reading, likes, shares, and downloads.</div>
     </div>
     <div class="author-dashboard-grid">
-      ${authorRankCard('Most Published', topPublished, `${topPublished.articles} articles`)}
-      ${authorRankCard('Most Read', topRead, `${topRead.unique_readers || 0} unique readers · ${topRead.reads} views`)}
-      ${authorRankCard('Most Liked', topLiked, `${topLiked.likes} likes`)}
+      ${readerPathwayCard('Latest Briefing', latest && latest.title, latest ? `${latest.category || 'Article'} &middot; ${formatDate(latest.created_at)}` : 'New article')}
+      ${readerPathwayCard('Active Desk', activeDesk.name, `${activeDesk.articles} articles &middot; ${shortNumber(activeDesk.views)} views`)}
+      ${readerPathwayCard('Reader Momentum', `${shortNumber(totals.likes)} likes`, `${shortNumber(totals.readers)} readers &middot; ${shortNumber(totals.downloads)} downloads`)}
     </div>
     <div class="author-rank-list">
-      ${list.map(a => `<div class="author-rank-row">
-        <a href="${authorProfilePath(a.name)}">${esc(a.name)}</a>
-        <span class="author-rank-metrics">${a.articles} articles · ${a.likes} likes · ${a.unique_readers || 0} readers · ${a.shares} shares · ${a.downloads} downloads</span>
-      </div>`).join('')}
+      ${explore.map(a => {
+        const s = articleStatsFor(a.id);
+        const likes = getLikeData(a.id).count || 0;
+        return `<div class="author-rank-row">
+        <a href="${articlePath(a.id)}" onclick="event.preventDefault();openArticle(${Number(a.id)});">${esc(a.title)}</a>
+        <span class="author-rank-metrics">${esc(a.category || 'Article')} &middot; ${likes} likes &middot; ${shortNumber(s.unique_readers || 0)} readers &middot; ${shortNumber(s.downloads || 0)} downloads</span>
+      </div>`;
+      }).join('')}
     </div>`;
 }
 
-function authorRankCard(label, row, stat) {
+function readerPathwayCard(label, title, stat) {
   return `<div class="author-rank-card">
     <div class="author-rank-label">${esc(label)}</div>
-    <div class="author-rank-name">${esc(row && row.name || 'Author')}</div>
+    <div class="author-rank-name">${esc(title || 'ILIRH')}</div>
     <div class="author-rank-stat">${esc(stat || '')}</div>
   </div>`;
 }
@@ -6133,6 +6425,14 @@ async function renderAuthorProfilePage(profile, replaceUrl) {
   const list = await getAuthorArticles(profile, { author: profile.name });
   const meta = [profile.occupation, profile.institution].filter(Boolean).map(esc).join(' · ');
   const count = Array.isArray(profile.article_ids) ? list.length : (list.length || profile.published_article_count || 0);
+  const totals = list.reduce((acc, a) => {
+    const stats = articleStatsFor(a.id);
+    acc.likes += getLikeData(a.id).count || 0;
+    acc.readers += stats.unique_readers || 0;
+    acc.shares += stats.shares || 0;
+    acc.downloads += stats.downloads || 0;
+    return acc;
+  }, { likes:0, readers:0, shares:0, downloads:0 });
   document.title = `${profile.name || 'Author'} - ILIRH Author Profile`;
   section.innerHTML = `
     <div class="author-page-hero">
@@ -6146,6 +6446,13 @@ async function renderAuthorProfilePage(profile, replaceUrl) {
         </div>
       </div>
       ${profile.bio ? `<div class="author-page-bio">${esc(profile.bio)}</div>` : ''}
+      <div class="author-page-stats">
+        <div class="author-page-stat"><strong>${count}</strong><span>Articles</span></div>
+        <div class="author-page-stat"><strong>${shortNumber(totals.likes)}</strong><span>Likes</span></div>
+        <div class="author-page-stat"><strong>${shortNumber(totals.readers)}</strong><span>Readers</span></div>
+        <div class="author-page-stat"><strong>${shortNumber(totals.shares)}</strong><span>Shares</span></div>
+        <div class="author-page-stat"><strong>${shortNumber(totals.downloads)}</strong><span>Downloads</span></div>
+      </div>
       <div class="author-page-list">
         <div class="author-page-list-title">Written Articles</div>
         ${list.length ? list.map(a => `<a href="${articlePath(a.id)}" onclick="event.preventDefault();openArticle(${Number(a.id)});">${esc(a.title)}<span>${a.category ? esc(a.category) + ' · ' : ''}${a.created_at ? formatDate(a.created_at) : ''}</span></a>`).join('') : '<div style="font-family:\'Lato\',sans-serif;font-size:13px;color:#7a8795;">No published article list available yet.</div>'}
@@ -6200,9 +6507,10 @@ async function renderAuthorProfileBox(article) {
     const stats = articleStatsFor(a.id);
     acc.likes += getLikeData(a.id).count || 0;
     acc.readers += stats.unique_readers || 0;
+    acc.shares += stats.shares || 0;
     acc.downloads += stats.downloads || 0;
     return acc;
-  }, { likes: 0, readers: 0, downloads: 0 });
+  }, { likes: 0, readers: 0, shares: 0, downloads: 0 });
   const profileLink = authorProfilePath(profile || display.name);
   const meta = [display.occupation, display.institution].filter(Boolean).map(esc).join(' · ');
   const links = authoredArticles
@@ -6219,19 +6527,42 @@ async function renderAuthorProfileBox(article) {
           ${meta ? `<div class="author-profile-meta">${meta}</div>` : ''}
           <div class="author-profile-actions">
             <button type="button" class="author-profile-count" onclick="toggleAuthorArticleList()">Published Articles: ${display.count}</button>
-            <a class="author-profile-link" href="${profileLink}">View Public Profile</a>
+            <a class="author-profile-link" href="${profileLink}" onclick="event.preventDefault();openAuthorProfileFromArticle(${Number(article.id)});">View Public Profile</a>
           </div>
         </div>
       </div>
       ${display.bio ? `<div class="author-profile-bio">${esc(display.bio)}</div>` : ''}
       <div class="author-profile-stats">
         <div class="author-profile-stat"><strong>${display.count}</strong><span>Articles</span></div>
-        <div class="author-profile-stat"><strong>${totals.likes}</strong><span>Likes</span></div>
-        <div class="author-profile-stat"><strong>${totals.readers}</strong><span>Readers</span></div>
-        <div class="author-profile-stat"><strong>${totals.downloads}</strong><span>Downloads</span></div>
+        <div class="author-profile-stat"><strong>${shortNumber(totals.likes)}</strong><span>Likes</span></div>
+        <div class="author-profile-stat"><strong>${shortNumber(totals.readers)}</strong><span>Readers</span></div>
+        <div class="author-profile-stat"><strong>${shortNumber(totals.shares)}</strong><span>Shares</span></div>
+        <div class="author-profile-stat"><strong>${shortNumber(totals.downloads)}</strong><span>Downloads</span></div>
       </div>
       <div class="author-article-list" id="author-article-list">${links || '<div style="font-size:12px;color:#7a8795;">No article list available yet.</div>'}</div>
     </div>`;
+}
+
+async function openAuthorProfileFromArticle(articleId) {
+  const article = (articles || []).find(a => Number(a.id) === Number(articleId));
+  if (!article) return;
+  const profile = await fetchAuthorProfileForArticle(article);
+  const fallback = {
+    name: article.author || 'Author',
+    occupation: article.occupation || '',
+    institution: article.institution || '',
+    bio: article.author_bio || '',
+    photo_url: article.author_photo_url || '',
+    article_ids: [Number(article.id)].filter(Boolean)
+  };
+  const modal = document.getElementById('article-modal');
+  if (modal) modal.classList.remove('open');
+  document.body.style.overflow = '';
+  const content = document.getElementById('modal-content');
+  if (content) content.innerHTML = '';
+  updateArticleDownloadControl(null);
+  _openArticleId = null;
+  await renderAuthorProfilePage(profile || fallback, false);
 }
 
 function toggleAuthorArticleList() {
@@ -6338,8 +6669,19 @@ async function doSubmitArticle() {
     // 2. Also store author photo URL if uploaded
     let author_photo_url = null;
     if (_subAuthorPhotoData) {
-      author_photo_url = await uploadArticleImageToSupabase(_subAuthorPhotoData);
+      author_photo_url = /^https?:\/\//i.test(String(_subAuthorPhotoData))
+        ? _subAuthorPhotoData
+        : await uploadArticleImageToSupabase(_subAuthorPhotoData);
     }
+    const saveSubmitterProfile = () => upsertAuthorProfile({
+      email,
+      name,
+      occupation,
+      institution,
+      phone,
+      bio: authorBio,
+      photo_url: author_photo_url
+    }, null).catch(e => console.warn('Submitter author profile save failed:', e));
     pfC.style.width = '70%';
 
     // 3. Insert into article_submissions table
@@ -6400,6 +6742,7 @@ async function doSubmitArticle() {
           if (!retryNoBio.ok) throw new Error('Submission failed. Please try again.');
           const insertedRetry = await retryNoBio.json();
           const newSubRetry = Array.isArray(insertedRetry) ? insertedRetry[0] : insertedRetry;
+          await saveSubmitterProfile();
           await autoSubscribeSubmitter(name, email);
           notifyAdminNewSubmission(name, email, occupation, institution, title, category, abstract, newSubRetry?.id);
           pfC.style.width = '100%';
@@ -6409,6 +6752,7 @@ async function doSubmitArticle() {
         }
         const insertedRetry = await retryRes.json();
         const newSubRetry = Array.isArray(insertedRetry) ? insertedRetry[0] : insertedRetry;
+        await saveSubmitterProfile();
         await autoSubscribeSubmitter(name, email);
         notifyAdminNewSubmission(name, email, occupation, institution, title, category, abstract, newSubRetry?.id);
         pfC.style.width = '100%';
@@ -6431,6 +6775,7 @@ async function doSubmitArticle() {
         if (!fallbackRes.ok) throw new Error('Submission failed. Please try again.');
         const insertedFb = await fallbackRes.json();
         const newSubFb = Array.isArray(insertedFb) ? insertedFb[0] : insertedFb;
+        await saveSubmitterProfile();
         await autoSubscribeSubmitter(name, email);
         notifyAdminNewSubmission(name, email, occupation, institution, title, category, abstract, newSubFb?.id);
         pfC.style.width = '100%';
@@ -6443,6 +6788,7 @@ async function doSubmitArticle() {
     const newSub = Array.isArray(inserted) ? inserted[0] : inserted;
     pfC.style.width = '100%';
     btn.textContent = 'Saved ✓';
+    await saveSubmitterProfile();
     await autoSubscribeSubmitter(name, email);
     notifyAdminNewSubmission(name, email, occupation, institution, title, category, abstract, newSub?.id);
     setTimeout(() => showSuccessState(), 600);
@@ -7031,6 +7377,7 @@ async function publishFromReview() {
       occupation,
       institution,
       bio: authorBio,
+      phone: _activeSubmission.phone || '',
       photo_url: authorPhotoUrlForProfile
     }, newArticle);
 
@@ -7570,6 +7917,33 @@ async function applyDocxPictureEffects(arrayBuffer, root) {
   });
 }
 
+function lockDocxPageForCapture(root) {
+  if (!root) return null;
+  const page = root.querySelector('section.docx') || root.querySelector('.docx-page') || root;
+  root.querySelectorAll('.docx-wrapper, .docx-page').forEach(function(el) {
+    el.style.boxShadow = 'none';
+    el.style.border = 'none';
+    el.style.margin = '0';
+    el.style.padding = '0';
+    el.style.background = '#ffffff';
+    el.style.width = A4_PAGE_W_NATIVE + 'px';
+    el.style.maxWidth = A4_PAGE_W_NATIVE + 'px';
+    el.style.overflow = 'visible';
+  });
+  if (page) {
+    page.style.boxShadow = 'none';
+    page.style.border = 'none';
+    page.style.margin = '0';
+    page.style.background = '#ffffff';
+    page.style.width = A4_PAGE_W_NATIVE + 'px';
+    page.style.minHeight = A4_PAGE_H_NATIVE + 'px';
+    page.style.height = A4_PAGE_H_NATIVE + 'px';
+    page.style.maxWidth = A4_PAGE_W_NATIVE + 'px';
+    page.style.overflow = 'hidden';
+  }
+  return page;
+}
+
 async function renderDocxToContainer(arrayBuffer, container) {
   if (typeof docx === 'undefined' || !docx.renderAsync) {
     throw new Error('Word preview library failed to load. Please refresh the page.');
@@ -7713,19 +8087,8 @@ async function captureWordDocPageForTemplate(arrayBuffer) {
   });
 
   // ── 3. Strip docx-preview chrome before capture ─────────────────────────
-  liveEl.querySelectorAll('.docx-wrapper, .docx-page').forEach(function(el) {
-    el.style.boxShadow  = 'none';
-    el.style.border     = 'none';
-    el.style.margin     = '0';
-    el.style.padding    = '0';
-    el.style.background = '#ffffff';
-  });
-  liveEl.querySelectorAll('section.docx').forEach(function(el) {
-    el.style.boxShadow  = 'none';
-    el.style.border     = 'none';
-    el.style.margin     = '0 auto';
-    el.style.background = '#ffffff';
-  });
+  const captureEl = lockDocxPageForCapture(liveEl) || liveEl;
+  await waitForImagesIn(captureEl);
 
   // ── 4. Move into document coordinate space (html2canvas needs this) ─────
   const savedPosition = liveEl.style.position;
@@ -7735,6 +8098,10 @@ async function captureWordDocPageForTemplate(arrayBuffer) {
   const savedOpacity  = liveEl.style.opacity;
   const savedOverflow = liveEl.style.overflow;
   const savedVisibility = liveEl.style.visibility;
+  const savedCaptureWidth = captureEl.style.width;
+  const savedCaptureHeight = captureEl.style.height;
+  const savedCaptureMinHeight = captureEl.style.minHeight;
+  const savedCaptureOverflow = captureEl.style.overflow;
 
   liveEl.style.position = 'absolute';
   liveEl.style.left     = '0px';
@@ -7742,6 +8109,10 @@ async function captureWordDocPageForTemplate(arrayBuffer) {
   liveEl.style.zIndex   = '-1';
   liveEl.style.opacity  = '1';
   liveEl.style.visibility = 'visible';
+  captureEl.style.width = A4_PAGE_W_NATIVE + 'px';
+  captureEl.style.height = A4_PAGE_H_NATIVE + 'px';
+  captureEl.style.minHeight = A4_PAGE_H_NATIVE + 'px';
+  captureEl.style.overflow = 'hidden';
 
   // Two rAF so browser reflows before capture
   await new Promise(r => requestAnimationFrame(() => requestAnimationFrame(r)));
@@ -7749,7 +8120,7 @@ async function captureWordDocPageForTemplate(arrayBuffer) {
   // ── 5. Capture at scale=3.125 → output = 2481 × 3509 px ────────────────
   var shot;
   try {
-    shot = await html2canvas(liveEl, {
+    shot = await html2canvas(captureEl, {
       backgroundColor: '#ffffff',
       scale:           DOCX_TO_TEMPLATE_SCALE,   // 300/96 ≈ 3.125
       useCORS:         true,
@@ -7776,6 +8147,10 @@ async function captureWordDocPageForTemplate(arrayBuffer) {
         cloneEl.style.width      = A4_PAGE_W_NATIVE + 'px';
         cloneEl.style.height     = A4_PAGE_H_NATIVE + 'px';
         cloneEl.style.minHeight  = A4_PAGE_H_NATIVE + 'px';
+        cloneEl.style.margin     = '0';
+        cloneEl.style.boxShadow  = 'none';
+        cloneEl.style.border     = 'none';
+        cloneEl.style.background = '#ffffff';
         // Strip chrome in clone too
         cloneEl.querySelectorAll('.docx-wrapper, .docx-page').forEach(function(el) {
           el.style.boxShadow  = 'none';
@@ -7787,8 +8162,12 @@ async function captureWordDocPageForTemplate(arrayBuffer) {
         cloneEl.querySelectorAll('section.docx').forEach(function(el) {
           el.style.boxShadow  = 'none';
           el.style.border     = 'none';
-          el.style.margin     = '0 auto';
+          el.style.margin     = '0';
           el.style.background = '#ffffff';
+          el.style.width      = A4_PAGE_W_NATIVE + 'px';
+          el.style.minHeight  = A4_PAGE_H_NATIVE + 'px';
+          el.style.height     = A4_PAGE_H_NATIVE + 'px';
+          el.style.overflow   = 'hidden';
         });
         // Unclip parent chain
         var parent = cloneEl.parentElement;
@@ -7815,6 +8194,10 @@ async function captureWordDocPageForTemplate(arrayBuffer) {
     liveEl.style.visibility = savedVisibility;
     liveEl.style.overflow = savedOverflow || 'visible';
     liveEl.style.height   = '';
+    captureEl.style.width = savedCaptureWidth;
+    captureEl.style.height = savedCaptureHeight;
+    captureEl.style.minHeight = savedCaptureMinHeight;
+    captureEl.style.overflow = savedCaptureOverflow;
   }
 
   if (!shot || shot.width < 10 || shot.height < 10) {
@@ -7831,6 +8214,7 @@ async function captureWordDocPageForTemplate(arrayBuffer) {
   // which matches TEMPLATE_W × A4_BODY_H exactly (both = 300 DPI A4).
   // If rounding gives ±1 px, stretch-fill to eliminate any grey bars.
   if (shot.width === TEMPLATE_W && shot.height === A4_BODY_H) {
+    removeDocxPreviewChromePixels(shot);
     _docxCaptureCacheKey = cacheKey;
     _docxCaptureCacheCanvas = shot;
     _docxCaptureCacheTrim = detectTopGreySeparatorHeight(shot);
@@ -7844,6 +8228,7 @@ async function captureWordDocPageForTemplate(arrayBuffer) {
   octx.fillRect(0, 0, TEMPLATE_W, A4_BODY_H);
   octx.drawImage(shot, 0, 0, shot.width, shot.height,
                  0, 0, TEMPLATE_W, A4_BODY_H);
+  removeDocxPreviewChromePixels(out);
   _docxCaptureCacheKey = cacheKey;
   _docxCaptureCacheCanvas = out;
   _docxCaptureCacheTrim = detectTopGreySeparatorHeight(out);
@@ -7879,6 +8264,51 @@ async function capturePdfPageForTemplate(arrayBuffer) {
   const dy = Math.round((A4_BODY_H - pageCanvas.height) / 2);
   ctx.drawImage(pageCanvas, dx, dy);
   return out;
+}
+
+function removeDocxPreviewChromePixels(canvas) {
+  if (!canvas) return canvas;
+  const ctx = canvas.getContext('2d');
+  const scanRows = Math.min(220, canvas.height);
+  const scanCols = Math.min(80, canvas.width);
+  const rowStep = Math.max(1, Math.floor(canvas.width / 100));
+  const colStep = Math.max(1, Math.floor(canvas.height / 120));
+  const isGrey = (r, g, b) => {
+    const spread = Math.max(r, g, b) - Math.min(r, g, b);
+    return r > 105 && r < 235 && g > 105 && g < 235 && b > 105 && b < 235 && spread < 22;
+  };
+  const cleanRow = y => {
+    const data = ctx.getImageData(0, y, canvas.width, 1).data;
+    let grey = 0, sampled = 0;
+    for (let x = 0; x < canvas.width; x += rowStep) {
+      const i = x * 4;
+      if (isGrey(data[i], data[i + 1], data[i + 2])) grey++;
+      sampled++;
+    }
+    if (sampled && grey / sampled > 0.88) {
+      ctx.fillStyle = '#ffffff';
+      ctx.fillRect(0, y, canvas.width, 1);
+    }
+  };
+  for (let y = 0; y < scanRows; y++) cleanRow(y);
+  for (let y = canvas.height - scanRows; y < canvas.height; y++) if (y >= 0) cleanRow(y);
+
+  const cleanCol = x => {
+    const data = ctx.getImageData(x, 0, 1, canvas.height).data;
+    let grey = 0, sampled = 0;
+    for (let y = 0; y < canvas.height; y += colStep) {
+      const i = y * 4;
+      if (isGrey(data[i], data[i + 1], data[i + 2])) grey++;
+      sampled++;
+    }
+    if (sampled && grey / sampled > 0.88) {
+      ctx.fillStyle = '#ffffff';
+      ctx.fillRect(x, 0, 1, canvas.height);
+    }
+  };
+  for (let x = 0; x < scanCols; x++) cleanCol(x);
+  for (let x = canvas.width - scanCols; x < canvas.width; x++) if (x >= 0) cleanCol(x);
+  return canvas;
 }
 
 function isCanvasMostlyBlank(canvas) {
