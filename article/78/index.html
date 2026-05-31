@@ -702,6 +702,45 @@ body.dark-mode .share-btn:hover { border-color:#8fa8c0; color:#c8d8ea; }
   padding:7px 0; border-bottom:1px solid rgba(24,57,95,0.08);
 }
 .author-article-list a:hover { color:#9b7a25; text-decoration:underline; }
+.author-profile-link {
+  display:inline-flex; align-items:center; gap:5px; margin-top:9px; color:#18395f;
+  font-size:10px; font-weight:800; letter-spacing:0.08em; text-transform:uppercase;
+  text-decoration:none;
+}
+.author-profile-link:hover { color:#9b7a25; text-decoration:underline; }
+.author-page-section {
+  display:none; max-width:920px; margin:0 auto 44px; padding:36px 24px;
+}
+.author-page-section.open { display:block; }
+.author-page-hero {
+  border:1px solid #d6dce3; background:linear-gradient(135deg,#f8fbff 0%,#fff 56%,#f7f1df 100%);
+  padding:30px; font-family:'Lato',sans-serif; color:#1d2b3a;
+}
+.author-page-top { display:flex; gap:22px; align-items:flex-start; }
+.author-page-photo {
+  width:112px; height:112px; border-radius:50%; overflow:hidden; flex-shrink:0;
+  background:#e7edf3; border:4px solid #fff; box-shadow:0 0 0 1px #cbd6df;
+  display:flex; align-items:center; justify-content:center; font-size:28px; font-weight:800; color:#18395f;
+}
+.author-page-photo img { width:100%; height:100%; object-fit:cover; display:block; }
+.author-page-kicker {
+  font-size:10px; font-weight:800; letter-spacing:0.22em; text-transform:uppercase;
+  color:#9b7a25; margin-bottom:7px;
+}
+.author-page-name { font-family:'Playfair Display',serif; font-size:34px; line-height:1.1; color:#10243a; font-weight:700; }
+.author-page-meta { margin-top:8px; color:#506173; font-size:13px; line-height:1.6; }
+.author-page-bio { margin-top:18px; font-family:'EB Garamond',serif; font-size:18px; line-height:1.7; color:#344557; }
+.author-page-list { margin-top:24px; border-top:1px solid #dbe3ea; padding-top:18px; }
+.author-page-list-title {
+  font-family:'Cinzel',serif; color:#10243a; font-size:18px; letter-spacing:0.04em; margin-bottom:10px;
+}
+.author-page-list a {
+  display:block; padding:12px 0; border-bottom:1px solid rgba(24,57,95,0.1);
+  color:#18395f; text-decoration:none; font-family:'Lato',sans-serif; font-weight:700; font-size:14px;
+}
+.author-page-list a span { display:block; margin-top:3px; color:#7a8795; font-weight:400; font-size:11px; }
+.author-page-list a:hover { color:#9b7a25; }
+@media(max-width:560px){ .author-page-section { padding:24px 16px; } .author-page-hero { padding:22px; } .author-page-top { flex-direction:column; } .author-page-name { font-size:28px; } }
 @media(max-width:560px){ .author-profile-top { flex-direction:column; } .author-profile-card { padding:18px; } }
  
 /* ── SKELETON LOADING (fast perceived load) ── */
@@ -1721,6 +1760,7 @@ body.dark-mode .editor-tab.active { color:#c8d8ea; }
  
 <!-- MAIN -->
 <main class="site-wrap" id="main-content">
+  <section class="author-page-section" id="author-page-section"></section>
   <section class="hero-section" id="hero-section">
     <div class="hero-grid" id="hero-grid">
   <div class="loading-state" style="grid-column:1/-1;">
@@ -2013,14 +2053,8 @@ body.dark-mode .editor-tab.active { color:#c8d8ea; }
       </div>
     </div>
  
-    <div class="form-row" id="up-docx-row" style="display:none;"><label>Upload A4 Article Document *</label>
-      <div class="drop-zone" id="up-docx-zone" onclick="document.getElementById('up-docx-file').click()">
-        <input type="file" id="up-docx-file" accept=".docx,.pdf,application/vnd.openxmlformats-officedocument.wordprocessingml.document,application/pdf" style="display:none;" onchange="handleUpDocxSelect(this)">
-        <div style="font-size:32px;margin-bottom:8px;opacity:0.4;">&#128196;</div>
-        <div>Upload a single-page A4 Word or PDF document to generate the article image</div>
-        <div class="drop-filename" id="up-docx-filename"></div>
-      </div>
-      <div style="display:flex;align-items:flex-start;gap:18px;margin:14px 0 0;">
+    <div class="form-row" id="up-docx-row" style="display:none;"><label>Author Photo</label>
+      <div style="display:flex;align-items:flex-start;gap:18px;margin:0 0 14px;">
         <div id="up-photo-preview" style="width:72px;height:72px;border:2px solid var(--border);background:var(--cream);border-radius:50%;overflow:hidden;flex-shrink:0;display:flex;align-items:center;justify-content:center;">
           <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="var(--border)" stroke-width="1.5"><circle cx="12" cy="8" r="4"/><path d="M6 20v-2a6 6 0 0 1 12 0v2"/></svg>
         </div>
@@ -2030,6 +2064,13 @@ body.dark-mode .editor-tab.active { color:#c8d8ea; }
           <div style="font-size:10px;color:var(--text-muted);">JPG, PNG &nbsp;&bull;&nbsp; Max 2 MB &nbsp;&bull;&nbsp; optional</div>
           <div class="drop-filename" id="up-photo-filename"></div>
         </div>
+      </div>
+      <label>Upload A4 Article Document *</label>
+      <div class="drop-zone" id="up-docx-zone" onclick="document.getElementById('up-docx-file').click()">
+        <input type="file" id="up-docx-file" accept=".docx,.pdf,application/vnd.openxmlformats-officedocument.wordprocessingml.document,application/pdf" style="display:none;" onchange="handleUpDocxSelect(this)">
+        <div style="font-size:32px;margin-bottom:8px;opacity:0.4;">&#128196;</div>
+        <div>Upload a single-page A4 Word or PDF document to generate the article image</div>
+        <div class="drop-filename" id="up-docx-filename"></div>
       </div>
     </div>
     <div class="rd-full-preview-wrap" id="up-docx-preview-wrap" style="display:none;">
@@ -2561,6 +2602,26 @@ function articleUrl(id) {
   return SITE_URL + articlePath(id);
 }
 
+function authorSlugFromName(name) {
+  return slugifyArticleTitle(name || 'author').slice(0, 80) || 'author';
+}
+
+function authorProfilePath(profileOrName) {
+  const name = typeof profileOrName === 'string'
+    ? profileOrName
+    : ((profileOrName && profileOrName.name) || 'author');
+  return '/authors/' + authorSlugFromName(name) + '/';
+}
+
+function authorProfileUrl(profileOrName) {
+  return SITE_URL + authorProfilePath(profileOrName);
+}
+
+function parseAuthorSlugFromLocation() {
+  const match = window.location.pathname.match(/^\/authors\/([^/]+)\/?$/);
+  return match ? decodeURIComponent(match[1]) : '';
+}
+
 function parseArticleIdFromLocation() {
   const slugMatch = window.location.pathname.match(/^\/articles\/([^/]+)\/?$/);
   if (slugMatch) {
@@ -2590,6 +2651,7 @@ function pushArticleUrl(id, replace) {
 function pushHomeUrl() {
   if (window.location.pathname === '/' && !window.location.search && !window.location.hash) return;
   history.pushState({}, '', '/');
+  hideAuthorProfilePage();
 }
 
 function requestStaticArticleRefresh(reason) {
@@ -2655,6 +2717,10 @@ async function fetchArticles(force = false) {
     articles = data || [];
     _lastFetchTime = Date.now();
     render();
+    if (parseAuthorSlugFromLocation()) {
+      renderAuthorProfilePageFromRoute();
+      return;
+    }
     fetchLikes();
     const routedArticleId = parseArticleIdFromLocation();
     if (routedArticleId) {
@@ -4035,6 +4101,12 @@ try {
 }
 
 window.addEventListener('popstate', () => {
+  const authorSlug = parseAuthorSlugFromLocation();
+  if (authorSlug) {
+    renderAuthorProfilePageFromRoute();
+    return;
+  }
+  hideAuthorProfilePage();
   const id = parseArticleIdFromLocation();
   if (id) {
     openArticle(id, null, { skipUrl: true });
@@ -4962,6 +5034,25 @@ async function fetchAuthorProfileByEmail(email) {
   }
 }
 
+async function fetchAllAuthorProfiles() {
+  try {
+    const res = await fetch(`${SUPABASE_URL}/rest/v1/author_profiles?select=${authorProfileSelect()}&order=updated_at.desc&limit=1000`, { headers });
+    if (!res.ok) return [];
+    const data = await res.json();
+    return Array.isArray(data) ? data : [];
+  } catch(e) {
+    console.warn('Author profiles unavailable:', e.message);
+    return [];
+  }
+}
+
+async function fetchAuthorProfileBySlug(slug) {
+  const safeSlug = authorSlugFromName(slug);
+  if (!safeSlug) return null;
+  const profiles = await fetchAllAuthorProfiles();
+  return profiles.find(p => authorSlugFromName(p.name) === safeSlug) || null;
+}
+
 async function fetchAuthorProfileForArticle(article) {
   const email = article && (article.author_email || article.email);
   const byEmail = email ? await fetchAuthorProfileByEmail(email) : null;
@@ -5064,6 +5155,78 @@ async function getAuthorArticles(profile, article) {
   }
 }
 
+function setHomeSectionsVisible(visible) {
+  ['hero-section', 'spotlight-section', 'categories-wrap'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.style.display = visible ? '' : 'none';
+  });
+}
+
+function hideAuthorProfilePage() {
+  const section = document.getElementById('author-page-section');
+  if (section) {
+    section.classList.remove('open');
+    section.innerHTML = '';
+  }
+  setHomeSectionsVisible(true);
+}
+
+async function renderAuthorProfilePage(profile, replaceUrl) {
+  const section = document.getElementById('author-page-section');
+  if (!section || !profile) return;
+  const path = authorProfilePath(profile);
+  if (window.location.pathname !== path) {
+    if (replaceUrl) history.replaceState({ authorSlug: authorSlugFromName(profile.name) }, '', path);
+    else history.pushState({ authorSlug: authorSlugFromName(profile.name) }, '', path);
+  }
+  setHomeSectionsVisible(false);
+  section.classList.add('open');
+  section.innerHTML = '<div class="author-page-hero">Loading author profile...</div>';
+  const list = await getAuthorArticles(profile, { author: profile.name });
+  const meta = [profile.occupation, profile.institution].filter(Boolean).map(esc).join(' · ');
+  const count = profile.published_article_count || list.length || 0;
+  document.title = `${profile.name || 'Author'} - ILIRH Author Profile`;
+  section.innerHTML = `
+    <div class="author-page-hero">
+      <div class="author-page-top">
+        <div class="author-page-photo">${profile.photo_url ? `<img src="${esc(profile.photo_url)}" alt="${esc(profile.name)}">` : `<span>${esc(authorInitials(profile.name))}</span>`}</div>
+        <div style="flex:1;min-width:0;">
+          <div class="author-page-kicker">ILIRH Author Profile</div>
+          <h1 class="author-page-name">${esc(profile.name || 'Author')}</h1>
+          ${meta ? `<div class="author-page-meta">${meta}</div>` : ''}
+          <div class="author-page-meta">Published Articles: <strong>${count}</strong></div>
+        </div>
+      </div>
+      ${profile.bio ? `<div class="author-page-bio">${esc(profile.bio)}</div>` : ''}
+      <div class="author-page-list">
+        <div class="author-page-list-title">Written Articles</div>
+        ${list.length ? list.map(a => `<a href="${articlePath(a.id)}" onclick="event.preventDefault();openArticle(${Number(a.id)});">${esc(a.title)}<span>${a.category ? esc(a.category) + ' · ' : ''}${a.created_at ? formatDate(a.created_at) : ''}</span></a>`).join('') : '<div style="font-family:\'Lato\',sans-serif;font-size:13px;color:#7a8795;">No published article list available yet.</div>'}
+      </div>
+    </div>`;
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+async function renderAuthorProfilePageFromRoute() {
+  const slug = parseAuthorSlugFromLocation();
+  if (!slug) {
+    hideAuthorProfilePage();
+    return false;
+  }
+  setHomeSectionsVisible(false);
+  const section = document.getElementById('author-page-section');
+  if (section) {
+    section.classList.add('open');
+    section.innerHTML = '<div class="author-page-hero">Loading author profile...</div>';
+  }
+  const profile = await fetchAuthorProfileBySlug(slug);
+  if (!profile) {
+    if (section) section.innerHTML = '<div class="author-page-hero"><div class="author-page-kicker">Author Profile</div><h1 class="author-page-name">Author not found</h1><div class="author-page-meta">This author profile is not available yet.</div></div>';
+    return true;
+  }
+  await renderAuthorProfilePage(profile, true);
+  return true;
+}
+
 function authorInitials(name) {
   const parts = String(name || 'Author').trim().split(/\s+/).filter(Boolean).slice(0, 2);
   return parts.map(p => p[0] || '').join('').toUpperCase() || 'A';
@@ -5084,6 +5247,7 @@ async function renderAuthorProfileBox(article) {
     photo_url: (profile && profile.photo_url) || article.author_photo_url || '',
     count: (profile && profile.published_article_count) || list.length || countFallback
   };
+  const profileLink = authorProfilePath(profile || display.name);
   const meta = [display.occupation, display.institution].filter(Boolean).map(esc).join(' · ');
   const links = (list.length ? list : (articles || []).filter(a => a.author === article.author))
     .slice(0, 20)
@@ -5097,7 +5261,8 @@ async function renderAuthorProfileBox(article) {
           <div class="author-profile-kicker">Author Profile</div>
           <div class="author-profile-name">${esc(display.name)}</div>
           ${meta ? `<div class="author-profile-meta">${meta}</div>` : ''}
-          <button type="button" class="author-profile-count" onclick="toggleAuthorArticleList()">Published Articles: ${display.count}</button>
+          <a class="author-profile-count" href="${profileLink}">Published Articles: ${display.count}</a>
+          <a class="author-profile-link" href="${profileLink}">View Public Profile</a>
         </div>
       </div>
       ${display.bio ? `<div class="author-profile-bio">${esc(display.bio)}</div>` : ''}

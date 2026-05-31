@@ -37,6 +37,18 @@ function articleUrl(article) {
   return `${SITE_URL}/articles/${articleSlug(article)}/`;
 }
 
+function authorSlugFromName(name) {
+  return slugifyArticleTitle(name || 'author').slice(0, 80) || 'author';
+}
+
+function authorSlug(profile) {
+  return authorSlugFromName(profile && profile.name);
+}
+
+function authorUrl(profile) {
+  return `${SITE_URL}/authors/${authorSlug(profile)}/`;
+}
+
 function descriptionFor(article) {
   const source = text(article.excerpt) || text(article.title);
   return source.length > 158 ? source.slice(0, 155).replace(/\s+\S*$/, '') + '...' : source;
@@ -85,6 +97,32 @@ function metadataHtml(article) {
   };
 }
 
+function authorMetadataHtml(profile) {
+  const name = text(profile.name) || 'Author';
+  const title = `${name} - ILIRH Author Profile`;
+  const descSource = text(profile.bio) || [text(profile.occupation), text(profile.institution)].filter(Boolean).join(', ') || `${name} author profile on ILIRH`;
+  const desc = descSource.length > 158 ? descSource.slice(0, 155).replace(/\s+\S*$/, '') + '...' : descSource;
+  const url = authorUrl(profile);
+  const image = profile.photo_url || FALLBACK_IMAGE;
+  const jsonLd = {
+    '@context': 'https://schema.org',
+    '@type': 'Person',
+    name,
+    description: desc,
+    image,
+    url,
+    jobTitle: text(profile.occupation),
+    affiliation: text(profile.institution)
+  };
+  return {
+    title,
+    desc,
+    url,
+    image,
+    jsonLd: `<script type="application/ld+json">${JSON.stringify(jsonLd).replace(/</g, '\\u003c')}</script>`
+  };
+}
+
 function applyArticleMetadata(template, article) {
   const meta = metadataHtml(article);
   let html = template;
@@ -92,6 +130,24 @@ function applyArticleMetadata(template, article) {
   html = replaceTag(html, /<meta name="description" content="[^"]*">/i, `<meta name="description" content="${htmlEscape(meta.desc)}">`);
   html = replaceTag(html, /<link rel="canonical" href="[^"]*">/i, `<link rel="canonical" href="${htmlEscape(meta.url)}">`);
   html = replaceTag(html, /<meta property="og:type" content="[^"]*">/i, '<meta property="og:type" content="article">');
+  html = replaceTag(html, /<meta property="og:title" content="[^"]*">/i, `<meta property="og:title" content="${htmlEscape(meta.title)}">`);
+  html = replaceTag(html, /<meta property="og:description" content="[^"]*">/i, `<meta property="og:description" content="${htmlEscape(meta.desc)}">`);
+  html = replaceTag(html, /<meta property="og:url" content="[^"]*">/i, `<meta property="og:url" content="${htmlEscape(meta.url)}">`);
+  html = replaceTag(html, /<meta property="og:image" content="[^"]*">/i, `<meta property="og:image" content="${htmlEscape(meta.image)}">`);
+  html = replaceTag(html, /<meta name="twitter:title" content="[^"]*">/i, `<meta name="twitter:title" content="${htmlEscape(meta.title)}">`);
+  html = replaceTag(html, /<meta name="twitter:description" content="[^"]*">/i, `<meta name="twitter:description" content="${htmlEscape(meta.desc)}">`);
+  html = replaceTag(html, /<meta name="twitter:image" content="[^"]*">/i, `<meta name="twitter:image" content="${htmlEscape(meta.image)}">`);
+  html = html.replace('</head>', `${meta.jsonLd}\n</head>`);
+  return html;
+}
+
+function applyAuthorMetadata(template, profile) {
+  const meta = authorMetadataHtml(profile);
+  let html = template;
+  html = replaceTag(html, /<title>[\s\S]*?<\/title>/i, `<title>${htmlEscape(meta.title)}</title>`);
+  html = replaceTag(html, /<meta name="description" content="[^"]*">/i, `<meta name="description" content="${htmlEscape(meta.desc)}">`);
+  html = replaceTag(html, /<link rel="canonical" href="[^"]*">/i, `<link rel="canonical" href="${htmlEscape(meta.url)}">`);
+  html = replaceTag(html, /<meta property="og:type" content="[^"]*">/i, '<meta property="og:type" content="profile">');
   html = replaceTag(html, /<meta property="og:title" content="[^"]*">/i, `<meta property="og:title" content="${htmlEscape(meta.title)}">`);
   html = replaceTag(html, /<meta property="og:description" content="[^"]*">/i, `<meta property="og:description" content="${htmlEscape(meta.desc)}">`);
   html = replaceTag(html, /<meta property="og:url" content="[^"]*">/i, `<meta property="og:url" content="${htmlEscape(meta.url)}">`);
@@ -120,9 +176,34 @@ async function fetchArticles(template) {
   return res.json();
 }
 
-async function writeSitemap(articles) {
+async function fetchAuthorProfiles(template) {
+  const url = (template.match(/const SUPABASE_URL = '([^']+)'/) || [])[1];
+  const key = (template.match(/const SUPABASE_KEY = '([^']+)'/) || [])[1];
+  if (!url || !key) throw new Error('Could not read Supabase URL/key from index.html');
+
+  const query = [
+    'select=id,email,name,occupation,institution,bio,photo_url,published_article_count,article_ids,updated_at',
+    'order=updated_at.desc',
+    'limit=10000'
+  ].join('&');
+  const res = await fetch(`${url}/rest/v1/author_profiles?${query}`, {
+    headers: { apikey: key, Authorization: `Bearer ${key}` }
+  });
+  if (!res.ok) {
+    console.warn(`Supabase author profile fetch skipped: ${res.status} ${await res.text()}`);
+    return [];
+  }
+  return res.json();
+}
+
+async function writeSitemap(articles, authors) {
   const urls = [
     { loc: `${SITE_URL}/`, priority: '1.0' },
+    ...authors.map((profile) => ({
+      loc: authorUrl(profile),
+      lastmod: profile.updated_at ? new Date(profile.updated_at).toISOString().slice(0, 10) : undefined,
+      priority: '0.7'
+    })),
     ...articles.map((article) => ({
       loc: articleUrl(article),
       lastmod: article.created_at ? new Date(article.created_at).toISOString().slice(0, 10) : undefined,
@@ -159,10 +240,13 @@ async function resetGeneratedDir(dir) {
 async function main() {
   const template = await fs.readFile(path.join(ROOT, 'index.html'), 'utf8');
   const articles = await fetchArticles(template);
+  const authors = await fetchAuthorProfiles(template);
   const articleRoot = path.join(ROOT, 'articles');
   const legacyArticleRoot = path.join(ROOT, 'article');
+  const authorRoot = path.join(ROOT, 'authors');
   await resetGeneratedDir(articleRoot);
   await resetGeneratedDir(legacyArticleRoot);
+  await resetGeneratedDir(authorRoot);
 
   for (const article of articles) {
     const pageHtml = applyArticleMetadata(template, article);
@@ -175,11 +259,18 @@ async function main() {
     await fs.writeFile(path.join(legacyDir, 'index.html'), pageHtml);
   }
 
-  await writeSitemap(articles);
+  for (const profile of authors.filter(p => text(p.name))) {
+    const pageHtml = applyAuthorMetadata(template, profile);
+    const dir = path.join(authorRoot, authorSlug(profile));
+    await fs.mkdir(dir, { recursive: true });
+    await fs.writeFile(path.join(dir, 'index.html'), pageHtml);
+  }
+
+  await writeSitemap(articles, authors.filter(p => text(p.name)));
   await writeRobots();
   await writeFallbackPage(template);
   await fs.writeFile(path.join(ROOT, '.nojekyll'), '');
-  console.log(`Generated ${articles.length} slug article pages, legacy article pages, sitemap.xml, robots.txt, 404.html, and .nojekyll`);
+  console.log(`Generated ${articles.length} slug article pages, ${authors.length} author pages, legacy article pages, sitemap.xml, robots.txt, 404.html, and .nojekyll`);
 }
 
 main().catch((err) => {
