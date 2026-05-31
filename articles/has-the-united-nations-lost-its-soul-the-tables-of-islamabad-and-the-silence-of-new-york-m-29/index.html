@@ -2400,17 +2400,17 @@ body.dark-mode .editor-tab.active { color:#c8d8ea; }
       <div id="rd-open-fullsize-link" style="margin-top:8px;"></div>
     </div>
 
-    <div class="rd-docx-actions">
+    <div class="rd-docx-actions" id="rd-source-actions">
       <button type="button" class="rd-docx-btn" id="rd-download-docx-btn" onclick="rdDownloadWordDoc()">&#128196; Download Word file</button>
       <div class="rd-docx-reupload" id="rd-docx-reupload-zone" onclick="document.getElementById('rd-docx-file').click()">
-        <input type="file" id="rd-docx-file" accept=".docx,application/vnd.openxmlformats-officedocument.wordprocessingml.document" style="display:none;" onchange="handleRdDocxSelect(this)">
+        <input type="file" id="rd-docx-file" accept=".docx,.pdf,application/vnd.openxmlformats-officedocument.wordprocessingml.document,application/pdf" style="display:none;" onchange="handleRdDocxSelect(this)">
         <span>&#128257; Re-upload edited Word (.docx) for major changes</span>
         <div id="rd-docx-filename" style="font-size:10px;margin-top:4px;color:var(--text-muted);"></div>
       </div>
     </div>
 
     <!-- Rich article body editor (minor text edits) -->
-    <div style="margin:16px 0 4px;">
+    <div id="rd-rich-editor-section" style="margin:16px 0 4px;">
       <div style="font-family:'Lato',sans-serif;font-size:10px;font-weight:700;letter-spacing:0.14em;text-transform:uppercase;color:var(--text-muted);margin-bottom:6px;">Article Body — minor edits <span style="font-weight:400;text-transform:none;letter-spacing:0;font-family:'EB Garamond',serif;font-size:12px;color:var(--text-muted);">(text, spacing, highlight, justify — then regenerate image)</span></div>
       <div class="rich-editor-toolbar" id="rd-toolbar" style="border-bottom:1px solid var(--border-light);">
         <button type="button" class="rte-btn rte-btn-sm" onclick="rdRteExec('undo')" title="Undo (Ctrl+Z)">
@@ -5463,6 +5463,10 @@ function openReviewDetail(id) {
   _activeSubmission = s;
   _rdNewFile = null;
   _rdAuthorPhotoData = null;
+  _rdPendingDocxFile = null;
+  _rdDocxArrayBuffer = null;
+  _rdPdfArrayBuffer = null;
+  const isPdfReview = isSubmissionPdfSource(s);
 
   // Populate fields
   document.getElementById('rd-title-display').textContent = s.article_title || 'Untitled';
@@ -5493,13 +5497,25 @@ function openReviewDetail(id) {
   if (rdEditor) {
     rdEditor.innerHTML = s.article_body || '<p></p>';
   }
+  const richSection = document.getElementById('rd-rich-editor-section');
+  if (richSection) richSection.style.display = isPdfReview ? 'none' : 'block';
 
   // File preview (full template image)
   const fullPrev = document.getElementById('rd-full-preview-wrap');
   const fullPrevImg = document.getElementById('rd-full-preview-img');
   const fullsizeLink = document.getElementById('rd-open-fullsize-link');
   const dlBtn = document.getElementById('rd-download-docx-btn');
-  if (dlBtn) dlBtn.style.display = s.article_docx_url ? 'inline-block' : 'inline-block';
+  const sourceZone = document.getElementById('rd-docx-reupload-zone');
+  if (dlBtn) {
+    dlBtn.style.display = 'inline-block';
+    dlBtn.innerHTML = isPdfReview ? '&#128196; Download PDF file' : '&#128196; Download Word file';
+  }
+  if (sourceZone) {
+    const span = sourceZone.querySelector('span');
+    if (span) span.innerHTML = isPdfReview
+      ? '&#128257; Re-upload edited one-page A4 PDF'
+      : '&#128257; Re-upload edited Word (.docx) for major changes';
+  }
   if (s.file_url && (s.file_type || '').startsWith('image/')) {
     if (fullPrev && fullPrevImg) {
       fullPrev.style.display = 'block';
@@ -5514,11 +5530,22 @@ function openReviewDetail(id) {
   }
   _rdPendingDocxFile = null;
   const rdDocxFn = document.getElementById('rd-docx-filename');
-  if (rdDocxFn) rdDocxFn.textContent = s.article_docx_url ? 'Stored Word file available for download' : '';
+  if (rdDocxFn) rdDocxFn.textContent = s.article_docx_url
+    ? (isPdfReview ? 'Stored PDF file available for download' : 'Stored Word file available for download')
+    : '';
 
   // Reset regen status
   const regenStatus = document.getElementById('rd-regen-status');
-  if (regenStatus) regenStatus.textContent = '';
+  if (regenStatus) regenStatus.textContent = isPdfReview
+    ? 'PDF submission: text editor is hidden. Re-upload a corrected one-page A4 PDF for body changes.'
+    : '';
+  const regenBtn = document.getElementById('rd-regen-btn');
+  if (regenBtn) {
+    regenBtn.style.display = 'inline-flex';
+    regenBtn.innerHTML = isPdfReview
+      ? '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/></svg> Regenerate From PDF'
+      : '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/></svg> Regenerate Article Image';
+  }
 
   // Button state
   const pubBtn = document.getElementById('rd-publish-btn');
@@ -5538,7 +5565,7 @@ function closeReviewDetail() {
   document.getElementById('review-detail-overlay').classList.remove('open');
   document.body.style.overflow = 'hidden'; // keep editor overlay scroll locked
   const rdSilent = document.getElementById('rd-silent'); if (rdSilent) rdSilent.checked = false;
-  _activeSubmission = null; _rdNewFile = null; _rdPendingDocxFile = null; _rdAuthorPhotoData = null;
+  _activeSubmission = null; _rdNewFile = null; _rdPendingDocxFile = null; _rdDocxArrayBuffer = null; _rdPdfArrayBuffer = null; _rdAuthorPhotoData = null;
 }
 function closeReviewDetailOnBg(e) {
   if (e.target === document.getElementById('review-detail-overlay')) closeReviewDetail();
@@ -5583,6 +5610,7 @@ async function saveReviewEdits() {
   if (!_activeSubmission) return;
   const btn = document.getElementById('rd-save-btn');
   const errEl = document.getElementById('rd-error');
+  const isPdfReview = isSubmissionPdfSource(_activeSubmission) || !!_rdPdfArrayBuffer;
   btn.disabled = true; btn.textContent = 'Saving…'; errEl.textContent = '';
   try {
     let file_url = _activeSubmission.file_url;
@@ -5614,15 +5642,17 @@ async function saveReviewEdits() {
       category:      document.getElementById('rd-category').value,
       abstract:      sanitizeInput(document.getElementById('rd-abstract').value, 1500),
       place:         sanitizeInput(document.getElementById('rd-place') ? document.getElementById('rd-place').value : '', 200),
-      article_body:  document.getElementById('rd-article-body') ? document.getElementById('rd-article-body').innerHTML : (_activeSubmission.article_body || ''),
+      article_body:  isPdfReview
+        ? '<div class="article-docx-body" data-source="pdf">PDF article document loaded.</div>'
+        : (document.getElementById('rd-article-body') ? document.getElementById('rd-article-body').innerHTML : (_activeSubmission.article_body || '')),
       file_url, file_type,
       author_photo_url
     };
     if (_rdPendingDocxFile) {
       try {
-        updates.article_docx_url = await uploadBinaryToArticlesBucket(_rdPendingDocxFile, 'submissions/docx');
+        updates.article_docx_url = await uploadBinaryToArticlesBucket(_rdPendingDocxFile, _rdPdfArrayBuffer ? 'submissions/pdf' : 'submissions/docx');
       } catch (e) {
-        console.warn('DOCX upload on save failed:', e);
+        console.warn('Source document upload on save failed:', e);
       }
     }
     let res = await fetch(`${SUPABASE_URL}/rest/v1/article_submissions?id=eq.${_activeSubmission.id}`, {
@@ -5650,7 +5680,7 @@ async function saveReviewEdits() {
       _activeSubmission.article_docx_url = updates.article_docx_url || _activeSubmission.article_docx_url;
       _rdPendingDocxFile = null;
       const rdDocxFn = document.getElementById('rd-docx-filename');
-      if (rdDocxFn) rdDocxFn.textContent = 'Word file saved';
+      if (rdDocxFn) rdDocxFn.textContent = _rdPdfArrayBuffer ? 'PDF file saved' : 'Word file saved';
     }
     showToast('✓ Edits saved successfully', 2800);
     loadSubmissions(); // refresh list
@@ -5706,6 +5736,7 @@ async function rdRegenerateImage() {
   const btn = document.getElementById('rd-regen-btn');
   const statusEl = document.getElementById('rd-regen-status');
   const errEl = document.getElementById('rd-error');
+  const isPdfReview = isSubmissionPdfSource(_activeSubmission) || !!_rdPdfArrayBuffer;
 
   btn.disabled = true;
   statusEl.textContent = 'Generating image…';
@@ -5715,20 +5746,31 @@ async function rdRegenerateImage() {
   try {
     // Read current editor content
     const rdEditor = document.getElementById('rd-article-body');
-    const articleHtml = rdEditor ? rdEditor.innerHTML : (_activeSubmission.article_body || '');
+    const articleHtml = isPdfReview
+      ? '<div class="article-docx-body" data-source="pdf">PDF article document loaded.</div>'
+      : (rdEditor ? rdEditor.innerHTML : (_activeSubmission.article_body || ''));
     const title    = document.getElementById('rd-article-title').value || _activeSubmission.article_title || '';
     const author   = document.getElementById('rd-author-name').value   || _activeSubmission.author_name || '';
     const category = document.getElementById('rd-category').value      || _activeSubmission.category || '';
     const occupation = document.getElementById('rd-occupation').value  || _activeSubmission.occupation || '';
     const place    = (document.getElementById('rd-place') && document.getElementById('rd-place').value) || _activeSubmission.place || '';
     const authorPhotoUrl = _rdAuthorPhotoData || _activeSubmission.author_photo_url || null;
+    let pdfBuffer = _rdPdfArrayBuffer;
+    if (isPdfReview && !pdfBuffer && _activeSubmission.article_docx_url) {
+      statusEl.textContent = 'Loading source PDF…';
+      const ab = await fetchArrayBufferFromPublicUrl(_activeSubmission.article_docx_url);
+      await validatePdfBufferIsSinglePageA4(ab);
+      pdfBuffer = ab.slice(0);
+      _rdPdfArrayBuffer = pdfBuffer;
+    }
 
     // Generate new image from current editor content
     statusEl.textContent = 'Generating image…';
     const dataUrl = await generateArticleImage({
       title, author, place, htmlBody: articleHtml,
       authorPhotoUrl, category, occupation,
-      docxArrayBuffer: _subDocxArrayBuffer
+      docxArrayBuffer: isPdfReview ? null : (_rdDocxArrayBuffer || _subDocxArrayBuffer),
+      pdfArrayBuffer: pdfBuffer
     });
 
     // Upload to Supabase, replacing old file
@@ -5786,7 +5828,8 @@ async function publishFromReview() {
   pub.disabled = true; pub.textContent = 'Publishing…'; errEl.textContent = '';
 
   const rdEditor = document.getElementById('rd-article-body');
-  if (rdEditor) _activeSubmission.article_body = rdEditor.innerHTML;
+  const isPdfReview = isSubmissionPdfSource(_activeSubmission) || !!_rdPdfArrayBuffer;
+  if (rdEditor && !isPdfReview) _activeSubmission.article_body = rdEditor.innerHTML;
 
   if (!_activeSubmission.file_url || !(_activeSubmission.file_type || '').startsWith('image/')) {
     errEl.textContent = 'Generate the article image first (Regenerate Article Image), then publish.';
@@ -5814,14 +5857,14 @@ async function publishFromReview() {
     let file_type = _activeSubmission.file_type;
     if (_rdPendingDocxFile) {
       try {
-        const docxUrl = await uploadBinaryToArticlesBucket(_rdPendingDocxFile, 'submissions/docx');
+        const docxUrl = await uploadBinaryToArticlesBucket(_rdPendingDocxFile, _rdPdfArrayBuffer ? 'submissions/pdf' : 'submissions/docx');
         _activeSubmission.article_docx_url = docxUrl;
         await fetch(`${SUPABASE_URL}/rest/v1/article_submissions?id=eq.${_activeSubmission.id}`, {
           method: 'PATCH', headers: { ...headers, 'Prefer': 'return=minimal' },
           body: JSON.stringify({ article_docx_url: docxUrl, article_body: _activeSubmission.article_body })
         }).catch(() => {});
         _rdPendingDocxFile = null;
-      } catch (e) { console.warn('DOCX upload on publish failed:', e); }
+      } catch (e) { console.warn('Source document upload on publish failed:', e); }
     }
 
     // 1. Insert into articles table (goes live)
@@ -6286,6 +6329,7 @@ let _subArticleBodyHtml = '';
 let _subDocxArrayBuffer = null;
 let _subPdfArrayBuffer = null;
 let _rdDocxArrayBuffer = null;
+let _rdPdfArrayBuffer = null;
 let _subDocxLiveReady = false;
 let _subDocxLiveBufferKey = '';
 let _rdPendingDocxFile = null;
@@ -6311,6 +6355,22 @@ function isPdfFile(file) {
   if (!file) return false;
   const n = (file.name || '').toLowerCase();
   return n.endsWith('.pdf') || file.type === 'application/pdf';
+}
+
+function isPdfSourceUrl(url) {
+  const u = String(url || '').toLowerCase();
+  return /\.pdf(?:$|[?#])/.test(u) || u.includes('/submissions/pdf/');
+}
+
+function isSubmissionPdfSource(s) {
+  return !!(s && (isPdfSourceUrl(s.article_docx_url) || isPdfSourceUrl(s.source_document_url)));
+}
+
+async function fetchArrayBufferFromPublicUrl(url) {
+  if (!url) throw new Error('Source document missing.');
+  const res = await fetch(url, { cache: 'no-store' });
+  if (!res.ok) throw new Error('Could not load the source document.');
+  return await res.arrayBuffer();
 }
 
 function getArticleHtmlBody() {
@@ -6860,30 +6920,40 @@ async function handleRdDocxSelect(input) {
   const errEl = document.getElementById('rd-error');
   if (!file) return;
   try {
-    const html = await parseWordDocumentFile(file, {});
+    if (fn) fn.textContent = 'Processing source document...';
+    _subDocxArrayBuffer = null;
+    _subPdfArrayBuffer = null;
+    _rdDocxArrayBuffer = null;
+    _rdPdfArrayBuffer = null;
+    const html = await parseArticleDocumentFile(file);
     _rdPendingDocxFile = file;
-    _rdDocxArrayBuffer = _subDocxArrayBuffer ? _subDocxArrayBuffer.slice(0) : null;
-    // Use the newly-parsed buffer (already stored in _subDocxArrayBuffer by parseWordDocumentFile)
+    _rdDocxArrayBuffer = null;
+    _rdPdfArrayBuffer = null;
     if (_subDocxArrayBuffer) _rdDocxArrayBuffer = _subDocxArrayBuffer.slice(0);
+    if (_subPdfArrayBuffer) _rdPdfArrayBuffer = _subPdfArrayBuffer.slice(0);
     const rdEditor = document.getElementById('rd-article-body');
-    if (rdEditor) rdEditor.innerHTML = html;
+    if (rdEditor && !_rdPdfArrayBuffer) rdEditor.innerHTML = html;
     if (_activeSubmission) _activeSubmission.article_body = html;
-    if (fn) fn.textContent = '✓ ' + file.name + ' — click “Regenerate Article Image” then Save';
+    const richSection = document.getElementById('rd-rich-editor-section');
+    if (richSection) richSection.style.display = _rdPdfArrayBuffer ? 'none' : 'block';
+    if (fn) fn.textContent = '✓ ' + file.name + (_rdPdfArrayBuffer ? ' — one-page A4 PDF loaded' : ' — click “Regenerate Article Image” then Save');
     if (errEl) errEl.textContent = '';
-    showToast('✓ Word document loaded — regenerate preview to apply', 3200);
+    showToast(_rdPdfArrayBuffer ? '✓ PDF loaded — regenerate preview to apply' : '✓ Word document loaded — regenerate preview to apply', 3200);
     await rdRegenerateImage();
   } catch (e) {
     input.value = '';
     _rdPendingDocxFile = null;
+    _rdDocxArrayBuffer = null;
+    _rdPdfArrayBuffer = null;
     if (fn) fn.textContent = '✗ ' + (e.message || 'Invalid file');
-    if (errEl) errEl.textContent = e.message || 'Could not read Word document.';
+    if (errEl) errEl.textContent = e.message || 'Could not read source document.';
   }
 }
 
 function rdDownloadWordDoc() {
   const url = _activeSubmission && _activeSubmission.article_docx_url;
   if (!url) {
-    showToast('No Word file on record — ask author to resubmit or use minor edits below', 3200);
+    showToast('No source file on record — ask author to resubmit or use the available edits below', 3200);
     return;
   }
   window.open(url, '_blank', 'noopener');
