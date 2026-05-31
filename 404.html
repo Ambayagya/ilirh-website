@@ -642,6 +642,25 @@ body.dark-mode .skeleton { background:linear-gradient(90deg,var(--cream-dark) 25
   transition:all 0.18s; border-radius:1px;
 }
 .share-btn:hover { border-color:var(--navy); color:var(--navy); }
+.modal-download-wrap { position:relative; display:inline-flex; }
+.modal-icon-btn {
+  width:30px; height:30px; display:inline-flex; align-items:center; justify-content:center;
+  padding:0; border:1px solid var(--border); background:none; color:var(--text-muted);
+  cursor:pointer; transition:all 0.18s; border-radius:1px;
+}
+.modal-icon-btn:hover, .modal-icon-btn.active { border-color:var(--navy); color:var(--navy); background:rgba(184,150,62,0.06); }
+.article-download-menu {
+  display:none; position:absolute; top:34px; right:0; z-index:20; min-width:132px;
+  background:#fff; border:1px solid var(--border); box-shadow:0 10px 28px rgba(10,22,40,0.14);
+}
+.article-download-menu.open { display:block; }
+.article-download-menu button {
+  width:100%; display:flex; align-items:center; gap:8px; background:none; border:none; border-bottom:1px solid var(--border-light);
+  padding:9px 11px; cursor:pointer; font-family:'Lato',sans-serif; font-size:10px; font-weight:800;
+  letter-spacing:0.08em; text-transform:uppercase; color:var(--text-secondary); text-align:left;
+}
+.article-download-menu button:last-child { border-bottom:none; }
+.article-download-menu button:hover { background:var(--cream); color:var(--navy); }
  
 /* ── CATEGORY COLOR DOTS ── */
 .cat-dot { display:inline-block; width:7px; height:7px; border-radius:50%; margin-right:5px; vertical-align:middle; flex-shrink:0; }
@@ -708,18 +727,79 @@ body.dark-mode .share-btn:hover { border-color:#8fa8c0; color:#c8d8ea; }
   text-decoration:none;
 }
 .author-profile-link:hover { color:#9b7a25; text-decoration:underline; }
+.author-profile-card {
+  position:relative; overflow:hidden; margin:28px 0 8px; padding:24px;
+  border:1px solid #cfd9e3; border-top:4px solid #c9a84c;
+  background:
+    linear-gradient(135deg, rgba(255,255,255,0.96) 0%, rgba(248,251,255,0.96) 58%, rgba(247,241,223,0.96) 100%);
+  box-shadow:0 14px 38px rgba(10,22,40,0.08);
+}
+.author-profile-card::before {
+  content:''; position:absolute; inset:0 0 auto; height:64px;
+  background:linear-gradient(90deg, rgba(16,36,58,0.08), rgba(201,168,76,0.16));
+  pointer-events:none;
+}
+.author-profile-card.loading { padding:18px 22px; color:#607083; font-family:'Lato',sans-serif; }
+.author-profile-top { position:relative; display:flex; gap:18px; align-items:flex-start; }
+.author-profile-photo {
+  width:86px; height:86px; border-radius:50%; overflow:hidden; flex-shrink:0;
+  background:#e7edf3; border:4px solid #fff; box-shadow:0 0 0 1px #c5d1dc, 0 10px 24px rgba(10,22,40,0.13);
+}
+.author-profile-photo span {
+  width:100%; height:100%; display:flex; align-items:center; justify-content:center;
+  font-family:'Lato',sans-serif; font-size:22px; font-weight:900; color:#18395f;
+}
+.author-profile-kicker { color:#9b7a25; margin-bottom:6px; }
+.author-profile-name { font-size:25px; letter-spacing:0; }
+.author-profile-meta { font-size:12px; color:#506173; line-height:1.55; }
+.author-profile-bio {
+  position:relative; margin-top:18px; padding:14px 16px; border-left:3px solid #c9a84c;
+  background:rgba(255,255,255,0.62); font-size:17px; color:#2d4053;
+}
+.author-profile-stats {
+  display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:8px; margin-top:16px;
+}
+.author-profile-stat {
+  border:1px solid rgba(24,57,95,0.12); background:rgba(255,255,255,0.7); padding:10px 9px;
+  text-align:center;
+}
+.author-profile-stat strong {
+  display:block; font-family:'Playfair Display',serif; font-size:19px; line-height:1; color:#10243a;
+}
+.author-profile-stat span {
+  display:block; margin-top:5px; font-family:'Lato',sans-serif; font-size:8.5px; font-weight:900;
+  letter-spacing:0.12em; text-transform:uppercase; color:#7a8795;
+}
+.author-profile-actions { display:flex; gap:8px; align-items:center; flex-wrap:wrap; margin-top:14px; }
+.author-profile-count, .author-profile-link {
+  margin-top:0; min-height:34px; display:inline-flex; align-items:center; justify-content:center; gap:7px;
+  border:1px solid #c9a84c; padding:8px 12px; font-family:'Lato',sans-serif; font-size:10px;
+  font-weight:900; letter-spacing:0.1em; text-transform:uppercase; text-decoration:none; cursor:pointer;
+  transition:background 0.18s, color 0.18s, border-color 0.18s, transform 0.18s;
+}
+.author-profile-count { background:#10243a; color:#fff; border-color:#10243a; }
+.author-profile-count:hover { background:#c9a84c; color:#10243a; border-color:#c9a84c; transform:translateY(-1px); }
+.author-profile-link { background:#fff; color:#18395f; }
+.author-profile-link:hover { background:#f7f1df; color:#10243a; border-color:#c9a84c; transform:translateY(-1px); text-decoration:none; }
+.author-article-list {
+  margin-top:16px; border-top:1px solid #dbe3ea; padding-top:12px; display:none;
+  background:rgba(255,255,255,0.45); padding-left:12px; padding-right:12px;
+}
+.author-article-list a { font-size:13px; padding:9px 0; }
 .author-page-section {
   display:none; max-width:920px; margin:0 auto 44px; padding:36px 24px;
 }
 .author-page-section.open { display:block; }
 .author-page-hero {
-  border:1px solid #d6dce3; background:linear-gradient(135deg,#f8fbff 0%,#fff 56%,#f7f1df 100%);
-  padding:30px; font-family:'Lato',sans-serif; color:#1d2b3a;
+  border:1px solid #d6dce3; border-top:5px solid #c9a84c;
+  background:linear-gradient(135deg,#ffffff 0%,#f8fbff 54%,#f7f1df 100%);
+  padding:34px; font-family:'Lato',sans-serif; color:#1d2b3a;
+  box-shadow:0 18px 46px rgba(10,22,40,0.09);
 }
 .author-page-top { display:flex; gap:22px; align-items:flex-start; }
 .author-page-photo {
-  width:112px; height:112px; border-radius:50%; overflow:hidden; flex-shrink:0;
-  background:#e7edf3; border:4px solid #fff; box-shadow:0 0 0 1px #cbd6df;
+  width:124px; height:124px; border-radius:50%; overflow:hidden; flex-shrink:0;
+  background:#e7edf3; border:5px solid #fff; box-shadow:0 0 0 1px #cbd6df, 0 14px 30px rgba(10,22,40,0.16);
   display:flex; align-items:center; justify-content:center; font-size:28px; font-weight:800; color:#18395f;
 }
 .author-page-photo img { width:100%; height:100%; object-fit:cover; display:block; }
@@ -740,8 +820,93 @@ body.dark-mode .share-btn:hover { border-color:#8fa8c0; color:#c8d8ea; }
 }
 .author-page-list a span { display:block; margin-top:3px; color:#7a8795; font-weight:400; font-size:11px; }
 .author-page-list a:hover { color:#9b7a25; }
+.related-articles-box {
+  margin: 24px 0 6px; padding: 18px 0 4px; border-top: 2px solid var(--border);
+  font-family:'Lato',sans-serif;
+}
+.related-title {
+  font-family:'Cinzel',serif; font-size:17px; color:var(--navy); letter-spacing:0.05em;
+  margin-bottom:12px;
+}
+.related-grid { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:12px; }
+.related-card {
+  display:flex; gap:11px; align-items:flex-start; border:1px solid var(--border-light);
+  background:#fff; padding:10px; cursor:pointer; transition:border-color 0.18s, transform 0.18s, box-shadow 0.18s;
+}
+.related-card:hover { border-color:var(--gold); transform:translateY(-2px); box-shadow:0 8px 22px rgba(10,22,40,0.08); }
+.related-thumb { width:64px; height:64px; flex-shrink:0; background:var(--cream); overflow:hidden; display:flex; align-items:center; justify-content:center; color:var(--text-muted); font-size:10px; font-weight:800; }
+.related-thumb img { width:100%; height:100%; object-fit:cover; object-position:top center; display:block; }
+.related-card-title { color:var(--navy); font-family:'Playfair Display',serif; font-size:14px; font-weight:700; line-height:1.25; }
+.related-card-meta { margin-top:4px; color:var(--text-muted); font-size:10px; letter-spacing:0.06em; text-transform:uppercase; }
+.author-dashboard-section {
+  display:none; margin: 0 0 38px; padding: 24px 22px; border:1px solid #d9e1e8;
+  background:linear-gradient(135deg,#ffffff 0%,#f8fbff 58%,#f7f1df 100%);
+}
+.author-dashboard-section.open { display:block; }
+.author-dashboard-header { display:flex; align-items:flex-end; justify-content:space-between; gap:16px; margin-bottom:16px; border-bottom:1px solid #dbe3ea; padding-bottom:12px; }
+.author-dashboard-kicker { font-family:'Lato',sans-serif; font-size:10px; font-weight:800; letter-spacing:0.2em; text-transform:uppercase; color:#9b7a25; }
+.author-dashboard-title { font-family:'Playfair Display',serif; font-size:24px; color:#10243a; font-weight:700; line-height:1.15; }
+.author-dashboard-grid { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:12px; }
+.author-rank-card { border:1px solid #dbe3ea; background:rgba(255,255,255,0.78); padding:13px; }
+.author-rank-label { font-family:'Lato',sans-serif; font-size:9px; font-weight:800; letter-spacing:0.16em; text-transform:uppercase; color:#7a8795; margin-bottom:7px; }
+.author-rank-name { font-family:'Playfair Display',serif; font-size:18px; color:#10243a; font-weight:700; line-height:1.15; }
+.author-rank-stat { margin-top:6px; font-family:'Lato',sans-serif; font-size:11px; color:#506173; }
+.author-rank-list { margin-top:14px; display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:8px; }
+.author-rank-row { display:flex; justify-content:space-between; gap:12px; align-items:center; border-top:1px solid rgba(24,57,95,0.1); padding:8px 0; font-family:'Lato',sans-serif; font-size:12px; color:#344557; }
+.author-rank-row a { color:#18395f; text-decoration:none; font-weight:800; }
+.author-rank-row a:hover { color:#9b7a25; text-decoration:underline; }
+.author-rank-metrics { white-space:nowrap; color:#7a8795; font-size:10px; text-transform:uppercase; letter-spacing:0.06em; }
+.support-nudge {
+  position:fixed; right:18px; bottom:18px; z-index:850; width:min(340px, calc(100vw - 28px));
+  background:#fff; border:1px solid #d6dce3; border-top:3px solid var(--gold);
+  box-shadow:0 14px 44px rgba(10,22,40,0.18); padding:16px 16px 14px;
+  font-family:'Lato',sans-serif; transform:translateY(18px); opacity:0; pointer-events:none;
+  transition:opacity 0.24s ease, transform 0.24s ease;
+}
+.support-nudge.open { opacity:1; transform:translateY(0); pointer-events:auto; }
+.support-nudge-kicker { font-size:9px; font-weight:800; letter-spacing:0.2em; text-transform:uppercase; color:#9b7a25; margin-bottom:5px; }
+.support-nudge-title { font-family:'Playfair Display',serif; font-size:18px; font-weight:700; color:#10243a; line-height:1.2; margin-bottom:5px; }
+.support-nudge-copy { font-family:'EB Garamond',serif; font-size:14px; color:#506173; line-height:1.45; margin-bottom:11px; }
+.support-nudge-actions { display:flex; gap:8px; align-items:center; }
+.support-nudge-btn { background:var(--navy); color:#fff; border:none; padding:8px 12px; font-size:10px; font-weight:800; letter-spacing:0.1em; text-transform:uppercase; cursor:pointer; }
+.support-nudge-link { background:none; border:none; color:#7a8795; font-size:10px; font-weight:800; letter-spacing:0.08em; text-transform:uppercase; cursor:pointer; }
+.live-home-section { margin:24px 0 34px; border:1px solid #d8e1ea; border-top:4px solid #10243a; background:linear-gradient(135deg,#fff 0%,#f8fbff 60%,#f7f1df 100%); box-shadow:0 16px 38px rgba(10,22,40,0.07); padding:20px; }
+.live-home-head { display:flex; justify-content:space-between; gap:18px; align-items:flex-end; border-bottom:1px solid #dbe3ea; padding-bottom:13px; margin-bottom:16px; }
+.live-home-kicker { font-family:'Lato',sans-serif; font-size:10px; font-weight:900; letter-spacing:0.2em; text-transform:uppercase; color:#9b7a25; display:flex; align-items:center; gap:7px; }
+.live-pulse { width:8px; height:8px; border-radius:50%; background:#2f8f46; box-shadow:0 0 0 0 rgba(47,143,70,0.55); animation:livePulse 1.8s infinite; }
+@keyframes livePulse { 70% { box-shadow:0 0 0 8px rgba(47,143,70,0); } 100% { box-shadow:0 0 0 0 rgba(47,143,70,0); } }
+.live-home-title { font-family:'Playfair Display',serif; font-size:24px; color:#10243a; font-weight:700; line-height:1.15; }
+.live-home-updated { font-family:'Lato',sans-serif; font-size:10px; color:#7a8795; letter-spacing:0.08em; text-transform:uppercase; white-space:nowrap; }
+.live-home-grid { display:grid; grid-template-columns:1.2fr 1fr; gap:18px; }
+.live-stats-row { display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:9px; margin-bottom:16px; }
+.live-stat { background:rgba(255,255,255,0.78); border:1px solid rgba(24,57,95,0.12); padding:11px 9px; }
+.live-stat strong { display:block; font-family:'Playfair Display',serif; font-size:22px; color:#10243a; line-height:1; }
+.live-stat span { display:block; margin-top:6px; font-family:'Lato',sans-serif; font-size:8.5px; font-weight:900; letter-spacing:0.12em; text-transform:uppercase; color:#7a8795; }
+.live-chip-row { display:flex; flex-wrap:wrap; gap:8px; margin-top:12px; }
+.live-chip { border:1px solid #c9a84c; background:#fff; color:#18395f; padding:8px 11px; font-family:'Lato',sans-serif; font-size:10px; font-weight:900; letter-spacing:0.08em; text-transform:uppercase; cursor:pointer; }
+.live-chip:hover { background:#10243a; color:#fff; border-color:#10243a; }
+.live-feed-list { border-left:2px solid rgba(201,168,76,0.45); padding-left:14px; }
+.live-feed-item { position:relative; padding:0 0 13px; cursor:pointer; }
+.live-feed-item::before { content:''; position:absolute; left:-20px; top:4px; width:8px; height:8px; background:#c9a84c; border-radius:50%; box-shadow:0 0 0 3px #fff; }
+.live-feed-title { font-family:'Playfair Display',serif; color:#10243a; font-weight:700; font-size:15px; line-height:1.25; }
+.live-feed-meta { margin-top:4px; font-family:'Lato',sans-serif; font-size:9.5px; color:#7a8795; letter-spacing:0.08em; text-transform:uppercase; }
+.live-trending-card { display:flex; gap:11px; align-items:flex-start; background:rgba(255,255,255,0.72); border:1px solid rgba(24,57,95,0.12); padding:10px; margin-bottom:9px; cursor:pointer; transition:transform 0.18s, border-color 0.18s; }
+.live-trending-card:hover { transform:translateY(-2px); border-color:#c9a84c; }
+.live-trending-thumb { width:58px; height:58px; background:#eef3f7; flex-shrink:0; overflow:hidden; display:flex; align-items:center; justify-content:center; color:#7a8795; font-size:10px; font-weight:900; }
+.live-trending-thumb img { width:100%; height:100%; object-fit:cover; object-position:top center; }
+.live-trending-title { font-family:'Playfair Display',serif; color:#10243a; font-size:14px; font-weight:700; line-height:1.25; }
+.live-trending-meta { margin-top:4px; font-family:'Lato',sans-serif; font-size:9.5px; color:#7a8795; text-transform:uppercase; letter-spacing:0.06em; }
 @media(max-width:560px){ .author-page-section { padding:24px 16px; } .author-page-hero { padding:22px; } .author-page-top { flex-direction:column; } .author-page-name { font-size:28px; } }
 @media(max-width:560px){ .author-profile-top { flex-direction:column; } .author-profile-card { padding:18px; } }
+@media(max-width:700px) {
+  .related-grid, .author-dashboard-grid, .author-rank-list { grid-template-columns:1fr; }
+  .author-dashboard-header { display:block; }
+  .support-nudge { right:14px; bottom:14px; }
+  .live-home-section { padding:16px; }
+  .live-home-head { display:block; }
+  .live-home-updated { margin-top:8px; white-space:normal; }
+  .live-home-grid, .live-stats-row { grid-template-columns:1fr; }
+}
  
 /* ── SKELETON LOADING (fast perceived load) ── */
 .skeleton { background:linear-gradient(90deg,var(--cream-dark) 25%,var(--cream) 50%,var(--cream-dark) 75%); background-size:200% 100%; animation:shimmer 1.4s infinite; border-radius:2px; }
@@ -796,17 +961,28 @@ body.dark-mode .share-btn:hover { border-color:#8fa8c0; color:#c8d8ea; }
 #search-clear-btn:hover { color:var(--gold-light); }
  
 #search-dropdown {
-  display:none; max-height:340px; overflow-y:auto;
+  display:none; max-height:min(62vh, 480px); overflow-y:auto;
 }
 #search-dropdown.open { display:block; }
-.search-item { padding:11px 16px; border-bottom:1px solid rgba(255,255,255,0.06); cursor:pointer; transition:background 0.15s; }
+.search-item { display:flex; gap:12px; align-items:flex-start; padding:12px 16px; border-bottom:1px solid rgba(255,255,255,0.06); cursor:pointer; transition:background 0.15s; }
 .search-item:last-child { border-bottom:none; }
 .search-item:hover { background:rgba(184,150,62,0.15); }
+.search-item-thumb { width:48px; height:48px; flex-shrink:0; background:rgba(255,255,255,0.06); border:1px solid rgba(255,255,255,0.08); overflow:hidden; display:flex; align-items:center; justify-content:center; color:#5a7090; font-family:'Lato',sans-serif; font-size:10px; font-weight:800; }
+.search-item-thumb img { width:100%; height:100%; object-fit:cover; object-position:top center; display:block; }
+.search-item-body { flex:1; min-width:0; }
 .search-item-title { font-family:'Playfair Display',serif; font-size:15px; color:#dde4ee; line-height:1.3; }
 .search-item-meta { font-family:'Lato',sans-serif; font-size:10px; color:#5a7090; letter-spacing:0.08em; text-transform:uppercase; margin-top:3px; }
+.search-item-snippet { font-family:'EB Garamond',serif; font-size:13px; color:#8fa4bf; line-height:1.4; margin-top:4px; display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden; }
 .search-item em { color:var(--gold-light); font-style:normal; background:rgba(184,150,62,0.18); padding:0 2px; }
 .search-no-results { padding:16px; font-family:'Lato',sans-serif; font-size:13px; color:#5a7090; text-align:center; font-style:italic; }
 #search-popup-hint { padding:10px 16px 12px; font-family:'Lato',sans-serif; font-size:10.5px; color:#3a5070; letter-spacing:0.06em; }
+@media(max-width:560px) {
+  #search-overlay { padding-top:28px; align-items:flex-start; }
+  #search-popup-box { width:calc(100vw - 20px); }
+  #search-input { font-size:16px; padding:14px 10px; }
+  .search-item { padding:11px 12px; }
+  .search-item-thumb { width:42px; height:42px; }
+}
  
 /* ── LIKE BUTTON ── */
 .article-actions { display:flex; align-items:center; gap:12px; margin-top:10px; }
@@ -866,6 +1042,7 @@ body.dark-mode .share-btn:hover { border-color:#8fa8c0; color:#c8d8ea; }
 .spotlight-badge { background:var(--gold); color:var(--navy); font-family:'Lato',sans-serif; font-size:9px; font-weight:700; letter-spacing:0.18em; text-transform:uppercase; padding:4px 10px; display:inline-block; margin-bottom:10px; }
 .spotlight-paper-title { font-family:'Playfair Display',serif; font-size:clamp(16px,2.5vw,22px); font-weight:700; color:var(--navy); line-height:1.28; margin-bottom:8px; cursor:pointer; }
 .spotlight-paper-title:hover { text-decoration:underline; text-decoration-color:var(--gold); }
+.spotlight-editor-note { font-family:'Lato',sans-serif; font-size:10px; letter-spacing:0.12em; text-transform:uppercase; color:#7a8795; margin-top:8px; }
 .spotlight-excerpt {
   font-family:'EB Garamond',serif; font-size:15px; color:var(--text-secondary);
   line-height:1.62; margin:0 0 6px;
@@ -883,11 +1060,20 @@ body.dark-mode .share-btn:hover { border-color:#8fa8c0; color:#c8d8ea; }
 .spot-dot { width:8px; height:8px; background:var(--border); border:none; cursor:pointer; transition:background 0.2s, width 0.2s; padding:0; border-radius:1px; }
 .spot-dot.active { background:var(--gold); width:22px; }
 .spot-counter { font-family:'Lato',sans-serif; font-size:10px; color:var(--text-muted); letter-spacing:0.08em; margin-left:auto; }
+#spotlight-section {
+  position:relative; padding:22px; border:1px solid #d6dce3; border-top:4px solid var(--gold);
+  background:linear-gradient(135deg,#ffffff 0%,#f8fbff 54%,#f7f1df 100%);
+  box-shadow:0 10px 32px rgba(10,22,40,0.06);
+}
+#spotlight-section .spotlight-header { border-bottom:1px solid rgba(184,150,62,0.55); }
+#spotlight-section .spotlight-slide { padding:18px 2px 2px; }
+#spotlight-section .spotlight-slide-img { border:1px solid #c9a84c; box-shadow:0 10px 26px rgba(10,22,40,0.12); }
 @media(max-width:600px) {
   .spotlight-slide { flex-direction:column; gap:14px; padding:10px 2px 4px; }
   .spotlight-slide-img { width:100%; height:190px; }
   .spotlight-slide-img img { width:100%; height:100%; object-fit:cover; object-position:top center; transform-origin:top center; }
   .spotlight-paper-title { font-size:clamp(15px,4vw,20px); }
+  #spotlight-section { padding:16px; }
 }
  
 /* ── HOVER FOOTNOTE ── */
@@ -1012,6 +1198,70 @@ body.dark-mode .share-btn:hover { border-color:#8fa8c0; color:#c8d8ea; }
   .contact-email a { color:var(--navy-light); text-decoration:none; }
   .contact-email a:hover { color:var(--gold); text-decoration:underline; }
  
+/* ── CROSS-DEVICE RESPONSIVE POLISH ── */
+*, *::before, *::after { box-sizing:border-box; }
+html { -webkit-text-size-adjust:100%; text-size-adjust:100%; }
+button, a, input, select, textarea { -webkit-tap-highlight-color:rgba(184,150,62,0.18); }
+img, iframe, canvas, video { max-width:100%; }
+@supports (height: 100dvh) {
+  .modal-overlay.open, .upload-overlay.open, .submit-overlay.open, .review-detail-overlay.open,
+  .policy-overlay.open, .about-overlay.open { min-height:100dvh; }
+}
+@media(max-width:640px) {
+  body { overflow-x:hidden; }
+  .site-wrap { padding:0 12px; }
+  .modal-overlay { padding:0; align-items:stretch; }
+  .modal-box {
+    width:100%; min-height:100vh; max-height:none; margin:0; border-top-width:3px;
+    padding:22px 14px 32px; overflow-x:hidden;
+  }
+  @supports (height: 100dvh) { .modal-box { min-height:100dvh; } }
+  .modal-title { font-size:clamp(22px,7vw,32px); line-height:1.14; overflow-wrap:anywhere; }
+  .modal-byline { line-height:1.5; }
+  .modal-toolbar { gap:6px; overflow-x:auto; padding-bottom:4px; -webkit-overflow-scrolling:touch; }
+  .modal-tool-btn { min-height:34px; white-space:nowrap; }
+  .modal-nav-row { gap:8px; }
+  .modal-nav-btn { flex:1; min-height:38px; }
+  .modal-content { font-size:17px; line-height:1.72; overflow-wrap:anywhere; }
+  .modal-img { width:100%; height:auto; }
+  .share-row { width:100%; gap:6px; }
+  .share-btn { flex:1 1 calc(50% - 6px); justify-content:center; min-height:34px; padding:7px 8px; }
+  .article-download-menu { right:auto; left:0; }
+  .author-profile-card { margin-top:22px; padding:20px 16px; }
+  .author-profile-top { gap:14px; }
+  .author-profile-photo { width:76px; height:76px; }
+  .author-profile-name { font-size:23px; overflow-wrap:anywhere; }
+  .author-profile-actions { align-items:stretch; }
+  .author-profile-stats { grid-template-columns:repeat(2,minmax(0,1fr)); }
+  .author-profile-count, .author-profile-link { width:100%; }
+  .author-page-section { padding:18px 0 28px; }
+  .author-page-hero { padding:22px 16px; }
+  .author-page-photo { width:98px; height:98px; }
+  .author-page-name { font-size:28px; overflow-wrap:anywhere; }
+  .related-grid { grid-template-columns:1fr; }
+  .related-card { min-height:84px; }
+  .author-dashboard-section { padding:18px 14px; }
+  .author-rank-row { display:block; }
+  .author-rank-metrics { display:block; margin-top:4px; white-space:normal; }
+  .support-nudge { left:10px; right:10px; bottom:10px; width:auto; }
+  .upload-box, .submit-box, .review-detail-box, .policy-box, .about-box {
+    width:100%; max-width:100%; margin:0; padding-left:16px; padding-right:16px;
+  }
+  .review-detail-overlay.open, .submit-overlay.open, .upload-overlay.open { padding:0; }
+  .review-detail-box, .submit-box, .upload-box { min-height:100vh; }
+  @supports (height:100dvh) { .review-detail-box, .submit-box, .upload-box { min-height:100dvh; } }
+  .form-row input, .form-row select, .form-row textarea,
+  .review-field input, .review-field select, .review-field textarea {
+    font-size:16px; min-height:42px;
+  }
+}
+@media(max-width:380px) {
+  .masthead-title { font-size:clamp(20px,8vw,30px); }
+  .modal-toolbar { gap:5px; }
+  .share-btn { flex-basis:100%; }
+  .author-profile-photo { width:68px; height:68px; }
+  .related-thumb { width:56px; height:56px; }
+}
  
   /* ── AUTHOR OWNERSHIP TOGGLE ── */
 .author-ownership { display:flex; gap:10px; margin-bottom:16px; }
@@ -1785,7 +2035,9 @@ body.dark-mode .editor-tab.active { color:#c8d8ea; }
   </div>
     </div>
   </section>
+  <section class="live-home-section" id="live-home-section" style="display:none;"></section>
   <div id="spotlight-section" style="display:none;"></div>
+  <section class="author-dashboard-section" id="author-dashboard-section"></section>
   <div id="categories-wrap"></div>
 </main>
  
@@ -1962,6 +2214,21 @@ body.dark-mode .editor-tab.active { color:#c8d8ea; }
         <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg>
         Print
       </button>
+      <div class="modal-download-wrap" id="modal-download-wrap" style="display:none;">
+        <button class="modal-icon-btn" id="article-download-btn" onclick="toggleArticleDownloadMenu(event)" title="Download article image" aria-label="Download article image">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12"/><path d="m7 10 5 5 5-5"/><path d="M5 21h14"/></svg>
+        </button>
+        <div class="article-download-menu" id="article-download-menu">
+          <button type="button" onclick="downloadCurrentArticleImage()">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="m21 15-5-5L5 21"/></svg>
+            Image
+          </button>
+          <button type="button" onclick="downloadCurrentArticlePdf()">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/></svg>
+            PDF
+          </button>
+        </div>
+      </div>
       <button class="modal-tool-btn" id="font-size-btn" onclick="cycleModalFontSize()" title="Change text size">
         <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><text x="2" y="17" font-size="14" fill="currentColor" stroke="none" font-family="serif">A</text><text x="12" y="20" font-size="10" fill="currentColor" stroke="none" font-family="serif">A</text></svg>
         Text Size
@@ -2019,6 +2286,15 @@ body.dark-mode .editor-tab.active { color:#c8d8ea; }
       <label>Author's Email <span style="color:var(--gold);font-size:10px;letter-spacing:0.05em;">(for publication acknowledgement)</span></label>
       <input type="email" id="up-author-email" placeholder="author@example.com">
       <p style="font-family:'EB Garamond',serif;font-size:13px;color:var(--text-muted);font-style:italic;margin-top:5px;">The author will receive a premium certificate confirming their article has been published on ILIRH.</p>
+    </div>
+    <div class="submit-2col">
+      <div class="form-row"><label>Occupation</label><input type="text" id="up-occupation" placeholder="Advocate, Researcher, Student…"></div>
+      <div class="form-row"><label>Institution</label><input type="text" id="up-institution" placeholder="Court, University, Organisation…"></div>
+    </div>
+    <div class="form-row">
+      <label>Author Bio <span style="font-weight:400;text-transform:none;letter-spacing:0;font-family:'EB Garamond',serif;font-size:12px;color:var(--text-muted);">(max 100 words, shown only in author box)</span></label>
+      <textarea id="up-author-bio" placeholder="Short professional bio for the author profile…" oninput="updateUpBioCount()"></textarea>
+      <div class="author-bio-counter" id="up-bio-count">0 / 100 words</div>
     </div>
  
     <div class="form-row"><label>Category *</label>
@@ -2666,6 +2942,21 @@ const headers = {
   'apikey': SUPABASE_KEY,
   'Authorization': 'Bearer ' + SUPABASE_KEY
 };
+
+let articleStatsCache = {};
+
+function visitorKey() {
+  try {
+    let key = localStorage.getItem('ilirh-visitor-key');
+    if (!key) {
+      key = (crypto && crypto.randomUUID) ? crypto.randomUUID() : 'v_' + Date.now() + '_' + Math.random().toString(36).slice(2);
+      localStorage.setItem('ilirh-visitor-key', key);
+    }
+    return key;
+  } catch(e) {
+    return 'session_' + Date.now();
+  }
+}
  
 // ── DATE ──
 function setDate() {
@@ -2716,6 +3007,7 @@ async function fetchArticles(force = false) {
     articles = data || [];
     _lastFetchTime = Date.now();
     render();
+    fetchArticleStats().then(() => renderAuthorDashboard()).catch(() => {});
     if (parseAuthorSlugFromLocation()) {
       renderAuthorProfilePageFromRoute();
       return;
@@ -2740,7 +3032,9 @@ async function fetchArticles(force = false) {
 function render() {
   updateTicker();
   renderHero();
+  renderLiveHome();
   renderCategories();
+  renderAuthorDashboard();
 }
  
 function updateTicker() {
@@ -2761,14 +3055,25 @@ function readTime(text) {
   const mins = Math.max(1, Math.round(words / 200));
   return `${mins} min read`;
 }
+
+function articleImageSrc(article) {
+  return article && (article.article_image_url ||
+    (article.file_url && article.file_type && article.file_type.startsWith('image/') ? article.file_url : '')) || '';
+}
+
+function articleSearchText(article) {
+  return [
+    article.title, article.author, article.category, article.excerpt, article.article_body,
+    article.country, article.state, article.city, article.place, article.occupation, article.institution
+  ].filter(Boolean).join(' ');
+}
  
 function cardThumbHtml(article) {
   // Use article_image_url if available (generated thumbnail for PDFs / article image for submissions)
-  const imgSrc = article.article_image_url ||
-    (article.file_url && article.file_type && article.file_type.startsWith('image/') ? article.file_url : null);
+  const imgSrc = articleImageSrc(article);
 
   if (imgSrc) {
-    return `<div class="card-thumb-wrap" onclick="event.stopPropagation();openLightbox('${imgSrc}',['${imgSrc}'],0)" title="Click to enlarge"><img data-src="${imgSrc}" loading="lazy" decoding="async" alt="${esc(article.title)}" width="400" height="267" style="object-position:top center;"></div>`;
+    return `<div class="card-thumb-wrap" onclick="event.stopPropagation();openLightbox('${imgSrc}',['${imgSrc}'],0)" title="Click to enlarge"><img src="${imgSrc}" loading="lazy" decoding="async" fetchpriority="low" alt="${esc(article.title)}" width="400" height="267" style="object-position:top center;" onload="this.classList.add('loaded')"></div>`;
   }
   const icon = article.file_type === 'application/pdf'
     ? `<svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="#0a1628" stroke-width="1.5"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14,2 14,8 20,8"/><line x1="9" y1="13" x2="15" y2="13"/><line x1="9" y1="17" x2="15" y2="17"/></svg>`
@@ -2777,10 +3082,9 @@ function cardThumbHtml(article) {
 }
  
 function heroThumbHtml(article) {
-  const imgSrc = article.article_image_url ||
-    (article.file_url && article.file_type && article.file_type.startsWith('image/') ? article.file_url : null);
+  const imgSrc = articleImageSrc(article);
   if (imgSrc) {
-    return `<img src="${imgSrc}" alt="${esc(article.title)}" loading="lazy" decoding="async" style="width:100%;aspect-ratio:4/3;object-fit:cover;object-position:top center;border:1px solid var(--border-light);margin-bottom:14px;display:block;opacity:0;transition:opacity 0.45s ease;cursor:zoom-in;" onload="this.style.opacity=1" onclick="openLightbox('${imgSrc}',['${imgSrc}'],0)" title="Click to enlarge">`;
+    return `<img src="${imgSrc}" alt="${esc(article.title)}" loading="eager" decoding="async" fetchpriority="high" style="width:100%;aspect-ratio:4/3;object-fit:cover;object-position:top center;border:1px solid var(--border-light);margin-bottom:14px;display:block;opacity:0;transition:opacity 0.45s ease;cursor:zoom-in;" onload="this.style.opacity=1" onclick="openLightbox('${imgSrc}',['${imgSrc}'],0)" title="Click to enlarge">`;
   }
   return `<div style="width:100%;aspect-ratio:4/3;background:var(--cream-dark);display:flex;align-items:center;justify-content:center;margin-bottom:14px;border:1px solid var(--border);opacity:0.4;">
     <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="#0a1628" stroke-width="1.2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14,2 14,8 20,8"/></svg>
@@ -2789,6 +3093,79 @@ function heroThumbHtml(article) {
  
 function formatDate(iso) {
   return new Date(iso).toLocaleDateString('en-IN', { year:'numeric', month:'long', day:'numeric' });
+}
+
+function shortNumber(n) {
+  n = Number(n || 0);
+  if (n >= 1000000) return (n / 1000000).toFixed(1).replace(/\.0$/, '') + 'M';
+  if (n >= 1000) return (n / 1000).toFixed(1).replace(/\.0$/, '') + 'K';
+  return String(n);
+}
+
+function renderLiveHome() {
+  const host = document.getElementById('live-home-section');
+  if (!host || currentCat !== 'all' || !articles.length) {
+    if (host) { host.style.display = 'none'; host.innerHTML = ''; }
+    return;
+  }
+  host.style.display = 'block';
+  const totals = articles.reduce((acc, a) => {
+    const s = articleStatsFor(a.id);
+    acc.views += s.views;
+    acc.readers += s.unique_readers;
+    acc.shares += s.shares;
+    acc.downloads += s.downloads;
+    return acc;
+  }, { views:0, readers:0, shares:0, downloads:0 });
+  const cats = ['Law','Education','Vedic Science','Political','Gen-Z Desk'];
+  const latest = articles.slice(0, 4);
+  const trending = articles.slice().sort((a,b) => {
+    const sa = articleStatsFor(a.id);
+    const sb = articleStatsFor(b.id);
+    return ((sb.views || 0) + (sb.shares || 0) * 4 + (getLikeData(b.id).count || 0) * 3 + (sb.downloads || 0) * 2)
+      - ((sa.views || 0) + (sa.shares || 0) * 4 + (getLikeData(a.id).count || 0) * 3 + (sa.downloads || 0) * 2);
+  }).slice(0, 3);
+  host.innerHTML = `
+    <div class="live-home-head">
+      <div>
+        <div class="live-home-kicker"><span class="live-pulse"></span>Live Research Desk</div>
+        <div class="live-home-title">What readers are exploring now</div>
+      </div>
+      <div class="live-home-updated">Updated ${new Date().toLocaleTimeString('en-IN', { hour:'2-digit', minute:'2-digit' })}</div>
+    </div>
+    <div class="live-home-grid">
+      <div>
+        <div class="live-stats-row">
+          <div class="live-stat"><strong>${shortNumber(articles.length)}</strong><span>Articles</span></div>
+          <div class="live-stat"><strong>${shortNumber(totals.readers)}</strong><span>Readers</span></div>
+          <div class="live-stat"><strong>${shortNumber(totals.shares)}</strong><span>Shares</span></div>
+          <div class="live-stat"><strong>${shortNumber(totals.downloads)}</strong><span>Downloads</span></div>
+        </div>
+        <div class="live-feed-list">
+          ${latest.map(a => `<div class="live-feed-item" onclick="openArticle(${Number(a.id)})">
+            <div class="live-feed-title">${esc(a.title)}</div>
+            <div class="live-feed-meta">${esc(a.category || '')} · ${esc(a.author || '')} · ${formatDate(a.created_at)}</div>
+          </div>`).join('')}
+        </div>
+        <div class="live-chip-row">
+          ${cats.map(cat => `<button class="live-chip" onclick="filterCatAndScroll('${cat.replace(/'/g,"\\'")}')">${esc(cat)}</button>`).join('')}
+          <button class="live-chip" onclick="toggleSearch()">Search</button>
+        </div>
+      </div>
+      <div>
+        ${trending.map(a => {
+          const img = articleImageSrc(a);
+          const stats = articleStatsFor(a.id);
+          return `<div class="live-trending-card" onclick="openArticle(${Number(a.id)})">
+            <div class="live-trending-thumb">${img ? `<img src="${esc(img)}" loading="lazy" decoding="async" alt="">` : esc((a.category || 'IL').slice(0,2).toUpperCase())}</div>
+            <div>
+              <div class="live-trending-title">${esc(a.title)}</div>
+              <div class="live-trending-meta">${shortNumber(stats.views)} views · ${getLikeData(a.id).count || 0} likes</div>
+            </div>
+          </div>`;
+        }).join('')}
+      </div>
+    </div>`;
 }
  
 function renderHero() {
@@ -2992,6 +3369,7 @@ async function openArticle(id, navDir, routeOptions) {
   if (!a) return;
   routeOptions = routeOptions || {};
   _openArticleId = id;
+  logArticleEvent(id, 'view');
   if (!routeOptions.skipUrl && !_openingInitialArticle) {
     pushArticleUrl(id, !!routeOptions.replaceUrl);
   } else if (routeOptions.replaceUrl) {
@@ -3032,9 +3410,10 @@ async function openArticle(id, navDir, routeOptions) {
       }
     }
   }
-  inner += '<div id="modal-author-profile"></div>';
+  inner += '<div id="modal-author-profile"></div><div id="modal-related-articles"></div>';
   document.getElementById('modal-content').innerHTML = inner;
   renderAuthorProfileBox(a).catch(e => console.warn('Author profile render failed:', e));
+  renderRelatedArticles(a);
   // Show delete button only for logged-in editor
   const db = document.getElementById('del-art-btn');
   if (db) db.style.display = isLoggedIn ? 'inline-block' : 'none';
@@ -3056,6 +3435,7 @@ async function openArticle(id, navDir, routeOptions) {
   // Update prev/next nav buttons
   updateModalNavBtns(id);
   document.getElementById('article-modal').classList.add('open');
+  dismissSupportNudge();
   document.body.style.overflow = 'hidden';
 }
 
@@ -3097,6 +3477,7 @@ async function deleteCurrentArticle() {
   try {
     // Find the article to get its file_url for storage deletion
     const article = articles.find(a => a.id === _openArticleId);
+    const deletedId = _openArticleId;
     
     // 1. Delete likes for this article
     await fetch(`${SUPABASE_URL}/rest/v1/article_likes?article_id=eq.${_openArticleId}`, {
@@ -3117,11 +3498,13 @@ async function deleteCurrentArticle() {
       const errText = await res.text().catch(() => res.status);
       throw new Error('Database delete failed: ' + errText);
     }
+    await removeArticleFromAuthorProfile(article);
 
     // 4. Delete storage file if exists
-    if (article && article.file_url) {
+    const storageUrls = article ? Array.from(new Set([article.file_url, article.article_image_url].filter(Boolean))) : [];
+    for (const storageUrl of storageUrls) {
       try {
-        const urlParts = article.file_url.split('/storage/v1/object/public/articles/');
+        const urlParts = storageUrl.split('/storage/v1/object/public/articles/');
         if (urlParts.length === 2) {
           const fileName = urlParts[1];
           await fetch(`${SUPABASE_URL}/storage/v1/object/articles/${fileName}`, {
@@ -3135,10 +3518,11 @@ async function deleteCurrentArticle() {
     }
 
     // 5. Clean up local likes cache
-    delete likesCache[String(_openArticleId)];
+    delete likesCache[String(deletedId)];
     const myLikes = getMyLikes();
-    delete myLikes[String(_openArticleId)];
+    delete myLikes[String(deletedId)];
     localStorage.setItem('ilirh-likes', JSON.stringify(myLikes));
+    removeArticleLocalMetrics(deletedId);
 
     closeModal();
     requestStaticArticleRefresh('article_deleted');
@@ -3163,9 +3547,17 @@ function editCurrentArticle() {
 
   openUpload();
   switchEditorTab('publish');
+  if (a.category === 'Gen-Z Desk') setOwnership('genz');
+  else if (a.author && a.author !== 'Advocate Dr. Ajay Singh Rathore') setOwnership('other');
+  else setOwnership('myself');
 
   const t = document.getElementById('up-title'); if (t) t.value = a.title || '';
   const au = document.getElementById('up-author'); if (au) au.value = a.author || '';
+  const ae = document.getElementById('up-author-email'); if (ae) ae.value = a.author_email || '';
+  const occ = document.getElementById('up-occupation'); if (occ) occ.value = a.occupation || '';
+  const inst = document.getElementById('up-institution'); if (inst) inst.value = a.institution || '';
+  const bio = document.getElementById('up-author-bio'); if (bio) bio.value = a.author_bio || '';
+  updateUpBioCount();
   const c = document.getElementById('up-category'); if (c) c.value = a.category || '';
   const ex = document.getElementById('up-excerpt'); if (ex) ex.value = a.excerpt || '';
 
@@ -3190,6 +3582,7 @@ function closeModal() {
   if (eb) { eb.style.display='none'; eb.disabled=false; }
   const editorActions = document.getElementById('modal-editor-actions');
   if (editorActions) editorActions.classList.remove('visible');
+  updateArticleDownloadControl(null);
   _openArticleId = null;
   pushHomeUrl();
 }
@@ -3308,6 +3701,10 @@ function closeUpload() {
   document.getElementById('up-author').readOnly = false;
   document.getElementById('up-author').style.opacity = '1';
   document.getElementById('up-author-email').value = '';
+  const upOcc = document.getElementById('up-occupation'); if (upOcc) upOcc.value = '';
+  const upInst = document.getElementById('up-institution'); if (upInst) upInst.value = '';
+  const upBio = document.getElementById('up-author-bio'); if (upBio) upBio.value = '';
+  updateUpBioCount();
   document.getElementById('up-category').value = '';
   document.getElementById('up-file').value = '';
   const upDocx = document.getElementById('up-docx-file'); if (upDocx) upDocx.value = '';
@@ -3477,7 +3874,11 @@ async function publishArticle() {
   const catEl = document.getElementById('up-category'); const cat = _authorOwnership === 'genz' ? 'Gen-Z Desk' : catEl.value;
   const excerpt  = sanitizeInput(document.getElementById('up-excerpt').value, 1000);
   const place    = (document.getElementById('up-place')?.value || '');
-  const authorEmail = (_authorOwnership === 'other' || _authorOwnership === 'genz') ? document.getElementById('up-author-email').value.trim() : '';
+  const authorEmailRaw = document.getElementById('up-author-email') ? document.getElementById('up-author-email').value.trim() : '';
+  const authorEmail = (_authorOwnership === 'other' || _authorOwnership === 'genz' || _editArticleId) ? authorEmailRaw : '';
+  const occupation = sanitizeInput(document.getElementById('up-occupation') ? document.getElementById('up-occupation').value : '', 150);
+  const institution = sanitizeInput(document.getElementById('up-institution') ? document.getElementById('up-institution').value : '', 200);
+  const authorBio = limitWords(sanitizeInput(document.getElementById('up-author-bio') ? document.getElementById('up-author-bio').value : '', 1200), 100);
   const silent   = document.getElementById('up-silent').checked;
   const errEl    = document.getElementById('up-error');
   errEl.textContent = '';
@@ -3490,6 +3891,7 @@ async function publishArticle() {
   if ((_authorOwnership === 'other' || _authorOwnership === 'genz') && authorEmail && !authorEmail.includes('@')) {
     errEl.textContent = 'Please enter a valid author email.'; return;
   }
+  if (!updateUpBioCount()) { errEl.textContent = 'Author bio must be 100 words or fewer.'; return; }
  
   const btn = document.getElementById('publish-btn');
   btn.disabled = true; btn.textContent = 'Uploading…';
@@ -3549,28 +3951,25 @@ async function publishArticle() {
     }
     document.getElementById('progress-fill').style.width = '75%';
     if (thumb_url) article_image_url = thumb_url;
+
+    let upAuthorPhotoUrl = null;
+    if (_upAuthorPhotoData) {
+      try { upAuthorPhotoUrl = await uploadArticleImageToSupabase(_upAuthorPhotoData); } catch(e) { console.warn('Author photo upload failed:', e); }
+    }
  
     // 3. Insert or update article record
     const articlePayload = { title, author, category: cat, excerpt, file_url, file_type };
     if (article_image_url) articlePayload.article_image_url = article_image_url;
     if (_uploadMode === 'docx' && _upArticleBodyHtml) articlePayload.article_body = _upArticleBodyHtml;
-
-    const insertRes = await fetch(
-      _editArticleId
-        ? `${SUPABASE_URL}/rest/v1/articles?id=eq.${_editArticleId}`
-        : `${SUPABASE_URL}/rest/v1/articles`,
-      {
-        method: _editArticleId ? 'PATCH' : 'POST',
-        headers: { ...headers, 'Prefer': 'return=representation' },
-        body: JSON.stringify(articlePayload)
-      }
-    );
+    if (place) articlePayload.place = sanitizeInput(place, 200);
+    if (authorEmail && validateEmail(authorEmail)) articlePayload.author_email = normalizeEmail(authorEmail);
+    if (occupation) articlePayload.occupation = occupation;
+    if (institution) articlePayload.institution = institution;
+    if (authorBio) articlePayload.author_bio = authorBio;
+    if (upAuthorPhotoUrl) articlePayload.author_photo_url = upAuthorPhotoUrl;
  
     document.getElementById('progress-fill').style.width = '100%';
-    if (!insertRes.ok) throw new Error('Database insert failed');
- 
-    const inserted = await insertRes.json();
-    const newArticle = Array.isArray(inserted) ? inserted[0] : inserted;
+    const newArticle = await saveArticleRecord(articlePayload, _editArticleId);
  
     if (newArticle) {
       if (!silent) {
@@ -3592,6 +3991,16 @@ async function publishArticle() {
             published_at: newArticle.created_at
           })
         }).catch(e => console.warn('Author certificate email failed:', e));
+      }
+      if (authorEmail && validateEmail(authorEmail)) {
+        upsertAuthorProfile({
+          email: authorEmail,
+          name: author,
+          occupation,
+          institution,
+          bio: authorBio,
+          photo_url: upAuthorPhotoUrl
+        }, newArticle).catch(e => console.warn('Direct author profile save failed:', e));
       }
     }
     requestStaticArticleRefresh(_editArticleId ? 'article_updated' : 'article_published');
@@ -3668,6 +4077,62 @@ function sanitizeInput(str, maxLen) {
 
 function validateEmail(email) {
   return /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(email);
+}
+
+async function saveArticleRecord(payload, editId) {
+  const optionalKeys = [
+    'article_image_url', 'article_body', 'author_email', 'occupation', 'institution',
+    'author_bio', 'author_photo_url', 'place'
+  ];
+  const endpoint = editId
+    ? `${SUPABASE_URL}/rest/v1/articles?id=eq.${editId}`
+    : `${SUPABASE_URL}/rest/v1/articles`;
+  const method = editId ? 'PATCH' : 'POST';
+  let body = { ...payload };
+  for (let attempt = 0; attempt <= optionalKeys.length; attempt++) {
+    const res = await fetch(endpoint, {
+      method,
+      headers: { ...headers, 'Prefer': 'return=representation' },
+      body: JSON.stringify(body)
+    });
+    if (res.ok) {
+      const data = await res.json().catch(() => null);
+      return Array.isArray(data) ? data[0] : data;
+    }
+    const errText = await res.text().catch(() => '');
+    const missing = optionalKeys.find(k => Object.prototype.hasOwnProperty.call(body, k) && new RegExp(k, 'i').test(errText));
+    if (missing) {
+      delete body[missing];
+      continue;
+    }
+    if (attempt === 0 && optionalKeys.some(k => Object.prototype.hasOwnProperty.call(body, k))) {
+      optionalKeys.forEach(k => delete body[k]);
+      continue;
+    }
+    throw new Error((editId ? 'Article save failed' : 'Article publish failed') + (errText ? ': ' + errText.slice(0, 220) : ''));
+  }
+  throw new Error(editId ? 'Article save failed' : 'Article publish failed');
+}
+
+async function saveSubmissionRecord(submissionId, payload) {
+  const optionalKeys = ['article_docx_url', 'author_bio', 'author_photo_url', 'article_body', 'place'];
+  let body = { ...payload };
+  for (let attempt = 0; attempt <= optionalKeys.length; attempt++) {
+    const res = await fetch(`${SUPABASE_URL}/rest/v1/article_submissions?id=eq.${submissionId}`, {
+      method: 'PATCH',
+      headers: { ...headers, 'Prefer': 'return=minimal' },
+      body: JSON.stringify(body)
+    });
+    if (res.ok) return body;
+    const errText = await res.text().catch(() => '');
+    const missing = optionalKeys.find(k => Object.prototype.hasOwnProperty.call(body, k) && new RegExp(k, 'i').test(errText));
+    if (missing) {
+      delete body[missing];
+      continue;
+    }
+    throw new Error('Save failed' + (errText ? ': ' + errText.slice(0, 220) : ''));
+  }
+  throw new Error('Save failed');
 }
 
 function closeJoinOnBg(e) { if (e.target === document.getElementById('join-overlay')) closeJoin(); }
@@ -4144,20 +4609,42 @@ function searchArticles(q) {
   const dd = document.getElementById('search-dropdown');
   q = q.trim();
   if (!q || articles.length === 0) { dd.classList.remove('open'); return; }
-  const terms = q.toLowerCase().split(/\s+/);
-  const results = articles.filter(a => {
-    const hay = (a.title + ' ' + a.author + ' ' + a.category + ' ' + (a.excerpt||'')).toLowerCase();
-    return terms.every(t => hay.includes(t));
-  }).slice(0, 8);
+  const terms = q.toLowerCase().split(/\s+/).filter(Boolean);
+  const results = articles.map(a => {
+    const title = String(a.title || '').toLowerCase();
+    const author = String(a.author || '').toLowerCase();
+    const category = String(a.category || '').toLowerCase();
+    const place = [a.country, a.state, a.city, a.place].filter(Boolean).join(' ').toLowerCase();
+    const all = articleSearchText(a).toLowerCase();
+    let score = 0;
+    terms.forEach(t => {
+      if (title.includes(t)) score += 12;
+      if (author.includes(t)) score += 9;
+      if (category.includes(t)) score += 7;
+      if (place.includes(t)) score += 6;
+      if (all.includes(t)) score += 2;
+    });
+    if (title === q.toLowerCase() || author === q.toLowerCase()) score += 20;
+    return { article: a, score };
+  }).filter(x => x.score > 0 && terms.every(t => articleSearchText(x.article).toLowerCase().includes(t)))
+    .sort((a,b) => b.score - a.score || new Date(b.article.created_at || 0) - new Date(a.article.created_at || 0))
+    .slice(0, 12)
+    .map(x => x.article);
   if (results.length === 0) {
     dd.innerHTML = `<div class="search-no-results">No results for "<em>${esc(q)}</em>"</div>`;
   } else {
     dd.innerHTML = results.map(a => {
-      const safeQ = q.replace(/[.*+?^${}()|[\]\\]/g,'\\$&');
-      const hi = t => t.replace(new RegExp(`(${safeQ})`, 'gi'), '<em>$1</em>');
+      const safeTerms = terms.map(t => t.replace(/[.*+?^${}()|[\]\\]/g,'\\$&')).join('|');
+      const hi = t => safeTerms ? t.replace(new RegExp(`(${safeTerms})`, 'gi'), '<em>$1</em>') : t;
+      const img = articleImageSrc(a);
+      const place = [a.place, a.city, a.state, a.country].filter(Boolean).join(' · ');
       return `<div class="search-item" onmousedown="closeSearchWrap();openArticle(${a.id})">
-        <div class="search-item-title">${hi(esc(a.title))}</div>
-        <div class="search-item-meta">${esc(a.category)} &bull; ${esc(a.author)}</div>
+        <div class="search-item-thumb">${img ? `<img src="${esc(img)}" loading="lazy" decoding="async" alt="">` : esc((a.category || 'IL').slice(0,2).toUpperCase())}</div>
+        <div class="search-item-body">
+          <div class="search-item-title">${hi(esc(a.title))}</div>
+          <div class="search-item-meta">${esc(a.category)} &bull; ${hi(esc(a.author))}${place ? ' &bull; ' + hi(esc(place)) : ''}</div>
+          ${a.excerpt ? `<div class="search-item-snippet">${hi(esc(a.excerpt))}</div>` : ''}
+        </div>
       </div>`;
     }).join('');
   }
@@ -4233,6 +4720,37 @@ async function doPopSubscribe() {
     setTimeout(closePop, 3000);
   } catch(e) { msg.style.color='#a32d2d'; msg.textContent = 'Could not subscribe. Please try again.'; }
 }
+
+function showSupportNudge() {
+  const nudge = document.getElementById('support-nudge');
+  if (!nudge || sessionStorage.getItem('ilirh-support-nudge') || document.getElementById('article-modal').classList.contains('open')) return;
+  nudge.classList.add('open');
+  sessionStorage.setItem('ilirh-support-nudge', '1');
+}
+
+function dismissSupportNudge() {
+  const nudge = document.getElementById('support-nudge');
+  if (nudge) nudge.classList.remove('open');
+}
+
+function openSupportFromNudge() {
+  dismissSupportNudge();
+  openPolicy('support');
+}
+
+(function() {
+  if (sessionStorage.getItem('ilirh-support-nudge')) return;
+  let armed = false;
+  const arm = () => {
+    if (armed) return;
+    armed = true;
+    setTimeout(showSupportNudge, 18000);
+  };
+  setTimeout(arm, 22000);
+  window.addEventListener('scroll', () => {
+    if (window.scrollY > 900) arm();
+  }, { passive:true });
+})();
  
 // ── LIKE BUTTONS (shared counts via Supabase) ──
 // Global map: articleId → { count, userLiked }
@@ -4324,6 +4842,7 @@ function refreshAllLikeButtons() {
   document.querySelectorAll('.like-btn[data-article-id]').forEach(btn => {
     renderLikeButton(btn, btn.dataset.articleId);
   });
+  renderAuthorDashboard();
 }
  
 function likeHtml(articleId) {
@@ -4343,8 +4862,9 @@ function renderSpotlight() {
   if (!articles.length) return;
   wrap.style.display = '';
   const renderSlide = (a, i) => {
-    const imgHtml = (a.file_url && a.file_type && a.file_type.startsWith('image/'))
-      ? `<div class="spotlight-slide-img" onclick="openLightbox('${a.file_url}',['${a.file_url}'],0)" title="Click to enlarge"><img src="${a.file_url}" loading="lazy" decoding="async" alt="${esc(a.title)}"></div>`
+    const img = articleImageSrc(a);
+    const imgHtml = img
+      ? `<div class="spotlight-slide-img" onclick="openLightbox('${img}',['${img}'],0)" title="Click to enlarge"><img src="${img}" loading="lazy" decoding="async" alt="${esc(a.title)}"></div>`
       : `<div class="spotlight-slide-img" style="background:var(--cream-dark);display:flex;align-items:center;justify-content:center;opacity:0.4;border-color:var(--border);"><svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#0a1628" stroke-width="1.2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14,2 14,8 20,8"/></svg></div>`;
     const hasLongExcerpt = a.excerpt && a.excerpt.length > 160;
     return `<div class="spotlight-slide${i===0?' spot-active':''}" data-spot-idx="${i}">
@@ -4354,6 +4874,7 @@ function renderSpotlight() {
         <div class="spotlight-paper-title" onclick="openArticle(${a.id})">${esc(a.title)}</div>
         <div style="font-family:'Lato',sans-serif;font-size:11px;color:var(--text-muted);margin-bottom:8px;letter-spacing:0.04em;">By ${esc(a.author)} &bull; ${formatDate(a.created_at)} &bull; <span style="color:var(--gold);">${esc(a.category)}</span></div>
         ${a.excerpt ? `<p class="spotlight-excerpt" id="spot-exc-${i}">${esc(a.excerpt)}</p>${hasLongExcerpt ? `<button class="spot-expand-btn" id="spot-expbtn-${i}" onclick="spotToggleExcerpt(${i})">Read more &#9660;</button>` : ''}` : ''}
+        <div class="spotlight-editor-note">Curated for depth, originality, and reader value</div>
         ${likeHtml(a.id)}
       </div>
     </div>`;
@@ -4742,6 +5263,171 @@ function printArticle() {
   iframe.contentDocument.write(htmlContent);
   iframe.contentDocument.close();
 }
+
+function currentArticleDownloadImageUrl(article) {
+  const a = article || articles.find(x => Number(x.id) === Number(_openArticleId));
+  if (!a) return '';
+  return a.article_image_url ||
+    (a.file_url && a.file_type && a.file_type.startsWith('image/') ? a.file_url : '');
+}
+
+function safeDownloadName(title, ext) {
+  const base = String(title || 'ilirh-article')
+    .toLowerCase()
+    .normalize('NFKD')
+    .replace(/[\u0300-\u036f]/g, '')
+    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/^-+|-+$/g, '')
+    .slice(0, 80) || 'ilirh-article';
+  return base + '.' + ext;
+}
+
+function toggleArticleDownloadMenu(event) {
+  if (event) event.stopPropagation();
+  const menu = document.getElementById('article-download-menu');
+  const btn = document.getElementById('article-download-btn');
+  if (!menu) return;
+  const open = menu.classList.toggle('open');
+  if (btn) btn.classList.toggle('active', open);
+}
+
+function closeArticleDownloadMenu() {
+  const menu = document.getElementById('article-download-menu');
+  const btn = document.getElementById('article-download-btn');
+  if (menu) menu.classList.remove('open');
+  if (btn) btn.classList.remove('active');
+}
+
+function updateArticleDownloadControl(article) {
+  const wrap = document.getElementById('modal-download-wrap');
+  if (!wrap) return;
+  if (article === null) {
+    wrap.style.display = 'none';
+    closeArticleDownloadMenu();
+    return;
+  }
+  wrap.style.display = currentArticleDownloadImageUrl(article) ? 'inline-flex' : 'none';
+  closeArticleDownloadMenu();
+}
+
+async function fetchImageBlob(url) {
+  const res = await fetch(url, { mode: 'cors', cache: 'force-cache' });
+  if (!res.ok) throw new Error('Image download failed');
+  return await res.blob();
+}
+
+function blobToDataUrl(blob) {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload = () => resolve(reader.result);
+    reader.onerror = reject;
+    reader.readAsDataURL(blob);
+  });
+}
+
+function imageSizeFromDataUrl(dataUrl) {
+  return new Promise((resolve, reject) => {
+    const img = new Image();
+    img.onload = () => resolve({ width: img.naturalWidth || img.width, height: img.naturalHeight || img.height });
+    img.onerror = reject;
+    img.src = dataUrl;
+  });
+}
+
+function saveBlob(blob, filename) {
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = filename;
+  document.body.appendChild(a);
+  a.click();
+  a.remove();
+  setTimeout(() => URL.revokeObjectURL(url), 1500);
+}
+
+function dataUrlToBlob(dataUrl) {
+  const parts = String(dataUrl || '').split(',');
+  const meta = parts[0] || '';
+  const b64 = parts[1] || '';
+  const mime = (meta.match(/data:([^;]+)/) || [])[1] || 'image/png';
+  const bin = atob(b64);
+  const bytes = new Uint8Array(bin.length);
+  for (let i = 0; i < bin.length; i++) bytes[i] = bin.charCodeAt(i);
+  return new Blob([bytes], { type: mime });
+}
+
+async function downloadCurrentArticleImage() {
+  closeArticleDownloadMenu();
+  const article = articles.find(x => Number(x.id) === Number(_openArticleId));
+  const url = currentArticleDownloadImageUrl(article);
+  if (!article || !url) { showToast('No article image available'); return; }
+  try {
+    logArticleEvent(article.id, 'download');
+    const blob = await fetchImageBlob(url);
+    const type = (blob.type || '').toLowerCase();
+    const ext = type.includes('png') ? 'png' : (type.includes('webp') ? 'webp' : 'jpg');
+    saveBlob(blob, safeDownloadName(article.title, ext));
+    showToast('Image download started');
+  } catch(e) {
+    window.open(url, '_blank', 'noopener');
+    showToast('Opened image in a new tab');
+  }
+}
+
+function loadJsPdf() {
+  if (window.jspdf && window.jspdf.jsPDF) return Promise.resolve();
+  return new Promise((resolve, reject) => {
+    const existing = document.querySelector('script[data-ilirh-jspdf]');
+    if (existing) {
+      existing.addEventListener('load', resolve, { once: true });
+      existing.addEventListener('error', reject, { once: true });
+      return;
+    }
+    const s = document.createElement('script');
+    s.src = 'https://cdn.jsdelivr.net/npm/jspdf@2.5.1/dist/jspdf.umd.min.js';
+    s.async = true;
+    s.dataset.ilirhJspdf = '1';
+    s.onload = resolve;
+    s.onerror = () => reject(new Error('PDF library could not load'));
+    document.head.appendChild(s);
+  });
+}
+
+async function downloadCurrentArticlePdf() {
+  closeArticleDownloadMenu();
+  const article = articles.find(x => Number(x.id) === Number(_openArticleId));
+  const url = currentArticleDownloadImageUrl(article);
+  if (!article || !url) { showToast('No article image available'); return; }
+  try {
+    logArticleEvent(article.id, 'download');
+    showToast('Preparing PDF...', 1800);
+    const blob = await fetchImageBlob(url);
+    const dataUrl = await blobToDataUrl(blob);
+    const size = await imageSizeFromDataUrl(dataUrl);
+    await loadJsPdf();
+    const orientation = size.width > size.height ? 'landscape' : 'portrait';
+    const pdf = new window.jspdf.jsPDF({ orientation, unit: 'mm', format: 'a4' });
+    const pageW = pdf.internal.pageSize.getWidth();
+    const pageH = pdf.internal.pageSize.getHeight();
+    const margin = 0;
+    const ratio = Math.min((pageW - margin * 2) / size.width, (pageH - margin * 2) / size.height);
+    const w = size.width * ratio;
+    const h = size.height * ratio;
+    const x = (pageW - w) / 2;
+    const y = (pageH - h) / 2;
+    const format = (blob.type || '').toLowerCase().includes('png') ? 'PNG' : 'JPEG';
+    pdf.addImage(dataUrl, format, x, y, w, h);
+    pdf.save(safeDownloadName(article.title, 'pdf'));
+  } catch(e) {
+    console.error('PDF download failed:', e);
+    showToast('Could not make PDF. Try image download.', 3500);
+  }
+}
+
+document.addEventListener('click', e => {
+  const wrap = document.getElementById('modal-download-wrap');
+  if (wrap && !wrap.contains(e.target)) closeArticleDownloadMenu();
+});
  
 // ── FONT SIZE CYCLE in modal ──
 const _fontSizes = ['', 'text-sm', 'text-lg'];
@@ -4767,19 +5453,19 @@ function buildShareRow(title, url) {
       Share
     </button>`;
   }
-  html += `<a class="share-btn" href="https://api.whatsapp.com/send?text=${encoded}%20${encodedUrl}" target="_blank" rel="noopener">
+  html += `<a class="share-btn" href="https://api.whatsapp.com/send?text=${encoded}%20${encodedUrl}" target="_blank" rel="noopener" onclick="trackArticleShare()">
     <svg width="10" height="10" viewBox="0 0 24 24" fill="currentColor" stroke="none"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/><path d="M12 0C5.373 0 0 5.373 0 12c0 2.123.554 4.118 1.528 5.852L0 24l6.335-1.51A11.945 11.945 0 0 0 12 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 21.818a9.818 9.818 0 0 1-5.013-1.375l-.36-.214-3.727.888.926-3.638-.236-.374A9.818 9.818 0 0 1 12 2.182c5.42 0 9.818 4.398 9.818 9.818 0 5.42-4.398 9.818-9.818 9.818z"/></svg>
     WhatsApp
   </a>`;
-  html += `<a class="share-btn" href="https://twitter.com/intent/tweet?text=${encoded}&url=${encodedUrl}" target="_blank" rel="noopener">
+  html += `<a class="share-btn" href="https://twitter.com/intent/tweet?text=${encoded}&url=${encodedUrl}" target="_blank" rel="noopener" onclick="trackArticleShare()">
     <svg width="10" height="10" viewBox="0 0 24 24" fill="currentColor" stroke="none"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
     X / Twitter
   </a>`;
-  html += `<a class="share-btn" href="https://www.facebook.com/sharer/sharer.php?u=${encodedUrl}" target="_blank" rel="noopener">
+  html += `<a class="share-btn" href="https://www.facebook.com/sharer/sharer.php?u=${encodedUrl}" target="_blank" rel="noopener" onclick="trackArticleShare()">
     <svg width="10" height="10" viewBox="0 0 24 24" fill="currentColor" stroke="none"><path d="M22.675 0h-21.35C.593 0 0 .593 0 1.326v21.348C0 23.407.593 24 1.326 24h11.495v-9.294H9.692v-3.622h3.129V8.413c0-3.1 1.894-4.788 4.659-4.788 1.325 0 2.464.099 2.795.143v3.24l-1.918.001c-1.504 0-1.795.715-1.795 1.763v2.312h3.587l-.467 3.622h-3.12V24h6.116C23.407 24 24 23.407 24 22.674V1.326C24 .593 23.407 0 22.675 0z"/></svg>
     Facebook
   </a>`;
-  html += `<a class="share-btn" href="https://www.linkedin.com/sharing/share-offsite/?url=${encodedUrl}" target="_blank" rel="noopener">
+  html += `<a class="share-btn" href="https://www.linkedin.com/sharing/share-offsite/?url=${encodedUrl}" target="_blank" rel="noopener" onclick="trackArticleShare()">
     <svg width="10" height="10" viewBox="0 0 24 24" fill="currentColor" stroke="none"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 0 1-2.063-2.065 2.064 2.064 0 1 1 2.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg>
     LinkedIn
   </a>`;
@@ -4787,8 +5473,14 @@ function buildShareRow(title, url) {
 }
 function nativeShare(title, url) {
   if (navigator.share) {
+    trackArticleShare();
     navigator.share({ title: title + ' — ILIRH', url: url }).catch(() => {});
   }
+}
+
+function trackArticleShare() {
+  if (!_openArticleId) return;
+  logArticleEvent(_openArticleId, 'share');
 }
  
 // ── ARTICLE NAV: no swipe-to-navigate; use < > buttons instead ──
@@ -4806,6 +5498,7 @@ openArticle = async function(id, navDir, routeOptions) {
     const url = articleUrl(id);
     shareRow.innerHTML = buildShareRow(a.title, url);
   }
+  updateArticleDownloadControl(a);
   // Reset font size
   _fontSizeIdx = 0;
   const mc = document.getElementById('modal-content');
@@ -5011,6 +5704,22 @@ function updateSubBioCount() {
   return count <= 100;
 }
 
+function updateUpBioCount() {
+  const bio = document.getElementById('up-author-bio');
+  const counter = document.getElementById('up-bio-count');
+  if (!bio) return true;
+  const limited = limitWords(bio.value, 100);
+  if (limited !== bio.value.trim() && bio.value.trim().split(/\s+/).filter(Boolean).length > 100) {
+    bio.value = limited;
+  }
+  const count = bio.value.trim() ? bio.value.trim().split(/\s+/).filter(Boolean).length : 0;
+  if (counter) {
+    counter.textContent = count + ' / 100 words';
+    counter.style.color = count >= 100 ? '#a32d2d' : 'var(--text-muted)';
+  }
+  return count <= 100;
+}
+
 function normalizeEmail(email) {
   return sanitizeInput(email || '', 220).toLowerCase();
 }
@@ -5136,6 +5845,31 @@ async function upsertAuthorProfile(profile, article) {
   }
 }
 
+async function removeArticleFromAuthorProfile(article) {
+  if (!article || !article.id) return;
+  try {
+    const profile = await fetchAuthorProfileForArticle(article);
+    if (!profile || !profile.id) return;
+    const currentIds = Array.isArray(profile.article_ids) ? profile.article_ids.map(Number).filter(Boolean) : [];
+    const remainingIds = currentIds.filter(id => id !== Number(article.id));
+    const nextCount = currentIds.length
+      ? remainingIds.length
+      : Math.max(0, Number(profile.published_article_count || 0) - 1);
+    const res = await fetch(`${SUPABASE_URL}/rest/v1/author_profiles?id=eq.${profile.id}`, {
+      method: 'PATCH',
+      headers: { ...headers, 'Prefer': 'return=minimal' },
+      body: JSON.stringify({
+        article_ids: remainingIds,
+        published_article_count: nextCount,
+        updated_at: new Date().toISOString()
+      })
+    });
+    if (!res.ok) console.warn('Author profile delete sync skipped:', await res.text().catch(() => res.status));
+  } catch(e) {
+    console.warn('Author profile delete sync unavailable:', e.message);
+  }
+}
+
 async function getAuthorArticles(profile, article) {
   const ids = Array.isArray(profile && profile.article_ids) ? profile.article_ids.filter(Boolean) : [];
   try {
@@ -5154,8 +5888,222 @@ async function getAuthorArticles(profile, article) {
   }
 }
 
+function relatedArticleScore(base, candidate) {
+  if (!base || !candidate || Number(base.id) === Number(candidate.id)) return -1;
+  let score = 0;
+  if (base.category && candidate.category === base.category) score += 9;
+  if (base.author && candidate.author === base.author) score += 7;
+  const basePlace = String(base.place || base.city || base.state || base.country || '').toLowerCase();
+  const candPlace = String(candidate.place || candidate.city || candidate.state || candidate.country || '').toLowerCase();
+  if (basePlace && candPlace && (basePlace.includes(candPlace) || candPlace.includes(basePlace))) score += 4;
+  const baseWords = new Set(String(base.title || '').toLowerCase().split(/[^a-z0-9]+/).filter(w => w.length > 3));
+  String(candidate.title || '').toLowerCase().split(/[^a-z0-9]+/).forEach(w => { if (baseWords.has(w)) score += 2; });
+  if (candidate.created_at) score += Math.max(0, 2 - Math.min(2, (Date.now() - new Date(candidate.created_at).getTime()) / 86400000 / 180));
+  return score;
+}
+
+function renderRelatedArticles(article) {
+  const host = document.getElementById('modal-related-articles');
+  if (!host || !article) return;
+  const related = (articles || [])
+    .map(a => ({ article: a, score: relatedArticleScore(article, a) }))
+    .filter(x => x.score > 0)
+    .sort((a,b) => b.score - a.score)
+    .slice(0, 4)
+    .map(x => x.article);
+  if (!related.length) {
+    host.innerHTML = '';
+    return;
+  }
+  host.innerHTML = `
+    <div class="related-articles-box">
+      <div class="related-title">Related Articles</div>
+      <div class="related-grid">
+        ${related.map(a => {
+          const img = articleImageSrc(a);
+          return `<div class="related-card" onclick="openArticle(${Number(a.id)})">
+            <div class="related-thumb">${img ? `<img src="${esc(img)}" loading="lazy" decoding="async" alt="">` : esc((a.category || 'IL').slice(0,2).toUpperCase())}</div>
+            <div>
+              <div class="related-card-title">${esc(a.title)}</div>
+              <div class="related-card-meta">${esc(a.category || '')} &bull; ${esc(a.author || '')}</div>
+            </div>
+          </div>`;
+        }).join('')}
+      </div>
+    </div>`;
+}
+
+function localMetricMap(key) {
+  try { return JSON.parse(localStorage.getItem(key) || '{}'); } catch(e) { return {}; }
+}
+
+async function fetchArticleStats() {
+  try {
+    const res = await fetch(`${SUPABASE_URL}/rest/v1/rpc/get_article_stats`, {
+      method: 'GET',
+      headers
+    });
+    if (!res.ok) return articleStatsCache;
+    const data = await res.json();
+    const next = {};
+    (Array.isArray(data) ? data : []).forEach(row => {
+      next[String(row.article_id)] = {
+        views: Number(row.views || 0),
+        unique_readers: Number(row.unique_readers || 0),
+        shares: Number(row.shares || 0),
+        downloads: Number(row.downloads || 0)
+      };
+    });
+    articleStatsCache = next;
+  } catch(e) {
+    console.warn('Article stats unavailable:', e.message);
+  }
+  return articleStatsCache;
+}
+
+function articleStatsFor(id) {
+  const remote = articleStatsCache[String(id)] || {};
+  return {
+    views: Number(remote.views || getArticleLocalMetric('ilirh-article-reads', id) || 0),
+    unique_readers: Number(remote.unique_readers || getArticleLocalMetric('ilirh-article-unique-readers', id) || 0),
+    shares: Number(remote.shares || getArticleLocalMetric('ilirh-article-shares', id) || 0),
+    downloads: Number(remote.downloads || getArticleLocalMetric('ilirh-article-downloads', id) || 0)
+  };
+}
+
+function bumpArticleStatsCache(id, eventType, uniqueIncrement) {
+  const key = String(id);
+  const row = articleStatsCache[key] || { views:0, unique_readers:0, shares:0, downloads:0 };
+  if (eventType === 'view') {
+    row.views += 1;
+    if (uniqueIncrement) row.unique_readers += 1;
+  }
+  if (eventType === 'share') row.shares += 1;
+  if (eventType === 'download') row.downloads += 1;
+  articleStatsCache[key] = row;
+}
+
+async function logArticleEvent(articleId, eventType) {
+  if (!articleId || !['view','share','download'].includes(eventType)) return;
+  const sessionKey = `ilirh-event-${eventType}-${articleId}`;
+  const uniqueKey = `ilirh-unique-reader-${articleId}`;
+  const shouldThrottle = eventType === 'view' && sessionStorage.getItem(sessionKey);
+  if (shouldThrottle) return;
+  const uniqueBefore = localStorage.getItem(uniqueKey);
+  if (eventType === 'view') {
+    sessionStorage.setItem(sessionKey, '1');
+    localStorage.setItem(uniqueKey, '1');
+    addArticleLocalMetric('ilirh-article-unique-readers', articleId, uniqueBefore ? 0 : 1);
+  }
+  addArticleLocalMetric(
+    eventType === 'view' ? 'ilirh-article-reads' : eventType === 'share' ? 'ilirh-article-shares' : 'ilirh-article-downloads',
+    articleId
+  );
+  bumpArticleStatsCache(articleId, eventType, eventType === 'view' && !uniqueBefore);
+  renderAuthorDashboard();
+  try {
+    const res = await fetch(`${SUPABASE_URL}/rest/v1/rpc/log_article_event`, {
+      method: 'POST',
+      headers,
+      body: JSON.stringify({
+        p_article_id: Number(articleId),
+        p_event_type: eventType,
+        p_visitor_key: visitorKey()
+      })
+    });
+    if (!res.ok) console.warn('Article event log skipped:', await res.text().catch(() => res.status));
+  } catch(e) {
+    console.warn('Article event log unavailable:', e.message);
+  }
+}
+
+function getArticleLocalMetric(key, id) {
+  const map = localMetricMap(key);
+  return Number(map[String(id)] || 0);
+}
+
+function addArticleLocalMetric(key, id, amount) {
+  if (!id) return;
+  const inc = amount == null ? 1 : Number(amount);
+  if (!inc) return;
+  const map = localMetricMap(key);
+  map[String(id)] = Number(map[String(id)] || 0) + inc;
+  try { localStorage.setItem(key, JSON.stringify(map)); } catch(e) {}
+}
+
+function removeArticleLocalMetrics(id) {
+  ['ilirh-article-reads', 'ilirh-article-unique-readers', 'ilirh-article-shares', 'ilirh-article-downloads'].forEach(key => {
+    const map = localMetricMap(key);
+    delete map[String(id)];
+    try { localStorage.setItem(key, JSON.stringify(map)); } catch(e) {}
+  });
+  delete articleStatsCache[String(id)];
+}
+
+function authorStats() {
+  const stats = new Map();
+  (articles || []).forEach(a => {
+    const name = a.author || 'Unknown Author';
+    if (!stats.has(name)) {
+      stats.set(name, { name, articles: 0, likes: 0, reads: 0, unique_readers: 0, shares: 0, downloads: 0, latest: a.created_at || '' });
+    }
+    const row = stats.get(name);
+    const activity = articleStatsFor(a.id);
+    row.articles += 1;
+    row.likes += getLikeData(a.id).count || 0;
+    row.reads += activity.views;
+    row.unique_readers = (row.unique_readers || 0) + activity.unique_readers;
+    row.shares += activity.shares;
+    row.downloads += activity.downloads;
+    if ((a.created_at || '') > (row.latest || '')) row.latest = a.created_at || row.latest;
+  });
+  return Array.from(stats.values());
+}
+
+function renderAuthorDashboard() {
+  const host = document.getElementById('author-dashboard-section');
+  if (!host || !articles.length || currentCat !== 'all') {
+    if (host) { host.classList.remove('open'); host.innerHTML = ''; }
+    return;
+  }
+  const stats = authorStats();
+  if (!stats.length) return;
+  const topPublished = stats.slice().sort((a,b) => b.articles - a.articles || a.name.localeCompare(b.name))[0];
+  const topRead = stats.slice().sort((a,b) => (b.unique_readers || b.reads) - (a.unique_readers || a.reads) || b.reads - a.reads || b.likes - a.likes || b.articles - a.articles)[0];
+  const topLiked = stats.slice().sort((a,b) => b.likes - a.likes || b.articles - a.articles)[0];
+  const list = stats.slice().sort((a,b) => (b.likes + b.reads + b.downloads + b.shares + b.articles) - (a.likes + a.reads + a.downloads + a.shares + a.articles)).slice(0, 8);
+  host.classList.add('open');
+  host.innerHTML = `
+    <div class="author-dashboard-header">
+      <div>
+        <div class="author-dashboard-kicker">Author Rankings</div>
+        <div class="author-dashboard-title">Top authors and reader activity</div>
+      </div>
+      <div style="font-family:'Lato',sans-serif;font-size:11px;color:#7a8795;">Live reader activity updates from Supabase as visitors read, share, and download.</div>
+    </div>
+    <div class="author-dashboard-grid">
+      ${authorRankCard('Most Published', topPublished, `${topPublished.articles} articles`)}
+      ${authorRankCard('Most Read', topRead, `${topRead.unique_readers || 0} unique readers · ${topRead.reads} views`)}
+      ${authorRankCard('Most Liked', topLiked, `${topLiked.likes} likes`)}
+    </div>
+    <div class="author-rank-list">
+      ${list.map(a => `<div class="author-rank-row">
+        <a href="${authorProfilePath(a.name)}">${esc(a.name)}</a>
+        <span class="author-rank-metrics">${a.articles} articles · ${a.likes} likes · ${a.unique_readers || 0} readers · ${a.shares} shares · ${a.downloads} downloads</span>
+      </div>`).join('')}
+    </div>`;
+}
+
+function authorRankCard(label, row, stat) {
+  return `<div class="author-rank-card">
+    <div class="author-rank-label">${esc(label)}</div>
+    <div class="author-rank-name">${esc(row && row.name || 'Author')}</div>
+    <div class="author-rank-stat">${esc(stat || '')}</div>
+  </div>`;
+}
+
 function setHomeSectionsVisible(visible) {
-  ['hero-section', 'spotlight-section', 'categories-wrap'].forEach(id => {
+  ['hero-section', 'live-home-section', 'spotlight-section', 'author-dashboard-section', 'categories-wrap'].forEach(id => {
     const el = document.getElementById(id);
     if (el) el.style.display = visible ? '' : 'none';
   });
@@ -5183,7 +6131,7 @@ async function renderAuthorProfilePage(profile, replaceUrl) {
   section.innerHTML = '<div class="author-page-hero">Loading author profile...</div>';
   const list = await getAuthorArticles(profile, { author: profile.name });
   const meta = [profile.occupation, profile.institution].filter(Boolean).map(esc).join(' · ');
-  const count = profile.published_article_count || list.length || 0;
+  const count = Array.isArray(profile.article_ids) ? list.length : (list.length || profile.published_article_count || 0);
   document.title = `${profile.name || 'Author'} - ILIRH Author Profile`;
   section.innerHTML = `
     <div class="author-page-hero">
@@ -5244,11 +6192,19 @@ async function renderAuthorProfileBox(article) {
     institution: (profile && profile.institution) || article.institution || '',
     bio: (profile && profile.bio) || '',
     photo_url: (profile && profile.photo_url) || article.author_photo_url || '',
-    count: (profile && profile.published_article_count) || list.length || countFallback
+    count: (profile && Array.isArray(profile.article_ids)) ? list.length : ((list.length || (profile && profile.published_article_count)) || countFallback)
   };
+  const authoredArticles = (list.length ? list : (articles || []).filter(a => a.author === article.author));
+  const totals = authoredArticles.reduce((acc, a) => {
+    const stats = articleStatsFor(a.id);
+    acc.likes += getLikeData(a.id).count || 0;
+    acc.readers += stats.unique_readers || 0;
+    acc.downloads += stats.downloads || 0;
+    return acc;
+  }, { likes: 0, readers: 0, downloads: 0 });
   const profileLink = authorProfilePath(profile || display.name);
   const meta = [display.occupation, display.institution].filter(Boolean).map(esc).join(' · ');
-  const links = (list.length ? list : (articles || []).filter(a => a.author === article.author))
+  const links = authoredArticles
     .slice(0, 20)
     .map(a => `<a href="${articlePath(a.id)}" onclick="event.preventDefault();openArticle(${Number(a.id)});">${esc(a.title)} <span style="color:#7a8795;">${a.category ? ' · ' + esc(a.category) : ''}</span></a>`)
     .join('');
@@ -5260,11 +6216,19 @@ async function renderAuthorProfileBox(article) {
           <div class="author-profile-kicker">Author Profile</div>
           <div class="author-profile-name">${esc(display.name)}</div>
           ${meta ? `<div class="author-profile-meta">${meta}</div>` : ''}
-          <a class="author-profile-count" href="${profileLink}">Published Articles: ${display.count}</a>
-          <a class="author-profile-link" href="${profileLink}">View Public Profile</a>
+          <div class="author-profile-actions">
+            <button type="button" class="author-profile-count" onclick="toggleAuthorArticleList()">Published Articles: ${display.count}</button>
+            <a class="author-profile-link" href="${profileLink}">View Public Profile</a>
+          </div>
         </div>
       </div>
       ${display.bio ? `<div class="author-profile-bio">${esc(display.bio)}</div>` : ''}
+      <div class="author-profile-stats">
+        <div class="author-profile-stat"><strong>${display.count}</strong><span>Articles</span></div>
+        <div class="author-profile-stat"><strong>${totals.likes}</strong><span>Likes</span></div>
+        <div class="author-profile-stat"><strong>${totals.readers}</strong><span>Readers</span></div>
+        <div class="author-profile-stat"><strong>${totals.downloads}</strong><span>Downloads</span></div>
+      </div>
       <div class="author-article-list" id="author-article-list">${links || '<div style="font-size:12px;color:#7a8795;">No article list available yet.</div>'}</div>
     </div>`;
 }
@@ -5819,25 +6783,9 @@ async function saveReviewEdits() {
         console.warn('Source document upload on save failed:', e);
       }
     }
-    let res = await fetch(`${SUPABASE_URL}/rest/v1/article_submissions?id=eq.${_activeSubmission.id}`, {
-      method: 'PATCH',
-      headers: { ...headers, 'Prefer': 'return=minimal' },
-      body: JSON.stringify(updates)
-    });
-    if (!res.ok) {
-      const errText = await res.text().catch(() => '');
-      if (/author_bio/i.test(errText)) {
-        delete updates.author_bio;
-        res = await fetch(`${SUPABASE_URL}/rest/v1/article_submissions?id=eq.${_activeSubmission.id}`, {
-          method: 'PATCH',
-          headers: { ...headers, 'Prefer': 'return=minimal' },
-          body: JSON.stringify(updates)
-        });
-      }
-    }
-    if (!res.ok) throw new Error('Save failed');
+    const savedUpdates = await saveSubmissionRecord(_activeSubmission.id, updates);
     // Update local copy
-    Object.assign(_activeSubmission, updates);
+    Object.assign(_activeSubmission, savedUpdates);
     if (_rdNewFile) { _rdNewFile = null; document.getElementById('rd-new-filename').textContent = ''; }
     if (_rdAuthorPhotoData) { _rdAuthorPhotoData = null; const fn = document.getElementById('rd-author-photo-filename'); if (fn) fn.textContent = 'Photo saved'; }
     if (_rdPendingDocxFile) {
@@ -8407,12 +9355,34 @@ async function uploadArticleImageToSupabase(dataUrl) {
     if (!fnRes.ok) {
       const t = await fnRes.text().catch(() => '');
       console.warn('Article image upload failed:', fnRes.status, t);
+    } else {
+      const out = await fnRes.json().catch(() => null);
+      if (out && out.ok && out.url) return out.url;
+    }
+  } catch(e) { console.warn('Article image function upload failed:', e); }
+  try {
+    const blob = dataUrlToBlob(dataUrl);
+    const ext = (blob.type || '').includes('jpeg') || (blob.type || '').includes('jpg') ? 'jpg' : 'png';
+    const fileName = `generated/${Date.now()}_${Math.random().toString(36).slice(2)}.${ext}`;
+    const res = await fetch(`${SUPABASE_URL}/storage/v1/object/articles/${fileName}`, {
+      method: 'PUT',
+      headers: {
+        'apikey': SUPABASE_KEY,
+        'Authorization': 'Bearer ' + SUPABASE_KEY,
+        'Content-Type': blob.type || 'image/png',
+        'x-upsert': 'true'
+      },
+      body: blob
+    });
+    if (!res.ok) {
+      console.warn('Direct article image upload failed:', res.status, await res.text().catch(() => ''));
       return null;
     }
-    const out = await fnRes.json().catch(() => null);
-    if (!out || !out.ok || !out.url) return null;
-    return out.url;
-  } catch(e) { console.warn('Article image upload failed:', e); return null; }
+    return `${SUPABASE_URL}/storage/v1/object/public/articles/${fileName}`;
+  } catch(e) {
+    console.warn('Article image upload failed:', e);
+    return null;
+  }
 }
 
 // ═══════════════════════════════════════════════════════
@@ -8477,14 +9447,24 @@ closeUpload = function() {
   <div id="search-popup-box">
     <div id="search-popup-inner">
       <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#c5d2e0" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-      <input type="text" id="search-input" placeholder="Search articles, authors, categories…" autocomplete="off" oninput="searchArticles(this.value)" aria-label="Search">
+      <input type="text" id="search-input" placeholder="Search title, author, category, country, keyword…" autocomplete="off" oninput="searchArticles(this.value)" aria-label="Search">
       <button id="search-clear-btn" onclick="closeSearchWrap()" aria-label="Close search">&times;</button>
     </div>
     <div id="search-dropdown"></div>
     <div id="search-popup-hint">Press <strong style="font-size:11px;background:rgba(255,255,255,0.1);padding:1px 6px;border-radius:3px;">Esc</strong> to close &nbsp;·&nbsp; <strong style="font-size:11px;background:rgba(255,255,255,0.1);padding:1px 6px;border-radius:3px;">/</strong> to open</div>
   </div>
 </div>
- 
+
+<div class="support-nudge" id="support-nudge" aria-live="polite">
+  <div class="support-nudge-kicker">Independent Research</div>
+  <div class="support-nudge-title">Help keep ILIRH open for readers.</div>
+  <div class="support-nudge-copy">A small contribution supports free scholarship, certificates, and wider access.</div>
+  <div class="support-nudge-actions">
+    <button class="support-nudge-btn" onclick="openSupportFromNudge()">Support Us</button>
+    <button class="support-nudge-link" onclick="dismissSupportNudge()">Later</button>
+  </div>
+</div>
+
 <!-- POLICY / CONTACT MODAL -->
 <div class="policy-overlay" id="policy-overlay" onclick="closePolicyOnBg(event)">
   <div class="policy-box" id="policy-box">

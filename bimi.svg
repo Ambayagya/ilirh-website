@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg version="1.2" baseProfile="tiny-ps" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <title>ILIRH</title>
+  <rect width="512" height="512" fill="#0a1628"/>
+  <rect x="38" y="38" width="436" height="436" fill="none" stroke="#c9a84c" stroke-width="18"/>
+  <rect x="70" y="70" width="372" height="372" fill="none" stroke="#f3df9a" stroke-width="4"/>
+  <circle cx="256" cy="180" r="74" fill="none" stroke="#c9a84c" stroke-width="12"/>
+  <path d="M256 98 L276 154 L335 154 L287 189 L306 246 L256 211 L206 246 L225 189 L177 154 L236 154 Z" fill="#f3df9a"/>
+  <path d="M154 300 H358" stroke="#c9a84c" stroke-width="12" stroke-linecap="square"/>
+  <path d="M172 338 H340" stroke="#f3df9a" stroke-width="6" stroke-linecap="square"/>
+  <text x="256" y="410" text-anchor="middle" font-family="Georgia, 'Times New Roman', serif" font-size="86" font-weight="700" fill="#ffffff">ILIRH</text>
+</svg>
